@@ -1,4 +1,3 @@
-import { WidthProvider, Responsive, Layout, Layouts } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { Search, ZoomIn, Trash, Undo2 } from "lucide-react";
@@ -8,10 +7,13 @@ import TagsBox from "./boxes/TagsBox";
 import HoursBox from "./boxes/HoursBox";
 import PomodoroBox from "./boxes/PomodoroBox";
 import TasksImportBox from "./boxes/TasksImportBox";
-import EmbeddedBox from "./boxes/ EmbeddedBox";
+import EmbeddedBox from "./boxes/EmbeddedBox";
+import { WidthProvider, Responsive } from "react-grid-layout";
+import type { Layout, Layouts } from "react-grid-layout";
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-export default function Dashboard(): JSX.Element {
+export default function Dashboard() {
   const [boxes, setBoxes] = useState<string[]>([
     "progress",
     "tags",
@@ -55,14 +57,14 @@ export default function Dashboard(): JSX.Element {
   } | null>(null);
 
   const removeBox = (id: string) => {
-    const layoutItem = layouts.lg.find((item) => item.i === id);
+    const layoutItem = layouts.lg.find((item: Layout) => item.i === id);
     if (layoutItem) {
       setLastRemoved({ id, layout: layoutItem });
     }
     setBoxes((prev) => prev.filter((box) => box !== id));
     setLayouts((prev) => ({
       ...prev,
-      lg: prev.lg.filter((item) => item.i !== id),
+      lg: prev.lg.filter((item: Layout) => item.i !== id),
     }));
   };
 
@@ -78,22 +80,22 @@ export default function Dashboard(): JSX.Element {
   };
 
   const handleDragStart = (
-    layout: any,
-    oldItem: any,
-    newItem: any,
-    placeholder: any,
-    e: any,
-    element: HTMLElement
+    _layout: Layout[],
+    _oldItem: Layout,
+    newItem: Layout,
+    _placeholder: Layout,
+    _e: MouseEvent,
+    _element: HTMLElement
   ) => {
     setDraggingId(newItem.i);
   };
 
   const handleDragStop = (
-    layout: any,
-    oldItem: any,
-    newItem: any,
-    placeholder: any,
-    e: MouseEvent,
+    _layout: Layout[],
+    _oldItem: Layout,
+    _newItem: Layout,
+    _placeholder: Layout,
+    _e: MouseEvent,
     element: HTMLElement
   ) => {
     const trash = document.getElementById("trash-area");
