@@ -7,6 +7,7 @@ export default function Home(): JSX.Element {
       <Sidebar
         items={[
           { label: "Home", path: "/" },
+          { label: "Tasks", path: "/tasks" },
           { label: "Configurações", path: "/settings" },
         ]}
       />
