@@ -1,15 +1,169 @@
+import { useState, useRef, useEffect } from "react";
+
 export default function PomodoroBox() {
+  const WORK_TIME = 24 * 60;
+  const SHORT_BREAK = 5;
+  const LONG_BREAK = 15;
+
+  const [time, setTime] = useState(WORK_TIME);
+  const [mode, setMode] = useState("work");
+  const [isRunning, setIsRunning] = useState(false);
+
+  const [workCount, setWorkCount] = useState(0);
+  const [shortBreakCount, setShortBreakCount] = useState(0);
+  const [longBreakCount, setLongBreakCount] = useState(0);
+
+  const timerRef = useRef(null);
+  const modeRef = useRef(mode);
+  const timeLeftRef = useRef(time);
+
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  useEffect(() => {
+    timeLeftRef.current = time;
+  }, [time]);
+
+  useEffect(() => {
+    Notification.requestPermission();
+  }, []);
+
+  const startTimer = () => {
+    if (timerRef.current) return;
+
+    timerRef.current = setInterval(() => {
+      timeLeftRef.current -= 1;
+      setTime(timeLeftRef.current);
+
+      if (timeLeftRef.current <= 0) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        setIsRunning(false);
+        handleEnd();
+      }
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+  };
+
+  const handleModeChange = (selectedMode) => {
+    stopTimer();
+    setIsRunning(false);
+    setMode(selectedMode);
+
+    if (selectedMode === "work") {
+      setTime(WORK_TIME);
+      timeLeftRef.current = WORK_TIME;
+    }
+    if (selectedMode === "short") {
+      setTime(SHORT_BREAK);
+      timeLeftRef.current = SHORT_BREAK;
+    }
+    if (selectedMode === "long") {
+      setTime(LONG_BREAK);
+      timeLeftRef.current = LONG_BREAK;
+    }
+  };
+
+  const handleStartPause = () => {
+    if (isRunning) {
+      stopTimer();
+    } else {
+      startTimer();
+    }
+    setIsRunning(!isRunning);
+  };
+
+  const handleEnd = () => {
+    let message = "";
+
+    if (modeRef.current === "work") {
+      message = "Tempo de trabalho finalizado! Hora da pausa.";
+      setWorkCount((prev) => prev + 1);
+    }
+    if (modeRef.current === "short") {
+      message = "Pausa curta finalizada! Volte ao trabalho.";
+      setShortBreakCount((prev) => prev + 1);
+    }
+    if (modeRef.current === "long") {
+      message = "Pausa longa finalizada! Volte ao trabalho.";
+      setLongBreakCount((prev) => prev + 1);
+    }
+
+    sendNotification("Pomodoro", message);
+
+    setTimeout(() => {
+      alert(message);
+    }, 200);
+  };
+
+  const sendNotification = (title, body) => {
+    if (Notification.permission === "granted") {
+      new Notification(title, { body });
+
+      const audio = new Audio("/notify.mp3");
+      audio.volume = 0.2;
+      audio.playbackRate = 0.8;
+      audio.play().catch((err) => {
+        console.log("O áudio não pôde ser reproduzido automaticamente:", err);
+      });
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
   return (
-    <div className="box-padrao">
-      <div className="flex gap-2 flex-wrap">
-        <button className="px-4 py-1 bg-indigo-200 rounded">work</button>
-        <button className="px-4 py-1 bg-indigo-200 rounded">long break</button>
-        <button className="px-4 py-1 bg-indigo-200 rounded">short break</button>
+    <div className="box-padrao flex flex-col items-center">
+      <div className="flex gap-2 flex-wrap mb-4">
+        <button
+          onClick={() => handleModeChange("work")}
+          className={`px-4 py-1 rounded ${
+            mode === "work" ? "bg-indigo-500 text-white" : "bg-indigo-200"
+          }`}
+        >
+          work
+        </button>
+        <button
+          onClick={() => handleModeChange("long")}
+          className={`px-4 py-1 rounded ${
+            mode === "long" ? "bg-indigo-500 text-white" : "bg-indigo-200"
+          }`}
+        >
+          long break
+        </button>
+        <button
+          onClick={() => handleModeChange("short")}
+          className={`px-4 py-1 rounded ${
+            mode === "short" ? "bg-indigo-500 text-white" : "bg-indigo-200"
+          }`}
+        >
+          short break
+        </button>
       </div>
-      <h2 className="text-center font-semibold text-gray-700 mt-4">Pomodoro</h2>
-      <p className="text-5xl text-center font-bold">23:31</p>
-      <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-full self-center">pause</button>
+      <h2 className="text-center font-semibold text-gray-700">Pomodoro</h2>
+      <p className="text-5xl text-center font-bold">{formatTime(time)}</p>
+      <button
+        onClick={handleStartPause}
+        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-full"
+      >
+        {isRunning ? "pause" : "start"}
+      </button>
+
+      <div className="mt-4 text-center">
+        <p>✔️ Work concluídos: {workCount}</p>
+        <p>✔️ Short breaks: {shortBreakCount}</p>
+        <p>✔️ Long breaks: {longBreakCount}</p>
+      </div>
     </div>
   );
 }
-
