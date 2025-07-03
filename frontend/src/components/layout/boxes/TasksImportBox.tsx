@@ -1,13 +1,12 @@
 import { Upload } from "lucide-react";
-import React from "react";
 
-interface Task {
+/* interface Task {
   title: string;
   tag: string;
   date: string;
 }
-
-const TasksImportBox: React.FC = () => {
+ */
+const TasksImportBox = () => {
   return (
     <div className="bg-gray-100 rounded-3xl p-6 shadow flex flex-col gap-4 overflow-hidden h-full w-full">
       <h2 className="text-lg font-semibold">Importar Tasks via JSON</h2>
