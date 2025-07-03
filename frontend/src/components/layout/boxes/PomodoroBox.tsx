@@ -5,17 +5,17 @@ export default function PomodoroBox() {
   const SHORT_BREAK = 5;
   const LONG_BREAK = 15;
 
-  const [time, setTime] = useState(WORK_TIME);
-  const [mode, setMode] = useState("work");
-  const [isRunning, setIsRunning] = useState(false);
+  const [time, setTime] = useState<number>(WORK_TIME);
+  const [mode, setMode] = useState<"work" | "short" | "long">("work");
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
-  const [workCount, setWorkCount] = useState(0);
-  const [shortBreakCount, setShortBreakCount] = useState(0);
-  const [longBreakCount, setLongBreakCount] = useState(0);
+  const [workCount, setWorkCount] = useState<number>(0);
+  const [shortBreakCount, setShortBreakCount] = useState<number>(0);
+  const [longBreakCount, setLongBreakCount] = useState<number>(0);
 
-  const timerRef = useRef(null);
-  const modeRef = useRef(mode);
-  const timeLeftRef = useRef(time);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const modeRef = useRef<"work" | "short" | "long">(mode);
+  const timeLeftRef = useRef<number>(time);
 
   useEffect(() => {
     modeRef.current = mode;
@@ -37,8 +37,10 @@ export default function PomodoroBox() {
       setTime(timeLeftRef.current);
 
       if (timeLeftRef.current <= 0) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
         setIsRunning(false);
         handleEnd();
       }
@@ -46,11 +48,13 @@ export default function PomodoroBox() {
   };
 
   const stopTimer = () => {
-    clearInterval(timerRef.current);
-    timerRef.current = null;
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   };
 
-  const handleModeChange = (selectedMode) => {
+  const handleModeChange = (selectedMode: "work" | "short" | "long") => {
     stopTimer();
     setIsRunning(false);
     setMode(selectedMode);
@@ -101,7 +105,7 @@ export default function PomodoroBox() {
     }, 200);
   };
 
-  const sendNotification = (title, body) => {
+  const sendNotification = (title: string, body: string) => {
     if (Notification.permission === "granted") {
       new Notification(title, { body });
 
@@ -114,7 +118,7 @@ export default function PomodoroBox() {
     }
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
       .toString()
       .padStart(2, "0");
