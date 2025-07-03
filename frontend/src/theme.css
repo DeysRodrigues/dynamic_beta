@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem; /* Raio padrão de borda (cantos arredondados) */
+
+  --background: oklch(1 0 0); /* Cor de fundo geral do site (body, containers principais) */
+  --foreground: oklch(0.145 0 0); /* Cor padrão do texto sobre o fundo */
+
+  --card: #EDEDED; /* Cor de fundo dos cards, painéis e containers internos */
+  --card-foreground: oklch(0.145 0 0); /* Cor do texto e conteúdo dentro dos cards */
+
+  --popover: oklch(1 0 0); /* Fundo dos popovers, tooltips e menus flutuantes */
+  --popover-foreground: oklch(0.145 0 0); /* Cor do texto dentro dos popovers */
+
+  --primary:#616EFF; /* Cor principal para botões, links e elementos de destaque */
+  --primary-foreground: oklch(0.985 0 0); /* Cor do texto ou ícone sobre o fundo 'primary' */
+
+  --secondary: #A3ABFF; /* Cor secundária para botões ou elementos menos destacados */
+  --secondary-foreground: #444444; /* Texto ou ícone sobre o fundo secundário */
+
+  --muted: oklch(0.97 0 0); /* Cor neutra para elementos desabilitados ou de fundo leve */
+  --muted-foreground: oklch(0.556 0 0); /* Cor do texto sobre fundo 'muted' */
+
+  --accent: oklch(0.97 0 0); /* Cor de destaque suave, geralmente para hovers ou pequenos detalhes */
+  --accent-foreground: oklch(0.205 0 0); /* Texto ou ícone sobre o fundo 'accent' */
+
+  --destructive: oklch(0.577 0.245 27.325); /* Cor de alerta ou ações destrutivas (ex: deletar) */
+
+  --border: oklch(0.922 0 0); /* Cor padrão das bordas de inputs, containers, etc */
+  --input: oklch(0.922 0 0); /* Cor de fundo dos inputs, campos de formulário */
+  --ring: oklch(0.708 0 0); /* Cor do outline (foco) ao redor de inputs ou botões */
+
+  /* Cores utilizadas em gráficos, charts ou indicadores visuais */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Cores específicas para a sidebar (menu lateral) */
+  --sidebar: oklch(0.6086 0.2128 274.31);/* Fundo da sidebar */
+  --sidebar-foreground: oklch(0.145 0 0); /* Cor do texto ou ícones da sidebar */
+
+  --sidebar-primary: oklch(0.205 0 0); /* Cor de destaque ou item ativo na sidebar */
+  --sidebar-primary-foreground: oklch(0.985 0 0); /* Texto ou ícone sobre o item ativo da sidebar */
+
+  --sidebar-accent: oklch(0.97 0 0); /* Cor de hover ou destaque leve na sidebar */
+  --sidebar-accent-foreground: oklch(0.205 0 0); /* Texto ou ícone sobre o fundo 'accent' da sidebar */
+
+  --sidebar-border: oklch(0.922 0 0); /* Cor das bordas internas da sidebar */
+  --sidebar-ring: oklch(0.708 0 0); /* Cor de foco/outline dentro da sidebar */
+}
+
+.dark {
+
+  --background: oklch(0.145 0 0); /* Cor de fundo geral da aplicação (body, containers principais) */
+  --foreground: oklch(0.985 0 0); /* Cor do texto padrão sobre o background */
+
+  --card: oklch(0.205 0 0); /* Cor de fundo dos cards, painéis e containers internos */
+  --card-foreground: oklch(0.985 0 0); /* Cor do texto ou conteúdo dentro dos cards */
+
+  --popover: oklch(0.205 0 0); /* Fundo de popovers, tooltips, menus flutuantes */
+  --popover-foreground: oklch(0.985 0 0); /* Cor do texto ou ícones dentro dos popovers */
+
+  --primary: oklch(0.922 0 0); /* Cor principal para botões, links ou elementos de destaque */
+  --primary-foreground: oklch(0.205 0 0); /* Cor do texto ou ícone quando o fundo é 'primary' */
+
+  --secondary: oklch(0.269 0 0); /* Cor secundária para botões ou elementos menos destacados */
+  --secondary-foreground: oklch(0.985 0 0); /* Texto ou ícone sobre fundo secundário */
+
+  --muted: oklch(0.269 0 0); /* Fundo para elementos neutros ou desabilitados (inputs desativados, etc) */
+  --muted-foreground: oklch(0.708 0 0); /* Cor do texto sobre fundo muted */
+
+  --accent: oklch(0.269 0 0); /* Cor de destaque leve, usado para hover ou elementos interativos suaves */
+  --accent-foreground: oklch(0.985 0 0); /* Cor do texto/ícone sobre fundo accent */
+
+  --destructive: oklch(0.704 0.191 22.216); /* Cor para botões ou avisos destrutivos (excluir, alertas) */
+
+  --border: oklch(1 0 0 / 10%); /* Cor padrão das bordas em inputs, containers, etc */
+  --input: oklch(1 0 0 / 15%); /* Cor do fundo dos inputs e campos de formulário */
+  --ring: oklch(0.556 0 0); /* Cor do outline ou foco ao redor de inputs/botões */
+
+  /* Cores para gráficos ou elementos visuais específicos */
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  /* Cores específicas para Sidebar */
+  --sidebar: oklch(0.205 0 0); /* Fundo da sidebar */
+  --sidebar-foreground: oklch(0.985 0 0); /* Texto ou ícones dentro da sidebar */
+  --sidebar-primary: oklch(0.488 0.243 264.376); /* Cor de destaque ou item ativo na sidebar */
+  --sidebar-primary-foreground: oklch(0.985 0 0); /* Cor do texto sobre o item ativo da sidebar */
+  --sidebar-accent: oklch(0.269 0 0); /* Cor de hover ou destaque leve na sidebar */
+  --sidebar-accent-foreground: oklch(0.985 0 0); /* Texto sobre fundo accent da sidebar */
+  --sidebar-border: oklch(1 0 0 / 10%); /* Cor das bordas internas da sidebar */
+  --sidebar-ring: oklch(0.556 0 0); /* Cor de foco/outline dentro da sidebar */
+
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
