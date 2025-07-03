@@ -1,7 +1,7 @@
 import Dashboard from"../components/layout/Dashboard";
 import Sidebar from"../components/layout/Sidebar";
 
-export default function Home(): JSX.Element {
+export default function Home() {
   return (
     <div className="flex h-screen">
       <Sidebar
