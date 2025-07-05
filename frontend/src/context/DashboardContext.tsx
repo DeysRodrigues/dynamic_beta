@@ -1,7 +1,13 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 import type { Layouts } from "react-grid-layout";
 
-// Layouts padrão (você pode extrair isso para um arquivo separado se quiser)
+// Layouts padrão
 const defaultLayouts: Layouts = {
   lg: [
     { i: "progress", x: 0, y: 0, w: 2, h: 2 },
@@ -12,24 +18,31 @@ const defaultLayouts: Layouts = {
     { i: "embedded", x: 3, y: 1, w: 1, h: 4 },
   ],
   md: [
-    { i: "progress", x: 0, y: 0, w: 1, h: 2 },
-    { i: "tags", x: 1, y: 0, w: 1, h: 2 },
-    { i: "hours", x: 0, y: 2, w: 1, h: 2 },
-    { i: "pomodoro", x: 1, y: 2, w: 1, h: 2 },
-    { i: "tasksimport", x: 0, y: 4, w: 4, h: 3 },
-    { i: "embedded", x: 0, y: 7, w: 4, h: 3 },
+    { i: "progress", x: 0, y: 0, w: 2, h: 2 },
+    { i: "tags", x: 0, y: 0, w: 2, h: 2 },
+    { i: "hours", x: 0, y: 0, w: 2, h: 2 },
+    { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
+    { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
+    { i: "embedded", x: 3, y: 1, w: 1, h: 4 },
   ],
   sm: [
-    { i: "progress", x: 0, y: 0, w: 1, h: 2 },
-    { i: "tags", x: 0, y: 2, w: 1, h: 2 },
-    { i: "hours", x: 0, y: 4, w: 1, h: 2 },
-    { i: "pomodoro", x: 0, y: 6, w: 1, h: 3 },
-    { i: "tasksimport", x: 0, y: 4, w: 4, h: 3 },
-    { i: "embedded", x: 0, y: 7, w: 4, h: 3 },
+    { i: "progress", x: 0, y: 0, w: 2, h: 1.4},
+    { i: "tags", x: 0, y: 0, w: 2, h: 2 },
+    { i: "hours", x: 0, y: 0, w: 2, h: 3 },
+    { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
+    { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
+    { i: "embedded", x: 3, y: 1, w: 1, h: 3.3 },
   ],
 };
 
-const defaultBoxes = ["progress", "tags", "hours", "pomodoro", "tasksimport", "embedded"];
+const defaultBoxes = [
+  "progress",
+  "tags",
+  "hours",
+  "pomodoro",
+  "tasksimport",
+  "embedded",
+];
 
 // Tipagem do contexto
 type DashboardContextType = {
@@ -42,7 +55,9 @@ type DashboardContextType = {
 };
 
 // Criação do contexto
-const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
+const DashboardContext = createContext<DashboardContextType | undefined>(
+  undefined
+);
 
 // Provider
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
@@ -80,7 +95,16 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DashboardContext.Provider value={{ layouts, setLayouts, boxes, setBoxes, resetDashboard, saveDashboard }}>
+    <DashboardContext.Provider
+      value={{
+        layouts,
+        setLayouts,
+        boxes,
+        setBoxes,
+        resetDashboard,
+        saveDashboard,
+      }}
+    >
       {children}
     </DashboardContext.Provider>
   );
@@ -90,6 +114,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 // eslint-disable-next-line react-refresh/only-export-components
 export const useDashboard = () => {
   const context = useContext(DashboardContext);
-  if (!context) throw new Error("useDashboard precisa estar dentro do DashboardProvider");
+  if (!context)
+    throw new Error("useDashboard precisa estar dentro do DashboardProvider");
   return context;
 };
