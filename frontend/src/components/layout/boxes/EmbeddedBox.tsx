@@ -7,7 +7,7 @@ const EmbeddedBox: React.FC = () => {
   useEffect(() => {
     const converted = convertToEmbed(inputUrl);
     setEmbedUrl(converted);
-  }, []);
+  }, [inputUrl]);
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
@@ -35,7 +35,7 @@ const EmbeddedBox: React.FC = () => {
 
   return (
     <div className="bg-gray-100 rounded-3xl p-6 shadow flex flex-col gap-4 overflow-hidden h-full w-full">
-      <h2 className="text-lg font-semibold">Conteúdo Embutido</h2>
+      <h2 className="text-lg font-semibold">Conteúdo Embutido Youtube</h2>
       <p>Adicione o que voce quiser :)</p>
 
       <input
