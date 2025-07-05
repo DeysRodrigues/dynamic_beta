@@ -1,6 +1,6 @@
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { Search, ZoomIn, Trash, Undo2, Lock, Unlock } from "lucide-react";
+import {Trash, Undo2, Lock, Unlock } from "lucide-react";
 import { useEffect, useState } from "react";
 import ProgressBox from "./boxes/ProgressBox";
 import TagsBox from "./boxes/TagsBox";
@@ -9,7 +9,7 @@ import PomodoroBox from "./boxes/PomodoroBox";
 /* import TasksImportBox from "./boxes/TasksImportBox"; */
 import EmbeddedBox from "./boxes/EmbeddedBox";
 import { WidthProvider, Responsive } from "react-grid-layout";
-import type { Layout} from "react-grid-layout";
+import type { Layout } from "react-grid-layout";
 import { useDashboard } from "@/context/DashboardContext";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -64,8 +64,8 @@ export default function Dashboard() {
   const handleDragStart = (
     _layout: Layout[],
     _oldItem: Layout,
-    newItem: Layout,
-/*     _placeholder: Layout,
+    newItem: Layout
+    /*     _placeholder: Layout,
     _e: MouseEvent,
     _element: HTMLElement */
   ) => {
@@ -115,32 +115,27 @@ export default function Dashboard() {
             Olá, deys!
           </span>
 
-          <button
-            onClick={() => setEditMode((prev) => !prev)}
-            className="p-2 bg-white rounded-full hover:bg-gray-200"
-          >
-            {editMode ? <Unlock size={18} /> : <Lock size={18} />}
-          </button>
+          <div className="flex">
+            <button
+              onClick={() => setEditMode((prev) => !prev)}
+              className="p-2 bg-white rounded-full hover:bg-gray-200"
+            >
+              {editMode ? <Unlock size={18} /> : <Lock size={18} />}
+            </button>
 
-          <button
-            onClick={() => {
-              resetDashboard();
-              alert("Layout resetado ao padrão!");
-            }}
-            className="p-2 bg-white rounded-full hover:bg-gray-200"
-            title="Resetar layout padrão"
-          >
-            {/* Você pode usar um ícone de reset, aqui usei o Undo2 para manter padrão */}
-            <Undo2 size={18} />
-          </button>
+            <button
+              onClick={() => {
+                resetDashboard();
+                alert("Layout resetado ao padrão!");
+              }}
+              className="p-2 bg-white rounded-full hover:bg-gray-200"
+              title="Resetar layout padrão"
+            >
+              {/* Você pode usar um ícone de reset, aqui usei o Undo2 para manter padrão */}
+              <Undo2 size={18} />
+            </button>
 
-          <button className="p-2 bg-white rounded-full hover:bg-gray-200">
-            <Search size={18} />
-          </button>
-
-          <button className="p-2 bg-white rounded-full hover:bg-gray-200">
-            <ZoomIn size={18} />
-          </button>
+          </div>
         </div>
       </div>
 
@@ -200,7 +195,7 @@ export default function Dashboard() {
             <PomodoroBox />
           </div>
         )}
-     {/*    {boxes.includes("tasksimport") && (
+        {/*    {boxes.includes("tasksimport") && (
           <div
             key="tasksimport"
             className={`h-full w-full ${
