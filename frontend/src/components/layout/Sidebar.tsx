@@ -1,15 +1,20 @@
 import { Bell, Menu, Sparkles, Type } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 interface SidebarProps {
   items: { label: string; icon?: React.ReactNode; path: string }[];
 }
+
 
 const Sidebar: React.FC<SidebarProps> = ({ items }) => {
   const [open, setOpen] = useState(false);
   const [inverted, setInverted] = useState(false);
   const [monospace, setMonospace] = useState(false);
 
+
+  const navigate = useNavigate();
   // Aplica o filtro de inverter no html
   useEffect(() => {
     const root = document.documentElement;
@@ -93,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
               <button
                 key={item.label}
                 className="hover:underline"
-                onClick={() => console.log(`Navigate to ${item.path}`)}
+                onClick={() => navigate(item.path)}
               >
                 {item.label}
               </button>
