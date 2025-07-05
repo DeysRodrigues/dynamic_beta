@@ -1,3 +1,4 @@
+import { CheckCircle, Coffee, Moon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function PomodoroBox() {
@@ -163,10 +164,16 @@ export default function PomodoroBox() {
         {isRunning ? "pause" : "start"}
       </button>
 
-      <div className="mt-4 text-center">
-        <p>✔️ Work concluídos: {workCount}</p>
-        <p>✔️ Short breaks: {shortBreakCount}</p>
-        <p>✔️ Long breaks: {longBreakCount}</p>
+      <div className="mt-4 text-center space-y-1">
+        <p className="flex font-bold items-center justify-center gap-2 text-green-600">
+          <CheckCircle size={18} /> Work concluídos: {workCount}
+        </p>
+        <p className="flex font-bold items-center justify-center gap-2 text-yellow-600">
+          <Coffee size={18} /> Short breaks: {shortBreakCount}
+        </p>
+        <p className="flex font-bold items-center justify-center gap-2 text-purple-600">
+          <Moon size={18} /> Long breaks: {longBreakCount}
+        </p>
       </div>
     </div>
   );
