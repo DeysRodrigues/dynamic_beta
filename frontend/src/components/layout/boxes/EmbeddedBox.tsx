@@ -34,7 +34,7 @@ const EmbeddedBox: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 rounded-3xl p-6 shadow flex flex-col gap-4 overflow-hidden h-full w-full">
+    <div className="box-padrao">
       <h2 className="text-lg font-semibold">Conteúdo Embutido Youtube</h2>
       <p>Adicione o que voce quiser :)</p>
 
