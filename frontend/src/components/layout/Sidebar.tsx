@@ -1,18 +1,15 @@
-import { Bell, Menu, Sparkles, Type } from "lucide-react";
+import { Bell, GitMergeIcon, Heart, Menu, Sparkles, Type } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 
 interface SidebarProps {
   items: { label: string; icon?: React.ReactNode; path: string }[];
 }
 
-
 const Sidebar: React.FC<SidebarProps> = ({ items }) => {
   const [open, setOpen] = useState(false);
   const [inverted, setInverted] = useState(false);
   const [monospace, setMonospace] = useState(false);
-
 
   const navigate = useNavigate();
   // Aplica o filtro de inverter no html
@@ -65,17 +62,14 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
           <div className="self-end pr-4">
             <Bell size={20} className="cursor-pointer" />
           </div>
-
           {/* Avatar */}
           <img
             src="https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
             alt="avatar"
             className="w-24 h-24 rounded-full object-cover no-invert"
           />
-
-          <h2 className="font-bold text-lg">Venushim</h2>
-          <p className="text-sm text-white/80">jujuba eh doce!</p>
-
+          <h2 className="font-bold text-lg">Deys Rodrigues</h2>
+          <p className="text-sm text-white/80">jujuba doce!</p>
           {/* Botão Inverter */}
           <button
             className="mt-4 p-3 bg-white/20 rounded-full hover:bg-white/30 transition"
@@ -83,7 +77,6 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
           >
             <Sparkles size={20} className="text-white" />
           </button>
-
           {/* Botão Monoespaçado */}
           <button
             className="mt-2 p-3 bg-white/20 rounded-full hover:bg-white/30 transition"
@@ -91,6 +84,22 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
           >
             <Type size={20} className="text-white" />
           </button>
+          <a
+            href="https://github.com/DeysRodrigues/dynamic_beta"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 p-3 bg-white/20 rounded-full hover:bg-white/30 transition inline-flex"
+          >
+            <GitMergeIcon size={20} className="text-white" />
+          </a>
+          <a
+            href="https://github.com/DeysRodrigues"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 p-3 bg-white/20 rounded-full hover:bg-white/30 transition inline-flex"
+          >
+            <Heart size={20} className="text-white" />
+          </a>
 
           {/* Menu */}
           <nav className="flex flex-col gap-4 mt-8 text-white font-bold">
