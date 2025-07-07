@@ -31,7 +31,6 @@ export default function TasksPage() {
     "all"
   );
 
-  // Declare o estado para duração da task
   const [newDuration, setNewDuration] = useState<number>(0);
 
   // Função para adicionar task, incluindo a duração:
@@ -112,7 +111,7 @@ export default function TasksPage() {
   }
 
   return (
-    <div className="p-14 space-y-6 pt-28 relative">
+    <div className="space-y-6 pt-28 relative sm:p-14">
       {/* Barra fixa no topo */}
       <div className="bg-gray-100 p-4 rounded-xl shadow flex items-center justify-between z-20">
         <span className="font-bold text-lg">Tarefas</span>
@@ -211,11 +210,12 @@ export default function TasksPage() {
       </div>
 
       {/* Lista de Tasks Agrupadas por Data */}
-      <div className="space-y-6 mt-20">
+      <div className="space-y-6 mt-20 ">
         {Object.entries(groupTasksByDate(tasks)).map(([date, tasksForDate]) => (
+         /*  box tasks*/
           <div
             key={date}
-            className="bg-gray-100 p-4 rounded-xl shadow space-y-4"
+            className="bg-gray-10 p-4 rounded-xl shadow space-y-4"
           >
             <div className="flex items-center justify-between">
               <h2 className="font-bold text-lg">{formatDate(date)}</h2>
@@ -238,46 +238,44 @@ export default function TasksPage() {
               .map((task) => (
                 <div
                   key={task.id}
-                  className="flex items-center gap-2 bg-white p-3 rounded-full flex-wrap"
+                  className="flex flex-col items-center gap-2 bg-slate-100 p-3 rounded-full sm:flex-row sm:bg-white "
                 >
                   <input
                     type="time"
                     value={task.time}
                     readOnly
-                    className="px-2 py-1 rounded-lg"
+                    className="font-bold px-2 py-1 rounded-lg"
                   />
+
+                  {/* description */}
+
                   <input
                     type="text"
                     value={task.description}
                     readOnly
-                    className={`flex-1 rounded-lg px-3 py-1 text-center min-w-[150px] ${
+                    className={`flex-1 rounded-lg px-3 py-1 text-center w-full sm:min-w-[150px]  ${
                       task.completed
                         ? "bg-purple-50 text-purple-300"
                         : "bg-white"
                     }`}
                   />
-                  <input
-                    type="text"
-                    value={task.tag}
-                    readOnly
-                    className={`w-24 rounded-lg px-3 py-1 text-center ${
-                      task.completed
-                        ? "bg-purple-50 text-purple-300"
-                        : "bg-white"
-                    }`}
-                  />
-                  <div
-                    onClick={() => toggleCompleted(task.id)}
-                    className={`w-6 h-6 rounded-full cursor-pointer ${
-                      task.completed ? "bg-purple-500" : "bg-gray-300"
-                    }`}
-                  ></div>
-                  <button
-                    onClick={() => deleteTask(task.id)}
-                    className="text-gray-500 hover:text-red-500"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+
+                  <div className="flex items-center gap-1">
+                 
+                    <div
+                      onClick={() => toggleCompleted(task.id)}
+                      className={`w-6 h-6 rounded-full cursor-pointer ${
+                        task.completed ? "bg-purple-500" : "bg-gray-300"
+                      }`}
+                    ></div>
+                    
+                    <button
+                      onClick={() => deleteTask(task.id)}
+                      className="text-gray-800 hover:text-red-500"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
               ))}
           </div>
