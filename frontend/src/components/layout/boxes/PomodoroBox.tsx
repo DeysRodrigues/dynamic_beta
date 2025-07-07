@@ -133,7 +133,7 @@ export default function PomodoroBox() {
         <button
           onClick={() => handleModeChange("work")}
           className={`px-4 py-1 rounded ${
-            mode === "work" ? "bg-indigo-500 text-white" : "bg-indigo-200"
+            mode === "work" ? "bg-primary text-white" : "bg-indigo-200"
           }`}
         >
           work
@@ -141,7 +141,7 @@ export default function PomodoroBox() {
         <button
           onClick={() => handleModeChange("long")}
           className={`px-4 py-1 rounded ${
-            mode === "long" ? "bg-indigo-500 text-white" : "bg-indigo-200"
+            mode === "long" ? "bg-primary text-white" : "bg-indigo-200"
           }`}
         >
           long break
@@ -149,7 +149,7 @@ export default function PomodoroBox() {
         <button
           onClick={() => handleModeChange("short")}
           className={`px-4 py-1 rounded ${
-            mode === "short" ? "bg-indigo-500 text-white" : "bg-indigo-200"
+            mode === "short" ? "bg-primary text-white" : "bg-indigo-200"
           }`}
         >
           short break
@@ -159,7 +159,7 @@ export default function PomodoroBox() {
       <p className="text-5xl text-center font-bold">{formatTime(time)}</p>
       <button
         onClick={handleStartPause}
-        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-full"
+        className="mt-4 px-6 py-2 bg-primary text-white rounded"
       >
         {isRunning ? "pause" : "start"}
       </button>
