@@ -111,7 +111,7 @@ export default function TasksPage() {
   }
 
   return (
-    <div className="space-y-6 pt-28 relative sm:p-14">
+    <div className="space-y-6 pt-28 px-4 relative sm:p-14">
       {/* Barra fixa no topo */}
       <div className="bg-gray-100 p-4 rounded-xl shadow flex items-center justify-between z-20">
         <span className="font-bold text-lg">Tarefas</span>
@@ -203,16 +203,16 @@ export default function TasksPage() {
 
         <button
           onClick={handleAddTask}
-          className="flex items-center gap-2 bg-indigo-500 text-white px-4 py-2 rounded-xl hover:opacity-90"
+          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded hover:opacity-90"
         >
           <Plus size={16} /> Adicionar
         </button>
       </div>
 
       {/* Lista de Tasks Agrupadas por Data */}
-      <div className="space-y-6 mt-20 ">
+      <div className="space-y-6 mt-20">
         {Object.entries(groupTasksByDate(tasks)).map(([date, tasksForDate]) => (
-         /*  box tasks*/
+       
           <div
             key={date}
             className="bg-gray-10 p-4 rounded-xl shadow space-y-4"
@@ -238,37 +238,40 @@ export default function TasksPage() {
               .map((task) => (
                 <div
                   key={task.id}
-                  className="flex flex-col items-center gap-2 bg-slate-100 p-3 rounded-full sm:flex-row sm:bg-white "
+                  className="flex justify-between items-center gap-2 bg-slate-100 w-full p-3 rounded-full sm:flex-row sm:bg-white "
                 >
-                  <input
-                    type="time"
-                    value={task.time}
-                    readOnly
-                    className="font-bold px-2 py-1 rounded-lg"
-                  />
+                  <div className="flex w-full sm:w-[60%] sm:gap-3">
+                    {/*  time */}
 
-                  {/* description */}
+                    <input
+                      type="time"
+                      value={task.time}
+                      readOnly
+                      className="text-gray-700 font-bold p-1 rounded-lg"
+                    />
 
-                  <input
-                    type="text"
-                    value={task.description}
-                    readOnly
-                    className={`flex-1 rounded-lg px-3 py-1 text-center w-full sm:min-w-[150px]  ${
-                      task.completed
-                        ? "bg-purple-50 text-purple-300"
-                        : "bg-white"
-                    }`}
-                  />
+                    {/* description */}
+
+                    <input
+                      type="text"
+                      value={task.description}
+                      readOnly
+                      className={`text-gray-600 font-medium  flex-1 rounded-lg px-3 py-1 text-center w-full ${
+                        task.completed
+                          ? "bg-emerald-100 "
+                          : "bg-white"
+                      }`}
+                    />
+                  </div>
 
                   <div className="flex items-center gap-1">
-                 
                     <div
                       onClick={() => toggleCompleted(task.id)}
                       className={`w-6 h-6 rounded-full cursor-pointer ${
-                        task.completed ? "bg-purple-500" : "bg-gray-300"
+                        task.completed ? "bg-primary" : "bg-gray-300"
                       }`}
                     ></div>
-                    
+
                     <button
                       onClick={() => deleteTask(task.id)}
                       className="text-gray-800 hover:text-red-500"
