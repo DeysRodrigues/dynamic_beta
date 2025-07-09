@@ -3,13 +3,14 @@ import "react-resizable/css/styles.css";
 import {Trash, Undo2, Lock, Unlock } from "lucide-react";
 import { useEffect, useState } from "react";
 import ProgressBox from "./boxes/ProgressBox";
-import TagsBox from "./boxes/MetaTagsBox";
+import MetaTagsBox from "./boxes/MetaTagsBox";
 import HoursBox from "./boxes/HoursBox";
 import PomodoroBox from "./boxes/PomodoroBox";
 import EmbeddedBox from "./boxes/EmbeddedBox";
 import { WidthProvider, Responsive } from "react-grid-layout";
 import type { Layout } from "react-grid-layout";
 import { useDashboard } from "@/context/DashboardContext";
+import TagsBox from "./boxes/TagsBox";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -163,14 +164,14 @@ export default function Dashboard() {
             <ProgressBox />
           </div>
         )}
-        {boxes.includes("tags") && (
+        {boxes.includes("metatags") && (
           <div
-            key="tags"
+            key="metatags"
             className={`h-full w-full ${
               editMode ? "border-2 border-dashed border-primary" : ""
             }`}
           >
-            <TagsBox />
+            <MetaTagsBox />
           </div>
         )}
         {boxes.includes("hours") && (
@@ -202,6 +203,17 @@ export default function Dashboard() {
             }`}
           >
             <EmbeddedBox />
+          </div>
+        )}
+
+        {boxes.includes("tags") && (
+          <div
+            key="tags"
+            className={`h-full w-full ${
+              editMode ? "border-2 border-dashed border-primary" : ""
+            }`}
+          >
+            <TagsBox />
           </div>
         )}
       </ResponsiveGridLayout>

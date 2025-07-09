@@ -11,27 +11,30 @@ import type { Layouts } from "react-grid-layout";
 const defaultLayouts: Layouts = {
   lg: [
     { i: "progress", x: 0, y: 0, w: 2, h: 2 },
-    { i: "tags", x: 0, y: 0, w: 2, h: 2 },
+    { i: "metatags", x: 0, y: 0, w: 2, h: 2 },
     { i: "hours", x: 0, y: 0, w: 2, h: 2 },
     { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
     { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
     { i: "embedded", x: 3, y: 1, w: 1, h: 4 },
+    { i: "tags", x: 3, y: 1, w: 1, h: 2 },
   ],
   md: [
     { i: "progress", x: 0, y: 0, w: 2, h: 2 },
-    { i: "tags", x: 0, y: 0, w: 2, h: 2 },
+    { i: "metatags", x: 0, y: 0, w: 2, h: 2 },
     { i: "hours", x: 0, y: 0, w: 2, h: 2 },
     { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
     { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
     { i: "embedded", x: 3, y: 1, w: 1, h: 4 },
+    { i: "tags", x: 3, y: 1, w: 1, h: 2 },
   ],
   sm: [
-    { i: "progress", x: 0, y: 0, w: 2, h: 1.4},
-    { i: "tags", x: 0, y: 0, w: 2, h: 2 },
+    { i: "progress", x: 0, y: 0, w: 2, h: 1.4 },
+    { i: "metatags", x: 0, y: 0, w: 2, h: 2 },
     { i: "hours", x: 0, y: 0, w: 2, h: 3 },
     { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
     { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
     { i: "embedded", x: 3, y: 1, w: 1, h: 3.3 },
+    { i: "tags", x: 3, y: 1, w: 1, h: 42 },
   ],
 };
 
@@ -42,6 +45,7 @@ const defaultBoxes = [
   "pomodoro",
   "tasksimport",
   "embedded",
+  "metatags",
 ];
 
 // Tipagem do contexto
