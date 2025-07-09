@@ -1,4 +1,4 @@
-import { Bell, GitMergeIcon, Heart, Menu, Sparkles, Type } from "lucide-react";
+import { Bell, GitMergeIcon, Heart, Menu, RotateCcw, Sparkles, Type } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -115,9 +115,16 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
           </nav>
         </div>
 
-        {/* Logout */}
-        <button className="mb-6 bg-white/20 text-white px-6 py-1 rounded-full hover:bg-white/30">
-          logout
+        {/* Reload */}
+        <button
+          onClick={() => {
+            localStorage.clear();
+            location.reload(); // Opcional: recarrega o app
+          }}
+          className="mb-6 bg-white/20 text-white px-6 py-1 rounded-full hover:bg-white/30 flex items-center gap-2"
+        >
+          <RotateCcw size={16} />
+          Reset all
         </button>
       </aside>
     </>
