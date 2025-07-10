@@ -9,25 +9,27 @@ import GraphicsPage from "./pages/GraphicsPage";
 import { TaskProvider } from "./context/TaskContext";
 import { DashboardProvider } from "./context/DashboardContext";
 import { GoalsProvider } from "./context/GoalsContext";
+import { TagProvider } from "./context/TagContext";
 
 export default function App() {
   return (
-    <GoalsProvider>
-      <TaskProvider>
-        <DashboardProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<DashboardLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/tasks" element={<TasksPage />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/graphics" element={<GraphicsPage />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </DashboardProvider>
-      </TaskProvider>
-    </GoalsProvider>
+    <TagProvider>
+      <GoalsProvider>
+        <TaskProvider>
+          <DashboardProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<DashboardLayout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/tasks" element={<TasksPage />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/graphics" element={<GraphicsPage />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </DashboardProvider>
+        </TaskProvider>
+      </GoalsProvider>
+    </TagProvider>
   );
-
 }
