@@ -1,22 +1,16 @@
 import { useState } from "react";
+import { useTagContext } from "@/context/useTagContext";
 
 export default function TagsBox() {
   const [tagInput, setTagInput] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const { tags, addTag, removeTag } = useTagContext();
 
-  function handleAddTag() {
-    const trimmed = tagInput.trim();
-    if (trimmed && !tags.includes(trimmed)) {
-      setTags([...tags, trimmed]);
+  const handleAddTag = () => {
+    if (tagInput.trim()) {
+      addTag(tagInput.trim());
       setTagInput("");
     }
-  }
-
-  function handleRemoveTag(index: number) {
-    const updated = [...tags];
-    updated.splice(index, 1);
-    setTags(updated);
-  }
+  };
 
   return (
     <div className="box-padrao">
@@ -49,7 +43,7 @@ export default function TagsBox() {
             >
               <span>{tag}</span>
               <button
-                onClick={() => handleRemoveTag(index)}
+                onClick={() => removeTag(index)}
                 className="ml-2 text-red-500 hover:text-red-700"
               >
                 &times;
