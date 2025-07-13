@@ -34,7 +34,7 @@ const defaultLayouts: Layouts = {
     { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
     { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
     { i: "embedded", x: 3, y: 1, w: 1, h: 3.3 },
-    { i: "tags", x: 3, y: 1, w: 1, h: 42 },
+    { i: "tags", x: 3, y: 1, w: 1, h: 3 },
   ],
 };
 
