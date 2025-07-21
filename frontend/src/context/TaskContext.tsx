@@ -8,7 +8,8 @@ interface Task {
   tag: string;
   completed: boolean;
   date: string;
-  duration: number; // Duração em minutos
+  duration: number;// Duração em minutos
+  source?: "manual" | "timed";
 }
 
 // Definição da interface TaskContextType
@@ -21,6 +22,7 @@ interface TaskContextType {
   importTasks: (importedTasks: Task[]) => void;
   completedTimeByTag: Record<string, number>; // Tempo cumprido por tag
   getUniqueTags: () => string[]; // Função para obter tags únicas
+  updateTask: (id: string, data: Partial<Task>) => void;
 }
 
 // Criação do contexto
@@ -136,6 +138,12 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     return Array.from(new Set(tags)).filter((tag) => tag.trim() !== "");
   };
 
+  const updateTask = (id: string, data: Partial<Task>) => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === id ? { ...task, ...data } : task))
+    );
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -147,6 +155,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
         importTasks,
         completedTimeByTag,
         getUniqueTags,
+        updateTask,
       }}
     >
       {children}
