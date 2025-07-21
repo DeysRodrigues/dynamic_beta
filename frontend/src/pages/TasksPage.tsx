@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Plus, Trash2, Filter } from "lucide-react";
 import TasksImportBox from "../components/layout/boxes/TasksImportBox";
 import { useTaskContext } from "../context/TaskContext";
+import TaskItem from "@/components/ui/TaskItem";
+import { useTagContext } from "../context/useTagContext";
 
 interface Task {
   id: string;
@@ -110,6 +112,8 @@ export default function TasksPage() {
     return isNaN(asNumber) ? 0 : asNumber;
   }
 
+  const { tags } = useTagContext();
+
   return (
     <div className="space-y-6 pt-28 px-4 relative sm:p-14">
       {/* Barra fixa no topo */}
@@ -186,13 +190,25 @@ export default function TasksPage() {
           onChange={(e) => setNewDescription(e.target.value)}
           className="flex-1 px-4 py-2 rounded-xl bg-gray-100 min-w-[200px]"
         />
-        <input
-          type="text"
-          placeholder="Tag"
-          value={newTag}
-          onChange={(e) => setNewTag(e.target.value)}
-          className="w-28 px-4 py-2 rounded-xl bg-gray-100"
-        />
+        {tags.length > 0 ? (
+          <select
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+            className="w-28 px-4 py-2 rounded-xl bg-gray-100"
+          >
+            <option value="">Selecionar tag</option>
+            {tags.map((tag, index) => (
+              <option key={index} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <div className="w-28 px-4 py-2 rounded-xl bg-yellow-100 text-yellow-800 text-sm flex items-center justify-center">
+            Adicionar tags?
+          </div>
+        )}
+
         <input
           type="number"
           placeholder="Duração (min)"
@@ -211,8 +227,9 @@ export default function TasksPage() {
 
       {/* Lista de Tasks Agrupadas por Data */}
       <div className="space-y-6 mt-20">
-        {Object.entries(groupTasksByDate(tasks)).map(([date, tasksForDate]) => (
-       
+        {Object.entries(
+          groupTasksByDate(tasks.filter((task) => task.source !== "timed"))
+        ).map(([date, tasksForDate]) => (
           <div
             key={date}
             className="bg-gray-10 p-4 rounded-xl shadow space-y-4"
@@ -226,7 +243,6 @@ export default function TasksPage() {
                 <Trash2 size={18} />
               </button>
             </div>
-
             {tasksForDate
               .filter((task) =>
                 filter === "all"
@@ -236,50 +252,12 @@ export default function TasksPage() {
                   : !task.completed
               )
               .map((task) => (
-                <div
+                <TaskItem
                   key={task.id}
-                  className="flex justify-between items-center gap-2 bg-slate-100 w-full p-3 rounded-full sm:flex-row sm:bg-white "
-                >
-                  <div className="flex w-full sm:w-[60%] sm:gap-3">
-                    {/*  time */}
-
-                    <input
-                      type="time"
-                      value={task.time}
-                      readOnly
-                      className="text-gray-700 font-bold p-1 rounded-lg"
-                    />
-
-                    {/* description */}
-
-                    <input
-                      type="text"
-                      value={task.description}
-                      readOnly
-                      className={`text-gray-600 font-medium  flex-1 rounded-lg px-3 py-1 text-center w-full ${
-                        task.completed
-                          ? "bg-emerald-100 "
-                          : "bg-white"
-                      }`}
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <div
-                      onClick={() => toggleCompleted(task.id)}
-                      className={`w-6 h-6 rounded-full cursor-pointer ${
-                        task.completed ? "bg-primary" : "bg-gray-300"
-                      }`}
-                    ></div>
-
-                    <button
-                      onClick={() => deleteTask(task.id)}
-                      className="text-gray-800 hover:text-red-500"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
+                  task={task}
+                  onToggle={toggleCompleted}
+                  onDelete={deleteTask}
+                />
               ))}
           </div>
         ))}
