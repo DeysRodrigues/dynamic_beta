@@ -68,8 +68,8 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
             alt="avatar"
             className="w-24 h-24 rounded-full object-cover no-invert"
           />
-          <h2 className="font-bold text-lg">Deys Rodrigues</h2>
-          <p className="text-sm text-white/80">jujuba doce!</p>
+          <h2 className="font-bold text-lg">Dynamic notes</h2>
+          <p className="text-sm text-white/80">cats e tasks</p>
           {/* Botão Inverter */}
           <button
             className="mt-4 p-3 bg-white/20 rounded-full hover:bg-white/30 transition"
