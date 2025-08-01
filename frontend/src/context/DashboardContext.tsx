@@ -10,22 +10,26 @@ import type { Layouts } from "react-grid-layout";
 // Layouts padrão
 const defaultLayouts: Layouts = {
   lg: [
-    { i: "progress", x: 0, y: 0, w: 2, h: 2 },
-    { i: "metatags", x: 0, y: 0, w: 2, h: 2 },
-    { i: "hours", x: 0, y: 0, w: 2, h: 2 },
-    { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
-    { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
-    { i: "embedded", x: 3, y: 1, w: 1, h: 4 },
-    { i: "tags", x: 3, y: 1, w: 1, h: 2 },
+    { i: "progress", x: 0, y: 0, w: 1, h: 2 }, // Progresso nas tarefas
+    { i: "metatags", x: 1, y: 0, w: 1, h: 3 }, // Definir metas por tags
+    { i: "hours", x: 1, y: 2, w: 1, h: 2 }, // Meta de horas de produtividade
+    { i: "pomodoro", x: 2, y: 0, w: 1, h: 4 }, // Pomodoro
+    { i: "tasks", x: 3, y: 0, w: 1, h: 6 }, // Lista de tarefas com horários
+    { i: "embedded", x: 0, y: 2, w: 1, h: 4 }, // Conteúdo Youtube
+    { i: "tags", x: 2, y: 5, w: 1, h: 2 }, // Tags usadas nas notas
+    { i: "tasksimport", x: 2, y: 4, w: 1, h: 2 }, // add tag
   ],
+
   md: [
     { i: "progress", x: 0, y: 0, w: 2, h: 2 },
     { i: "metatags", x: 0, y: 0, w: 2, h: 2 },
+    { i: "tasks", x: 0, y: 0, w: 2, h: 2 },
     { i: "hours", x: 0, y: 0, w: 2, h: 2 },
-    { i: "pomodoro", x: 2, y: 2, w: 1, h: 4 },
-    { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
-    { i: "embedded", x: 3, y: 1, w: 1, h: 4 },
-    { i: "tags", x: 3, y: 1, w: 1, h: 2 },
+    { i: "pomodoro", x: 0, y: 0, w: 2, h: 4 },
+    { i: "tasksimport", x: 0, y: 0, w: 2, h: 2 },
+    { i: "embedded", x: 0, y: 0, w: 2, h: 4 },
+    { i: "tags", x: 0, y: 0, w: 2, h: 2 },
+    { i: "tasks", x: 0, y: 0, w: 2, h: 2 },
   ],
   sm: [
     { i: "progress", x: 0, y: 0, w: 2, h: 1.4 },
@@ -35,6 +39,7 @@ const defaultLayouts: Layouts = {
     { i: "tasksimport", x: 2, y: 3, w: 1, h: 2 },
     { i: "embedded", x: 3, y: 1, w: 1, h: 3.3 },
     { i: "tags", x: 3, y: 1, w: 1, h: 3 },
+    { i: "tasks", x: 3, y: 1, w: 1, h: 2 },
   ],
 };
 
@@ -46,6 +51,7 @@ const defaultBoxes = [
   "tasksimport",
   "embedded",
   "metatags",
+  "tasks",
 ];
 
 // Tipagem do contexto
