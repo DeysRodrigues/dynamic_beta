@@ -6,9 +6,9 @@ interface Task {
   time: string; // Formato HH:mm
   description: string;
   tag: string;
-  completed: boolean;
+  completed: boolean | undefined;
   date: string;
-  duration: number;// Duração em minutos
+  duration: number; // Duração em minutos
   source?: "manual" | "timed";
 }
 
@@ -82,12 +82,15 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     setTasks((prev) => [...prev, newTask]);
   };
 
-  // Alterna o estado de conclusão de uma tarefa
   const toggleCompleted = (id: string) => {
     setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+      prev.map((task) => {
+        if (task.id !== id) return task;
+
+        if (task.completed === undefined) return { ...task, completed: true };
+        if (task.completed === true) return { ...task, completed: false };
+        return { ...task, completed: undefined };
+      })
     );
   };
 
