@@ -2,9 +2,9 @@ import { CheckCircle, Coffee, Moon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function PomodoroBox() {
-  const WORK_TIME = 24 * 60;
-  const SHORT_BREAK = 5;
-  const LONG_BREAK = 15;
+  const WORK_TIME = 25 * 60;
+  const SHORT_BREAK = 5 * 60;
+  const LONG_BREAK = 15 * 60;
 
   const [time, setTime] = useState<number>(WORK_TIME);
   const [mode, setMode] = useState<"work" | "short" | "long">("work");
@@ -30,18 +30,58 @@ export default function PomodoroBox() {
     Notification.requestPermission();
   }, []);
 
+  useEffect(() => {
+  const saved = localStorage.getItem("pomodoro");
+  if (!saved) return;
+
+  const { startTime, duration, mode: savedMode, isRunning } = JSON.parse(saved);
+  setMode(savedMode);
+  
+  if (isRunning && startTime) {
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    const remaining = duration - elapsed;
+
+    if (remaining > 0) {
+      setTime(remaining);
+      timeLeftRef.current = remaining;
+      setIsRunning(true);
+      startTimer();
+    } else {
+      // tempo já acabou
+      setTime(0);
+      timeLeftRef.current = 0;
+      setIsRunning(false);
+      handleEnd();
+    }
+  } else {
+    setTime(duration);
+    timeLeftRef.current = duration;
+    setIsRunning(false);
+  }
+}, []);
+
+
   const startTimer = () => {
     if (timerRef.current) return;
+
+    const startTimestamp = Date.now();
+    localStorage.setItem(
+      "pomodoro",
+      JSON.stringify({
+        startTime: startTimestamp,
+        duration: timeLeftRef.current,
+        mode,
+        isRunning: true,
+      })
+    );
 
     timerRef.current = setInterval(() => {
       timeLeftRef.current -= 1;
       setTime(timeLeftRef.current);
 
       if (timeLeftRef.current <= 0) {
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-        }
+        stopTimer();
         setIsRunning(false);
         handleEnd();
       }
@@ -53,6 +93,16 @@ export default function PomodoroBox() {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+
+    localStorage.setItem(
+      "pomodoro",
+      JSON.stringify({
+        startTime: null,
+        duration: timeLeftRef.current,
+        mode,
+        isRunning: false,
+      })
+    );
   };
 
   const handleModeChange = (selectedMode: "work" | "short" | "long") => {
