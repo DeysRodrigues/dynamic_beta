@@ -1,6 +1,6 @@
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import {Trash, Undo2, Lock, Unlock } from "lucide-react";
+import { Trash, Undo2, Lock, Unlock } from "lucide-react";
 import { useEffect, useState } from "react";
 import ProgressBox from "./boxes/ProgressBox";
 import MetaTagsBox from "./boxes/MetaTagsBox";
@@ -11,6 +11,7 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 import type { Layout } from "react-grid-layout";
 import { useDashboard } from "@/context/DashboardContext";
 import TagsBox from "./boxes/TagsBox";
+import BoxTask from "./boxes/BoxTask";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -133,7 +134,6 @@ export default function Dashboard() {
             >
               <Undo2 size={18} />
             </button>
-
           </div>
         </div>
       </div>
@@ -194,7 +194,7 @@ export default function Dashboard() {
             <PomodoroBox />
           </div>
         )}
- 
+
         {boxes.includes("embedded") && (
           <div
             key="embedded"
@@ -214,6 +214,17 @@ export default function Dashboard() {
             }`}
           >
             <TagsBox />
+          </div>
+        )}
+   
+        {boxes.includes("tasks") && (
+          <div
+            key="tasks"
+            className={`h-full w-full ${
+              editMode ? "border-2 border-dashed border-primary" : ""
+            }`}
+          >
+            <BoxTask />
           </div>
         )}
       </ResponsiveGridLayout>
