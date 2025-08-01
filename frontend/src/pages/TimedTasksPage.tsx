@@ -58,17 +58,18 @@ export default function TimedTasksPage() {
   
   useEffect(() => {
     const timedTasks = tasks.filter((task) => task.source === "timed");
-    setBlocks(timedTasks);
+    setBlocks(timedTasks as TimedTask[]);
+
   }, [tasks]);
 
-  const handleGenerate = () => {
+  function handleGenerate() {
     if (!startTime || !endTime || duration <= 0) {
       alert("Preencha todos os campos corretamente.");
       return;
     }
     const result = generateTimeBlocks(startTime, endTime, duration);
     setBlocks(result);
-  };
+  }
 
   const handleSaveAll = () => {
     blocks.forEach((task) => {
