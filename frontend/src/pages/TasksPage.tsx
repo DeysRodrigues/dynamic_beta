@@ -10,7 +10,8 @@ interface Task {
   time: string;
   description: string;
   tag: string;
-  completed: boolean;
+  completed: boolean | undefined;
+
   date: string;
   duration: number;
 }
@@ -228,7 +229,15 @@ export default function TasksPage() {
       {/* Lista de Tasks Agrupadas por Data */}
       <div className="space-y-6 mt-20">
         {Object.entries(
-          groupTasksByDate(tasks.filter((task) => task.source !== "timed"))
+          groupTasksByDate(
+            tasks.filter((task) =>
+              filter === "all"
+                ? true
+                : filter === "completed"
+                ? task.completed === true
+                : task.completed === false
+            )
+          )
         ).map(([date, tasksForDate]) => (
           <div
             key={date}
