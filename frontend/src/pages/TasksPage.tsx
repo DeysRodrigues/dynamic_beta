@@ -4,17 +4,12 @@ import TasksImportBox from "../components/layout/boxes/TasksImportBox";
 import { useTaskContext } from "../context/TaskContext";
 import TaskItem from "@/components/ui/TaskItem";
 import { useTagContext } from "../context/useTagContext";
-
-interface Task {
-  id: string;
-  time: string;
-  description: string;
-  tag: string;
-  completed: boolean | undefined;
-
-  date: string;
-  duration: number;
-}
+import {
+  groupTasksByDate,
+  parseDuration,
+} from "@/utils/TaskUtils";
+import {formatDate} from "@/utils/DateUtils"
+import { createTask } from "@/utils/TaskFactory";
 
 export default function TasksPage() {
   const {
@@ -40,51 +35,25 @@ export default function TasksPage() {
   const handleAddTask = () => {
     if (!newTime || !newDescription) return;
 
-    const newTask: Task = {
-      id: Date.now().toString(),
-      time: newTime,
-      description: newDescription,
-      tag: newTag,
-      completed: false,
-      date: new Date().toISOString().split("T")[0],
-      duration: newDuration,
-    };
     if (!newTime || !newDescription || newDuration <= 0) {
       alert(
         "Preencha todos os campos corretamente, incluindo duração maior que zero."
       );
       return;
     }
+     const newTask = createTask(newDescription, newTime, newTag, newDuration);
     addTask(newTask);
+
+
     setNewTime("");
     setNewDescription("");
     setNewTag("");
   };
 
-  const groupTasksByDate = (tasks: Task[]) => {
-    const grouped: { [key: string]: Task[] } = {};
-    tasks.forEach((task) => {
-      if (!grouped[task.date]) {
-        grouped[task.date] = [];
-      }
-      grouped[task.date].push(task);
-    });
-    return grouped;
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pt-BR", {
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-    });
-  };
 
   const deleteTasksByDate = (date: string) => {
     const confirmed = window.confirm(
-      `Tem certeza que deseja excluir todas as tarefas do dia ${formatDate(
-        date
-      )}?`
+      `Tem certeza que deseja excluir todas as tarefas do dia ?`
     );
     if (!confirmed) return;
 
@@ -95,23 +64,6 @@ export default function TasksPage() {
     tasksOfOtherDates.forEach(addTask); // Reinsere as tasks válidas
   };
 
-  function parseDuration(duration?: string | number): number {
-    if (!duration) return 0;
-
-    if (typeof duration === "number") return duration;
-
-    // Se for string no formato "HH:mm"
-    const parts = duration.split(":");
-    if (parts.length === 2) {
-      const hours = Number(parts[0]) || 0;
-      const minutes = Number(parts[1]) || 0;
-      return hours * 60 + minutes;
-    }
-
-    // Se for só número em string
-    const asNumber = Number(duration);
-    return isNaN(asNumber) ? 0 : asNumber;
-  }
 
   const { tags } = useTagContext();
 
