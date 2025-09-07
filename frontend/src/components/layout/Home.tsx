@@ -12,6 +12,7 @@ import type { Layout } from "react-grid-layout";
 import { useDashboard } from "@/context/DashboardContext";
 import TagsBox from "./boxes/TagsBox";
 import BoxTask from "./boxes/BoxTask";
+import {getFormattedCurrentDate} from "@/utils/DateUtils"
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -99,17 +100,13 @@ export default function Dashboard() {
     setDraggingId(null);
   };
 
-  const currentDate = new Date().toLocaleDateString("pt-BR", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-  });
+  const currentDate = getFormattedCurrentDate();
 
   return (
     <div className="relative min-h-screen w-full">
       {/* Barra Superior */}
       <div className="flex flex-col md:flex-row md:items-center justify-between bg-gray-100 p-4 rounded-xl shadow mb-6 gap-4">
-        <span className="font-bold text-lg">Seg, {currentDate}</span>
+        <span className="font-bold text-lg">{currentDate}</span>
 
         <div className="flex items-center gap-4">
           <span className="bg-white px-6 py-2 rounded-full font-semibold">
