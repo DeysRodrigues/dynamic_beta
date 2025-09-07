@@ -28,7 +28,7 @@ export default function TagsBox() {
         />
         <button
           onClick={handleAddTag}
-          className="px-4 py-1 bg-primary text-white rounded"
+          className="px-4 py-1 bg-purple-600 text-white rounded"
         >
           Adicionar tag
         </button>
