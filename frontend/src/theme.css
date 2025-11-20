@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 
-@custom-variant dark (&:is(.dark *));
-
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -93,52 +91,4 @@
 
   --sidebar-border: oklch(0.922 0 0); /* Cor das bordas internas da sidebar */
   --sidebar-ring: oklch(0.708 0 0); /* Cor de foco/outline dentro da sidebar */
-}
-
-.dark {
-
-  --background: oklch(0.145 0 0); /* Cor de fundo geral da aplicação (body, containers principais) */
-  --foreground: oklch(0.985 0 0); /* Cor do texto padrão sobre o background */
-
-  --card: oklch(0.205 0 0); /* Cor de fundo dos cards, painéis e containers internos */
-  --card-foreground: oklch(0.985 0 0); /* Cor do texto ou conteúdo dentro dos cards */
-
-  --popover: oklch(0.205 0 0); /* Fundo de popovers, tooltips, menus flutuantes */
-  --popover-foreground: oklch(0.985 0 0); /* Cor do texto ou ícones dentro dos popovers */
-
-  --primary: oklch(0.922 0 0); /* Cor principal para botões, links ou elementos de destaque */
-  --primary-foreground: oklch(0.205 0 0); /* Cor do texto ou ícone quando o fundo é 'primary' */
-
-  --secondary: oklch(0.269 0 0); /* Cor secundária para botões ou elementos menos destacados */
-  --secondary-foreground: oklch(0.985 0 0); /* Texto ou ícone sobre fundo secundário */
-
-  --muted: oklch(0.269 0 0); /* Fundo para elementos neutros ou desabilitados (inputs desativados, etc) */
-  --muted-foreground: oklch(0.708 0 0); /* Cor do texto sobre fundo muted */
-
-  --accent: oklch(0.269 0 0); /* Cor de destaque leve, usado para hover ou elementos interativos suaves */
-  --accent-foreground: oklch(0.985 0 0); /* Cor do texto/ícone sobre fundo accent */
-
-  --destructive: oklch(0.704 0.191 22.216); /* Cor para botões ou avisos destrutivos (excluir, alertas) */
-
-  --border: oklch(1 0 0 / 10%); /* Cor padrão das bordas em inputs, containers, etc */
-  --input: oklch(1 0 0 / 15%); /* Cor do fundo dos inputs e campos de formulário */
-  --ring: oklch(0.556 0 0); /* Cor do outline ou foco ao redor de inputs/botões */
-
-  /* Cores para gráficos ou elementos visuais específicos */
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-
-  /* Cores específicas para Sidebar */
-  --sidebar: oklch(0.205 0 0); /* Fundo da sidebar */
-  --sidebar-foreground: oklch(0.985 0 0); /* Texto ou ícones dentro da sidebar */
-  --sidebar-primary: oklch(0.488 0.243 264.376); /* Cor de destaque ou item ativo na sidebar */
-  --sidebar-primary-foreground: oklch(0.985 0 0); /* Cor do texto sobre o item ativo da sidebar */
-  --sidebar-accent: oklch(0.269 0 0); /* Cor de hover ou destaque leve na sidebar */
-  --sidebar-accent-foreground: oklch(0.985 0 0); /* Texto sobre fundo accent da sidebar */
-  --sidebar-border: oklch(1 0 0 / 10%); /* Cor das bordas internas da sidebar */
-  --sidebar-ring: oklch(0.556 0 0); /* Cor de foco/outline dentro da sidebar */
-
 }
