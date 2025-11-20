@@ -4,13 +4,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import Home from "./pages/HomePage";
 import TasksPage from "./pages/TasksPage";
-import Settings from "./pages/SettingsPage";
 import GraphicsPage from "./pages/GraphicsPage";
 import { TaskProvider } from "./context/TaskContext";
 import { DashboardProvider } from "./context/DashboardContext";
 import { GoalsProvider } from "./context/GoalsContext";
 import { TagProvider } from "./context/TagContext";
-import TimedTasksPage from "./pages/TimedTasksPage";
+
 
 export default function App() {
   return (
@@ -23,8 +22,8 @@ export default function App() {
                 <Route element={<DashboardLayout />}>
                   <Route path="/" element={<Home />} />
                   <Route path="/tasks" element={<TasksPage />} />
-                  <Route path="/timedtasks" element={<TimedTasksPage/>} />
-                  <Route path="/settings" element={<Settings />} />
+                  {/* <Route path="/timedtasks" element={<TimedTasksPage/>} />
+                  <Route path="/settings" element={<Settings />} /> */}
                   <Route path="/graphics" element={<GraphicsPage />} />
                 </Route>
               </Routes>
