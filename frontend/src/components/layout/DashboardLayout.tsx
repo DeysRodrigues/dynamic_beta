@@ -8,8 +8,8 @@ export default function DashboardLayout() {
         items={[
           { label: "Home", path: "/" },
           { label: "Tasks", path: "/tasks" },
-          { label: "Graphics", path: "/graphics" },
-      
+          { label: "Planner", path: "/planner" },
+        
         ]}
       />
       <main className="flex-1 overflow-y-auto bg-gray-50 sm:p-5">
