@@ -1,104 +1,87 @@
-"use client";
+import { useState } from "react";
+import { useGoalStore } from "@/store/useGoalStore";
+import { useTaskStore } from "@/store/useTaskStore";
+import { Trash2 } from "lucide-react";
 
-import { useGoalsContext } from "@/context/GoalsContext";
-import { useTaskContext } from "@/context/TaskContext";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-
-export default function TagsBox() {
-  const { goals, addGoal, removeGoal } = useGoalsContext();
-  const { completedTimeByTag, getUniqueTags } = useTaskContext();
+export default function MetaTagsBox() {
+  const { goals, addGoal, removeGoal } = useGoalStore();
+  const { getUniqueTags, getCompletedTimeByTag } = useTaskStore();
 
   const [selectedTag, setSelectedTag] = useState<string>("");
-  const [hours, setHours] = useState<number | "">("");
+  const [hours, setHours] = useState<string>("");
 
-  // Obtém as tags únicas das tarefas
   const uniqueTags = getUniqueTags();
-
-  // Monitore as mudanças no completedTimeByTag
-  useEffect(() => {
-    console.log("completedTimeByTag atualizado:", completedTimeByTag);
-  }, [completedTimeByTag]);
+  const completedTimeByTag = getCompletedTimeByTag();
 
   const handleAddGoal = () => {
-    if (!selectedTag || !hours) {
-      alert("Por favor, selecione uma tag válida e insira um número de horas.");
+    if (!selectedTag || !hours || Number(hours) <= 0) {
+      alert("Selecione uma tag e um número de horas válido.");
       return;
     }
-
     addGoal({ tag: selectedTag.toLowerCase(), hours: Number(hours) });
     setSelectedTag("");
     setHours("");
   };
 
-  const getCompletedMinutes = (goalTag: string) => completedTimeByTag[goalTag.toLowerCase()] || 0;
-
   return (
     <div className="box-padrao">
-      <h2 className="text-lg font-semibold mb-4">Definir metas por tags</h2>
+      <h2 className="text-lg font-semibold mb-3 text-gray-800">Metas por Categoria</h2>
 
-      {/* Formulário para adicionar novas metas */}
-      <div className="flex gap-2 flex-wrap items-center">
+      <div className="flex gap-2 mb-4">
         <select
           value={selectedTag}
           onChange={(e) => setSelectedTag(e.target.value)}
-          className="px-2 py-1 rounded bg-white flex-1 min-w-[100px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 px-2 py-1.5 rounded-lg bg-white border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-indigo-100"
         >
-          <option value="">Selecione uma tag</option>
-          {uniqueTags.map((tag, index) => (
-            <option key={index} value={tag}>
-              {tag}
-            </option>
+          <option value="">Tag...</option>
+          {uniqueTags.map((tag) => (
+            <option key={tag} value={tag}>{tag}</option>
           ))}
         </select>
+        
         <input
           type="number"
-          placeholder="horas +"
+          placeholder="h"
           value={hours}
-          onChange={(e) => setHours(e.target.value === "" ? "" : Number(e.target.value))}
-          className="px-2 py-1 rounded bg-white w-20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          onChange={(e) => setHours(e.target.value)}
+          className="w-16 px-2 py-1.5 rounded-lg bg-white border border-gray-200 text-sm text-center outline-none focus:ring-2 focus:ring-indigo-100"
         />
+        
         <button
           onClick={handleAddGoal}
-          className="px-4 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded hover:opacity-90 transition-opacity"
+          className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
-          Criar meta
+          Add
         </button>
       </div>
 
-      {/* Lista de metas */}
-      <div className="mt-4 space-y-3">
+      <div className="space-y-3 overflow-y-auto max-h-[250px] pr-1">
         {goals.length === 0 ? (
-          <p className="text-gray-600 text-sm">Nenhuma meta definida.</p>
+          <p className="text-gray-500 text-sm italic text-center">Sem metas definidas.</p>
         ) : (
           goals.map((goal, index) => {
-            const completedMinutes = getCompletedMinutes(goal.tag);
-            const completedHours = +(completedMinutes / 60).toFixed(1);
-            const percentage = goal.hours > 0 ? Math.min((completedHours / goal.hours) * 100, 100) : 0;
+            const completedMinutes = completedTimeByTag[goal.tag.toLowerCase()] || 0;
+            const completedHours = Number((completedMinutes / 60).toFixed(1));
+            const percentage = Math.min((completedHours / goal.hours) * 100, 100);
 
             return (
-              <div key={index} className="bg-white px-4 py-3 rounded shadow space-y-1">
-                <div className="flex justify-between items-center">
-                  <span className="capitalize font-medium">{goal.tag}</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeGoal(index)}
-                  >
-                    Remover
-                  </Button>
+              <div key={index} className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="capitalize font-semibold text-gray-700">{goal.tag}</span>
+                  <button onClick={() => removeGoal(index)} className="text-gray-400 hover:text-red-500">
+                    <Trash2 size={14} />
+                  </button>
                 </div>
-                <div className="text-sm text-gray-600">
-                  {completedHours}h de {goal.hours}h cumpridas
+                
+                <div className="text-xs text-gray-500 mb-1 flex justify-between">
+                  <span>{completedHours}h feitas</span>
+                  <span>Meta: {goal.hours}h</span>
                 </div>
-                <div className="w-full h-2 bg-gray-200 rounded overflow-hidden">
+
+                <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-green-400 to-green-600"
+                    className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500"
                     style={{ width: `${percentage}%` }}
-                    role="progressbar"
-                    aria-valuenow={percentage}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
                   />
                 </div>
               </div>

@@ -1,229 +1,211 @@
-import { CheckCircle, Coffee, Moon } from "lucide-react";
+import { CheckCircle, Coffee, Moon, Play, Pause, RotateCcw } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { STORAGE_KEYS } from "@/constants/storageKeys";
 
 export default function PomodoroBox() {
-  const WORK_TIME = 25 * 60;
-  const SHORT_BREAK = 5 * 60;
-  const LONG_BREAK = 15 * 60;
+  const TIMES = { work: 25 * 60, short: 1 * 5, long: 15 * 60 };
 
-  const [time, setTime] = useState<number>(WORK_TIME);
+  const [time, setTime] = useState(TIMES.work);
   const [mode, setMode] = useState<"work" | "short" | "long">("work");
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-
-  const [workCount, setWorkCount] = useState<number>(0);
-  const [shortBreakCount, setShortBreakCount] = useState<number>(0);
-  const [longBreakCount, setLongBreakCount] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState(false);
+  
+  // Melhoria: Persistindo os contadores de sessões
+  const [counts, setCounts] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("pomodoro-counts");
+      return saved ? JSON.parse(saved) : { work: 0, short: 0, long: 0 };
+    }
+    return { work: 0, short: 0, long: 0 };
+  });
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const modeRef = useRef<"work" | "short" | "long">(mode);
-  const timeLeftRef = useRef<number>(time);
+  const timeLeftRef = useRef(time);
+  const modeRef = useRef(mode); // Ref para acessar o modo atual dentro do intervalo sem bugs
 
-  useEffect(() => {
-    modeRef.current = mode;
-  }, [mode]);
+  // Sincroniza refs com o estado
+  useEffect(() => { timeLeftRef.current = time; }, [time]);
+  useEffect(() => { modeRef.current = mode; }, [mode]);
 
+  // Atualiza Título da Aba e Salva Contadores
   useEffect(() => {
-    timeLeftRef.current = time;
-  }, [time]);
+    document.title = `${formatTime(time)} - ${mode === "work" ? "Foco" : "Pausa"}`;
+    localStorage.setItem("pomodoro-counts", JSON.stringify(counts));
+  }, [time, mode, counts]);
 
+  // Carregar estado salvo do Timer ao iniciar
   useEffect(() => {
-    Notification.requestPermission();
+    const saved = localStorage.getItem(STORAGE_KEYS.POMODORO);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        
+        // Atualiza ref e estado imediatamente para evitar inconsistência
+        modeRef.current = parsed.mode; 
+        setMode(parsed.mode);
+        
+        if (parsed.isRunning && parsed.startTime) {
+          const elapsed = Math.floor((Date.now() - parsed.startTime) / 1000);
+          const remaining = parsed.duration - elapsed;
+          
+          if (remaining > 0) {
+            setTime(remaining);
+            setIsRunning(true);
+            startTimer(); // Inicia o timer recuperado
+          } else {
+            setTime(0);
+            setIsRunning(false);
+            handleComplete(parsed.mode);
+          }
+        } else {
+          setTime(parsed.duration);
+        }
+      } catch (e) {
+        console.error("Erro ao carregar Pomodoro", e);
+      }
+    }
   }, []);
 
-  useEffect(() => {
-  const saved = localStorage.getItem("pomodoro");
-  if (!saved) return;
-
-  const { startTime, duration, mode: savedMode, isRunning } = JSON.parse(saved);
-  setMode(savedMode);
-  
-  if (isRunning && startTime) {
-    const now = Date.now();
-    const elapsed = Math.floor((now - startTime) / 1000);
-    const remaining = duration - elapsed;
-
-    if (remaining > 0) {
-      setTime(remaining);
-      timeLeftRef.current = remaining;
-      setIsRunning(true);
-      startTimer();
-    } else {
-      // tempo já acabou
-      setTime(0);
-      timeLeftRef.current = 0;
-      setIsRunning(false);
-      handleEnd();
-    }
-  } else {
-    setTime(duration);
-    timeLeftRef.current = duration;
-    setIsRunning(false);
-  }
-}, []);
-
+  const persistState = (running: boolean) => {
+    localStorage.setItem(STORAGE_KEYS.POMODORO, JSON.stringify({
+      mode: modeRef.current, // Usa ref para garantir o valor mais atual
+      duration: timeLeftRef.current,
+      isRunning: running,
+      startTime: running ? Date.now() : null,
+    }));
+  };
 
   const startTimer = () => {
     if (timerRef.current) return;
-
-    const startTimestamp = Date.now();
-    localStorage.setItem(
-      "pomodoro",
-      JSON.stringify({
-        startTime: startTimestamp,
-        duration: timeLeftRef.current,
-        mode,
-        isRunning: true,
-      })
-    );
-
+    
+    persistState(true);
+    setIsRunning(true);
+    
     timerRef.current = setInterval(() => {
       timeLeftRef.current -= 1;
       setTime(timeLeftRef.current);
 
       if (timeLeftRef.current <= 0) {
         stopTimer();
-        setIsRunning(false);
-        handleEnd();
+        handleComplete(modeRef.current);
       }
     }, 1000);
   };
 
   const stopTimer = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-
-    localStorage.setItem(
-      "pomodoro",
-      JSON.stringify({
-        startTime: null,
-        duration: timeLeftRef.current,
-        mode,
-        isRunning: false,
-      })
-    );
-  };
-
-  const handleModeChange = (selectedMode: "work" | "short" | "long") => {
-    stopTimer();
+    // Essa função age como PAUSE
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = null;
     setIsRunning(false);
-    setMode(selectedMode);
-
-    if (selectedMode === "work") {
-      setTime(WORK_TIME);
-      timeLeftRef.current = WORK_TIME;
-    }
-    if (selectedMode === "short") {
-      setTime(SHORT_BREAK);
-      timeLeftRef.current = SHORT_BREAK;
-    }
-    if (selectedMode === "long") {
-      setTime(LONG_BREAK);
-      timeLeftRef.current = LONG_BREAK;
-    }
+    persistState(false);
   };
 
-  const handleStartPause = () => {
-    if (isRunning) {
-      stopTimer();
-    } else {
-      startTimer();
-    }
-    setIsRunning(!isRunning);
+  const resetTimer = () => {
+    stopTimer();
+    setTime(TIMES[mode]);
+    // Pequeno delay para garantir que o estado persistido atualize
+    setTimeout(() => persistState(false), 0);
   };
 
-  const handleEnd = () => {
-    let message = "";
-
-    if (modeRef.current === "work") {
-      message = "Tempo de trabalho finalizado! Hora da pausa.";
-      setWorkCount((prev) => prev + 1);
-    }
-    if (modeRef.current === "short") {
-      message = "Pausa curta finalizada! Volte ao trabalho.";
-      setShortBreakCount((prev) => prev + 1);
-    }
-    if (modeRef.current === "long") {
-      message = "Pausa longa finalizada! Volte ao trabalho.";
-      setLongBreakCount((prev) => prev + 1);
-    }
-
-    sendNotification("Pomodoro", message);
-
-    setTimeout(() => {
-      alert(message);
-    }, 200);
-  };
-
-  const sendNotification = (title: string, body: string) => {
+  const handleComplete = (completedMode: "work" | "short" | "long") => {
+    const labels = { work: "Foco", short: "Pausa Curta", long: "Pausa Longa" };
+    
+    // Toca som se permitido
+    const audio = new Audio("/notify.mp3"); 
+    audio.play().catch(() => {}); // Ignora erro se não tiver interação do usuário
+    
     if (Notification.permission === "granted") {
-      new Notification(title, { body });
-
-      const audio = new Audio("/notify.mp3");
-      audio.volume = 0.2;
-      audio.playbackRate = 0.8;
-      audio.play().catch((err) => {
-        console.log("O áudio não pôde ser reproduzido automaticamente:", err);
-      });
+      new Notification("Pomodoro", { body: `${labels[completedMode]} finalizado!` });
+    } else {
+      alert(`${labels[completedMode]} finalizado!`);
     }
+    
+    setCounts((prev: { [x: string]: number; }) => ({ ...prev, [completedMode]: prev[completedMode] + 1 }));
+    
+    // Lógica opcional: Alternar modo automaticamente
+    if (completedMode === "work") changeMode("short");
+    else changeMode("work");
+  };
+
+  const changeMode = (newMode: "work" | "short" | "long") => {
+    stopTimer();
+    setMode(newMode);
+    setTime(TIMES[newMode]);
   };
 
   const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
     return `${m}:${s}`;
   };
 
   return (
-    <div className="box-padrao flex flex-col items-center">
-      <div className="flex gap-2 flex-wrap mb-4">
+    <div className="box-padrao flex flex-col items-center justify-between h-full">
+      {/* Seletor de Modos */}
+      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-2 w-full justify-center">
+        {(["work", "short", "long"] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => changeMode(m)}
+            className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+              mode === m 
+                ? "bg-white shadow-sm text-indigo-600 ring-1 ring-black/5" 
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+            }`}
+          >
+            {m === "work" ? "Foco" : m === "short" ? "Curta" : "Longa"}
+          </button>
+        ))}
+      </div>
+
+      {/* Timer Grande */}
+      <div className="text-center my-4 relative">
+        <span className="text-6xl font-bold text-gray-800 tracking-tight font-mono tabular-nums">
+          {formatTime(time)}
+        </span>
+        <p className="text-xs text-gray-400 font-medium mt-1 uppercase tracking-widest">
+          {isRunning ? "Rodando" : "Pausado"}
+        </p>
+      </div>
+
+      {/* Botões de Controle */}
+      <div className="flex gap-3 mb-6 w-full px-4">
         <button
-          onClick={() => handleModeChange("work")}
-          className={`px-4 py-1 rounded ${
-            mode === "work" ? "bg-primary text-white" : "bg-indigo-200"
+          onClick={() => isRunning ? stopTimer() : startTimer()}
+          className={`flex-1 py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 ${
+            isRunning 
+              ? "bg-amber-500 hover:bg-amber-600 shadow-amber-200" 
+              : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200"
           }`}
         >
-          work
+          {isRunning ? (
+            <><Pause size={20} fill="currentColor" /> PAUSAR</>
+          ) : (
+            <><Play size={20} fill="currentColor" /> INICIAR</>
+          )}
         </button>
-        <button
-          onClick={() => handleModeChange("long")}
-          className={`px-4 py-1 rounded ${
-            mode === "long" ? "bg-primary text-white" : "bg-indigo-200"
-          }`}
+        
+        <button 
+          onClick={resetTimer} 
+          className="p-3 text-gray-500 bg-white border border-gray-200 hover:bg-gray-50 hover:text-red-500 rounded-xl transition-all shadow-sm active:scale-95"
+          title="Reiniciar Timer"
         >
-          long break
-        </button>
-        <button
-          onClick={() => handleModeChange("short")}
-          className={`px-4 py-1 rounded ${
-            mode === "short" ? "bg-primary text-white" : "bg-indigo-200"
-          }`}
-        >
-          short break
+          <RotateCcw size={20} />
         </button>
       </div>
-      <h2 className="text-center font-semibold text-gray-700">Pomodoro</h2>
-      <p className="text-5xl text-center font-bold">{formatTime(time)}</p>
-      <button
-        onClick={handleStartPause}
-        className="mt-4 px-6 py-2 bg-primary text-white rounded"
-      >
-        {isRunning ? "pause" : "start"}
-      </button>
 
-      <div className="mt-4 text-center space-y-1">
-        <p className="flex font-bold items-center justify-center gap-2 text-green-600">
-          <CheckCircle size={18} /> Work concluídos: {workCount}
-        </p>
-        <p className="flex font-bold items-center justify-center gap-2 text-yellow-600">
-          <Coffee size={18} /> Short breaks: {shortBreakCount}
-        </p>
-        <p className="flex font-bold items-center justify-center gap-2 text-purple-600">
-          <Moon size={18} /> Long breaks: {longBreakCount}
-        </p>
+      {/* Contadores de Sessão */}
+      <div className="flex gap-4 text-xs font-semibold bg-gray-50 px-5 py-2.5 rounded-full border border-gray-100">
+        <div className="flex items-center gap-1.5 text-emerald-600" title="Sessões de Foco">
+          <CheckCircle size={14} /> {counts.work}
+        </div>
+        <div className="w-px h-4 bg-gray-300"></div>
+        <div className="flex items-center gap-1.5 text-amber-600" title="Pausas Curtas">
+          <Coffee size={14} /> {counts.short}
+        </div>
+        <div className="w-px h-4 bg-gray-300"></div>
+        <div className="flex items-center gap-1.5 text-indigo-600" title="Pausas Longas">
+          <Moon size={14} /> {counts.long}
+        </div>
       </div>
     </div>
   );

@@ -1,18 +1,20 @@
-import { Upload, X } from "lucide-react";
+import { Upload, X, FileJson } from "lucide-react";
 
-interface ImportedTask {
+
+// Definindo a interface do JSON esperado (pode ser parcial)
+interface ImportedTaskJSON {
   description: string;
-  tag: string;
   time: string;
+  tag?: string;
   duration?: string | number;
 }
 
 interface TasksImportBoxProps {
-  onImport: (tasks: ImportedTask[]) => void;
+  onImport: (tasks: ImportedTaskJSON[]) => void;
   onClose: () => void;
 }
 
-const TasksImportBox = ({ onImport, onClose }: TasksImportBoxProps) => {
+export default function TasksImportBox({ onImport, onClose }: TasksImportBoxProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -26,46 +28,47 @@ const TasksImportBox = ({ onImport, onClose }: TasksImportBoxProps) => {
           if (Array.isArray(parsed)) {
             onImport(parsed);
           } else {
-            alert("Formato inválido. O JSON precisa ser um array de tasks.");
+            alert("O arquivo deve conter um array de tarefas (JSON).");
           }
         }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
-        alert("Erro ao ler o arquivo.");
+        console.error("Erro na importação:", err);
+        alert("Erro ao ler o arquivo. Verifique se é um JSON válido.");
       }
     };
-
     reader.readAsText(file);
   };
 
   return (
-    <div className="box-padrao">
-      {/* Botão Fechar */}
+    <div className="box-padrao relative animate-in fade-in zoom-in duration-200 border border-indigo-100">
       <button
         onClick={onClose}
-        className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+        className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
       >
-        <X size={18} />
+        <X size={20} />
       </button>
 
-      <h2 className="text-lg font-semibold">Importar Tasks via JSON</h2>
-      <p className="text-sm text-gray-600">
-        Aqui você poderá importar um arquivo JSON com suas tasks, contendo
-        descrição, tags e horários.
-      </p>
+      <div className="flex flex-col items-center justify-center h-full text-center p-4">
+        <div className="bg-indigo-50 p-3 rounded-full mb-3 text-indigo-600">
+          <FileJson size={32} />
+        </div>
+        
+        <h2 className="text-lg font-bold text-gray-800 mb-2">Importar Tarefas</h2>
+        <p className="text-sm text-gray-500 mb-6 max-w-[250px]">
+          Selecione um arquivo <code>.json</code> contendo sua lista de tarefas backup.
+        </p>
 
-      <label className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded hover:opacity-90 cursor-pointer">
-        <Upload size={18} />
-        Importar JSON
-        <input
-          type="file"
-          accept=".json"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </label>
+        <label className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 cursor-pointer transition shadow-sm font-medium">
+          <Upload size={18} />
+          Selecionar Arquivo
+          <input
+            type="file"
+            accept=".json"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+        </label>
+      </div>
     </div>
   );
-};
-
-export default TasksImportBox;
+}
