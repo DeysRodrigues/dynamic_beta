@@ -15,7 +15,6 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - `0.1.0` → first functional base (e.g., basic notes CRUD)  
 - `0.2.x` up to `0.9.x` → iterative improvements and incremental features  
 - `1.0.0` → stable release with:
-  - Zustand implemented for global state management  
   - Well-defined interfaces (e.g., Task, User, Tag, etc.)  
   - Architecture considered “ready” for real use  
 
@@ -23,9 +22,31 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ## [1.0.0] - Unreleased
 ### Planned
-- Full refactor applying Clean Code principles.  
-- Implementation of Zustand for global state management.  
-- Creation of strong interfaces and types for the entire system.  
+- Complete implementation of user authentication and Firestore persistence.
+- Custom notification sounds and settings integration.
+
+---
+
+## [0.2.0] - 2025-11-28
+### Added
+- **State Management:** Implementation of **Zustand** for global state management, replacing the Context API completely.
+- **Week Planner Feature:** New page (`/planner`) added to organize tasks into cycles/groups (Tagzona) and date ranges.
+- **Bulk Editing:** Implemented **BulkEditModal** for editing multiple tasks simultaneously using script format.
+- **Single Script Editing:** Added **EditTaskModal** for modifying single tasks via script.
+- **Power User Input:**
+    - Support for advanced task syntax: `>DURATION`, `>>TIME`, `[TAG]`, and `{GROUP}`.
+    - Added quick task creation button to the `BoxTask` on the dashboard.
+- **UI & UX:**
+    - Redesigned `TaskItem` component with a subtle action menu, conditional time display, and Tagzona badging.
+
+### Changed
+- **Architecture:** Complete migration of application state from Context Providers to **Zustand Stores** (`useTaskStore`, etc.).
+- **Data Structure:** Updated `Task` type to include the new field `groupTag`.
+- **Logic:** `HoursBox` logic updated to calculate progress based only on tasks associated with an active `MetaTagsBox` goal (by Tagzona).
+- **UI Layout:** Set new standard dashboard layout (`Home.tsx`) according to user request.
+- **Utilities:** Created `TaskParser.ts` for consistent conversion between task objects and text scripts.
+- **Chore:** Centralized persistence keys into `storageKeys.ts`.
+
 
 ---
 
@@ -52,6 +73,4 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ### Changed
 - Removed `@tailwindcss/vite` (only compatible with Tailwind v4).  
-- Replaced `tw-animate-css` with `tailwindcss-animate`.  
-
----
+- Replaced `tw-animate-css` with `tailwindcss-animate`.
