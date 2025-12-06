@@ -1,94 +1,166 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-
-
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
 :root {
-  --radius: 0.625rem; /* Raio padrão de borda (cantos arredondados) */
+  /* --- VARIÁVEIS BASE (Shadcn UI) --- */
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222.2 84% 4.9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222.2 84% 4.9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222.2 84% 4.9%);
+  --primary: hsl(222.2 47.4% 11.2%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(210 40% 96.1%);
+  --secondary-foreground: hsl(222.2 47.4% 11.2%);
+  --muted: hsl(210 40% 96.1%);
+  --muted-foreground: hsl(215.4 16.3% 46.9%);
+  --accent: hsl(210 40% 96.1%);
+  --accent-foreground: hsl(222.2 47.4% 11.2%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(214.3 31.8% 91.4%);
+  --input: hsl(214.3 31.8% 91.4%);
+  --ring: hsl(222.2 84% 4.9%);
+  --radius: 0.5rem;
 
-  --background: oklch(1 0 0); /* Cor de fundo geral do site (body, containers principais) */
-  --foreground: oklch(0.145 0 0); /* Cor padrão do texto sobre o fundo */
+  /* --- CORES ESPECÍFICAS (Book Tracker) --- */
+  --book-color-1: hsl(142.1 76.2% 86.3%);
+  --book-color-2: hsl(221.2 100% 86.9%);
+  --book-color-3: hsl(47.9 95.8% 83.5%);
+  --book-color-4: hsl(346.8 100% 86.9%);
+  --book-color-5: hsl(262.1 83.3% 87.8%);
 
-  --card: #EDEDED; /* Cor de fundo dos cards, painéis e containers internos */
-  --card-foreground: oklch(0.145 0 0); /* Cor do texto e conteúdo dentro dos cards */
+  /* --- CORES DE MADEIRA (Library) --- */
+  --wood-1: #8d6e63;
+  --wood-2: #5c2a2a;
+  --wood-3: #d7ccc8;
+  --wood-4: #4b5563;
 
-  --popover: oklch(1 0 0); /* Fundo dos popovers, tooltips e menus flutuantes */
-  --popover-foreground: oklch(0.145 0 0); /* Cor do texto dentro dos popovers */
+  /* --- PIXEL ART (Garden) --- */
+  --pixel-pot: #d97757;
+  --pixel-pot-shadow: #a04835;
+  --pixel-soil: #5e4034;
+  --pixel-green-light: #84cc16;
+  --pixel-green: #22c55e;
+  --pixel-green-dark: #15803d;
+  --pixel-trunk: #92400e;
+  --pixel-flower: #ec4899;
+  --pixel-flower-center: #facc15;
 
-  --primary:#616EFF; /* Cor principal para botões, links e elementos de destaque */
-  --primary-foreground: oklch(0.985 0 0); /* Cor do texto ou ícone sobre o fundo 'primary' */
+  /* --- TEMAS RPG --- */
+  --rpg-stone-from: #f5f5f4;
+  --rpg-stone-to: #e7e5e4;
+  --rpg-stone-border: #d6d3d1;
+  --rpg-stone-text: #3f3f46;
 
-  --secondary: #A3ABFF; /* Cor secundária para botões ou elementos menos destacados */
-  --secondary-foreground: #444444; /* Texto ou ícone sobre o fundo secundário */
+  --rpg-red-from: #fef2f2;
+  --rpg-red-to: #fee2e2;
+  --rpg-red-border: #fecaca;
+  --rpg-red-text: #991b1b;
 
-  --muted: oklch(0.97 0 0); /* Cor neutra para elementos desabilitados ou de fundo leve */
-  --muted-foreground: oklch(0.556 0 0); /* Cor do texto sobre fundo 'muted' */
+  --rpg-blue-from: #eff6ff;
+  --rpg-blue-to: #dbeafe;
+  --rpg-blue-border: #bfdbfe;
+  --rpg-blue-text: #1e40af;
 
-  --accent: oklch(0.97 0 0); /* Cor de destaque suave, geralmente para hovers ou pequenos detalhes */
-  --accent-foreground: oklch(0.205 0 0); /* Texto ou ícone sobre o fundo 'accent' */
+  --rpg-purple-from: #f5f3ff;
+  --rpg-purple-to: #ede9fe;
+  --rpg-purple-border: #ddd6fe;
+  --rpg-purple-text: #5b21b6;
 
-  --destructive: oklch(0.577 0.245 27.325); /* Cor de alerta ou ações destrutivas (ex: deletar) */
+  --rpg-amber-from: #fffbeb;
+  --rpg-amber-to: #fef3c7;
+  --rpg-amber-border: #fde68a;
+  --rpg-amber-text: #b45309;
 
-  --border: oklch(0.922 0 0); /* Cor padrão das bordas de inputs, containers, etc */
-  --input: oklch(0.922 0 0); /* Cor de fundo dos inputs, campos de formulário */
-  --ring: oklch(0.708 0 0); /* Cor do outline (foco) ao redor de inputs ou botões */
+  --rpg-emerald-from: #ecfdf5;
+  --rpg-emerald-to: #d1fae5;
+  --rpg-emerald-border: #a7f3d0;
+  --rpg-emerald-text: #065f46;
 
-  /* Cores utilizadas em gráficos, charts ou indicadores visuais */
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  /* --- PAPÉIS DE PAREDE --- */
+  --wallpaper-plain: #f9fafb;
+  --wallpaper-dots-bg: #f3f4f6;
+  --wallpaper-dots-fg: #cbd5e1;
+  --wallpaper-grid-bg: #f8fafc;
+  --wallpaper-grid-fg: #e2e8f0;
+  --wallpaper-pixel-art-bg: #e0e7ff;
+  --wallpaper-pixel-art-fg: #c7d2fe;
+  --wallpaper-blueprint-bg: #2e3440;
+  --wallpaper-blueprint-fg: rgba(255,255,255,.05);
+  --wallpaper-clouds-bg: #ecfeff;
+  --wallpaper-clouds-fg: #cffafe;
 
-  /* Cores específicas para a sidebar (menu lateral) */
-  --sidebar: oklch(0.6086 0.2128 274.31);/* Fundo da sidebar */
-  --sidebar-foreground: oklch(0.145 0 0); /* Cor do texto ou ícones da sidebar */
+  /* --- CORES DOS WIDGETS --- */
+  --widget-emerald-bg: #ecfdf5;
+  --widget-emerald-border: #a7f3d0;
+  --widget-emerald-text: #065f46;
 
-  --sidebar-primary: oklch(0.205 0 0); /* Cor de destaque ou item ativo na sidebar */
-  --sidebar-primary-foreground: oklch(0.985 0 0); /* Texto ou ícone sobre o item ativo da sidebar */
+  --widget-red-bg: #fef2f2;
+  --widget-red-border: #fee2e2;
+  --widget-red-text: #991b1b;
 
-  --sidebar-accent: oklch(0.97 0 0); /* Cor de hover ou destaque leve na sidebar */
-  --sidebar-accent-foreground: oklch(0.205 0 0); /* Texto ou ícone sobre o fundo 'accent' da sidebar */
+  --widget-yellow-bg: #fefce8;
+  --widget-yellow-border: #fef08a;
+  --widget-yellow-text: #a16207;
 
-  --sidebar-border: oklch(0.922 0 0); /* Cor das bordas internas da sidebar */
-  --sidebar-ring: oklch(0.708 0 0); /* Cor de foco/outline dentro da sidebar */
+  --widget-gray-bg: #f8fafc;
+  --widget-gray-border: #e2e8f0;
+  --widget-gray-text: #475569;
+
+  --widget-stone-bg: #f5f5f4;
+  --widget-stone-border: #d6d3d1;
+  --widget-stone-text: #3f3f46;
+
+  --widget-green-bg: #f0fdf4;
+  --widget-green-border: #bbf7d0;
+  --widget-green-text: #166534;
+
+  --widget-amber-bg: #fffbeb;
+  --widget-amber-border: #fde68a;
+  --widget-amber-text: #b45309;
+
+  --widget-rose-bg: #fff1f2;
+  --widget-rose-border: #fecdd3;
+  --widget-rose-text: #be123c;
+  
+  --widget-indigo-bg: #eef2ff;
+  --widget-indigo-border: #c7d2fe;
+  --widget-indigo-text: #3730a3;
+
+  --widget-orange-bg: #fff7ed;
+  --widget-orange-border: #fed7aa;
+  --widget-orange-text: #c2410c;
+
+  --widget-blue-bg: #eff6ff;
+  --widget-blue-border: #bfdbfe;
+  --widget-blue-text: #1e40af;
+
+  --widget-cyan-bg: #ecfeff;
+  --widget-cyan-border: #a5f3fc;
+  --widget-cyan-text: #0e7490;
+
+  --widget-pink-bg: #fdf2f8;
+  --widget-pink-border: #fbcfe8;
+  --widget-pink-text: #be185d;
+
+  --widget-fuchsia-bg: #fdf4ff;
+  --widget-fuchsia-border: #f5d0fe;
+  --widget-fuchsia-text: #a21caf;
+
+  --widget-violet-bg: #f5f3ff;
+  --widget-violet-border: #ddd6fe;
+  --widget-violet-text: #5b21b6;
+  
+  --widget-sky-bg: #f0f9ff;
+  --widget-sky-border: #bae6fd;
+  --widget-sky-text: #0369a1;
+
+  --widget-purple-bg: #faf5ff;
+  --widget-purple-border: #e9d5ff;
+  --widget-purple-text: #7e22ce;
+
+  /* --- FALLBACKS PARA CUSTOMIZAÇÃO DINÂMICA --- */
+  /* Valores padrão caso o JS não carregue imediatamente */
+  --box-color: #ffffff;
+  --box-text-color: #1e293b;
+  --box-opacity: 1;
 }
