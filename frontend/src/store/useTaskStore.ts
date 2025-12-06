@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Task } from "@/types/Task";
 import { STORAGE_KEYS } from "@/constants/storageKeys";
+import { useTagStore } from "./useTagStore";
 
 interface TaskState {
   tasks: Task[];
@@ -9,7 +10,7 @@ interface TaskState {
   updateTask: (id: string, data: Partial<Task>) => void;
   toggleCompleted: (id: string) => void;
   deleteTask: (id: string) => void;
-  removeTasks: (ids: string[]) => void; // <--- NOVA FUNÇÃO
+  removeTasks: (ids: string[]) => void;
   deleteAllTasks: () => void;
   importTasks: (tasks: Task[]) => void;
   getUniqueTags: () => string[];
@@ -21,20 +22,27 @@ export const useTaskStore = create<TaskState>()(
     (set, get) => ({
       tasks: [],
 
-      addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+      addTask: (task) => {
+        set((state) => ({ tasks: [...state.tasks, task] }));
+        const { addTag } = useTagStore.getState();
+        if (task.tag) addTag(task.tag);
+        if (task.groupTag) addTag(task.groupTag);
+      },
 
-      updateTask: (id, data) =>
+      updateTask: (id, data) => {
         set((state) => ({
           tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...data } : t)),
-        })),
+        }));
+        const { addTag } = useTagStore.getState();
+        if (data.tag) addTag(data.tag);
+        if (data.groupTag) addTag(data.groupTag);
+      },
 
       toggleCompleted: (id) =>
         set((state) => ({
           tasks: state.tasks.map((task) => {
             if (task.id !== id) return task;
-            if (task.completed === undefined) return { ...task, completed: true };
-            if (task.completed === true) return { ...task, completed: false };
-            return { ...task, completed: undefined };
+            return { ...task, completed: !task.completed };
           }),
         })),
 
@@ -44,8 +52,6 @@ export const useTaskStore = create<TaskState>()(
         }
       },
 
-      // NOVA FUNÇÃO: Remove várias tarefas pelo ID sem pedir confirmação
-      // (Útil para operações em massa onde a confirmação já foi feita antes)
       removeTasks: (ids) => {
         set((state) => ({
           tasks: state.tasks.filter((t) => !ids.includes(t.id)),
@@ -58,8 +64,14 @@ export const useTaskStore = create<TaskState>()(
         }
       },
 
-      importTasks: (newTasks) =>
-        set((state) => ({ tasks: [...state.tasks, ...newTasks] })),
+      importTasks: (newTasks) => {
+        set((state) => ({ tasks: [...state.tasks, ...newTasks] }));
+        const { addTag } = useTagStore.getState();
+        newTasks.forEach(t => {
+            if (t.tag) addTag(t.tag);
+            if (t.groupTag) addTag(t.groupTag);
+        });
+      },
 
       getUniqueTags: () => {
         const tags = get().tasks.map((t) => t.tag?.toLowerCase() || "");
@@ -68,9 +80,22 @@ export const useTaskStore = create<TaskState>()(
 
       getCompletedTimeByTag: () => {
         return get().tasks.reduce<Record<string, number>>((acc, task) => {
-          if (task.completed && task.tag) {
-            const tagLower = task.tag.toLowerCase();
-            acc[tagLower] = (acc[tagLower] || 0) + (task.duration || 0);
+          // Só conta se estiver concluída
+          if (task.completed) {
+            const duration = task.duration || 0;
+
+            // 1. Conta para a Tag Normal (ex: "matemática")
+            if (task.tag) {
+              const tagLower = task.tag.toLowerCase();
+              acc[tagLower] = (acc[tagLower] || 0) + duration;
+            }
+
+            // 2. Conta TAMBÉM para a Tagzona (ex: "Faculdade")
+            // Isso permite metas amplas como "Estudar 4h de Faculdade por dia"
+            if (task.groupTag) {
+              const groupLower = task.groupTag.toLowerCase();
+              acc[groupLower] = (acc[groupLower] || 0) + duration;
+            }
           }
           return acc;
         }, {});
