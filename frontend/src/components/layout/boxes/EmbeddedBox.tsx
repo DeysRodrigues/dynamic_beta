@@ -1,126 +1,184 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { 
+  RefreshCw, Settings2, MonitorPlay, Smartphone, Lock, Unlock
+} from "lucide-react";
+import { useBoxContentStore } from "@/store/useBoxContentStore";
 
-export default function EmbeddedBox() {
-  const [inputUrl, setInputUrl] = useState<string>("https://youtu.be/9kzE8isXlQY?si=AQVX6yVFqDXfRZMc");
+interface EmbeddedBoxProps {
+  id?: string;
+}
+
+export default function EmbeddedBox({ id = "embedded-default" }: EmbeddedBoxProps) {
+  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const savedState = getBoxContent(id);
+
+  // Estados
+  const [inputUrl, setInputUrl] = useState<string>(
+    savedState.url || "https://youtu.be/9kzE8isXlQY?si=AQVX6yVFqDXfRZMc"
+  );
   const [embedUrl, setEmbedUrl] = useState<string>("");
-  const [isCleanMode, setIsCleanMode] = useState<boolean>(false); // Estado para controlar a visibilidade
+  const [mode, setMode] = useState<'video' | 'app'>(savedState.mode || 'video');
+  const [isLocked, setIsLocked] = useState<boolean>(savedState.isLocked || false);
+  
+  const [showControls, setShowControls] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0); 
 
-  const tags = [
-    { name: "YouTube", color: "bg-red-100 text-red-600 border-red-200" },
-    { name: "Spotify", color: "bg-green-100 text-green-600 border-green-200" },
-    { name: "Figma", color: "bg-purple-100 text-purple-600 border-purple-200" },
-    { name: "CodePen", color: "bg-gray-100 text-gray-800 border-gray-300" },
-    { name: "Loom", color: "bg-blue-100 text-blue-600 border-blue-200" },
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // --- LISTA ---
+  const quickLinks = [
+    { name: "YouTube", url: "https://www.youtube.com/embed/jfKfPfyJRdk", type: 'video' },
+    { name: "Hidratação", url: "/w/water", type: 'app' },
   ];
 
   useEffect(() => {
+    if (inputUrl.includes("/w/") && mode !== 'app') {
+      setMode('app');
+    }
     setEmbedUrl(convertToEmbed(inputUrl));
-  }, [inputUrl]);
+    
+    setBoxContent(id, { url: inputUrl, mode, isLocked });
+  }, [inputUrl, id, mode, isLocked, setBoxContent]);
 
- const convertToEmbed = (url: string): string => {
+  const convertToEmbed = (url: string): string => {
     try {
       if (!url) return "";
-
-      // --- YOUTUBE (Lógica Atualizada para Playlists) ---
-      
-      // Caso 1: Link direto da Playlist (youtube.com/playlist?list=...)
-      if (url.includes("youtube.com/playlist")) {
-        const listId = url.split("list=")[1]?.split("&")[0];
-        return `https://www.youtube.com/embed/videoseries?list=${listId}`;
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let videoId = "";
+        if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1]?.split("?")[0];
+        else if (url.includes("v=")) videoId = url.split("v=")[1]?.split("&")[0];
+        if (url.includes("/embed/")) return url;
+        return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
       }
-
-      // Caso 2: Vídeo normal OU Vídeo dentro de Playlist
-      if (url.includes("youtube.com/watch?v=")) {
-        const videoId = url.split("v=")[1]?.split("&")[0];
-        let embedLink = `https://www.youtube.com/embed/${videoId}`;
-        
-        // Se tiver o parâmetro &list=, a gente adiciona ele de volta no embed
-        if (url.includes("&list=")) {
-          const listId = url.split("&list=")[1]?.split("&")[0];
-          embedLink += `?list=${listId}`;
-        }
-        
-        return embedLink;
-      }
-      
-      if (url.includes("youtu.be/")) {
-        return `https://www.youtube.com/embed/${url.split("youtu.be/")[1]?.split("?")[0]}`;
-      }
-
-      if (url.includes("codepen.io")) {
-         return url.replace(/\/pen\/|\/full\//, "/embed/").split("?")[0] + "?theme-id=dark&default-tab=html,result&editable=true";
-      }
-
-
       return url;
     } catch {
       return url;
     }
   };
+
+  const handleRefresh = () => setRefreshKey(prev => prev + 1);
+
+  const toggleMode = () => {
+    const newMode = mode === 'video' ? 'app' : 'video';
+    setMode(newMode);
+  };
+
   return (
-    <div className={`box-padrao flex flex-col w-full max-w-2xl mx-auto transition-all duration-300 ${isCleanMode ? 'p-0 bg-transparent shadow-none' : 'p-4 bg-white shadow-sm'}`}>
+    <div 
+      className={`relative w-full h-full rounded-2xl overflow-hidden transition-all duration-500 group border flex flex-col backdrop-blur-md ${
+        mode === 'video' ? 'border-transparent' : 'border-white/10'
+      }`}
+      // APLICA O TEMA (Se for vídeo, fica preto sólido para melhor contraste. Se for App, segue o tema transparente, isso é so pra boa user exp)
+      style={{
+        backgroundColor: mode === 'video' 
+          ? '#000000' 
+          : 'color-mix(in srgb, var(--box-color, #ffffff) calc(var(--box-opacity, 1) * 100%), transparent)',
+        color: 'var(--box-text-color)'
+      }}
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(false)}
+    >
       
-      {/* Cabeçalho com Título e Botão de Toggle */}
-      <div className="flex justify-between items-center mb-3">
-        {!isCleanMode && (
-           <h2 className="text-lg font-semibold text-gray-800">Embed Universal</h2>
-        )}
-        
-        {/* Botão para mostrar/esconder controles */}
-        <button 
-          onClick={() => setIsCleanMode(!isCleanMode)}
-          className={`p-2 rounded-full hover:bg-gray-100 transition-colors ml-auto ${isCleanMode ? 'bg-white shadow-md mb-2' : ''}`}
-          title={isCleanMode ? "Mostrar controles" : "Esconder controles (Modo Foco)"}
-        >
-          {isCleanMode ? (
-            // Ícone de "Olho Aberto" (Mostrar)
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-          ) : (
-            // Ícone de "Olho Fechado" (Esconder) - ou Maximizar
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
-          )}
-        </button>
-      </div>
-
-      {/* Área de Controles (Tags e Input) - Só renderiza se NÃO estiver no modo Clean */}
-      {!isCleanMode && (
-        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-3">
-            {tags.map((tag) => (
-              <span key={tag.name} className={`px-2 py-1 rounded-md text-xs font-medium border ${tag.color}`}>
-                {tag.name}
-              </span>
-            ))}
-          </div>
-
-          <input
-            type="text"
-            placeholder="Cole seu link aqui..."
-            className="px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm w-full mb-4 outline-none focus:ring-2 focus:ring-indigo-100 focus:bg-white transition-all"
-            value={inputUrl}
-            onChange={(e) => setInputUrl(e.target.value)}
-          />
-        </div>
-      )}
-
-      {/* Container do Embed */}
-      <div className={`flex-1 relative w-full bg-gray-900 overflow-hidden shadow-lg border border-gray-100 transition-all duration-500 ${isCleanMode ? 'rounded-none min-h-[500px]' : 'rounded-xl min-h-[400px]'}`}>
+      {/* --- IFRAME (Conteúdo Principal) --- */}
+      <div className="flex-1 relative z-0 w-full h-full">
         {embedUrl ? (
           <iframe
+            key={refreshKey}
+            ref={iframeRef}
             src={embedUrl}
-            className="absolute top-0 left-0 w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; presentation"
+            className={`w-full h-full transition-opacity duration-500 ${mode === 'video' ? 'opacity-100' : 'opacity-100'}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; geolocation"
             allowFullScreen
-            loading="lazy"
-            title="Embedded Content"
+            title={`Embed-${id}`}
+            style={{ borderRadius: '0 0 1rem 1rem' }}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm bg-gray-50">
-            Insira um link válido para visualizar
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center opacity-50">
+            <MonitorPlay size={40} />
+            <p className="text-sm font-medium">Cole um link ou escolha um widget</p>
           </div>
         )}
       </div>
+
+      {/* --- BOTÃO DE DESTRANCAR --- */}
+      {isLocked && (
+         <button
+            onClick={() => setIsLocked(false)}
+            className="absolute top-3 right-3 p-2 rounded-full z-50 transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-sm bg-black/20 text-white backdrop-blur-sm hover:bg-black/40"
+            title="Destrancar Controles"
+         >
+            <Lock size={16} />
+         </button>
+      )}
+
+      {/* --- OVERLAY DE CONTROLES --- */}
+      {!isLocked && (
+        <>
+          {/* Botão Mobile (Engrenagem) */}
+          <button 
+            className={`md:hidden absolute top-2 right-2 p-2 rounded-full z-30 transition-all shadow-sm ${
+               showControls ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            } bg-black/20 text-white backdrop-blur-sm`}
+            onClick={() => setShowControls(true)}
+          >
+            <Settings2 size={16} />
+          </button>
+
+          {/* Menu Principal */}
+          <div 
+            className={`absolute top-0 left-0 right-0 p-3 transition-all duration-300 z-40 bg-gradient-to-b ${
+              mode === 'video' 
+                ? 'from-black/90 via-black/60 to-transparent text-white' 
+                : 'from-black/40 via-black/20 to-transparent text-white' // Texto branco no menu para contraste
+            } ${showControls || !embedUrl ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
+          >
+            <div className="flex flex-col gap-2 max-w-full">
+              
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg backdrop-blur-md border border-white/10 bg-white/10 shrink-0">
+                  <Settings2 size={18} />
+                </div>
+                
+                <input
+                  type="text"
+                  value={inputUrl}
+                  onChange={(e) => setInputUrl(e.target.value)}
+                  placeholder="URL..."
+                  className="flex-1 min-w-0 px-3 py-2 text-sm rounded-lg outline-none transition-colors backdrop-blur-sm border border-white/10 bg-white/10 text-white placeholder-white/50 focus:bg-white/20"
+                />
+
+                <button onClick={() => setIsLocked(true)} className="p-2 rounded-lg transition-colors border border-white/10 bg-white/10 hover:bg-white/20 text-white shrink-0" title="Bloquear Menu">
+                  <Unlock size={18} />
+                </button>
+
+                <button onClick={toggleMode} className="p-2 rounded-lg transition-colors border border-white/10 bg-white/10 hover:bg-white/20 text-white shrink-0" title={mode === 'video' ? "Modo Widget" : "Modo Vídeo"}>
+                  {mode === 'video' ? <Smartphone size={18} /> : <MonitorPlay size={18} />}
+                </button>
+
+                <button onClick={handleRefresh} className="p-2 rounded-lg transition-colors border border-white/10 bg-white/10 hover:bg-white/20 text-white shrink-0" title="Recarregar">
+                  <RefreshCw size={18} />
+                </button>
+              </div>
+
+              {/* Tags Rápidas */}
+              <div className="flex gap-2 overflow-x-auto pb-1 pt-1 no-scrollbar">
+                {quickLinks.map((link) => (
+                  <button
+                    key={link.name}
+                    onClick={() => {
+                      setInputUrl(link.url);
+                      setMode(link.type as 'video' | 'app');
+                    }}
+                    className="text-xs px-2.5 py-1 rounded-full whitespace-nowrap transition-colors border border-white/10 bg-white/10 hover:bg-white/20 text-white shadow-sm"
+                  >
+                    {link.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
