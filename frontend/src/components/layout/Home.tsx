@@ -1,131 +1,142 @@
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
-import { Trash, Undo2, Lock, Unlock } from "lucide-react";
-import { useState, useRef } from "react";
+import {
+  Undo2, Lock, Unlock, PlusCircle, X, FileText,
+   Grid, ListTodo, Timer,  Save
+} from "lucide-react";
+import { useState } from "react";
 import { Responsive, WidthProvider, type Layout } from "react-grid-layout";
 
-// Imports da Store e Utils
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { getFormattedCurrentDate } from "@/utils/DateUtils";
 
-// Importação de TODOS os Boxes
+// Widgets
 import ProgressBox from "./boxes/ProgressBox";
 import MetaTagsBox from "./boxes/MetaTagsBox";
 import PomodoroBox from "./boxes/PomodoroBox";
 import EmbeddedBox from "./boxes/EmbeddedBox";
 import TagsBox from "./boxes/TagsBox";
 import BoxTask from "./boxes/BoxTask";
+import NotepadBox from "./boxes/NotepadBox";
+import HabitTrackerBox from "./boxes/HabitTrackerBox";
+import MiniCalendarBox from "./boxes/MiniCalendarBox";
+import LayoutManagerModal from "./modals/LayoutManagerModal";
+import PixelGardenBox from "./boxes/PixelGardenBox";
+import ThemeBox from "./boxes/ThemeBox";
+import RpgProfileBox from "./boxes/RpgProfileBox";
+import BookTrackerBox from "./boxes/BookTrackerBox";
+import MonthlyGoalsBox from "./boxes/MonthlyGoalsBox";
+import AutomationBox from "./boxes/AutomationBox";
+import QuickWorkoutBox from "./boxes/QuickWorkoutBox";
+import CozyLibraryBox from "./boxes/CozyLibraryBox";
+import CountdownBox from "./boxes/CountdownBox";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default function Dashboard() {
-  const { layouts, setLayouts, boxes, setBoxes, resetDashboard } = useDashboardStore();
+  const { layouts, setLayouts, boxes, setBoxes, resetDashboard, addBox } = useDashboardStore();
   const [editMode, setEditMode] = useState(false);
-  const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [lastRemoved, setLastRemoved] = useState<{ id: string; layout: Layout } | null>(null);
+  const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showLayoutManager, setShowLayoutManager] = useState(false);
 
-  // Ref para a lixeira (substitui o getElementById)
-  const trashRef = useRef<HTMLDivElement>(null);
-
-  // Mapa de componentes para renderizar dinamicamente
-  const componentMap: Record<string, React.ReactNode> = {
-    progress: <ProgressBox />,
-    metatags: <MetaTagsBox />,
-    pomodoro: <PomodoroBox />,
-    embedded: <EmbeddedBox />,
-    tags: <TagsBox />,
-    tasks: <BoxTask />,
+  const renderBox = (id: string) => {
+    const type = id.split("-")[0];
+    switch (type) {
+      case "tasks": return <BoxTask />;
+      case "progress": return <ProgressBox />;
+      case "metatags": return <MetaTagsBox />;
+      case "pomodoro": return <PomodoroBox />;
+      case "tags": return <TagsBox />;
+      case "embedded": return <EmbeddedBox id={id} />;
+      case "notepad": return <NotepadBox id={id} />;
+      case "habit": return <HabitTrackerBox id={id} />;
+      case "garden": return <PixelGardenBox />;
+      case "theme": return <ThemeBox />;
+      case "rpg": return <RpgProfileBox />;
+      case "books": return <BookTrackerBox id={id} />;
+      case "goals": return <MonthlyGoalsBox id={id} />;
+      case "auto": return <AutomationBox id={id} />;
+      case "workout": return <QuickWorkoutBox />;
+      case "calendar": return <MiniCalendarBox />;
+      case "library": return <CozyLibraryBox id={id} />;
+      case "countdown": return <CountdownBox id={id} />;
+      default: return null;
+    }
   };
 
-  // Lógica de Remoção e Drag & Drop 
+  const handleAddWidget = (type: string) => { addBox(type); setShowAddMenu(false); };
 
   const removeBox = (id: string) => {
-    const layoutItem = layouts.lg.find((item: Layout) => item.i === id);
-    if (layoutItem) {
-      setLastRemoved({ id, layout: layoutItem });
-    }
-    setBoxes((prev) => prev.filter((box) => box !== id));
+    // Garante que setBoxes receba o array anterior de forma segura
+    setBoxes((prev) => (prev || []).filter((box) => box !== id));
     
-    // Atualiza o layout removendo o item
     setLayouts((prev) => ({
       ...prev,
-      lg: prev.lg.filter((item: Layout) => item.i !== id),
+      lg: (prev.lg || []).filter((item: Layout) => item.i !== id),
+      md: (prev.md || []).filter((item: Layout) => item.i !== id),
+      sm: (prev.sm || []).filter((item: Layout) => item.i !== id),
     }));
   };
 
-  const handleTrashClick = () => {
-    if (lastRemoved && !boxes.includes(lastRemoved.id)) {
-      setBoxes((prev) => [...prev, lastRemoved.id]);
-      setLayouts((prev) => ({ ...prev, lg: [...prev.lg, lastRemoved.layout] }));
-      setLastRemoved(null);
-    }
-  };
-
-  const handleDragStart = (_layout: Layout[], _oldItem: Layout, newItem: Layout) => {
-    setDraggingId(newItem.i);
-  };
-
-  const handleDragStop = (
-    _layout: Layout[],
-    _oldItem: Layout,
-    _newItem: Layout,
-    _placeholder: Layout,
-    _e: MouseEvent,
-    element: HTMLElement
-  ) => {
-    const trash = trashRef.current;
-    if (trash) {
-      const trashRect = trash.getBoundingClientRect();
-      const boxRect = element.getBoundingClientRect();
-
-      // Verifica colisão entre o box arrastado e a lixeira
-      const intersecting =
-        boxRect.right > trashRect.left &&
-        boxRect.left < trashRect.right &&
-        boxRect.bottom > trashRect.top &&
-        boxRect.top < trashRect.bottom;
-
-      if (intersecting && draggingId) {
-        removeBox(draggingId);
-      }
-    }
-    setDraggingId(null);
-  };
-
-
-
-
-
-
   return (
-    <div className="relative min-h-screen w-full">
-      {/* --- Header do Dashboard --- */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between bg-gray-100 p-4 rounded-xl shadow mb-6 gap-4">
-        <span className="font-bold text-lg">{getFormattedCurrentDate()}</span>
+    <div className="relative min-h-screen w-full pb-20">
+      <LayoutManagerModal isOpen={showLayoutManager} onClose={() => setShowLayoutManager(false)} />
 
-        <div className="flex items-center gap-4">
-          <span className="bg-white px-6 py-2 rounded-full font-semibold">
-            Olá, humano!
-          </span>
+      {/* --- BARRA PADRONIZADA (HOME) --- */}
+      <div className="bar-padrao mb-6">
+        <span className="font-bold text-lg">
+          {getFormattedCurrentDate()}
+        </span>
 
-          <div className="flex gap-2">
+        <div className="flex items-center gap-4 flex-wrap justify-end">
+          
+          <button
+            onClick={() => setShowLayoutManager(true)}
+            className="flex items-center gap-2 bg-background/20 border border-current/20 px-4 py-2 rounded-full font-semibold hover:bg-current/10 transition shadow-sm text-sm"
+            title="Salvar layout e tema atual"
+          >
+            <Save size={18} /> Salvar
+          </button>
+
+          <button
+            onClick={() => setShowLayoutManager(true)}
+            className="flex items-center gap-2 bg-background/20 border border-current/20 px-4 py-2 rounded-full font-semibold hover:bg-current/10 transition shadow-sm text-sm"
+          >
+            <Grid size={18} /> Meus Setups
+          </button>
+
+          <div className="relative">
+            <button
+              onClick={() => setShowAddMenu(!showAddMenu)}
+              className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-full font-semibold hover:opacity-90 transition shadow-sm text-sm"
+            >
+              <PlusCircle size={18} /> Add Widget
+            </button>
+
+            {showAddMenu && (
+              <div className="absolute top-full mt-2 right-0 bg-background rounded-xl shadow-xl border p-2 w-64 z-50 animate-in fade-in slide-in-from-top-2 grid grid-cols-1 gap-1 max-h-[80vh] overflow-y-auto custom-scrollbar text-foreground">
+                <p className="text-xs font-bold text-muted-foreground px-3 py-2 uppercase tracking-wider bg-muted/50 mt-1">Essenciais</p>
+                <button onClick={() => handleAddWidget("tasks")} className="menu-item"><ListTodo size={16} className="text-emerald-500" /> Tarefas</button>
+                <button onClick={() => handleAddWidget("pomodoro")} className="menu-item"><Timer size={16} className="text-red-500" /> Pomodoro</button>
+                <button onClick={() => handleAddWidget("notepad")} className="menu-item"><FileText size={16} className="text-yellow-500" /> Notas</button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-2 border-l border-current/20 pl-4">
             <button
               onClick={() => setEditMode((prev) => !prev)}
-              className={`p-2 rounded-full transition ${editMode ? "bg-indigo-100 text-indigo-600" : "bg-white hover:bg-gray-200"}`}
+              className={`p-2 rounded-full transition ${editMode ? "bg-amber-100 text-amber-600" : "hover:bg-current/10"}`}
               title={editMode ? "Bloquear layout" : "Editar layout"}
             >
               {editMode ? <Unlock size={18} /> : <Lock size={18} />}
             </button>
 
             <button
-              onClick={() => {
-                if (window.confirm("Resetar layout para o padrão?")) {
-                  resetDashboard();
-                }
-              }}
-              className="p-2 bg-white rounded-full hover:bg-gray-200 transition"
-              title="Resetar layout padrão"
+              onClick={() => { if (window.confirm("Resetar layout?")) resetDashboard(); }}
+              className="p-2 rounded-full hover:bg-current/10 transition"
+              title="Resetar Padrão"
             >
               <Undo2 size={18} />
             </button>
@@ -133,7 +144,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* --- Grid Responsivo --- */}
       <ResponsiveGridLayout
         className="layout"
         layouts={layouts}
@@ -142,46 +152,26 @@ export default function Dashboard() {
         rowHeight={100}
         isDraggable={editMode}
         isResizable={editMode}
-        onDragStart={handleDragStart}
-        onDragStop={handleDragStop}
         onLayoutChange={(_layout, allLayouts) => setLayouts(allLayouts)}
         draggableCancel=".no-drag"
+        margin={[16, 16]}
       >
-        {boxes.map((boxId) => {
-          // Só renderiza se o box existir no componentMap
-          if (!componentMap[boxId]) return null;
-
+        {/* CORREÇÃO DO ERRO AQUI: (boxes || []).map(...) previne o crash se boxes for undefined */}
+        {(boxes || []).map((boxId) => {
+          const component = renderBox(boxId);
+          if (!component) return null;
           return (
-            <div
-              key={boxId}
-              className={`h-full w-full ${
-                editMode ? "border-2 border-dashed border-primary/50 rounded-xl bg-white/50" : ""
-              }`}
-            >
-              {componentMap[boxId]}
+            <div key={boxId} className={`h-full w-full transition-all duration-200 relative group ${editMode ? "border-2 border-dashed border-amber-400/50 rounded-2xl bg-amber-50/30 cursor-grab active:cursor-grabbing shadow-lg z-10" : ""}`}>
+              {editMode && (
+                <div className="absolute -top-3 -right-3 z-50 animate-in zoom-in duration-200">
+                  <button onClick={(e) => { e.stopPropagation(); removeBox(boxId); }} className="bg-red-500 text-white p-1.5 rounded-full shadow-md hover:scale-110 transition-all cursor-pointer border-2 border-white"><X size={16} strokeWidth={3} /></button>
+                </div>
+              )}
+              <div className={`w-full h-full overflow-hidden ${editMode ? "pointer-events-none select-none opacity-80" : ""}`}>{component}</div>
             </div>
           );
         })}
       </ResponsiveGridLayout>
-
-      {/* --- Lixeira com Ref --- */}
-      <div
-        id="trash-area"
-        ref={trashRef}
-        onClick={handleTrashClick}
-        className={`fixed bottom-6 right-6 flex items-center justify-center w-16 h-16 rounded-full cursor-pointer shadow-lg transition-all duration-300 z-50 ${
-          draggingId
-            ? "bg-red-500 scale-110 shadow-red-200"
-            : "bg-white hover:bg-gray-50 text-gray-400"
-        }`}
-        title={lastRemoved ? "Desfazer remoção" : "Arraste aqui para remover"}
-      >
-        {lastRemoved ? (
-          <Undo2 className="w-6 h-6 text-indigo-600" />
-        ) : (
-          <Trash className={`w-6 h-6 ${draggingId ? "text-white" : ""}`} />
-        )}
-      </div>
     </div>
   );
 }
