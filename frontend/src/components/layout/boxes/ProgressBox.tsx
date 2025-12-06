@@ -15,13 +15,13 @@ export default function ProgressBox({ className }: ProgressBoxProps) {
 
   return (
     <div className={`box-padrao ${className || ""}`}>
-      <h2 className="text-lg font-semibold text-gray-800">Progresso nas tarefas</h2>
-      <p className="text-gray-600 text-sm mt-1">
+      <h2 className="text-lg font-semibold">Progresso nas tarefas</h2>
+      <p className="text-muted-foreground text-sm mt-1">
         {completedTasks} de {totalTasks} tasks ({progressPercent}%)
       </p>
-      <div className="w-full bg-white h-3 rounded-full overflow-hidden mt-3 border border-gray-200">
+      <div className="w-full bg-background h-3 rounded-full overflow-hidden mt-3 border">
         <div
-          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out"
+          className="h-full bg-gradient-to-r from-primary to-purple-500 transition-all duration-500 ease-out"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
