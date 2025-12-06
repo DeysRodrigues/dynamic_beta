@@ -13,22 +13,28 @@ import { createTask } from "@/utils/TaskFactory";
 import type { Task } from "@/types/Task";
 
 export default function TasksPage() {
-  const { tasks, addTask, toggleCompleted, deleteTask, deleteAllTasks, importTasks } = useTaskStore();
+  const {
+    tasks,
+    addTask,
+    toggleCompleted,
+    deleteTask,
+    deleteAllTasks,
+    importTasks,
+  } = useTaskStore();
   const { tags } = useTagStore();
 
   const [newTime, setNewTime] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newTag, setNewTag] = useState("");
-  
+
   const [showImportBox, setShowImportBox] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
-  const [filter, setFilter] = useState<"all" | "completed" | "incomplete">("all");
+  const [filter, setFilter] = useState<"all" | "completed" | "incomplete">(
+    "all"
+  );
 
-  // Estados para Edição Individual
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-
-  // Estados para Edição em Massa
   const [showBulkEdit, setShowBulkEdit] = useState(false);
 
   const handleEditClick = (task: Task) => {
@@ -51,46 +57,51 @@ export default function TasksPage() {
 
   return (
     <div className="space-y-6 pt-28 px-4 relative sm:p-14 max-w-5xl mx-auto">
-      {/* Barra de Ferramentas */}
-      <div className="bg-white/80 backdrop-blur-md p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between sticky top-4 z-20">
-        <h1 className="font-bold text-xl text-gray-800">Minhas Tarefas</h1>
+      {/* --- BARRA DE FERRAMENTAS PADRONIZADA --- */}
+      <div className="bar-padrao sticky top-4">
+        <h1 className="font-bold text-xl">Minhas Tarefas</h1>
+
         <div className="flex gap-2">
-          <button 
-            onClick={() => setFilter(prev => prev === "all" ? "completed" : "all")} 
-            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition"
-            title="Filtrar"
+          {/* Botão de Filtro (Alterna visualmente se ativo) */}
+          <button
+            onClick={() =>
+              setFilter((prev) => (prev === "all" ? "completed" : "all"))
+            }
+            className={`btn-icon ${
+              filter !== "all" ? "text-primary bg-primary/10" : ""
+            }`}
+            title="Filtrar Concluídas"
           >
             <Filter size={18} />
           </button>
-          
-          <button 
-            onClick={deleteAllTasks} 
-            className="p-2 text-red-500 bg-gray-100 hover:bg-gray-200 rounded-full transition"
+
+          <button
+            onClick={deleteAllTasks}
+            className="btn-icon hover:text-red-500 hover:bg-red-500/10"
             title="Apagar tudo"
           >
             <Trash2 size={18} />
           </button>
 
-          <button 
-            onClick={() => setShowImportBox(true)} 
-            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition" 
+          <button
+            onClick={() => setShowImportBox(true)}
+            className="btn-icon"
             title="Importar JSON"
           >
             <Upload size={18} />
           </button>
 
-          {/* Botão de Edição em Massa (Script) */}
-          <button 
-            onClick={() => setShowBulkEdit(true)} 
-            className="p-2 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full transition"
-            title="Editor em Massa (Script)"
+          <button
+            onClick={() => setShowBulkEdit(true)}
+            className="btn-icon text-primary hover:bg-primary/10"
+            title="Editor em Massa"
           >
             <Edit3 size={18} />
           </button>
 
-          <button 
-            onClick={() => setShowBulkModal(true)} 
-            className="px-4 py-2 bg-primary text-white rounded-full flex gap-2 items-center text-sm hover:opacity-90 transition"
+          <button
+            onClick={() => setShowBulkModal(true)}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-full flex gap-2 items-center text-sm hover:opacity-90 transition shadow-sm font-medium"
           >
             <Plus size={16} /> Várias
           </button>
@@ -101,8 +112,13 @@ export default function TasksPage() {
       {showImportBox && (
         <TasksImportBox
           onImport={(imported) => {
-            const processed = imported.map((t) => 
-              createTask(t.description, t.time, t.tag || "", Number(t.duration) || 15)
+            const processed = imported.map((t) =>
+              createTask(
+                t.description,
+                t.time,
+                t.tag || "",
+                Number(t.duration) || 15
+              )
             );
             importTasks(processed);
             setShowImportBox(false);
@@ -112,76 +128,91 @@ export default function TasksPage() {
       )}
 
       {/* Modais */}
-      <BulkTaskModal 
-        isOpen={showBulkModal} 
-        onClose={() => setShowBulkModal(false)} 
-        onAddTasks={(ts) => ts.forEach(addTask)} 
+      <BulkTaskModal
+        isOpen={showBulkModal}
+        onClose={() => setShowBulkModal(false)}
+        onAddTasks={(ts) => ts.forEach(addTask)}
+      />
+      <EditTaskModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        task={editingTask}
+      />
+      <BulkEditModal
+        isOpen={showBulkEdit}
+        onClose={() => setShowBulkEdit(false)}
+        tasksToEdit={filteredTasks}
       />
 
-      <EditTaskModal 
-        isOpen={editModalOpen} 
-        onClose={() => setEditModalOpen(false)} 
-        task={editingTask} 
-      />
-
-      <BulkEditModal 
-        isOpen={showBulkEdit} 
-        onClose={() => setShowBulkEdit(false)} 
-        tasksToEdit={filteredTasks} 
-      />
-
-      {/* Input Rápido */}
-      <div className="bg-white p-4 rounded-xl shadow-sm flex flex-wrap gap-3 items-center border border-gray-100">
-        <input 
-          type="time" 
-          value={newTime} 
-          onChange={(e) => setNewTime(e.target.value)} 
-          className="px-3 py-2 bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-primary/20" 
+      {/* --- INPUT RÁPIDO (BOX UNIFICADA) --- */}
+      <div className="box-padrao flex-row flex-wrap gap-3 items-center min-h-0">
+        <input
+          type="time"
+          value={newTime}
+          onChange={(e) => setNewTime(e.target.value)}
+          className="px-3 py-2 w-auto"
         />
-        
-        <input 
-          type="text" 
-          placeholder="Nova tarefa..." 
-          value={newDescription} 
-          onChange={(e) => setNewDescription(e.target.value)} 
-          className="flex-1 px-4 py-2 bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-primary/20 min-w-[200px]" 
+
+        <input
+          type="text"
+          placeholder="Nova tarefa..."
+          value={newDescription}
+          onChange={(e) => setNewDescription(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
+          className="flex-1 px-4 py-2 min-w-[200px]"
         />
-        
-        <select 
-          value={newTag} 
-          onChange={(e) => setNewTag(e.target.value)} 
-          className="px-3 py-2 bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-primary/20"
+
+        <select
+          value={newTag}
+          onChange={(e) => setNewTag(e.target.value)}
+          className="px-3 py-2 w-auto"
         >
           <option value="">Tag</option>
-          {tags.map(t => <option key={t} value={t}>{t}</option>)}
+          {tags.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
         </select>
-        
-        <button 
-          onClick={handleAddTask} 
-          className="bg-primary text-white p-2 rounded-lg hover:opacity-90 transition"
+
+        <button
+          onClick={handleAddTask}
+          className="bg-primary text-primary-foreground p-2 rounded-lg hover:opacity-90 transition shadow-sm"
         >
           <Plus size={20} />
         </button>
       </div>
 
-      {/* Lista de Tarefas */}
+      {/* --- LISTA DE TAREFAS --- */}
       <div className="space-y-6">
-        {Object.entries(groupTasksByDate(filteredTasks)).map(([date, dateTasks]) => (
-          <div key={date} className="bg-white/50 p-5 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="font-bold text-lg text-gray-700 mb-4 capitalize">{formatDate(date)}</h3>
-            <div className="space-y-2">
-              {dateTasks.map((task) => (
-                <TaskItem 
-                  key={task.id} 
-                  task={task} 
-                  onToggle={toggleCompleted} 
-                  onDelete={deleteTask} 
-                  onEdit={handleEditClick}
-                />
-              ))}
+        {Object.entries(groupTasksByDate(filteredTasks)).map(
+          ([date, dateTasks]) => (
+            <div key={date} className="box-padrao">
+              {/* Cabeçalho da data com borda sutil baseada na cor do texto */}
+              <h3 className="font-bold text-lg mb-4 capitalize border-b border-current/10 pb-2 opacity-80">
+                {formatDate(date)}
+              </h3>
+
+              <div className="space-y-2">
+                {dateTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    onToggle={toggleCompleted}
+                    onDelete={deleteTask}
+                    onEdit={handleEditClick}
+                  />
+                ))}
+              </div>
             </div>
+          )
+        )}
+
+        {filteredTasks.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-10 opacity-50">
+            <p>Nenhuma tarefa encontrada.</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
