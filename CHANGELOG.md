@@ -27,6 +27,33 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ---
 
+## [0.3.0] - 2025-12-06
+### Added
+- **Theme System:**
+    - New **Themes Page** (`/themes`) to browse ready-made setups, color palettes, and immersive themes.
+    - Added **Personalization Modal** to customize global colors (primary, sidebar, text, box) and background opacity.
+    - Support for **Custom Wallpapers** (image upload) and CSS pattern presets (dots, grid, blueprint).
+    - **Theme Applicator:** Dynamic CSS variable injection to apply theme changes instantly across the app.
+- **Widget Ecosystem:**
+    - New **Widgets Store Page** (`/store`) to discover and install new functionalities.
+    - **Custom Widget Creator:** Added `WidgetEditorModal` to create custom widgets using HTML/CSS/JS.
+    - **New Native Widgets:** `AutomationBox` (If/Then rules), `CountdownBox`, `QuickWorkoutBox`, `SleepTrackerBox`, `CozyLibraryBox`, `MonthlyGoalsBox`, `RpgProfileBox`.
+    - **New Embed Widgets:** `SnakeWidget`, `WaterWidget`, (and more).
+- **Layout Management:**
+    - **Layout Templates:** Feature to save the current dashboard arrangement and theme as a reusable template.
+    - **Layout Manager:** New modal to save, load, import, and export (JSON) layout setups.
+
+- **Landing Page:** Added a polished Landing Page (`/intro`) with feature highlights and visual presentations.
+
+### Changed
+- **UI/UX Refactor:**
+    - Completely redesigned the **Dashboard** to support a flexible grid layout.
+    - **Sidebar:** Updated navigation to include links to the new Store and Themes pages.
+    - **Global Styles:** Refactored `.box-padrao` and other utility classes to fully support dynamic theming and transparency.
+
+
+---
+
 ## [0.2.0] - 2025-11-28
 ### Added
 - **State Management:** Implementation of **Zustand** for global state management, replacing the Context API completely.
