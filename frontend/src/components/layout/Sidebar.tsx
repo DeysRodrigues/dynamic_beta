@@ -1,131 +1,377 @@
-import { Bell, GitMergeIcon, Heart, Menu, RotateCcw, Sparkles, Type } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  RotateCcw,
+  Type,
+  ShoppingBag,
+  X,
+  PaintBucket,
+  Ghost,
+  BoxSelect,
+  Moon,
+  Sun,
+  FileCode,
+  Brush,
+  Monitor,
+  Image,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import PersonalizationModal from "./modals/PersonalizationModal";
+import { useThemeStore } from "@/store/useThemeStore";
 
 interface SidebarProps {
-  items: { label: string; icon?: React.ReactNode; path: string }[];
+  items?: { label: string; icon?: React.ReactNode; path: string }[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ items }) => {
   const [open, setOpen] = useState(false);
-  const [inverted, setInverted] = useState(false);
+  const [showPersonalization, setShowPersonalization] = useState(false);
+  const [showOpacity, setShowOpacity] = useState(false);
   const [monospace, setMonospace] = useState(false);
 
+  // Hook do Store completo
+  const {
+    sidebarColor,
+    setSidebarColor,
+    boxOpacity,
+    setBoxOpacity,
+    boxColor,
+    setBoxColor,
+    textColor,
+    setTextColor,
+    primaryColor,
+    setPrimaryColor,
+    backgroundColor,
+    setBackgroundColor,
+    applyPreset,
+  } = useThemeStore();
+
   const navigate = useNavigate();
-  // Aplica o filtro de inverter no html
+  const locationPath = useLocation().pathname;
+
   useEffect(() => {
-    const root = document.documentElement;
+    setOpen(false);
+  }, [locationPath]);
 
-    if (inverted) {
-      root.classList.add("inverted-mode");
-      root.style.filter = "invert(1) hue-rotate(180deg)";
-    } else {
-      root.classList.remove("inverted-mode");
-      root.style.filter = "";
-    }
-  }, [inverted]);
-
-  // Aplica a fonte monoespaçada no html
+  // Fonte Mono
   useEffect(() => {
     const body = document.body;
-
     if (monospace) {
       body.style.setProperty(
         "font-family",
-        "'Cascadia Mono', monospace",
+        "'Cascadia Mono', 'Courier New', monospace",
         "important"
       );
     } else {
-      body.style.setProperty("font-family", "", "important");
+      body.style.removeProperty("font-family");
     }
   }, [monospace]);
 
+  // Dark Mode
+  const toggleDarkMode = () => {
+    if (backgroundColor === "#f9fafb" || backgroundColor === "#ffffff") {
+      applyPreset({
+        backgroundColor: "#000000",
+        boxColor: "#000000",
+        sidebarColor: "#000000",
+        textColor: "#ffffff",
+        primaryColor: "#8b5cf6",
+        boxOpacity: 1,
+        wallpaper: "plain",
+      });
+    } else {
+      applyPreset({
+        backgroundColor: "#f9fafb",
+        boxColor: "#ffffff",
+        sidebarColor: "hsl(222.2 47.4% 11.2%)",
+        textColor: "#1e293b",
+        primaryColor: "hsl(222.2 47.4% 11.2%)",
+        boxOpacity: 1,
+        wallpaper: "plain",
+      });
+    }
+  };
+
+  const defaultItems = [
+    { label: "Home", path: "/" },
+    { label: "Tasks", path: "/tasks" },
+    { label: "Planner", path: "/planner" },
+    { label: "Widget Store", path: "/store", icon: <ShoppingBag size={18} /> },
+  ];
+
+  const menuItems = items && items.length > 0 ? items : defaultItems;
+
+  // Botão com Indicador de Cor (UI FIX)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ColorButton = ({ icon: Icon, color }: { icon: any; color: string }) => (
+    <div className="relative flex items-center justify-center w-full h-full pointer-events-none">
+      <Icon size={18} className="text-white/90 drop-shadow-sm" />
+      <div
+        className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full border border-white/30 shadow-sm"
+        style={{ backgroundColor: color }}
+      />
+    </div>
+  );
+
   return (
     <>
-      {/* Botão Mobile */}
+      <PersonalizationModal
+        isOpen={showPersonalization}
+        onClose={() => setShowPersonalization(false)}
+      />
+
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-primary text-white p-2 rounded"
+        className="md:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl shadow-lg border border-gray-100 active:scale-95 transition-all text-white"
+        style={{ backgroundColor: sidebarColor }}
         onClick={() => setOpen(!open)}
       >
-        <Menu />
+        {open ? <X size={20} /> : <Menu size={20} />}
       </button>
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-gradient-to-b from-indigo-500 to-purple-500 text-white flex flex-col justify-between items-center py-8 z-40 transform transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:flex`}
-      >
-        {/* Top */}
-        <div className="flex flex-col items-center gap-4 w-full">
-          {/* Notificação */}
-          <div className="self-end pr-4">
-            <Bell size={20} className="cursor-pointer" />
-          </div>
-          {/* Avatar */}
-          <img
-            src="https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
-            alt="avatar"
-            className="w-24 h-24 rounded-full object-cover no-invert"
-          />
-          <h2 className="font-bold text-lg">Dynamic notes</h2>
-          <p className="text-sm text-white/80">cats e tasks</p>
-          {/* Botão Inverter */}
-          <button
-            className="mt-4 p-3 bg-white/20 rounded-full hover:bg-white/30 transition"
-            onClick={() => setInverted(!inverted)}
-          >
-            <Sparkles size={20} className="text-white" />
-          </button>
-          {/* Botão Monoespaçado */}
-          <button
-            className="mt-2 p-3 bg-white/20 rounded-full hover:bg-white/30 transition"
-            onClick={() => setMonospace(!monospace)}
-          >
-            <Type size={20} className="text-white" />
-          </button>
-          <a
-            href="https://github.com/DeysRodrigues/dynamic_beta"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 p-3 bg-white/20 rounded-full hover:bg-white/30 transition inline-flex"
-          >
-            <GitMergeIcon size={20} className="text-white" />
-          </a>
-          <a
-            href="https://github.com/DeysRodrigues"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 p-3 bg-white/20 rounded-full hover:bg-white/30 transition inline-flex"
-          >
-            <Heart size={20} className="text-white" />
-          </a>
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-40 md:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
 
-          {/* Menu */}
-          <nav className="flex flex-col gap-4 mt-8 text-white font-bold">
-            {items.map((item) => (
+      <aside
+        className={`bg-primary fixed top-0 left-0 h-screen w-72 text-white flex flex-col justify-between py-6 z-50 transform transition-transform duration-300 shadow-2xl ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:static md:flex md:w-64`}
+        style={{ backgroundColor: sidebarColor }}
+      >
+        <div className="flex flex-col items-center gap-6 w-full px-4 overflow-y-auto custom-scrollbar">
+          <div className="flex flex-col items-center gap-3 w-full">
+            <div className="w-full flex justify-end px-2">
+              <Bell
+                size={20}
+                className="cursor-pointer hover:text-white/80 transition"
+              />
+            </div>
+
+            <div className="relative group cursor-pointer">
+              <img
+                src="https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
+                alt="avatar"
+                className="w-20 h-20 rounded-full object-cover border-[3px] border-white/30 group-hover:border-white transition shadow-lg"
+              />
+            </div>
+
+            <div className="text-center">
+              <h2 className="font-bold text-xl tracking-tight">
+                Dynamic Notes
+              </h2>
+              <p className="text-xs text-white/70 font-medium bg-black/10 px-3 py-1 rounded-full mt-1">
+                cats & tasks
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 bg-black/10 p-3 rounded-2xl w-full">
+            {/* CORES */}
+            <div className="grid grid-cols-4 gap-2 w-full">
+              {/* Sidebar */}
+              <div className="relative group aspect-square">
+                <button
+                  className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10"
+                  title="Cor Sidebar"
+                >
+                  <ColorButton icon={PaintBucket} color={sidebarColor} />
+                </button>
+                <input
+                  type="color"
+                  value={sidebarColor}
+                  onChange={(e) => setSidebarColor(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                />
+              </div>
+              {/* Box */}
+              <div className="relative group aspect-square">
+                <button
+                  className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10"
+                  title="Cor Boxes"
+                >
+                  <ColorButton icon={BoxSelect} color={boxColor} />
+                </button>
+                <input
+                  type="color"
+                  value={boxColor}
+                  onChange={(e) => setBoxColor(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                />
+              </div>
+              {/* Text */}
+              <div className="relative group aspect-square">
+                <button
+                  className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10"
+                  title="Cor Texto"
+                >
+                  <ColorButton icon={Type} color={textColor} />
+                </button>
+                <input
+                  type="color"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                />
+              </div>
+              {/* Primary */}
+              <div className="relative group aspect-square">
+                <button
+                  className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10"
+                  title="Cor Destaques"
+                >
+                  <ColorButton icon={Brush} color={primaryColor} />
+                </button>
+                <input
+                  type="color"
+                  value={primaryColor}
+                  onChange={(e) => setPrimaryColor(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                />
+              </div>
+            </div>
+
+            <div className="w-full h-px bg-white/10"></div>
+
+            {/* FUNDO & FONTE */}
+            <div className="grid grid-cols-4 gap-2 w-full">
               <button
-                key={item.label}
-                className="hover:underline"
-                onClick={() => navigate(item.path)}
+                className="aspect-square rounded-xl hover:bg-white/20 transition flex items-center justify-center border border-white/10 text-white/90"
+                onClick={() => setShowPersonalization(true)}
+                title="Padrões"
               >
-                {item.label}
+                <Image size={18} />
               </button>
-            ))}
+
+              <div className="relative group aspect-square">
+                <button
+                  className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10"
+                  title="Cor Fundo"
+                >
+                  <ColorButton icon={Monitor} color={backgroundColor} />
+                </button>
+                <input
+                  type="color"
+                  value={backgroundColor}
+                  onChange={(e) => setBackgroundColor(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                />
+              </div>
+
+              <button
+                className={`aspect-square rounded-xl transition flex items-center justify-center border border-white/10 ${
+                  monospace
+                    ? "bg-white text-black"
+                    : "hover:bg-white/20 text-white/90"
+                }`}
+                onClick={() => setMonospace(!monospace)}
+                title="Fonte Mono"
+              >
+                <FileCode size={18} />
+              </button>
+
+              <button
+                className="aspect-square rounded-xl hover:bg-white/20 transition flex items-center justify-center border border-white/10 text-white/90"
+                onClick={toggleDarkMode}
+                title="Dark/Light Mode"
+              >
+                {backgroundColor === "#000000" ? (
+                  <Moon size={18} />
+                ) : (
+                  <Sun size={18} />
+                )}
+              </button>
+            </div>
+
+            {/* EXTRAS */}
+            <div className="grid grid-cols-4 gap-2 w-full">
+              <div className="relative flex items-center justify-center aspect-square">
+                <button
+                  onClick={() => setShowOpacity(!showOpacity)}
+                  className={`w-full h-full rounded-xl transition flex items-center justify-center border border-white/10 ${
+                    boxOpacity < 1 || showOpacity
+                      ? "bg-white/20 text-white shadow-inner"
+                      : "hover:bg-white/20 text-white/90"
+                  }`}
+                  title="Transparência"
+                >
+                  <Ghost size={18} />
+                </button>
+                {showOpacity && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40 cursor-default"
+                      onClick={() => setShowOpacity(false)}
+                    />
+                    <div
+                      className="absolute top-full mt-2 left-0 p-3 rounded-xl shadow-xl flex flex-col gap-2 items-center z-50 w-32 animate-in fade-in zoom-in-95 duration-200 border border-white/20"
+                      // Popup com cor do tema para não destoar
+                      style={{ backgroundColor: boxColor, color: textColor }}
+                    >
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        value={boxOpacity}
+                        onChange={(e) => setBoxOpacity(Number(e.target.value))}
+                        className="w-full h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-current"
+                      />
+                      <span className="text-[10px] opacity-80 font-mono">
+                        {Math.round(boxOpacity * 100)}%
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <button
+                onClick={() => {
+                  if (window.confirm("Resetar todo o app?")) {
+                    localStorage.clear();
+                    window.location.reload();
+                  }
+                }}
+                className="aspect-square rounded-xl hover:bg-red-500/80 hover:text-white transition text-white/70 flex items-center justify-center border border-white/10"
+                title="Resetar App"
+              >
+                <RotateCcw size={18} />
+              </button>
+
+              <div className="aspect-square"></div>
+              <div className="aspect-square"></div>
+            </div>
+          </div>
+
+          <nav className="flex flex-col gap-2 w-full mt-2">
+            {menuItems.map((item) => {
+              const isActive = window.location.pathname === item.path;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => navigate(item.path)}
+                  className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-sm font-medium w-full text-left group relative overflow-hidden ${
+                    isActive
+                      ? "bg-white/20 shadow-lg font-bold text-white border border-white/20"
+                      : "hover:bg-white/10 text-white/90"
+                  }`}
+                >
+                  <span
+                    className={`transition-transform duration-300 ${
+                      isActive ? "scale-110" : "group-hover:scale-110"
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </button>
+              );
+            })}
           </nav>
         </div>
-
-        {/* Reload */}
-        <button
-          onClick={() => {
-            localStorage.clear();
-            location.reload(); // Opcional: recarrega o app
-          }}
-          className="mb-6 bg-white/20 text-white px-6 py-1 rounded-full hover:bg-white/30 flex items-center gap-2"
-        >
-          <RotateCcw size={16} />
-          Reset all
-        </button>
       </aside>
     </>
   );
