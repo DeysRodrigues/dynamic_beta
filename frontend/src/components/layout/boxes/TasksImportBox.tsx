@@ -1,7 +1,5 @@
 import { Upload, X, FileJson } from "lucide-react";
 
-
-// Definindo a interface do JSON esperado (pode ser parcial)
 interface ImportedTaskJSON {
   description: string;
   time: string;
@@ -40,25 +38,25 @@ export default function TasksImportBox({ onImport, onClose }: TasksImportBoxProp
   };
 
   return (
-    <div className="box-padrao relative animate-in fade-in zoom-in duration-200 border border-indigo-100">
+    <div className="box-padrao relative animate-in fade-in zoom-in duration-200 border-primary/20">
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+        className="absolute top-4 right-4 text-muted-foreground hover:text-destructive transition-colors"
       >
         <X size={20} />
       </button>
 
       <div className="flex flex-col items-center justify-center h-full text-center p-4">
-        <div className="bg-indigo-50 p-3 rounded-full mb-3 text-indigo-600">
+        <div className="bg-primary/10 p-3 rounded-full mb-3 text-primary">
           <FileJson size={32} />
         </div>
         
-        <h2 className="text-lg font-bold text-gray-800 mb-2">Importar Tarefas</h2>
-        <p className="text-sm text-gray-500 mb-6 max-w-[250px]">
+        <h2 className="text-lg font-bold mb-2">Importar Tarefas</h2>
+        <p className="text-sm text-muted-foreground mb-6 max-w-[250px]">
           Selecione um arquivo <code>.json</code> contendo sua lista de tarefas backup.
         </p>
 
-        <label className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 cursor-pointer transition shadow-sm font-medium">
+        <label className="flex items-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 cursor-pointer transition shadow-sm font-medium">
           <Upload size={18} />
           Selecionar Arquivo
           <input
