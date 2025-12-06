@@ -19,7 +19,7 @@ export default function TagsBox() {
 
   return (
     <div className="box-padrao">
-      <h2 className="text-lg font-semibold mb-2 text-gray-800">
+      <h2 className="text-lg font-semibold mb-2">
         Quais tags você quer usar?
       </h2>
 
@@ -30,11 +30,11 @@ export default function TagsBox() {
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 px-3 py-1.5 rounded-lg bg-white border border-gray-200 outline-none focus:ring-2 focus:ring-purple-200 transition-all text-sm"
+          className="flex-1 px-3 py-1.5 rounded-lg bg-background border outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
         />
         <button
           onClick={handleAddTag}
-          className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
           title="Adicionar Tag"
         >
           <Plus size={18} />
@@ -46,19 +46,19 @@ export default function TagsBox() {
           tags.map((tag, index) => (
             <div
               key={index}
-              className="flex items-center bg-white border border-gray-200 text-gray-700 text-sm px-3 py-1 rounded-full shadow-sm"
+              className="flex items-center bg-background border text-foreground text-sm px-3 py-1 rounded-full shadow-sm"
             >
               <span className="mr-2 font-medium">{tag}</span>
               <button
                 onClick={() => removeTag(index)}
-                className="text-gray-400 hover:text-red-500 transition-colors"
+                className="text-muted-foreground hover:text-destructive transition-colors"
               >
                 <X size={14} />
               </button>
             </div>
           ))
         ) : (
-          <p className="text-sm text-gray-500 italic">Nenhuma tag definida.</p>
+          <p className="text-sm text-muted-foreground italic">Nenhuma tag definida.</p>
         )}
       </div>
     </div>
