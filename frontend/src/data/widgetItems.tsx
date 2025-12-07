@@ -17,10 +17,6 @@ import {
   Palette,
   BarChart3,
   Tags,
-  AppWindow,
-  Ghost,
-  Rocket,
-  Cat,
   Gamepad2,
   Droplets,
   Share2,
@@ -163,38 +159,7 @@ export const nativeWidgets = [
 // 2. EMBEDS (Links para Copiar)
 // =====================================================================
 export const embedWidgets = [
-  {
-    id: "window",
-    title: "Janela Virtual",
-    description: "Paisagem dinâmica.",
-    path: "/w/window",
-    icon: <AppWindow size={24} />,
-    color: "text-sky-500 bg-sky-500/10 border-sky-500/20",
-  },
-  {
-    id: "pet",
-    title: "Virtual Dino",
-    description: "Pet interativo.",
-    path: "/w/pet",
-    icon: <Ghost size={24} />,
-    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
-  },
-  {
-    id: "space",
-    title: "Space Orbit",
-    description: "Sistema solar zen.",
-    path: "/w/space",
-    icon: <Rocket size={24} />,
-    color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
-  },
-  {
-    id: "cat",
-    title: "Gato Zen",
-    description: "Gatinho dorminhoco.",
-    path: "/w/cat",
-    icon: <Cat size={24} />,
-    color: "text-pink-400 bg-pink-400/10 border-pink-400/20",
-  },
+
   {
     id: "snake",
     title: "Pixel Snake",
