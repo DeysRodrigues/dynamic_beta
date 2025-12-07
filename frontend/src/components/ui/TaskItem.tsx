@@ -36,8 +36,7 @@ export default function TaskItem({
   return (
     <div 
       className={cn(
-        "group relative flex items-center gap-3 p-3 rounded-xl border shadow-sm transition-all duration-200",
-        // CORREÇÃO: bg-card removido. Agora usa transparência.
+        "group relative flex items-center gap-3 p-3 rounded-xl shadow-sm transition-all duration-200",
         "bg-black/5 border-current/10 hover:bg-black/10"
       )}
     >
