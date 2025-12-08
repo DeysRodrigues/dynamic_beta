@@ -2,9 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import {
-  Bell, Menu, RotateCcw, Type, ShoppingBag, X,
-  PaintBucket, Ghost, BoxSelect, Moon, Sun,
-  FileCode, Brush, Monitor, Image,
+  Bell,
+  Menu,
+  RotateCcw,
+  Type,
+  ShoppingBag,
+  X,
+  PaintBucket,
+  Ghost,
+  BoxSelect,
+  Moon,
+  Sun,
+  FileCode,
+  Brush,
+  Monitor,
+  Image,
 } from "lucide-react";
 
 import PersonalizationModal from "./modals/PersonalizationModal";
@@ -14,16 +26,18 @@ interface SidebarProps {
   items?: { label: string; icon?: React.ReactNode; path: string }[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ColorButton = React.memo(({ icon: Icon, color }: { icon: any; color: string }) => (
-  <div className="relative flex items-center justify-center w-full h-full pointer-events-none">
-    <Icon size={18} className="text-white/90 drop-shadow-sm" />
-    <div
-      className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full border border-white/30 shadow-sm"
-      style={{ backgroundColor: color }}
-    />
-  </div>
-));
+const ColorButton = React.memo(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ({ icon: Icon, color }: { icon: any; color: string }) => (
+    <div className="relative flex items-center justify-center w-full h-full pointer-events-none">
+      <Icon size={18} className="text-white/90 drop-shadow-sm" />
+      <div
+        className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 rounded-full border border-white/30 shadow-sm"
+        style={{ backgroundColor: color }}
+      />
+    </div>
+  )
+);
 
 const Sidebar = React.memo(({ items }: SidebarProps) => {
   const [open, setOpen] = useState(false);
@@ -32,12 +46,19 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
   const [monospace, setMonospace] = useState(false);
 
   const {
-    sidebarColor, setSidebarColor,
-    boxOpacity, setBoxOpacity,
-    boxColor, setBoxColor,
-    textColor, setTextColor,
-    primaryColor, setPrimaryColor,
-    backgroundColor, setBackgroundColor,
+    sidebarColor,
+    setSidebarColor,
+    boxOpacity,
+    setBoxOpacity,
+    boxColor,
+    setBoxColor,
+    textColor,
+    setTextColor,
+    primaryColor,
+    setPrimaryColor,
+    backgroundColor,
+    setBackgroundColor,
+    wallpaper,
     applyPreset,
   } = useThemeStore(
     useShallow((state) => ({
@@ -53,6 +74,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       setPrimaryColor: state.setPrimaryColor,
       backgroundColor: state.backgroundColor,
       setBackgroundColor: state.setBackgroundColor,
+      wallpaper: state.wallpaper,
       applyPreset: state.applyPreset,
     }))
   );
@@ -67,35 +89,48 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
   useEffect(() => {
     const body = document.body;
     if (monospace) {
-      body.style.setProperty("font-family", "'Cascadia Mono', 'Courier New', monospace", "important");
+      body.style.setProperty(
+        "font-family",
+        "'Cascadia Mono', 'Courier New', monospace",
+        "important"
+      );
     } else {
       body.style.removeProperty("font-family");
     }
   }, [monospace]);
 
   const toggleDarkMode = () => {
-    const isLight = backgroundColor === "#f9fafb" || backgroundColor === "#ffffff";
-    if (isLight) {
-      applyPreset({
-        backgroundColor: "#000000",
-        boxColor: "#000000",
-        sidebarColor: "#000000",
-        textColor: "#ffffff",
-        primaryColor: "#8b5cf6",
-        boxOpacity: 1,
-        wallpaper: "plain",
-      });
-    } else {
-      applyPreset({
-        backgroundColor: "#f9fafb",
-        boxColor: "#ffffff",
-        sidebarColor: "hsl(222.2 47.4% 11.2%)",
-        textColor: "#1e293b",
-        primaryColor: "hsl(222.2 47.4% 11.2%)",
-        boxOpacity: 1,
-        wallpaper: "plain",
-      });
-    }
+    const isLight =
+      backgroundColor === "#f9fafb" || backgroundColor === "#ffffff";
+
+    const darkColors = {
+      backgroundColor: "#000000",
+      boxColor: "#000000",
+      sidebarColor: "#000000",
+      textColor: "#ffffff",
+      primaryColor: "#8b5cf6",
+      boxOpacity: 1,
+    };
+
+    const lightColors = {
+      backgroundColor: "#f9fafb",
+      boxColor: "#ffffff",
+      sidebarColor: "hsl(222.2 47.4% 11.2%)",
+      textColor: "#1e293b",
+      primaryColor: "hsl(222.2 47.4% 11.2%)",
+      boxOpacity: 1,
+    };
+
+    const colorsToApply = isLight ? darkColors : lightColors;
+
+    // Verifica: O usuário tem wallpaper customizado
+    // Se NÃO tiver (wallpaper !== 'custom'), forçamos 'plain'.
+    // Se TIVER, não passamos a propriedade 'wallpaper', mantendo a atual.
+    const preset = {
+      ...colorsToApply,
+      ...(wallpaper !== "custom" && { wallpaper: "plain" as const }),
+    };
+    applyPreset(preset);
   };
 
   const defaultItems = [
@@ -136,10 +171,12 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
         style={{ backgroundColor: sidebarColor }}
       >
         <div className="flex flex-col items-center gap-6 w-full px-4 overflow-y-auto custom-scrollbar">
-          
           <div className="flex flex-col items-center gap-3 w-full">
             <div className="w-full flex justify-end px-2">
-              <Bell size={20} className="cursor-pointer hover:text-white/80 transition" />
+              <Bell
+                size={20}
+                className="cursor-pointer hover:text-white/80 transition"
+              />
             </div>
 
             <div className="relative group cursor-pointer">
@@ -151,7 +188,9 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
             </div>
 
             <div className="text-center">
-              <h2 className="font-bold text-xl tracking-tight">Dynamic Notes</h2>
+              <h2 className="font-bold text-xl tracking-tight">
+                Dynamic Notes
+              </h2>
               <p className="text-xs text-white/70 font-medium bg-black/10 px-3 py-1 rounded-full mt-1">
                 cats & tasks
               </p>
@@ -159,16 +198,38 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
           </div>
 
           <div className="flex flex-col gap-3 bg-black/10 p-3 rounded-2xl w-full">
-            
             <div className="grid grid-cols-4 gap-2 w-full">
               {[
-                { label: "Sidebar", val: sidebarColor, set: setSidebarColor, icon: PaintBucket },
-                { label: "Box", val: boxColor, set: setBoxColor, icon: BoxSelect },
-                { label: "Text", val: textColor, set: setTextColor, icon: Type },
-                { label: "Accent", val: primaryColor, set: setPrimaryColor, icon: Brush },
+                {
+                  label: "Sidebar",
+                  val: sidebarColor,
+                  set: setSidebarColor,
+                  icon: PaintBucket,
+                },
+                {
+                  label: "Box",
+                  val: boxColor,
+                  set: setBoxColor,
+                  icon: BoxSelect,
+                },
+                {
+                  label: "Text",
+                  val: textColor,
+                  set: setTextColor,
+                  icon: Type,
+                },
+                {
+                  label: "Accent",
+                  val: primaryColor,
+                  set: setPrimaryColor,
+                  icon: Brush,
+                },
               ].map((ctrl) => (
                 <div key={ctrl.label} className="relative group aspect-square">
-                  <button className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10" title={`Cor ${ctrl.label}`}>
+                  <button
+                    className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10"
+                    title={`Cor ${ctrl.label}`}
+                  >
                     <ColorButton icon={ctrl.icon} color={ctrl.val} />
                   </button>
                   <input
@@ -193,7 +254,10 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
               </button>
 
               <div className="relative group aspect-square">
-                <button className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10" title="Cor Fundo">
+                <button
+                  className="w-full h-full rounded-xl hover:bg-white/20 transition border border-white/10"
+                  title="Cor Fundo"
+                >
                   <ColorButton icon={Monitor} color={backgroundColor} />
                 </button>
                 <input
@@ -206,7 +270,9 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
 
               <button
                 className={`aspect-square rounded-xl transition flex items-center justify-center border border-white/10 ${
-                  monospace ? "bg-white text-black" : "hover:bg-white/20 text-white/90"
+                  monospace
+                    ? "bg-white text-black"
+                    : "hover:bg-white/20 text-white/90"
                 }`}
                 onClick={() => setMonospace(!monospace)}
                 title="Fonte Mono"
@@ -219,7 +285,11 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
                 onClick={toggleDarkMode}
                 title="Dark/Light Mode"
               >
-                {backgroundColor === "#000000" ? <Moon size={18} /> : <Sun size={18} />}
+                {backgroundColor === "#000000" ? (
+                  <Moon size={18} />
+                ) : (
+                  <Sun size={18} />
+                )}
               </button>
             </div>
 
@@ -228,16 +298,21 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
                 <button
                   onClick={() => setShowOpacity(!showOpacity)}
                   className={`w-full h-full rounded-xl transition flex items-center justify-center border border-white/10 ${
-                    boxOpacity < 1 || showOpacity ? "bg-white/20 text-white shadow-inner" : "hover:bg-white/20 text-white/90"
+                    boxOpacity < 1 || showOpacity
+                      ? "bg-white/20 text-white shadow-inner"
+                      : "hover:bg-white/20 text-white/90"
                   }`}
                   title="Transparência"
                 >
                   <Ghost size={18} />
                 </button>
-                
+
                 {showOpacity && (
                   <>
-                    <div className="fixed inset-0 z-40 cursor-default" onClick={() => setShowOpacity(false)} />
+                    <div
+                      className="fixed inset-0 z-40 cursor-default"
+                      onClick={() => setShowOpacity(false)}
+                    />
                     <div
                       className="absolute top-full mt-2 left-0 p-3 rounded-xl shadow-xl flex flex-col gap-2 items-center z-50 w-32 animate-in fade-in zoom-in-95 duration-200 border border-white/20"
                       style={{ backgroundColor: boxColor, color: textColor }}
@@ -287,7 +362,11 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
                       : "hover:bg-white/10 text-white/90"
                   }`}
                 >
-                  <span className={`transition-transform duration-300 ${isActive ? "scale-110" : "group-hover:scale-110"}`}>
+                  <span
+                    className={`transition-transform duration-300 ${
+                      isActive ? "scale-110" : "group-hover:scale-110"
+                    }`}
+                  >
                     {item.icon}
                   </span>
                   {item.label}
