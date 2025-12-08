@@ -52,7 +52,7 @@ export default function NotificationBell() {
           className="text-white/90 group-hover:text-white transition"
         />
         {hasNewUpdate && (
-          <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-primary animate-pulse shadow-sm z-10" />
+          <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full border-2 border-primary animate-pulse shadow-sm z-10" />
         )}
       </button>
 
