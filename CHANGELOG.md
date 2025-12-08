@@ -27,6 +27,21 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ---
 
+## [0.3.1] - 2025-12-07
+### Performance
+- **Critical Rendering Fix:** Resolved a major issue where the Sidebar and Dashboard Header would flicker (re-render) every second while the Pomodoro timer was active.
+- **Lazy Loading:** Implemented `React.lazy` and `Suspense` with a custom `BoxLoader` for all dashboard widgets. Widgets now load on-demand, significantly improving initial page load time.
+- **Memoization Strategy:** Applied `React.memo` and `useCallback` to `Sidebar`, `ColorButton`, and `DashboardHeader` to ensure UI stability during high-frequency state updates.
+- **State Selection:** Integrated `useShallow` from Zustand in critical components to prevent unnecessary re-renders when unrelated store data changes.
+
+### Refactor
+- **Store Architecture:** Rewrote `useDashboardStore` using **Immer** middleware for cleaner immutable state updates.
+- **Atomic Actions:** Implemented atomic operations (e.g., `removeBox`) within the store to update both `boxes` and `layouts` arrays simultaneously. This prevents "zombie child" crashes when modifying the grid while timers are running.
+- **Sidebar Decoupling:** Refactored `Sidebar` to be autonomous (removed dependency on parent props) and isolated the `SidebarCustomizationPanel` to contain its own state logic.
+- **Code Cleanup:** Replaced verbose `if/else` logic for widget heights with a constant configuration map (`WIDGET_HEIGHTS`).
+
+---
+
 ## [0.3.0] - 2025-12-06
 ### Added
 - **Theme System:**
