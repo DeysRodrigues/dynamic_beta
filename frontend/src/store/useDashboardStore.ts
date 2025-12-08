@@ -8,9 +8,9 @@ import { STORAGE_KEYS } from "@/constants/storageKeys";
 
 // Mapa de Alturas (Evita aquele monte de "if/else")
 const WIDGET_HEIGHTS: Record<string, number> = {
-  embedded: 6,
-  calendar: 5,
-  tasks: 6,
+  embedded: 3,
+  calendar: 3,
+  tasks: 4,
   pomodoro: 4,
   notepad: 4,
   goals: 4,
@@ -23,6 +23,8 @@ const WIDGET_HEIGHTS: Record<string, number> = {
   sleep: 3,
   library: 3,
   theme: 2,
+  snippet: 5,
+  quicklinks: 5,
   // fallback
   default: 4,
 };
