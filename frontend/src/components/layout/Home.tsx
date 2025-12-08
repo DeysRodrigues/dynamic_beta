@@ -42,6 +42,8 @@ const AutomationBox = React.lazy(() => import("./boxes/AutomationBox"));
 const QuickWorkoutBox = React.lazy(() => import("./boxes/QuickWorkoutBox"));
 const CozyLibraryBox = React.lazy(() => import("./boxes/CozyLibraryBox"));
 const CountdownBox = React.lazy(() => import("./boxes/CountdownBox"));
+const CodeSnippetBox = React.lazy(() => import("./boxes/CodeSnippetBox"));
+const QuickLinksBox = React.lazy(() => import("./boxes/QuickLinksBox"));
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -130,7 +132,6 @@ const DashboardHeader = React.memo(
                 >
                   <FileText size={16} className="text-yellow-500" /> Notas
                 </button>
-               
               </div>
             )}
           </div>
@@ -163,7 +164,6 @@ const DashboardHeader = React.memo(
 // --- 3. COMPONENTE PRINCIPAL ---
 
 export default function Dashboard() {
- 
   const { layouts, setLayouts, boxes, resetDashboard, addBox, removeBox } =
     useDashboardStore(
       useShallow((state) => ({
@@ -219,6 +219,10 @@ export default function Dashboard() {
         return <CozyLibraryBox id={id} />;
       case "countdown":
         return <CountdownBox id={id} />;
+      case "snippet":
+        return <CodeSnippetBox id={id} />;
+      case "quicklinks":
+        return <QuickLinksBox id={id} />;
       default:
         return null;
     }
