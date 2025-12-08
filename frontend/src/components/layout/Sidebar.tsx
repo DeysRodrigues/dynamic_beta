@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import {
-  Bell,
   Menu,
   RotateCcw,
   Type,
@@ -21,6 +20,7 @@ import {
 
 import PersonalizationModal from "./modals/PersonalizationModal";
 import { useThemeStore } from "@/store/useThemeStore";
+import NotificationBell from "./NotificationBell";
 
 interface SidebarProps {
   items?: { label: string; icon?: React.ReactNode; path: string }[];
@@ -173,10 +173,8 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
         <div className="flex flex-col items-center gap-6 w-full px-4 overflow-y-auto custom-scrollbar">
           <div className="flex flex-col items-center gap-3 w-full">
             <div className="w-full flex justify-end px-2">
-              <Bell
-                size={20}
-                className="cursor-pointer hover:text-white/80 transition"
-              />
+              {/* Componente inteligente de notificação */}
+              <NotificationBell />
             </div>
 
             <div className="relative group cursor-pointer">
