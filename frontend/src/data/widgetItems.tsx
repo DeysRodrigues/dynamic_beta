@@ -20,6 +20,8 @@ import {
   Gamepad2,
   Droplets,
   Share2,
+  Terminal,
+  Link2,
 } from "lucide-react";
 
 // =====================================================================
@@ -153,13 +155,26 @@ export const nativeWidgets = [
     icon: <Tags size={24} />,
     color: "text-violet-500 bg-violet-500/10 border-violet-500/20",
   },
+  {
+    id: "snippet",
+    title: "Code Snippets",
+    description: "Seu banco de códigos e comandos.",
+    icon: <Terminal size={24} />,
+    color: "text-slate-400 bg-slate-500/10 border-slate-500/20",
+  },
+  {
+    id: "quicklinks",
+    title: "Quick Links",
+    description: "Links favoritos organizados por abas.",
+    icon: <Link2 size={24} />,
+    color: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  },
 ];
 
 // =====================================================================
 // 2. EMBEDS (Links para Copiar)
 // =====================================================================
 export const embedWidgets = [
-
   {
     id: "snake",
     title: "Pixel Snake",
