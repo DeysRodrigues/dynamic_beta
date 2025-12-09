@@ -10,8 +10,8 @@ import { STORAGE_KEYS } from "@/constants/storageKeys";
 const WIDGET_HEIGHTS: Record<string, number> = {
   embedded: 3,
   calendar: 3,
-  tasks: 4,
-  pomodoro: 4,
+  tasks: 3,
+  pomodoro: 3,
   notepad: 4,
   goals: 4,
   garden: 4,
@@ -23,10 +23,10 @@ const WIDGET_HEIGHTS: Record<string, number> = {
   sleep: 3,
   library: 3,
   theme: 2,
-  snippet: 5,
-  quicklinks: 5,
+  snippet: 3,
+  quicklinks: 3,
   // fallback
-  default: 4,
+  default: 3,
 };
 
 const DEFAULT_BOXES = ["tasks", "progress", "pomodoro", "tags"];
@@ -52,7 +52,11 @@ const DEFAULT_LAYOUTS: Layouts = {
   ],
 };
 
-const generateId = (type: string) => `${type}-${Math.random().toString(36).substr(2, 9)}`;
+const generateId = (type: string) =>
+  `${type}-${Math.random().toString(36).substr(2, 9)}`;
+
+// Definição das Colunas por Breakpoint (Deve bater com o Home.tsx)
+const COLS = { lg: 4, md: 2, sm: 1 };
 
 // --- 2. TYPES ---
 
@@ -74,8 +78,10 @@ interface DashboardActions {
 // --- 3. STORE OTIMIZADA ---
 
 export const useDashboardStore = create<DashboardState & DashboardActions>()(
-  subscribeWithSelector( // 1. Permite assinaturas granulares
-    immer( // 2. Permite mutações diretas (draft)
+  subscribeWithSelector(
+    // 1. Permite assinaturas granulares
+    immer(
+      // 2. Permite mutações diretas (draft)
       persist(
         (set) => ({
           // Estado Inicial
@@ -92,16 +98,55 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
             set((state) => {
               const newId = generateId(type);
               const height = WIDGET_HEIGHTS[type] || WIDGET_HEIGHTS.default;
-              
+
               // Adiciona na lista de IDs
               state.boxes.push(newId);
 
-              // Adiciona no Layout (Atomicamente)
-              const newLayoutItem: Layout = { i: newId, x: 0, y: Infinity, w: 1, h: height };
-              
-              // Atualiza todos os breakpoints de uma vez
-              (['lg', 'md', 'sm'] as const).forEach(bp => {
+              // Adiciona no Layout (Calculando a melhor posição X)
+              (["lg", "md", "sm"] as const).forEach((bp) => {
                 if (!state.layouts[bp]) state.layouts[bp] = [];
+
+                const currentLayout = state.layouts[bp];
+                const numCols = COLS[bp];
+
+                // 1. Calcula a altura ocupada (Y max) de cada coluna
+                const colY = new Array(numCols).fill(0);
+
+                currentLayout.forEach((item) => {
+                  const itemX = item.x || 0;
+                  const itemW = item.w || 1;
+                  const itemY = item.y || 0;
+                  const itemH = item.h || 1;
+                  const bottom = itemY + itemH;
+
+                  // Atualiza a altura de todas as colunas que esse widget ocupa
+                  for (let i = itemX; i < itemX + itemW && i < numCols; i++) {
+                    if (bottom > colY[i]) {
+                      colY[i] = bottom;
+                    }
+                  }
+                });
+
+                // 2. Encontra a coluna mais "curta" (menor Y)
+                let targetX = 0;
+                let minY = Infinity;
+
+                for (let i = 0; i < numCols; i++) {
+                  if (colY[i] < minY) {
+                    minY = colY[i];
+                    targetX = i;
+                  }
+                }
+
+                // 3. Cria o widget nessa coluna
+                const newLayoutItem: Layout = {
+                  i: newId,
+                  x: targetX,
+                  y: Infinity, // Vai para o final da coluna escolhida
+                  w: 1,
+                  h: height,
+                };
+
                 state.layouts[bp].push(newLayoutItem);
               });
             }),
