@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { 
   CheckCircle2, Layout, 
   Save, Download, Palette, Image as ImageIcon 
 } from "lucide-react";
+import { useShallow } from "zustand/react/shallow";
 
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { useThemeStore } from "@/store/useThemeStore";
@@ -11,46 +12,132 @@ import { useBoxContentStore } from "@/store/useBoxContentStore";
 
 import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
 
+// --- COMPONENTES MEMOIZADOS (Evitam Re-renders em massa) ---
+
+// 1. Card de Setup Completo
+const SetupCard = memo(({ setup, onInstall }: { setup: any; onInstall: (s: any) => void }) => (
+  <div className="box-padrao p-0 overflow-hidden group flex flex-col min-h-[220px] relative hover:ring-2 ring-primary transition-all">
+    <div className="h-28 w-full relative" style={{ backgroundColor: setup.theme.backgroundColor }}>
+       {setup.theme.customImage && <img src={setup.theme.customImage} alt="bg" className="absolute inset-0 w-full h-full object-cover opacity-50" />}
+       <div className="absolute top-3 left-3 p-2 rounded-xl shadow-lg text-white z-10" style={{ backgroundColor: setup.theme.primaryColor }}>{setup.icon}</div>
+    </div>
+    <div className="p-4 flex-1 flex flex-col justify-between bg-current/5">
+      <div>
+        <h3 className="font-bold text-lg">{setup.name}</h3>
+        <p className="text-xs opacity-60 line-clamp-2 mt-1">{setup.description}</p>
+      </div>
+      <button onClick={() => onInstall(setup)} className="w-full mt-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:opacity-90 flex items-center justify-center gap-2 shadow-sm">
+        <Download size={14}/> Instalar Setup
+      </button>
+    </div>
+  </div>
+));
+
+// 2. Card de Tema de Imersão
+const ThemeCard = memo(({ theme, isApplied, onApply }: { theme: any; isApplied: boolean; onApply: (t: any) => void }) => (
+  <div className="box-padrao p-0 overflow-hidden flex flex-col min-h-[160px] relative">
+    <div className={`h-20 w-full relative ${theme.previewColor}`}>
+      {theme.theme.customImage && <img src={theme.theme.customImage} className="w-full h-full object-cover opacity-60" />}
+      {theme.theme.wallpaper === 'grid' && <div className="absolute inset-0 opacity-20 bg-[url('https://transparenttextures.com/patterns/graphy.png')]"></div>}
+      {theme.theme.wallpaper === 'blueprint' && <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>}
+    </div>
+    <div className="p-4 flex flex-col justify-between flex-1">
+      <div><h3 className="font-bold text-base">{theme.name}</h3><p className="text-xs opacity-60">{theme.description}</p></div>
+      <button 
+        onClick={() => onApply(theme)} 
+        className={`mt-3 w-full py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 ${
+          isApplied 
+            ? "bg-green-500 text-white" 
+            : "bg-current/5 border border-current/10 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+        }`}
+      >
+        {isApplied ? <><CheckCircle2 size={14} /> Aplicado</> : "Aplicar Visual"}
+      </button>
+    </div>
+  </div>
+));
+
+// 3. Card de Paleta de Cores
+const PaletteCard = memo(({ palette, isApplied, onApply }: { palette: any; isApplied: boolean; onApply: (p: any) => void }) => (
+  <div 
+    className="box-padrao p-3 flex flex-col items-center justify-center text-center gap-2 hover:border-primary/50 transition-colors cursor-pointer" 
+    onClick={() => onApply(palette)}
+  >
+    <div className="flex -space-x-2">
+      <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: palette.theme.backgroundColor }} />
+      <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: palette.theme.primaryColor }} />
+      <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: palette.theme.sidebarColor }} />
+    </div>
+    <div><h3 className="font-bold text-sm">{palette.name}</h3><p className="text-[10px] opacity-50 line-clamp-1">{palette.description}</p></div>
+    <button className={`mt-1 text-[10px] font-bold px-3 py-1 rounded-full transition ${isApplied ? 'bg-green-500 text-white' : 'bg-current/10'}`}>
+       {isApplied ? "Ok" : "Usar Cores"}
+    </button>
+  </div>
+));
+
+// --- PÁGINA PRINCIPAL ---
+
 export default function ThemesPage() {
-  const { boxes, layouts, loadDashboardState } = useDashboardStore();
-  const themeStore = useThemeStore();
-  const { saveTemplate } = useLayoutTemplateStore();
-  const contentStore = useBoxContentStore();
+  // 1. OTIMIZAÇÃO: Seletores Shallow e Ações Estáveis
+  const { boxes, layouts, loadDashboardState } = useDashboardStore(
+    useShallow(state => ({ 
+      boxes: state.boxes, 
+      layouts: state.layouts, 
+      loadDashboardState: state.loadDashboardState 
+    }))
+  );
+
+  const applyPreset = useThemeStore(state => state.applyPreset);
+  const saveTemplate = useLayoutTemplateStore(state => state.saveTemplate);
+  
+  const { contents, loadAllContents } = useBoxContentStore(
+    useShallow(state => ({ 
+      contents: state.contents, 
+      loadAllContents: state.loadAllContents 
+    }))
+  );
   
   const [applied, setApplied] = useState<string | null>(null);
   const [newSetupName, setNewSetupName] = useState("");
 
-  const handleSaveSetup = () => {
+  // 2. OTIMIZAÇÃO: Acesso direto ao State para salvar (sem re-render ao mudar tema)
+  const handleSaveSetup = useCallback(() => {
     if (!newSetupName.trim()) return alert("Dê um nome para o seu setup!");
+    
+    // Pega o estado ATUAL do tema diretamente, sem causar re-render no componente
+    const currentThemeState = useThemeStore.getState();
     const currentTheme = {
-      wallpaper: themeStore.wallpaper, customImage: themeStore.customImage, sidebarColor: themeStore.sidebarColor,
-      primaryColor: themeStore.primaryColor, boxOpacity: themeStore.boxOpacity, boxColor: themeStore.boxColor,
-      textColor: themeStore.textColor, backgroundColor: themeStore.backgroundColor
+      wallpaper: currentThemeState.wallpaper, 
+      customImage: currentThemeState.customImage, 
+      sidebarColor: currentThemeState.sidebarColor,
+      primaryColor: currentThemeState.primaryColor, 
+      boxOpacity: currentThemeState.boxOpacity, 
+      boxColor: currentThemeState.boxColor,
+      textColor: currentThemeState.textColor, 
+      backgroundColor: currentThemeState.backgroundColor
     };
-    saveTemplate(newSetupName, boxes, layouts, currentTheme, contentStore.contents);
+
+    saveTemplate(newSetupName, boxes, layouts, currentTheme, contents);
     setNewSetupName("");
     alert(`Setup "${newSetupName}" salvo com sucesso!`);
-  };
+  }, [newSetupName, boxes, layouts, contents, saveTemplate]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleLoadSetup = (template: any) => {
-    if (confirm(`⚠️ Atenção: Instalar "${template.name}" irá substituir todos os seus widgets atuais. Continuar?`)) {
+  const handleLoadSetup = useCallback((template: any) => {
+    if (confirm(`Atenção: Instalar "${template.name}" irá substituir todos os seus widgets atuais. Continuar?`)) {
       loadDashboardState(template.boxes, template.layouts);
-      if (template.theme) themeStore.applyPreset(template.theme);
-      if (template.content) contentStore.loadAllContents(template.content);
+      if (template.theme) applyPreset(template.theme);
+      if (template.content) loadAllContents(template.content);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  };
+  }, [loadDashboardState, applyPreset, loadAllContents]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleApplyTheme = (themeItem: any) => {
-    themeStore.applyPreset(themeItem.theme);
+  const handleApplyTheme = useCallback((themeItem: any) => {
+    applyPreset(themeItem.theme);
     setApplied(themeItem.id);
     setTimeout(() => setApplied(null), 1500);
-  };
+  }, [applyPreset]);
 
   return (
-    // CORREÇÃO: Adicionado style={{ color: 'var(--box-text-color)' }} para adaptar ao tema
     <div 
       className="p-6 max-w-7xl mx-auto space-y-16 animate-in fade-in duration-500 pb-20"
       style={{ color: 'var(--box-text-color)' }}
@@ -75,21 +162,11 @@ export default function ThemesPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {readySetups.map((setup) => (
-            <div key={setup.id} className="box-padrao p-0 overflow-hidden group flex flex-col min-h-[220px] relative hover:ring-2 ring-primary transition-all">
-              <div className="h-28 w-full relative" style={{ backgroundColor: setup.theme.backgroundColor }}>
-                 {setup.theme.customImage && <img src={setup.theme.customImage} alt="bg" className="absolute inset-0 w-full h-full object-cover opacity-50" />}
-                 <div className="absolute top-3 left-3 p-2 rounded-xl shadow-lg text-white z-10" style={{ backgroundColor: setup.theme.primaryColor }}>{setup.icon}</div>
-              </div>
-              <div className="p-4 flex-1 flex flex-col justify-between bg-current/5">
-                <div>
-                  <h3 className="font-bold text-lg">{setup.name}</h3>
-                  <p className="text-xs opacity-60 line-clamp-2 mt-1">{setup.description}</p>
-                </div>
-                <button onClick={() => handleLoadSetup(setup)} className="w-full mt-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:opacity-90 flex items-center justify-center gap-2 shadow-sm">
-                  <Download size={14}/> Instalar Setup
-                </button>
-              </div>
-            </div>
+            <SetupCard 
+              key={setup.id} 
+              setup={setup} 
+              onInstall={handleLoadSetup} 
+            />
           ))}
         </div>
       </section>
@@ -106,19 +183,12 @@ export default function ThemesPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {wallpaperThemes.map((t) => (
-            <div key={t.id} className="box-padrao p-0 overflow-hidden flex flex-col min-h-[160px] relative">
-              <div className={`h-20 w-full relative ${t.previewColor}`}>
-                {t.theme.customImage && <img src={t.theme.customImage} className="w-full h-full object-cover opacity-60" />}
-                {t.theme.wallpaper === 'grid' && <div className="absolute inset-0 opacity-20 bg-[url('https://transparenttextures.com/patterns/graphy.png')]"></div>}
-                {t.theme.wallpaper === 'blueprint' && <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>}
-              </div>
-              <div className="p-4 flex flex-col justify-between flex-1">
-                <div><h3 className="font-bold text-base">{t.name}</h3><p className="text-xs opacity-60">{t.description}</p></div>
-                <button onClick={() => handleApplyTheme(t)} className={`mt-3 w-full py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 ${applied === t.id ? "bg-green-500 text-white" : "bg-current/5 border border-current/10 hover:bg-primary/10 hover:text-primary hover:border-primary/30"}`}>
-                  {applied === t.id ? <><CheckCircle2 size={14} /> Aplicado</> : "Aplicar Visual"}
-                </button>
-              </div>
-            </div>
+            <ThemeCard 
+              key={t.id} 
+              theme={t} 
+              isApplied={applied === t.id}
+              onApply={handleApplyTheme} 
+            />
           ))}
         </div>
       </section>
@@ -134,17 +204,12 @@ export default function ThemesPage() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {colorPalettes.map((p) => (
-            <div key={p.id} className="box-padrao p-3 flex flex-col items-center justify-center text-center gap-2 hover:border-primary/50 transition-colors cursor-pointer" onClick={() => handleApplyTheme(p)}>
-              <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: p.theme.backgroundColor }} />
-                <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: p.theme.primaryColor }} />
-                <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: p.theme.sidebarColor }} />
-              </div>
-              <div><h3 className="font-bold text-sm">{p.name}</h3><p className="text-[10px] opacity-50 line-clamp-1">{p.description}</p></div>
-              <button className={`mt-1 text-[10px] font-bold px-3 py-1 rounded-full transition ${applied === p.id ? 'bg-green-500 text-white' : 'bg-current/10'}`}>
-                 {applied === p.id ? "Ok" : "Usar Cores"}
-              </button>
-            </div>
+            <PaletteCard 
+              key={p.id} 
+              palette={p} 
+              isApplied={applied === p.id}
+              onApply={handleApplyTheme} 
+            />
           ))}
         </div>
       </section>
