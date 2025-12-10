@@ -1,12 +1,12 @@
 export const APP_UPDATES = {
-  version: "0.3.3",
+  version: "0.5.0",
   date: "10 de Dezembro",
 
   // 1. Personalize o ícone do topo
   emoji: "🛡️",
 
   // 2. O Título principal
-  title: "Versão 0.3.3: Controle de Danos & Foco",
+  title: "Controle de Danos & Foco",
 
   // 3. O "Recado"
   message:

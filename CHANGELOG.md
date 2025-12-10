@@ -26,7 +26,7 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - Custom notification sounds and settings integration.
 
 ---
-## [0.3.3] - 2025-12-10
+## [0.5.0] - 2025-12-10
 ### Added
 - **Global Pomodoro Architecture:**
     - Implementation of `PomodoroManager` and `usePomodoroStore` to decouple timer logic from the Home page.
@@ -42,7 +42,7 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
     - Rewrote the `addBox` logic in `useDashboardStore`. New widgets are now automatically inserted into the shortest available column (lowest Y) instead of being appended to the very bottom of the layout.
 
 ---
-## [0.3.2] - 2025-12-08
+## [0.4.0] - 2025-12-08
 ### Added
    - Code Snippets Box: Added a new widget to save recurring commands and code snippets (e.g., Git commands), solving the "forgetting" problem.
    - Quick Links Box: Implemented a tabbed link manager to organize favorites, allowing separation between different contexts (e.g., "Study" vs "Leisure").
