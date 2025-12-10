@@ -1,24 +1,25 @@
 export const APP_UPDATES = {
-  version: "0.3.2",
-  date: "08 de Dezembro",
+  version: "0.3.3",
+  date: "10 de Dezembro",
 
   // 1. Personalize o ícone do topo
-  emoji: "",
+  emoji: "🛡️",
 
   // 2. O Título principal
-  title: "Olá, essa é primeira notificação do Dynamic :), e tem atualização nesse djabo.",
+  title: "Versão 0.3.3: Controle de Danos & Foco",
 
-  // 3. O "Recado" (Parágrafo livre para conversar com o usuário)
+  // 3. O "Recado"
   message:
-    "Obrigada por estar junto nessa, daqui pra frente as novas atualizações estarão aqui pra você não perder nadinha.",
+    "Chega de reprovar por falta ou perder o foco ao trocar de aba. Essa atualização é para quem precisa manter a vida nos trilhos (ou pelo menos tentar).",
 
-  // 4. A lista técnica (Bullet points)
-items: [
-  "🚀 Performance: A Home agora carrega numa lapada só. Testa ai pra tu ver :p",
-  "🌙 Dark Mode: Agora dá pra usar modo escuro sem perder a foto de anime do fundo.",
-  "💻 Snippets: Porque ninguém decora comando de Git. Um lugar pra salvar tudo aquilo que você vive esquecendo.",
-  "🔗 Quick Links: Abas para organizar a bagunça. Separe o 'Estudo' do 'Lazer' (se é que me entende 🏴‍☠️).",
-],
+  // 4. A lista técnica (Verifique se esta parte está igual no seu arquivo)
+  items: [
+    "🛡️ Gestão de Risco & Presença: Duas novas boxes essenciais. Monitore suas faltas com % de perigo e marque presença visualmente no calendário.",
+    "🍅 Pomodoro Imortal: O timer agora é global! Pode navegar para as Tasks, Planner ou Loja que ele continua torando lá sem resetar.",
+    "🧩 Layout Inteligente: Ao adicionar um novo widget, ele agora procura o melhor espaço visível em vez de ser jogado lá para o final da página.",
+   
+  ],
+
   // 5. O texto do botão lá embaixo
-  footer: "FECHAR E APROVEITAR",
+  footer: "goxtou? então BORA FOCAR",
 };
