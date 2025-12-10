@@ -4,6 +4,7 @@ import { Home, ListTodo, Calendar, ShoppingBag, Palette } from "lucide-react";
 import { useThemeStore, getWallpaperStyle } from "@/store/useThemeStore";
 import { ThemeApplicator } from "./ThemeApplicator";
 import { useMemo } from "react"; 
+import PomodoroManager from "./PomodoroManager";
 
 export default function DashboardLayout() {
   const { wallpaper, customImage } = useThemeStore();
@@ -19,6 +20,7 @@ export default function DashboardLayout() {
   return (
     <div className="flex h-screen w-full overflow-hidden transition-all duration-500">
       <ThemeApplicator />
+      <PomodoroManager />
       {/* Passa a lista congelada */}
       <Sidebar items={sidebarItems} />
       
