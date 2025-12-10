@@ -79,6 +79,8 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
     }))
   );
 
+  const [showDyna, setShowDyna] = useState(true);
+
   const navigate = useNavigate();
   const locationPath = useLocation().pathname;
 
@@ -372,8 +374,42 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
               );
             })}
           </nav>
+   {/* --- AVISO BETA DO DYNA (GATINHA PRETA) --- */}
+          {showDyna && (
+            <div className="mt-6 p-4 rounded-xl border border-white/10 bg-white/5 text-center relative overflow-hidden group animate-in slide-in-from-bottom-2 fade-in duration-500">
+              
+              {/* Botão de Fechar */}
+              <button 
+                onClick={() => setShowDyna(false)}
+                className="absolute top-2 right-2 text-white/30 hover:text-red-400 transition p-1 rounded-full hover:bg-white/10 z-10"
+                title="Dispensar aviso"
+              >
+                <X size={12} />
+              </button>
+
+              {/* Efeito de brilho ao passar o mouse */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+              
+              <div className="text-2xl mb-2 cursor-default">
+                🐈‍⬛
+              </div>
+              
+              <p className="text-[10px] text-white/70 leading-relaxed font-medium">
+                <span className="text-purple-300 font-bold">Olá!</span> Sou a <strong className="text-white">Dyna</strong>.
+                <br/>
+                Futuramente serei sua assistente virtual aqui.
+                <br className="mb-2"/>
+               Você está usando a versão <span className="text-yellow-400 font-bold">BETA</span>.
+                <br/>
+                <span className="opacity-50 text-[9px]">(Seja paciente, humano)</span>
+              </p>
+            </div>
+          )}
+
         </div>
       </aside>
+      
+ 
     </>
   );
 });
