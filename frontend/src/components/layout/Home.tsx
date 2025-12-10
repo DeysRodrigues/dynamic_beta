@@ -21,6 +21,8 @@ import { useShallow } from "zustand/react/shallow";
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { getFormattedCurrentDate } from "@/utils/DateUtils";
 import LayoutManagerModal from "./modals/LayoutManagerModal";
+import RiskTrackerBox from "./boxes/RiskTrackerBox";
+import PresenceCalendarBox from "./boxes/PresenceCalendarBox";
 
 // --- 1. LAZY LOADING DOS WIDGETS ---
 // O navegador só baixa o código do widget se ele estiver na tela
@@ -223,6 +225,10 @@ export default function Dashboard() {
         return <CodeSnippetBox id={id} />;
       case "quicklinks":
         return <QuickLinksBox id={id} />;
+      case "risk":
+        return <RiskTrackerBox id={id} />;
+      case "presence":
+        return <PresenceCalendarBox id={id} />;
       default:
         return null;
     }

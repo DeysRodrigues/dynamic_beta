@@ -25,6 +25,8 @@ const WIDGET_HEIGHTS: Record<string, number> = {
   theme: 2,
   snippet: 3,
   quicklinks: 3,
+  risk: 4,
+  presence: 4,
   // fallback
   default: 3,
 };

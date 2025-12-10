@@ -22,6 +22,8 @@ import {
   Share2,
   Terminal,
   Link2,
+  AlertTriangle,
+  CalendarCheck,
 } from "lucide-react";
 
 // =====================================================================
@@ -168,6 +170,20 @@ export const nativeWidgets = [
     description: "Links favoritos organizados por abas.",
     icon: <Link2 size={24} />,
     color: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  },
+  {
+    id: "risk",
+    title: "Gestão de Risco",
+    description: "Controle de faltas e limites com alertas.",
+    icon: <AlertTriangle size={24} />,
+    color: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+  },
+  {
+    id: "presence",
+    title: "Calendário de Presença",
+    description: "Rastreie frequência em eventos recorrentes.",
+    icon: <CalendarCheck size={24} />,
+    color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
   },
 ];
 
