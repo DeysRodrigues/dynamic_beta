@@ -26,6 +26,42 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - Custom notification sounds and settings integration.
 
 ---
+## [0.3.3] - 2025-12-10
+### Added
+- **Global Pomodoro Architecture:**
+    - Implementation of `PomodoroManager` and `usePomodoroStore` to decouple timer logic from the Home page.
+    - The timer now **persists across navigation** (e.g., moving from Home to Tasks no longer resets the clock).
+    - Automatic synchronization of the browser tab title with the remaining time, visible on any route.
+- **New Widgets:**
+    - **Risk Tracker (`RiskTrackerBox`):** Widget for limit management (e.g., college absences). Supports calculation by percentage (`%`) or absolute units, with visual danger indicators and consequence definitions.
+    - **Presence Calendar (`PresenceCalendarBox`):** Specialized calendar to track attendance in recurring events. Allows defining date ranges, specific days of the week, and visually marking Presence/Absence.
+- **Update System:** Updated the notification file (`updates.ts`) to reflect the version's new features.
+
+### Changed
+- **Smart Layout Engine:**
+    - Rewrote the `addBox` logic in `useDashboardStore`. New widgets are now automatically inserted into the shortest available column (lowest Y) instead of being appended to the very bottom of the layout.
+
+---
+## [0.3.2] - 2025-12-08
+### Added
+   - Code Snippets Box: Added a new widget to save recurring commands and code snippets (e.g., Git commands), solving the "forgetting" problem.
+   - Quick Links Box: Implemented a tabbed link manager to organize favorites, allowing separation between different contexts (e.g., "Study" vs "Leisure").
+   - Enhnced Dark Mode: Improved dark mode compatibility to ensure custom wallpapers (anime backgrounds) remain visible and aesthetically pleasing even when the interface is dark.
+
+### Performance
+- **Rendering Optimization**:
+    - Refactored `ThemesPage` and `WidgetsStorePage` using `React.memo` and `useShallow` selectors. This eliminates mass re-renders when applying themes or interacting with the store.
+    - Switched to imperative state reading (`getState`) for "Save Setup" actions to decouple UI from constant state updates.
+
+### Refactor
+- **Smart Embed Box**:
+    - **Complete UI overhaul**: Replaced unstable floating menus with a robust Fixed Toolbar.
+    - **Zero-Load State**: The widget now initializes empty (no iframe render) to save memory/data until interaction.
+    - **Presets System**: Added 3 configurable slots to save quick links and modes (Video/App).
+    - **Theming**: Switched to dynamic `current/alpha` colors for perfect integration with any theme.
+- **Dashboard Logic**: Updated the `addBox` algorithm to automatically place new widgets in the shortest available column, preventing vertical stacking in the first slot.
+
+---
 
 ## [0.3.1] - 2025-12-07
 ### Performance
