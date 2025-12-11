@@ -16,9 +16,11 @@ import {
   Brush,
   Monitor,
   Image,
+  Database, // Novo ícone
 } from "lucide-react";
 
 import PersonalizationModal from "./modals/PersonalizationModal";
+import GeneralBackupModal from "./modals/GeneralBackupModal"; // Novo Modal
 import { useThemeStore } from "@/store/useThemeStore";
 import NotificationBell from "./NotificationBell";
 
@@ -41,9 +43,15 @@ const ColorButton = React.memo(
 
 const Sidebar = React.memo(({ items }: SidebarProps) => {
   const [open, setOpen] = useState(false);
+
+  // Modais
   const [showPersonalization, setShowPersonalization] = useState(false);
+  const [showBackup, setShowBackup] = useState(false); // Estado do Backup
+
+  // Controles Visuais
   const [showOpacity, setShowOpacity] = useState(false);
   const [monospace, setMonospace] = useState(false);
+  const [showDyna, setShowDyna] = useState(true); // Estado do Card da Dyna
 
   const {
     sidebarColor,
@@ -78,8 +86,6 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       applyPreset: state.applyPreset,
     }))
   );
-
-  const [showDyna, setShowDyna] = useState(true);
 
   const navigate = useNavigate();
   const locationPath = useLocation().pathname;
@@ -125,9 +131,6 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
 
     const colorsToApply = isLight ? darkColors : lightColors;
 
-    // Verifica: O usuário tem wallpaper customizado
-    // Se NÃO tiver (wallpaper !== 'custom'), forçamos 'plain'.
-    // Se TIVER, não passamos a propriedade 'wallpaper', mantendo a atual.
     const preset = {
       ...colorsToApply,
       ...(wallpaper !== "custom" && { wallpaper: "plain" as const }),
@@ -149,6 +152,11 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       <PersonalizationModal
         isOpen={showPersonalization}
         onClose={() => setShowPersonalization(false)}
+      />
+
+      <GeneralBackupModal
+        isOpen={showBackup}
+        onClose={() => setShowBackup(false)}
       />
 
       <button
@@ -173,9 +181,9 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
         style={{ backgroundColor: sidebarColor }}
       >
         <div className="flex flex-col items-center gap-6 w-full px-4 overflow-y-auto custom-scrollbar">
+          {/* TOPO: Notificações e Perfil */}
           <div className="flex flex-col items-center gap-3 w-full">
             <div className="w-full flex justify-end px-2">
-              {/* Componente inteligente de notificação */}
               <NotificationBell />
             </div>
 
@@ -197,7 +205,9 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
             </div>
           </div>
 
+          {/* PAINEL DE CONTROLE (Grid) */}
           <div className="flex flex-col gap-3 bg-black/10 p-3 rounded-2xl w-full">
+            {/* Linha 1: Cores Principais */}
             <div className="grid grid-cols-4 gap-2 w-full">
               {[
                 {
@@ -244,11 +254,12 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
 
             <div className="w-full h-px bg-white/10"></div>
 
+            {/* Linha 2: Personalização e Modos */}
             <div className="grid grid-cols-4 gap-2 w-full">
               <button
                 className="aspect-square rounded-xl hover:bg-white/20 transition flex items-center justify-center border border-white/10 text-white/90"
                 onClick={() => setShowPersonalization(true)}
-                title="Padrões"
+                title="Padrões e Wallpaper"
               >
                 <Image size={18} />
               </button>
@@ -293,7 +304,9 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
               </button>
             </div>
 
+            {/* Linha 3: Opacidade, Backup e Reset */}
             <div className="grid grid-cols-4 gap-2 w-full">
+              {/* Opacidade */}
               <div className="relative flex items-center justify-center aspect-square">
                 <button
                   onClick={() => setShowOpacity(!showOpacity)}
@@ -302,7 +315,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
                       ? "bg-white/20 text-white shadow-inner"
                       : "hover:bg-white/20 text-white/90"
                   }`}
-                  title="Transparência"
+                  title="Transparência das Boxes"
                 >
                   <Ghost size={18} />
                 </button>
@@ -334,6 +347,16 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
                 )}
               </div>
 
+              {/* Botão de Backup (NOVO) */}
+              <button
+                onClick={() => setShowBackup(true)}
+                className="aspect-square rounded-xl hover:bg-purple-500/80 hover:text-white transition text-white/70 flex items-center justify-center border border-white/10"
+                title="Backup Geral"
+              >
+                <Database size={18} />
+              </button>
+
+              {/* Botão de Reset */}
               <button
                 onClick={() => {
                   if (window.confirm("Resetar todo o app?")) {
@@ -342,13 +365,14 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
                   }
                 }}
                 className="aspect-square rounded-xl hover:bg-red-500/80 hover:text-white transition text-white/70 flex items-center justify-center border border-white/10"
-                title="Resetar App"
+                title="Resetar App (Apaga Tudo)"
               >
                 <RotateCcw size={18} />
               </button>
             </div>
           </div>
 
+          {/* MENU DE NAVEGAÇÃO */}
           <nav className="flex flex-col gap-2 w-full mt-2">
             {menuItems.map((item) => {
               const isActive = window.location.pathname === item.path;
@@ -374,12 +398,12 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
               );
             })}
           </nav>
-   {/* --- AVISO BETA DO DYNA (GATINHA PRETA) --- */}
+
+          {/* --- AVISO BETA DA DYNA (GATINHA PRETA) --- */}
           {showDyna && (
-            <div className="mt-6 p-4 rounded-xl border border-white/10 bg-white/5 text-center relative overflow-hidden group animate-in slide-in-from-bottom-2 fade-in duration-500">
-              
+            <div className="mt-6 p-4 rounded-xl border border-white/10 bg-white/5 text-center relative overflow-hidden group animate-in slide-in-from-bottom-2 fade-in duration-500 w-full">
               {/* Botão de Fechar */}
-              <button 
+              <button
                 onClick={() => setShowDyna(false)}
                 className="absolute top-2 right-2 text-white/30 hover:text-red-400 transition p-1 rounded-full hover:bg-white/10 z-10"
                 title="Dispensar aviso"
@@ -389,27 +413,28 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
 
               {/* Efeito de brilho ao passar o mouse */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
-              
-              <div className="text-2xl mb-2 cursor-default">
+
+              <div className="text-2xl mb-2 animate-bounce cursor-default">
                 🐈‍⬛
               </div>
-              
+
               <p className="text-[10px] text-white/70 leading-relaxed font-medium">
-                <span className="text-purple-300 font-bold">Olá!</span> Sou a <strong className="text-white">Dyna</strong>.
-                <br/>
+                <span className="text-purple-300 font-bold">Olá!</span> Sou a{" "}
+                <strong className="text-white">Dyna</strong>.
+                <br />
                 Futuramente serei sua assistente virtual aqui.
-                <br className="mb-2"/>
-               Você está usando a versão <span className="text-yellow-400 font-bold">BETA</span>.
-                <br/>
-                <span className="opacity-50 text-[9px]">(Seja paciente, humano)</span>
+                <br className="mb-2" />
+                Ainda estou aprendendo a caçar bugs nesta versão{" "}
+                <span className="text-yellow-400 font-bold">BETA</span>.
+                <br />
+                <span className="opacity-50 text-[9px]">
+                  (Seja paciente, humano)
+                </span>
               </p>
             </div>
           )}
-
         </div>
       </aside>
-      
- 
     </>
   );
 });
