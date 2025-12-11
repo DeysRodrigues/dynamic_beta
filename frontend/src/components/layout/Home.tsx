@@ -23,6 +23,7 @@ import { getFormattedCurrentDate } from "@/utils/DateUtils";
 import LayoutManagerModal from "./modals/LayoutManagerModal";
 import RiskTrackerBox from "./boxes/RiskTrackerBox";
 import PresenceCalendarBox from "./boxes/PresenceCalendarBox";
+import ActivityGoalsBox from "./boxes/ActivityGoalsBox";
 
 // --- 1. LAZY LOADING DOS WIDGETS ---
 // O navegador só baixa o código do widget se ele estiver na tela
@@ -229,6 +230,8 @@ export default function Dashboard() {
         return <RiskTrackerBox id={id} />;
       case "presence":
         return <PresenceCalendarBox id={id} />;
+      case "activity":
+        return <ActivityGoalsBox id={id} />;
       default:
         return null;
     }
