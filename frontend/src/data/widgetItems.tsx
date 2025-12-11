@@ -24,6 +24,7 @@ import {
   Link2,
   AlertTriangle,
   CalendarCheck,
+  TrendingUp,
 } from "lucide-react";
 
 // =====================================================================
@@ -185,6 +186,13 @@ export const nativeWidgets = [
     icon: <CalendarCheck size={24} />,
     color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
   },
+  {
+  id: "activity",
+  title: "Metas Cumulativas",
+  description: "Rastreie XP, calorias ou economia diária.",
+  icon: <TrendingUp size={24} />,
+  color: "text-yellow-600 bg-yellow-500/10 border-yellow-500/20",
+},
 ];
 
 // =====================================================================
