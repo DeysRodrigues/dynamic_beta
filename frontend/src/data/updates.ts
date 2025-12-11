@@ -1,25 +1,24 @@
 export const APP_UPDATES = {
-  version: "0.5.0",
-  date: "10 de Dezembro",
+  version: "0.6.0",
+  date: "11 de Dezembro",
 
   // 1. Personalize o ícone do topo
-  emoji: "🛡️",
+  emoji: "🏆",
 
   // 2. O Título principal
-  title: "Controle de Danos & Foco",
+  title: "Metas, XP & Segurança Total",
 
   // 3. O "Recado"
   message:
-    "Chega de reprovar por falta ou perder o foco ao trocar de aba. Essa atualização é para quem precisa manter a vida nos trilhos (ou pelo menos tentar).",
+    "Agora o sistema ficou sério. Gamifique sua rotina com XP, acompanhe gráficos mensais e, o mais importante: salve tudo num arquivo seguro.",
 
-  // 4. A lista técnica (Verifique se esta parte está igual no seu arquivo)
+  // 4. A lista técnica
   items: [
-    "🛡️ Gestão de Risco & Presença: Duas novas boxes essenciais. Monitore suas faltas com % de perigo e marque presença visualmente no calendário.",
-    "🍅 Pomodoro Imortal: O timer agora é global! Pode navegar para as Tasks, Planner ou Loja que ele continua torando lá sem resetar.",
-    "🧩 Layout Inteligente: Ao adicionar um novo widget, ele agora procura o melhor espaço visível em vez de ser jogado lá para o final da página.",
-   
+    "🏆 Metas Cumulativas: Nova box para somar XP( e o que você quiser). Visualize seu progresso com gráficos semanais/mensais e crie atalhos rápidos.",
+    "💾 Backup & Restore: Medo de perder dados? Agora você pode baixar um arquivo .JSON com TUDO (tarefas, temas, widgets) e restaurar quando quiser. veja o novo icon da sidebar.",
+    
   ],
 
   // 5. O texto do botão lá embaixo
-  footer: "goxtou? então BORA FOCAR",
+  footer: "goxtou?",
 };
