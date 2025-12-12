@@ -5,28 +5,43 @@ import {
   Undo2,
   Lock,
   Unlock,
-  PlusCircle,
-  X,
   FileText,
   Grid,
   ListTodo,
   Timer,
   Save,
   Loader2,
+  Plus,
+  X,
+  CalendarDays,
+  Moon,
+  Sun,
+  Monitor,
+  Eye,
+  EyeOff,
+  Layout,
 } from "lucide-react";
-import React, { useState, Suspense } from "react";
+import React, {
+  useState,
+  Suspense,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { useShallow } from "zustand/react/shallow";
 
 import { useDashboardStore } from "@/store/useDashboardStore";
+import { useUserStore } from "@/store/useUserStore";
 import { getFormattedCurrentDate } from "@/utils/DateUtils";
+import { cn } from "@/lib/utils";
+
 import LayoutManagerModal from "./modals/LayoutManagerModal";
 import RiskTrackerBox from "./boxes/RiskTrackerBox";
 import PresenceCalendarBox from "./boxes/PresenceCalendarBox";
 import ActivityGoalsBox from "./boxes/ActivityGoalsBox";
 
-// --- 1. LAZY LOADING DOS WIDGETS ---
-// O navegador só baixa o código do widget se ele estiver na tela
+// --- LAZY LOADING ---
 const ProgressBox = React.lazy(() => import("./boxes/ProgressBox"));
 const MetaTagsBox = React.lazy(() => import("./boxes/MetaTagsBox"));
 const PomodoroBox = React.lazy(() => import("./boxes/PomodoroBox"));
@@ -50,19 +65,148 @@ const QuickLinksBox = React.lazy(() => import("./boxes/QuickLinksBox"));
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-// --- 2. COMPONENTES AUXILIARES ---
+// --- COMPONENTES VISUAIS ---
 
-// Skeleton de carregamento, para carreganto das boxes
-const BoxLoader = () => (
-  <div className="w-full h-full flex flex-col items-center justify-center bg-black/5 animate-pulse rounded-2xl border border-current/5">
+const BoxLoader = React.memo(() => (
+  <div className="w-full h-full flex flex-col items-center justify-center bg-current/5 animate-pulse rounded-2xl border border-current/5">
     <Loader2 className="w-6 h-6 animate-spin opacity-50" />
     <span className="text-[10px] font-bold opacity-40 mt-2 uppercase tracking-widest">
       Carregando...
     </span>
   </div>
-);
+));
 
-// Header Memoizado (Previne que a barra pisque ao renderizar o grid)
+// Relógio Estabilizado (Com largura fixa para não tremer)
+const DigitalClock = React.memo(() => {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    // 'min-w-[70px]' impede que o texto pule quando os números mudam de largura
+    <div className="font-mono text-sm opacity-60 font-bold tabular-nums tracking-widest min-w-[70px] text-center">
+      {time.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })}
+    </div>
+  );
+});
+
+// --- WORKSPACE TABS ---
+const WorkspaceTabs = React.memo(() => {
+  const {
+    workspaces,
+    activeWorkspaceId,
+    setActiveWorkspace,
+    addWorkspace,
+    removeWorkspace,
+    renameWorkspace,
+  } = useDashboardStore(
+    useShallow((state) => ({
+      workspaces: state.workspaces,
+      activeWorkspaceId: state.activeWorkspaceId,
+      setActiveWorkspace: state.setActiveWorkspace,
+      addWorkspace: state.addWorkspace,
+      removeWorkspace: state.removeWorkspace,
+      renameWorkspace: state.renameWorkspace,
+    }))
+  );
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+
+  const handleAdd = useCallback(() => {
+    const name = prompt("Nome da nova área (ex: Estudos):", "Nova Área");
+    if (name) addWorkspace(name);
+  }, [addWorkspace]);
+
+  const startRename = useCallback((id: string, currentName: string) => {
+    setEditingId(id);
+    setEditName(currentName);
+  }, []);
+
+  const saveRename = useCallback(
+    (id: string) => {
+      if (editName.trim()) {
+        renameWorkspace(id, editName);
+      }
+      setEditingId(null);
+    },
+    [editName, renameWorkspace]
+  );
+
+  return (
+    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1">
+      {workspaces.map((w) => {
+        const isActive = activeWorkspaceId === w.id;
+        const isEditing = editingId === w.id;
+
+        if (isEditing) {
+          return (
+            <div
+              key={w.id}
+              className="flex items-center bg-current/10 rounded-xl px-2 py-1.5 border border-current/10"
+            >
+              <input
+                autoFocus
+                className="w-24 bg-transparent text-sm font-bold outline-none text-inherit"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && saveRename(w.id)}
+                onBlur={() => saveRename(w.id)}
+              />
+            </div>
+          );
+        }
+
+        return (
+          <div key={w.id} className="group relative flex items-center">
+            <button
+              onClick={() => setActiveWorkspace(w.id)}
+              onDoubleClick={() => startRename(w.id, w.name)}
+              className={cn(
+                "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 border flex items-center gap-2 select-none whitespace-nowrap",
+                isActive
+                  ? "bg-current/10 border-current/20 shadow-sm opacity-100"
+                  : "border-transparent opacity-60 hover:opacity-100 hover:bg-current/5"
+              )}
+            >
+              {isActive && <Layout size={14} className="opacity-70" />}
+              {w.name}
+            </button>
+
+            {workspaces.length > 1 && isActive && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (confirm("Excluir este workspace?")) removeWorkspace(w.id);
+                }}
+                className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all scale-75 hover:scale-100 shadow-sm z-10"
+                title="Excluir"
+              >
+                <X size={10} strokeWidth={3} />
+              </button>
+            )}
+          </div>
+        );
+      })}
+
+      <button
+        onClick={handleAdd}
+        className="p-2 rounded-xl opacity-40 hover:opacity-100 hover:bg-current/10 transition-all"
+        title="Nova Aba"
+      >
+        <Plus size={16} />
+      </button>
+    </div>
+  );
+});
+
+// --- HEADER PRINCIPAL ---
 const DashboardHeader = React.memo(
   ({
     onSave,
@@ -71,92 +215,223 @@ const DashboardHeader = React.memo(
     editMode,
     toggleEditMode,
     onAddWidget,
-  }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any) => {
+  }: any) => {
     const [showAddMenu, setShowAddMenu] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    // Otimização: useShallow para evitar re-render se o user store mudar outra coisa
+    const { name, avatar } = useUserStore(
+      useShallow((state) => ({ name: state.name, avatar: state.avatar }))
+    );
+
+    const { isFocusMode, toggleFocusMode } = useDashboardStore(
+      useShallow((s) => ({
+        isFocusMode: s.isFocusMode,
+        toggleFocusMode: s.toggleFocusMode,
+      }))
+    );
+
+    const getGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12)
+        return {
+          text: "Bom dia",
+          icon: <Sun size={14} className="text-orange-400" />,
+        };
+      if (hour < 18)
+        return {
+          text: "Boa tarde",
+          icon: <Sun size={14} className="text-amber-500" />,
+        };
+      return {
+        text: "Boa noite",
+        icon: <Moon size={14} className="text-indigo-400" />,
+      };
+    };
+
+    const greeting = getGreeting();
+
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (menuRef.current && !menuRef.current.contains(event.target as Node))
+          setShowAddMenu(false);
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    useEffect(() => {
+      const handleKeys = (e: KeyboardEvent) => {
+        if (
+          e.key.toLowerCase() === "f" &&
+          !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement).tagName)
+        ) {
+          toggleFocusMode();
+        }
+        if (e.key === "Escape" && isFocusMode) {
+          toggleFocusMode();
+        }
+      };
+      window.addEventListener("keydown", handleKeys);
+      return () => window.removeEventListener("keydown", handleKeys);
+    }, [isFocusMode, toggleFocusMode]);
 
     return (
-      <div className="bar-padrao mb-6">
-        <span className="font-bold text-lg">{getFormattedCurrentDate()}</span>
-
-        <div className="flex items-center gap-4 flex-wrap justify-end">
-          <button
-            onClick={onSave}
-            className="flex items-center gap-2 bg-background/20 border border-current/20 px-4 py-2 rounded-full font-semibold hover:bg-current/10 transition shadow-sm text-sm"
-            title="Salvar layout e tema atual"
-          >
-            <Save size={18} /> Salvar
-          </button>
-
-          <button
-            onClick={onSetups}
-            className="flex items-center gap-2 bg-background/20 border border-current/20 px-4 py-2 rounded-full font-semibold hover:bg-current/10 transition shadow-sm text-sm"
-          >
-            <Grid size={18} /> Meus Setups
-          </button>
-
-          <div className="relative">
-            <button
-              onClick={() => setShowAddMenu(!showAddMenu)}
-              className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-full font-semibold hover:opacity-90 transition shadow-sm text-sm"
-            >
-              <PlusCircle size={18} /> Add Widget
-            </button>
-
-            {showAddMenu && (
-              <div className="absolute top-full mt-2 right-0 bg-background rounded-xl shadow-xl border p-2 w-64 z-50 animate-in fade-in slide-in-from-top-2 grid grid-cols-1 gap-1 max-h-[80vh] overflow-y-auto custom-scrollbar text-foreground">
-                <p className="text-xs font-bold text-muted-foreground px-3 py-2 uppercase tracking-wider bg-muted/50 mt-1">
-                  Essenciais
-                </p>
-                <button
-                  onClick={() => {
-                    onAddWidget("tasks");
-                    setShowAddMenu(false);
-                  }}
-                  className="menu-item"
-                >
-                  <ListTodo size={16} className="text-emerald-500" /> Tarefas
-                </button>
-                <button
-                  onClick={() => {
-                    onAddWidget("pomodoro");
-                    setShowAddMenu(false);
-                  }}
-                  className="menu-item"
-                >
-                  <Timer size={16} className="text-red-500" /> Pomodoro
-                </button>
-                <button
-                  onClick={() => {
-                    onAddWidget("notepad");
-                    setShowAddMenu(false);
-                  }}
-                  className="menu-item"
-                >
-                  <FileText size={16} className="text-yellow-500" /> Notas
-                </button>
+      <div
+        className={`flex flex-col gap-4 mb-6 transition-all duration-500 ${
+          isFocusMode ? "opacity-30 hover:opacity-100" : ""
+        }`}
+        style={{ color: "var(--box-text-color)" }}
+      >
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          {isFocusMode ? (
+            <div className="flex items-center gap-4">
+              <button
+                onClick={toggleFocusMode}
+                className="bg-amber-500/20 text-amber-500 p-2 rounded-xl border border-amber-500/30 flex items-center gap-2 text-xs font-bold animate-pulse hover:bg-amber-500 hover:text-white transition"
+              >
+                <EyeOff size={16} /> SAIR DO FOCO
+              </button>
+              <div className="h-4 w-px bg-current/20"></div>
+              <DigitalClock />
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 animate-in slide-in-from-left-2 duration-300">
+              <div className="relative">
+                <img
+                  src={
+                    avatar ||
+                    "https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
+                  }
+                  className="w-10 h-10 rounded-xl object-cover border border-current/10 shadow-sm"
+                  alt="Avatar"
+                />
+                <div className="absolute -bottom-1 -right-1 bg-background p-0.5 rounded-full border border-current/10">
+                  {greeting.icon}
+                </div>
               </div>
-            )}
+              <div>
+                <h1 className="text-xl font-bold leading-tight">
+                  {greeting.text},{" "}
+                  <span className="opacity-80">{name.split(" ")[0]}</span>
+                </h1>
+                <div className="text-xs opacity-50 font-medium flex items-center gap-2 mt-1">
+                  <span className="flex items-center gap-1">
+                    <CalendarDays size={10} /> {getFormattedCurrentDate()}
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-current opacity-30" />
+                  <DigitalClock /> {/* Relógio isolado */}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div
+            className={`flex-1 md:flex md:justify-center overflow-hidden transition-all duration-500 ${
+              isFocusMode ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            <WorkspaceTabs />
           </div>
 
-          <div className="flex gap-2 border-l border-current/20 pl-4">
+          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl border border-current/5 self-start md:self-auto backdrop-blur-md">
             <button
-              onClick={toggleEditMode}
-              className={`p-2 rounded-full transition ${
-                editMode ? "bg-amber-100 text-amber-600" : "hover:bg-current/10"
+              onClick={toggleFocusMode}
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                isFocusMode
+                  ? "bg-primary text-primary-foreground"
+                  : "opacity-50 hover:opacity-100 hover:bg-current/10"
               }`}
-              title={editMode ? "Bloquear layout" : "Editar layout"}
+              title="Modo Foco (F)"
             >
-              {editMode ? <Unlock size={18} /> : <Lock size={18} />}
+              {isFocusMode ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
 
-            <button
-              onClick={onReset}
-              className="p-2 rounded-full hover:bg-current/10 transition"
-              title="Resetar Padrão"
-            >
-              <Undo2 size={18} />
-            </button>
+            {!isFocusMode && (
+              <>
+                <button
+                  onClick={toggleEditMode}
+                  className={cn(
+                    "p-2 rounded-lg transition-all duration-200",
+                    editMode
+                      ? "bg-amber-500/10 text-amber-500 shadow-sm"
+                      : "opacity-50 hover:opacity-100 hover:bg-current/10"
+                  )}
+                  title="Editar Layout"
+                >
+                  {editMode ? <Unlock size={16} /> : <Lock size={16} />}
+                </button>
+
+                <button
+                  onClick={onReset}
+                  className="p-2 rounded-lg opacity-50 hover:opacity-100 hover:bg-current/5 transition-all"
+                  title="Resetar"
+                >
+                  <Undo2 size={16} />
+                </button>
+
+                <div className="w-px h-4 bg-current/10 mx-1"></div>
+
+                <div className="relative" ref={menuRef}>
+                  <button
+                    onClick={() => setShowAddMenu(!showAddMenu)}
+                    className="flex items-center gap-2 bg-current/10 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-current/20 transition active:scale-95"
+                  >
+                    <Plus size={14} /> Widget
+                  </button>
+
+                  {showAddMenu && (
+                    <div
+                      className="absolute top-full right-0 mt-2 w-56 backdrop-blur-xl border border-current/10 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 origin-top-right bg-background/80"
+                      style={{ color: "var(--box-text-color)" }}
+                    >
+                      <div className="text-[10px] font-bold uppercase opacity-50 px-2 py-1 tracking-wider">
+                        Adicionar
+                      </div>
+                      <div className="space-y-1">
+                        {[
+                          { id: "tasks", label: "Tarefas", icon: ListTodo },
+                          { id: "pomodoro", label: "Pomodoro", icon: Timer },
+                          { id: "notepad", label: "Notas", icon: FileText },
+                          { id: "calendar", label: "Calendário", icon: Grid },
+                        ].map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() => {
+                              onAddWidget(item.id);
+                              setShowAddMenu(false);
+                            }}
+                            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-current/10 transition text-xs font-medium group text-left"
+                          >
+                            <item.icon
+                              size={14}
+                              className="opacity-70 group-hover:opacity-100"
+                            />
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="border-t border-current/10 my-2"></div>
+                      <div className="grid grid-cols-2 gap-1">
+                        <button
+                          onClick={onSave}
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition"
+                        >
+                          <Save size={14} className="text-primary" /> Backup
+                        </button>
+                        <button
+                          onClick={onSetups}
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition"
+                        >
+                          <Monitor size={14} className="text-purple-500" /> Loja
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -164,25 +439,36 @@ const DashboardHeader = React.memo(
   }
 );
 
-// --- 3. COMPONENTE PRINCIPAL ---
+// --- MAIN COMPONENT ---
 
 export default function Dashboard() {
-  const { layouts, setLayouts, boxes, resetDashboard, addBox, removeBox } =
-    useDashboardStore(
-      useShallow((state) => ({
-        layouts: state.layouts,
-        setLayouts: state.setLayouts,
-        boxes: state.boxes,
-        resetDashboard: state.resetDashboard,
-        addBox: state.addBox,
-        removeBox: state.removeBox,
-      }))
-    );
+  const workspaces = useDashboardStore((state) => state.workspaces);
+  const activeWorkspaceId = useDashboardStore(
+    (state) => state.activeWorkspaceId
+  );
+  const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
+
+  const { setLayouts, resetDashboard, addBox, removeBox } = useDashboardStore(
+    useShallow((state) => ({
+      setLayouts: state.setLayouts,
+      resetDashboard: state.resetDashboard,
+      addBox: state.addBox,
+      removeBox: state.removeBox,
+    }))
+  );
 
   const [editMode, setEditMode] = useState(false);
   const [showLayoutManager, setShowLayoutManager] = useState(false);
 
-  // Função simples para mapear ID -> Componente
+  // CALLBACKS ESTÁVEIS (CRUCIAL PARA NÃO PISCAR)
+  const handleSave = useCallback(() => setShowLayoutManager(true), []);
+  const handleSetups = useCallback(() => setShowLayoutManager(true), []);
+  const handleReset = useCallback(() => {
+    if (window.confirm("Resetar este workspace para o padrão?"))
+      resetDashboard();
+  }, [resetDashboard]);
+  const handleToggleEdit = useCallback(() => setEditMode((p) => !p), []);
+
   const renderBox = (id: string) => {
     const type = id.split("-")[0];
     switch (type) {
@@ -237,28 +523,37 @@ export default function Dashboard() {
     }
   };
 
+  if (!activeWorkspace) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <BoxLoader />
+      </div>
+    );
+  }
+
   return (
-    <div className="relative min-h-screen w-full pb-20">
+    <div
+      className="relative min-h-screen w-full pb-20"
+      style={{ color: "var(--box-text-color)" }}
+    >
       <LayoutManagerModal
         isOpen={showLayoutManager}
         onClose={() => setShowLayoutManager(false)}
       />
 
-      {/* Header Memoizado */}
       <DashboardHeader
-        onSave={() => setShowLayoutManager(true)}
-        onSetups={() => setShowLayoutManager(true)}
-        onReset={() => {
-          if (window.confirm("Resetar layout?")) resetDashboard();
-        }}
+        onSave={handleSave}
+        onSetups={handleSetups}
+        onReset={handleReset}
         editMode={editMode}
-        toggleEditMode={() => setEditMode((prev) => !prev)}
+        toggleEditMode={handleToggleEdit}
         onAddWidget={addBox}
       />
 
       <ResponsiveGridLayout
+        key={activeWorkspaceId}
         className="layout"
-        layouts={layouts}
+        layouts={activeWorkspace.layouts}
         breakpoints={{ lg: 1024, md: 768, sm: 480 }}
         cols={{ lg: 4, md: 2, sm: 1 }}
         rowHeight={100}
@@ -268,40 +563,38 @@ export default function Dashboard() {
         draggableCancel=".no-drag"
         margin={[16, 16]}
       >
-        {(boxes || []).map((boxId) => {
+        {(activeWorkspace.boxes || []).map((boxId) => {
           const component = renderBox(boxId);
           if (!component) return null;
 
           return (
             <div
               key={boxId}
-              className={`h-full w-full transition-all duration-200 relative group ${
+              className={`h-full w-full transition-all duration-300 relative group ${
                 editMode
-                  ? "border-2 border-dashed border-amber-400/50 rounded-2xl bg-amber-50/30 cursor-grab active:cursor-grabbing shadow-lg z-10"
+                  ? "border-2 border-dashed border-amber-400/50 rounded-2xl bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
                   : ""
               }`}
             >
-              {/* Botão de Remover (Só aparece no Edit Mode) */}
               {editMode && (
                 <div className="absolute -top-3 -right-3 z-50 animate-in zoom-in duration-200">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (confirm("Remover este widget?")) removeBox(boxId); // Chama a função atômica
+                      if (confirm("Remover este widget deste workspace?"))
+                        removeBox(boxId);
                     }}
-                    className="bg-red-500 text-white p-1.5 rounded-full shadow-md hover:scale-110 transition-all cursor-pointer border-2 border-white"
+                    className="bg-destructive text-destructive-foreground p-1.5 rounded-full shadow-md hover:scale-110 transition-all cursor-pointer border-2 border-background"
                   >
                     <X size={16} strokeWidth={3} />
                   </button>
                 </div>
               )}
-
               <div
-                className={`w-full h-full overflow-hidden ${
+                className={`w-full h-full overflow-hidden rounded-2xl ${
                   editMode ? "pointer-events-none select-none opacity-80" : ""
                 }`}
               >
-                {/* Suspense para o Lazy Loading */}
                 <Suspense fallback={<BoxLoader />}>{component}</Suspense>
               </div>
             </div>
