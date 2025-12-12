@@ -26,6 +26,31 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - Custom notification sounds and settings integration.
 
 ---
+## [0.7.0] - 2025-12-12
+### Added
+- **Workspaces Architecture:**
+    - **Multi-Workspaces System:** Introduced the ability to create, rename, and switch between independent dashboard contexts (e.g., "Personal", "Work", "Dev"), each maintaining its own widget layout.
+    - **Focus Mode (Zen):** Implemented a distraction-free toggle (shortcut `F`) that collapses the UI chrome (Sidebar/Header) and displays a stabilized **Digital Clock** for deep work sessions.
+- **User Personalization:**
+    - **Profile Editor:** Integrated a modal to update the User Name, Title/Subtitle, and Profile Picture (upload) directly from the Sidebar.
+- **UI/UX Enhancements:**
+    - **Settings Drawer:** Replaced inline sidebar controls with a dedicated slide-out panel for Theme, Colors, and Data management, allowing real-time preview of changes without obstructing the view.
+
+### Refactor
+- **Sidebar Overhaul:**
+    - Completely decoupled navigation from configuration. The Sidebar now focuses on routing, while a new "Settings" action triggers the dedicated drawer.
+    - Improved responsive behavior and added a "Live Preview" approach to theming.
+--- 
+
+## [0.6.0] - 2025-12-11
+### Added
+
+- **Gamification & Goals:**
+    - **Activity Goals Box (`ActivityGoalsBox`):** New widget for tracking cumulative metrics (XP, pages read, etc.) with integrated weekly/monthly progress charts.
+- **Data Security:**
+    - **Full Backup & Restore:** Implemented a robust JSON export/import system in the Sidebar settings. Saves/restores all application state including tasks, themes, and widget configurations.
+
+--- 
 ## [0.5.0] - 2025-12-10
 ### Added
 - **Global Pomodoro Architecture:**
