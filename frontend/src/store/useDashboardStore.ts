@@ -1,12 +1,11 @@
 import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import type { Layouts, Layout } from "react-grid-layout";
+import type { Layouts } from "react-grid-layout";
 import { STORAGE_KEYS } from "@/constants/storageKeys";
 
-// --- 1. CONFIGURAÇÃO (CONSTANTES) ---
+// --- CONFIGURAÇÃO ---
 
-// Mapa de Alturas (Evita aquele monte de "if/else")
 const WIDGET_HEIGHTS: Record<string, number> = {
   embedded: 3,
   calendar: 3,
@@ -28,7 +27,6 @@ const WIDGET_HEIGHTS: Record<string, number> = {
   risk: 4,
   presence: 4,
   activity: 4,
-  // fallback
   default: 3,
 };
 
@@ -58,82 +56,156 @@ const DEFAULT_LAYOUTS: Layouts = {
 const generateId = (type: string) =>
   `${type}-${Math.random().toString(36).substr(2, 9)}`;
 
-// Definição das Colunas por Breakpoint (Deve bater com o Home.tsx)
 const COLS = { lg: 4, md: 2, sm: 1 };
 
-// --- 2. TYPES ---
+// --- TYPES ---
+
+export interface Workspace {
+  id: string;
+  name: string;
+  layouts: Layouts;
+  boxes: string[];
+}
 
 interface DashboardState {
-  // Slice de Dados
+  workspaces: Workspace[];
+  activeWorkspaceId: string;
+  isFocusMode: boolean; // NOVO
+
+  // Espelhos para retrocompatibilidade
   layouts: Layouts;
   boxes: string[];
 }
 
 interface DashboardActions {
-  // Slice de Ações
+  addWorkspace: (name: string) => void;
+  removeWorkspace: (id: string) => void;
+  setActiveWorkspace: (id: string) => void;
+  renameWorkspace: (id: string, name: string) => void;
+  toggleFocusMode: () => void; // NOVO
+
   setLayouts: (layouts: Layouts) => void;
   addBox: (type: string) => void;
-  removeBox: (id: string) => void; // Agora é atômica e vive no store!
+  removeBox: (id: string) => void;
   resetDashboard: () => void;
   loadDashboardState: (boxes: string[], layouts: Layouts) => void;
 }
 
-// --- 3. STORE OTIMIZADA ---
+// --- STORE ---
 
 export const useDashboardStore = create<DashboardState & DashboardActions>()(
   subscribeWithSelector(
-    // 1. Permite assinaturas granulares
     immer(
-      // 2. Permite mutações diretas (draft)
       persist(
         (set) => ({
-          // Estado Inicial
+          workspaces: [
+            {
+              id: "default",
+              name: "Principal",
+              layouts: DEFAULT_LAYOUTS,
+              boxes: DEFAULT_BOXES,
+            },
+          ],
+          activeWorkspaceId: "default",
+          isFocusMode: false, // NOVO
+
           layouts: DEFAULT_LAYOUTS,
           boxes: DEFAULT_BOXES,
 
-          // Ações
+          // --- WORKSPACE ACTIONS ---
+
+          addWorkspace: (name) =>
+            set((state) => {
+              const newId = crypto.randomUUID();
+              const newWs: Workspace = {
+                id: newId,
+                name,
+                layouts: { lg: [], md: [], sm: [] },
+                boxes: [],
+              };
+              state.workspaces.push(newWs);
+              state.activeWorkspaceId = newId;
+              state.boxes = newWs.boxes;
+              state.layouts = newWs.layouts;
+            }),
+
+          removeWorkspace: (id) =>
+            set((state) => {
+              if (state.workspaces.length <= 1) return;
+              state.workspaces = state.workspaces.filter((w) => w.id !== id);
+              if (state.activeWorkspaceId === id) {
+                const nextWs = state.workspaces[0];
+                state.activeWorkspaceId = nextWs.id;
+                state.boxes = nextWs.boxes;
+                state.layouts = nextWs.layouts;
+              }
+            }),
+
+          setActiveWorkspace: (id) =>
+            set((state) => {
+              const ws = state.workspaces.find((w) => w.id === id);
+              if (ws) {
+                state.activeWorkspaceId = id;
+                state.boxes = ws.boxes;
+                state.layouts = ws.layouts;
+              }
+            }),
+
+          renameWorkspace: (id, name) =>
+            set((state) => {
+              const ws = state.workspaces.find((w) => w.id === id);
+              if (ws) ws.name = name;
+            }),
+
+          toggleFocusMode: () =>
+            set((state) => {
+              state.isFocusMode = !state.isFocusMode;
+            }),
+
+          // --- WIDGET ACTIONS ---
+
           setLayouts: (newLayouts) =>
             set((state) => {
-              state.layouts = newLayouts; // Mutação direta graças ao Immer
+              const ws = state.workspaces.find(
+                (w) => w.id === state.activeWorkspaceId
+              );
+              if (ws) {
+                ws.layouts = newLayouts;
+                state.layouts = newLayouts;
+              }
             }),
 
           addBox: (type) =>
             set((state) => {
+              const ws = state.workspaces.find(
+                (w) => w.id === state.activeWorkspaceId
+              );
+              if (!ws) return;
+
               const newId = generateId(type);
               const height = WIDGET_HEIGHTS[type] || WIDGET_HEIGHTS.default;
 
-              // Adiciona na lista de IDs
-              state.boxes.push(newId);
+              ws.boxes.push(newId);
 
-              // Adiciona no Layout (Calculando a melhor posição X)
               (["lg", "md", "sm"] as const).forEach((bp) => {
-                if (!state.layouts[bp]) state.layouts[bp] = [];
-
-                const currentLayout = state.layouts[bp];
+                if (!ws.layouts[bp]) ws.layouts[bp] = [];
+                const currentLayout = ws.layouts[bp];
                 const numCols = COLS[bp];
-
-                // 1. Calcula a altura ocupada (Y max) de cada coluna
                 const colY = new Array(numCols).fill(0);
 
                 currentLayout.forEach((item) => {
-                  const itemX = item.x || 0;
-                  const itemW = item.w || 1;
-                  const itemY = item.y || 0;
-                  const itemH = item.h || 1;
-                  const bottom = itemY + itemH;
-
-                  // Atualiza a altura de todas as colunas que esse widget ocupa
-                  for (let i = itemX; i < itemX + itemW && i < numCols; i++) {
-                    if (bottom > colY[i]) {
-                      colY[i] = bottom;
-                    }
+                  const bottom = (item.y || 0) + (item.h || 1);
+                  for (
+                    let i = item.x || 0;
+                    i < (item.x || 0) + (item.w || 1) && i < numCols;
+                    i++
+                  ) {
+                    if (bottom > colY[i]) colY[i] = bottom;
                   }
                 });
 
-                // 2. Encontra a coluna mais "curta" (menor Y)
                 let targetX = 0;
                 let minY = Infinity;
-
                 for (let i = 0; i < numCols; i++) {
                   if (colY[i] < minY) {
                     minY = colY[i];
@@ -141,49 +213,90 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
                   }
                 }
 
-                // 3. Cria o widget nessa coluna
-                const newLayoutItem: Layout = {
+                ws.layouts[bp].push({
                   i: newId,
                   x: targetX,
-                  y: Infinity, // Vai para o final da coluna escolhida
+                  y: Infinity,
                   w: 1,
                   h: height,
-                };
-
-                state.layouts[bp].push(newLayoutItem);
+                });
               });
+
+              state.boxes = ws.boxes;
+              state.layouts = ws.layouts;
             }),
 
           removeBox: (id) =>
             set((state) => {
-              // Remove ID
-              state.boxes = state.boxes.filter((boxId) => boxId !== id);
+              const ws = state.workspaces.find(
+                (w) => w.id === state.activeWorkspaceId
+              );
+              if (!ws) return;
 
-              // Remove do Layout (em todos os breakpoints)
-              Object.keys(state.layouts).forEach((bp) => {
-                state.layouts[bp] = state.layouts[bp].filter((l) => l.i !== id);
+              ws.boxes = ws.boxes.filter((boxId) => boxId !== id);
+              Object.keys(ws.layouts).forEach((bp) => {
+                ws.layouts[bp] = ws.layouts[bp].filter((l) => l.i !== id);
               });
+
+              state.boxes = ws.boxes;
+              state.layouts = ws.layouts;
             }),
 
           resetDashboard: () =>
             set((state) => {
-              state.layouts = DEFAULT_LAYOUTS;
-              state.boxes = DEFAULT_BOXES;
+              const ws = state.workspaces.find(
+                (w) => w.id === state.activeWorkspaceId
+              );
+              if (ws) {
+                ws.layouts = DEFAULT_LAYOUTS;
+                ws.boxes = DEFAULT_BOXES;
+                state.layouts = DEFAULT_LAYOUTS;
+                state.boxes = DEFAULT_BOXES;
+              }
             }),
 
           loadDashboardState: (boxes, layouts) =>
             set((state) => {
-              state.boxes = boxes;
-              state.layouts = layouts;
+              const ws = state.workspaces.find(
+                (w) => w.id === state.activeWorkspaceId
+              );
+              if (ws) {
+                ws.boxes = boxes;
+                ws.layouts = layouts;
+                state.boxes = boxes;
+                state.layouts = layouts;
+              }
             }),
         }),
         {
           name: STORAGE_KEYS.DASHBOARD,
-          // 3. Partialize: Salva apenas o estado, ignora ações
           partialize: (state) => ({
+            workspaces: state.workspaces,
+            activeWorkspaceId: state.activeWorkspaceId,
             layouts: state.layouts,
             boxes: state.boxes,
+            // Não persistimos isFocusMode (sempre começa desligado)
           }),
+          onRehydrateStorage: () => (state) => {
+            if (
+              state &&
+              state.layouts &&
+              (!state.workspaces || state.workspaces.length === 0)
+            ) {
+              const oldLayouts = state.layouts;
+              const oldBoxes = state.boxes;
+              const defaultWs = {
+                id: "default",
+                name: "Principal",
+                layouts: oldLayouts || DEFAULT_LAYOUTS,
+                boxes: oldBoxes || DEFAULT_BOXES,
+              };
+              state.workspaces = [defaultWs];
+              state.activeWorkspaceId = "default";
+              state.layouts = defaultWs.layouts;
+              state.boxes = defaultWs.boxes;
+            }
+          },
         }
       )
     )
