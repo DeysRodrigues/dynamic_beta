@@ -16,10 +16,11 @@ import {
   CalendarDays,
   Moon,
   Sun,
-  Monitor,
   Eye,
   EyeOff,
   Layout,
+  ShoppingBag,
+  ArrowRight,
 } from "lucide-react";
 import React, {
   useState,
@@ -30,6 +31,7 @@ import React, {
 } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { useShallow } from "zustand/react/shallow";
+import { useNavigate } from "react-router-dom";
 
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { useUserStore } from "@/store/useUserStore";
@@ -68,7 +70,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 // --- COMPONENTES VISUAIS ---
 
 const BoxLoader = React.memo(() => (
-  <div className="w-full h-full flex flex-col items-center justify-center bg-current/5 animate-pulse rounded-2xl border border-current/5">
+  <div className="w-full h-full flex flex-col items-center justify-center bg-current/5 animate-pulse rounded-2xl border border-current/5 backdrop-blur-sm">
     <Loader2 className="w-6 h-6 animate-spin opacity-50" />
     <span className="text-[10px] font-bold opacity-40 mt-2 uppercase tracking-widest">
       Carregando...
@@ -76,7 +78,6 @@ const BoxLoader = React.memo(() => (
   </div>
 ));
 
-// Relógio Estabilizado (Com largura fixa para não tremer)
 const DigitalClock = React.memo(() => {
   const [time, setTime] = useState(new Date());
   useEffect(() => {
@@ -85,7 +86,6 @@ const DigitalClock = React.memo(() => {
   }, []);
 
   return (
-    // 'min-w-[70px]' impede que o texto pule quando os números mudam de largura
     <div className="font-mono text-sm opacity-60 font-bold tabular-nums tracking-widest min-w-[70px] text-center">
       {time.toLocaleTimeString([], {
         hour: "2-digit",
@@ -140,7 +140,7 @@ const WorkspaceTabs = React.memo(() => {
   );
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1">
+    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1 mask-gradient-right">
       {workspaces.map((w) => {
         const isActive = activeWorkspaceId === w.id;
         const isEditing = editingId === w.id;
@@ -149,7 +149,7 @@ const WorkspaceTabs = React.memo(() => {
           return (
             <div
               key={w.id}
-              className="flex items-center bg-current/10 rounded-xl px-2 py-1.5 border border-current/10"
+              className="flex items-center bg-current/10 rounded-xl px-2 py-1.5 border border-current/10 backdrop-blur-md"
             >
               <input
                 autoFocus
@@ -171,7 +171,7 @@ const WorkspaceTabs = React.memo(() => {
               className={cn(
                 "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 border flex items-center gap-2 select-none whitespace-nowrap",
                 isActive
-                  ? "bg-current/10 border-current/20 shadow-sm opacity-100"
+                  ? "bg-current/10 border-current/20 shadow-sm opacity-100 backdrop-blur-md"
                   : "border-transparent opacity-60 hover:opacity-100 hover:bg-current/5"
               )}
             >
@@ -186,7 +186,7 @@ const WorkspaceTabs = React.memo(() => {
                   if (confirm("Excluir este workspace?")) removeWorkspace(w.id);
                 }}
                 className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all scale-75 hover:scale-100 shadow-sm z-10"
-                title="Excluir"
+                title="Excluir Workspace"
               >
                 <X size={10} strokeWidth={3} />
               </button>
@@ -210,7 +210,6 @@ const WorkspaceTabs = React.memo(() => {
 const DashboardHeader = React.memo(
   ({
     onSave,
-    onSetups,
     onReset,
     editMode,
     toggleEditMode,
@@ -218,12 +217,11 @@ const DashboardHeader = React.memo(
   }: any) => {
     const [showAddMenu, setShowAddMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
 
-    // Otimização: useShallow para evitar re-render se o user store mudar outra coisa
     const { name, avatar } = useUserStore(
       useShallow((state) => ({ name: state.name, avatar: state.avatar }))
     );
-
     const { isFocusMode, toggleFocusMode } = useDashboardStore(
       useShallow((s) => ({
         isFocusMode: s.isFocusMode,
@@ -248,7 +246,6 @@ const DashboardHeader = React.memo(
         icon: <Moon size={14} className="text-indigo-400" />,
       };
     };
-
     const greeting = getGreeting();
 
     useEffect(() => {
@@ -261,6 +258,7 @@ const DashboardHeader = React.memo(
         document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    // Atalhos
     useEffect(() => {
       const handleKeys = (e: KeyboardEvent) => {
         if (
@@ -269,17 +267,38 @@ const DashboardHeader = React.memo(
         ) {
           toggleFocusMode();
         }
-        if (e.key === "Escape" && isFocusMode) {
-          toggleFocusMode();
-        }
+        if (e.key === "Escape" && isFocusMode) toggleFocusMode();
       };
       window.addEventListener("keydown", handleKeys);
       return () => window.removeEventListener("keydown", handleKeys);
     }, [isFocusMode, toggleFocusMode]);
 
+    // HANDLERS SEGUROS
+    const handleAdd = (e: React.MouseEvent, type: string) => {
+      e.stopPropagation();
+      e.preventDefault();
+      // Gera ID único aqui para garantir criação
+      const uniqueId = `${type}-${crypto.randomUUID().slice(0, 8)}`;
+      onAddWidget(uniqueId);
+      setShowAddMenu(false);
+    };
+
+    const handleNavigate = (path: string) => (e: React.MouseEvent) => {
+      e.stopPropagation();
+      navigate(path);
+      setShowAddMenu(false);
+    };
+
+    const openModal = (action: () => void) => (e: React.MouseEvent) => {
+      e.stopPropagation();
+      action();
+      setShowAddMenu(false);
+    };
+
     return (
+      
       <div
-        className={`flex flex-col gap-4 mb-6 transition-all duration-500 ${
+        className={`flex flex-col gap-4 mb-6 transition-all duration-500 relative z-50 ${
           isFocusMode ? "opacity-30 hover:opacity-100" : ""
         }`}
         style={{ color: "var(--box-text-color)" }}
@@ -321,7 +340,7 @@ const DashboardHeader = React.memo(
                     <CalendarDays size={10} /> {getFormattedCurrentDate()}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-current opacity-30" />
-                  <DigitalClock /> {/* Relógio isolado */}
+                  <DigitalClock />
                 </div>
               </div>
             </div>
@@ -335,7 +354,7 @@ const DashboardHeader = React.memo(
             <WorkspaceTabs />
           </div>
 
-          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl border border-current/5 self-start md:self-auto backdrop-blur-md">
+          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl border border-current/5 self-start md:self-auto backdrop-blur-md shadow-sm">
             <button
               onClick={toggleFocusMode}
               className={`p-2 rounded-lg transition-all duration-200 ${
@@ -376,55 +395,86 @@ const DashboardHeader = React.memo(
                 <div className="relative" ref={menuRef}>
                   <button
                     onClick={() => setShowAddMenu(!showAddMenu)}
-                    className="flex items-center gap-2 bg-current/10 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-current/20 transition active:scale-95"
+                    className="flex items-center gap-2 bg-current/10 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-current/20 transition active:scale-95 shadow-sm border border-current/5"
                   >
-                    <Plus size={14} /> Widget
+                    <Plus size={14} />{" "}
+                    <span className="hidden sm:inline">Widget</span>
                   </button>
 
+                  {/* MENU DROPDOWN "VIDRO" */}
                   {showAddMenu && (
+                    // Z-INDEX ALTO (z-50) para ficar acima dos widgets
                     <div
-                      className="absolute top-full right-0 mt-2 w-56 backdrop-blur-xl border border-current/10 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 origin-top-right bg-background/80"
-                      style={{ color: "var(--box-text-color)" }}
+                      className="absolute top-full right-0 mt-2 w-64 backdrop-blur-xl border border-current/10 rounded-xl shadow-2xl p-2 z-[999] animate-in fade-in zoom-in-95 origin-top-right overflow-hidden ring-1 ring-black/5"
+                      style={{
+                        backgroundColor: "var(--box-color)",
+                        color: "var(--box-text-color)",
+                      }}
                     >
-                      <div className="text-[10px] font-bold uppercase opacity-50 px-2 py-1 tracking-wider">
-                        Adicionar
+                      <div className="text-[10px] font-bold uppercase opacity-50 px-2 py-1 tracking-wider mb-1">
+                        Rápidos
                       </div>
                       <div className="space-y-1">
                         {[
-                          { id: "tasks", label: "Tarefas", icon: ListTodo },
-                          { id: "pomodoro", label: "Pomodoro", icon: Timer },
-                          { id: "notepad", label: "Notas", icon: FileText },
-                          { id: "calendar", label: "Calendário", icon: Grid },
+                          {
+                            id: "tasks",
+                            label: "Tarefas",
+                            icon: ListTodo,
+                            color: "text-emerald-500",
+                          },
+                          {
+                            id: "pomodoro",
+                            label: "Pomodoro",
+                            icon: Timer,
+                            color: "text-red-500",
+                          },
+                          {
+                            id: "notepad",
+                            label: "Notas",
+                            icon: FileText,
+                            color: "text-yellow-500",
+                          },
+                          {
+                            id: "calendar",
+                            label: "Calendário",
+                            icon: Grid,
+                            color: "text-blue-500",
+                          },
                         ].map((item) => (
                           <button
                             key={item.id}
-                            onClick={() => {
-                              onAddWidget(item.id);
-                              setShowAddMenu(false);
-                            }}
+                            onClick={(e) => handleAdd(e, item.id)}
                             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-current/10 transition text-xs font-medium group text-left"
                           >
-                            <item.icon
-                              size={14}
-                              className="opacity-70 group-hover:opacity-100"
-                            />
+                            <item.icon size={14} className={item.color} />
                             {item.label}
                           </button>
                         ))}
                       </div>
+
                       <div className="border-t border-current/10 my-2"></div>
+
+                      {/* Botão da Loja */}
+                      <button
+                        onClick={handleNavigate("/store")}
+                        className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg flex items-center justify-center gap-2 text-xs font-bold transition-all mb-2 border border-primary/20 shadow-sm"
+                      >
+                        <ShoppingBag size={14} /> Loja Completa{" "}
+                        <ArrowRight size={12} />
+                      </button>
+
                       <div className="grid grid-cols-2 gap-1">
                         <button
-                          onClick={onSave}
-                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition"
+                          onClick={openModal(onSave)}
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition border border-current/5 bg-current/5"
                         >
-                          <Save size={14} className="text-primary" /> Backup
+                          <Save size={14} /> Backup
                         </button>
                         <button
-                          onClick={onSetups}
-                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition"
+                          onClick={handleNavigate("/themes")}
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition border border-current/5 bg-current/5"
                         >
-                          <Monitor size={14} className="text-purple-500" /> Loja
+                          <Grid size={14} /> Temas
                         </button>
                       </div>
                     </div>
@@ -460,7 +510,6 @@ export default function Dashboard() {
   const [editMode, setEditMode] = useState(false);
   const [showLayoutManager, setShowLayoutManager] = useState(false);
 
-  // CALLBACKS ESTÁVEIS (CRUCIAL PARA NÃO PISCAR)
   const handleSave = useCallback(() => setShowLayoutManager(true), []);
   const handleSetups = useCallback(() => setShowLayoutManager(true), []);
   const handleReset = useCallback(() => {
@@ -570,9 +619,9 @@ export default function Dashboard() {
           return (
             <div
               key={boxId}
-              className={`h-full w-full transition-all duration-300 relative group ${
+              className={`h-full w-full transition-all duration-300 relative group rounded-2xl ${
                 editMode
-                  ? "border-2 border-dashed border-amber-400/50 rounded-2xl bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
+                  ? "border-2 border-dashed border-amber-400/50 bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
                   : ""
               }`}
             >
