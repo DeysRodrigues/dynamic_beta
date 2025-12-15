@@ -19,7 +19,7 @@ export default function ProgressBox({ className }: ProgressBoxProps) {
       <p className="text-muted-foreground text-sm mt-1">
         {completedTasks} de {totalTasks} tasks ({progressPercent}%)
       </p>
-      <div className="w-full bg-background h-3 rounded-full overflow-hidden mt-3 border">
+      <div className="w-full bg-background h-3 rounded-full overflow-hidden mt-3">
         <div
           className="h-full bg-gradient-to-r from-primary to-purple-500 transition-all duration-500 ease-out"
           style={{ width: `${progressPercent}%` }}

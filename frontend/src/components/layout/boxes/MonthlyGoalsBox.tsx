@@ -38,7 +38,7 @@ export default function MonthlyGoalsBox({ id = "goals-default" }: { id?: string 
 
       {isEditing && (
         <div className="flex gap-2 mb-3">
-          <input className="flex-1 text-sm border-b border-muted-foreground/50 outline-none bg-transparent" placeholder="Nova Meta (ex: Meditar)" value={newTitle} onChange={e => setNewTitle(e.target.value)} autoFocus onKeyDown={e => e.key === 'Enter' && addGoal()}/>
+          <input className="flex-1 text-sm outline-none bg-transparent" placeholder="Nova Meta (ex: Meditar)" value={newTitle} onChange={e => setNewTitle(e.target.value)} autoFocus onKeyDown={e => e.key === 'Enter' && addGoal()}/>
           <button onClick={addGoal} className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">Add</button>
         </div>
       )}

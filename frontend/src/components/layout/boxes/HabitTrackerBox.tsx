@@ -47,7 +47,7 @@ export default function HabitTrackerBox({ id = "habit-default" }: HabitTrackerBo
           {isEditing ? (
             <input
               autoFocus
-              className="font-bold text-lg bg-background border-b border-primary/20 outline-none w-full"
+              className="font-bold text-lg bg-transparent outline-none w-full"
               value={habitName}
               onChange={(e) => setHabitName(e.target.value)}
               onBlur={handleNameSave}

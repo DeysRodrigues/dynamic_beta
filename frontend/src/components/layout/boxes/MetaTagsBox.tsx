@@ -33,7 +33,7 @@ export default function MetaTagsBox() {
         <select
           value={selectedTag}
           onChange={(e) => setSelectedTag(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-lg text-sm border focus:ring-2 focus:ring-primary/20"
+          className="flex-1 px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-primary/20"
         >
           <option value="">Tag...</option>
          
@@ -47,7 +47,7 @@ export default function MetaTagsBox() {
           placeholder="h"
           value={hours}
           onChange={(e) => setHours(e.target.value)}
-          className="w-16 px-2 py-2 rounded-lg text-sm text-center border focus:ring-2 focus:ring-primary/20"
+          className="w-16 px-2 py-2 rounded-lg text-sm text-center focus:ring-2 focus:ring-primary/20"
         />
         
         <button
@@ -75,7 +75,7 @@ export default function MetaTagsBox() {
             return (
               <div 
                 key={index} 
-                className="bg-current/5 p-3 rounded-xl border border-current/10 hover:border-current/20 transition-all"
+                className="bg-current/5 p-3 rounded-xl hover:bg-current/10 transition-all"
               >
                 <div className="flex justify-between items-center mb-1">
                   <span className="capitalize font-bold text-sm">{goal.tag}</span>
@@ -93,7 +93,7 @@ export default function MetaTagsBox() {
                   <span>Meta: {goal.hours}h</span>
                 </div>
 
-                <div className="w-full bg-current/10 h-2.5 rounded-full overflow-hidden border border-current/5">
+                <div className="w-full bg-current/10 h-2.5 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-700 ease-out shadow-sm"
                     style={{ width: `${percentage}%` }}

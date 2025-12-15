@@ -6,6 +6,7 @@ import {
   Palette, Check, ExternalLink
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import { cn } from "@/lib/utils";
 
 // --- TIPOS ---
 interface LibraryCategory {
@@ -167,7 +168,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
     >
       
       {/* --- HEADER --- */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar items-center z-30 h-12 shrink-0 px-2 border-b border-current/10 bg-current/5 backdrop-blur-sm">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar items-center z-30 h-12 shrink-0 px-2 bg-current/5 backdrop-blur-sm">
         {categories.map(cat => {
           const Icon = iconMap[cat.icon] || Book;
           const isActive = activeTab === cat.id;
@@ -175,10 +176,10 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
             <button
               key={cat.id}
               onClick={(e) => { e.stopPropagation(); setActiveTab(cat.id); setSelectedBookId(null); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
                 isActive 
-                  ? "bg-current/10 text-primary border-current/20 shadow-sm" 
-                  : "bg-transparent opacity-60 hover:opacity-100 border-transparent hover:bg-current/5"
+                  ? "bg-current/10 text-primary shadow-sm" 
+                  : "bg-transparent opacity-60 hover:opacity-100 hover:bg-current/5"
               }`}
             >
               <Icon size={14} /> {cat.name}
@@ -195,15 +196,15 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
 
       {/* --- MODAL ESTANTES --- */}
       {isManagingCats && (
-        <div className="absolute top-12 left-0 right-0 bg-background/95 border-b border-current/10 p-3 z-40 animate-in slide-in-from-top-2 shadow-lg backdrop-blur-md" onClick={e => e.stopPropagation()}>
+        <div className="absolute top-12 left-0 right-0 bg-background/95 p-3 z-40 animate-in slide-in-from-top-2 shadow-lg backdrop-blur-md" onClick={e => e.stopPropagation()}>
           <h3 className="text-xs font-bold opacity-60 uppercase tracking-wider mb-2">Nova Estante</h3>
           <div className="flex gap-2 mb-3 items-start">
             <div className="relative">
-               <button onClick={(e) => { e.stopPropagation(); setShowIconMenu(!showIconMenu); }} className="w-9 h-9 flex items-center justify-center bg-black/5 border border-current/10 rounded-lg hover:bg-black/10 transition">
+               <button onClick={(e) => { e.stopPropagation(); setShowIconMenu(!showIconMenu); }} className="w-9 h-9 flex items-center justify-center bg-black/5 rounded-lg hover:bg-black/10 transition">
                  {(() => { const I = iconMap[newCatIcon] || Book; return <I size={18}/> })()}
                </button>
                {showIconMenu && (
-                 <div className="absolute top-10 left-0 bg-popover border border-border shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
+                 <div className="absolute top-10 left-0 bg-popover shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
                    {Object.keys(iconMap).map(k => {
                      const I = iconMap[k];
                      return <button key={k} onClick={() => { setNewCatIcon(k); setShowIconMenu(false); }} className={`p-2 rounded-lg flex items-center justify-center hover:bg-primary/10 hover:text-primary ${newCatIcon === k ? 'bg-primary/10 text-primary' : ''}`}><I size={16} /></button>
@@ -211,20 +212,20 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
                  </div>
                )}
             </div>
-            <input className="flex-1 bg-black/5 border border-current/10 rounded-lg px-2 h-9 text-sm outline-none focus:ring-1 focus:ring-primary text-inherit" placeholder="Nome (ex: Mangás)" value={newCatName} onChange={e => setNewCatName(e.target.value)} />
+            <input className="flex-1 bg-black/5 rounded-lg px-2 h-9 text-sm outline-none focus:ring-1 focus:ring-primary text-inherit" placeholder="Nome (ex: Mangás)" value={newCatName} onChange={e => setNewCatName(e.target.value)} />
             <button onClick={addCategory} className="bg-primary text-primary-foreground px-3 h-9 rounded-lg text-xs font-bold hover:opacity-90">CRIAR</button>
           </div>
 
           <h3 className="text-xs font-bold opacity-60 uppercase tracking-wider mb-2">Acabamento</h3>
           <div className="flex gap-2 mb-4">
             {woods.map(w => (
-              <button key={w.name} onClick={() => save(books, categories, { ...settings, woodColor: w.color })} className="w-8 h-8 rounded-full border-2 ring-2 ring-transparent hover:ring-primary/50 transition shadow-sm relative overflow-hidden" style={{ backgroundColor: w.color, borderColor: settings.woodColor === w.color ? 'var(--primary)' : 'transparent' }} title={w.name}>
+              <button key={w.name} onClick={() => save(books, categories, { ...settings, woodColor: w.color })} className={cn("w-8 h-8 rounded-full ring-2 ring-transparent hover:ring-primary/50 transition shadow-sm relative overflow-hidden", settings.woodColor === w.color && "ring-primary")} style={{ backgroundColor: w.color }} title={w.name}>
                  {/* Efeito de textura na bolinha */}
                  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.1)_50%,transparent_75%,transparent_100%)] opacity-50 bg-[length:10px_10px]" />
               </button>
             ))}
           </div>
-          <div className="max-h-24 overflow-y-auto border-t border-current/10 pt-2 custom-scrollbar">
+          <div className="max-h-24 overflow-y-auto pt-2 custom-scrollbar">
              {categories.map(c => (
                <div key={c.id} className="flex justify-between items-center text-xs py-1 px-1 hover:bg-current/5 rounded">
                  <span className="opacity-80 flex items-center gap-2">{(() => { const I = iconMap[c.icon] || Book; return <I size={12} className="opacity-50"/> })()}{c.name}</span>
@@ -241,7 +242,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
           <div key={idx} className="relative w-full h-32 flex items-end group/shelf">
              
              {/* Fundo do Nicho (Parede interna escura para dar profundidade) */}
-             <div className="absolute inset-x-2 top-2 bottom-3 bg-black/20 shadow-inner rounded-t-lg border-t border-x border-black/10 backdrop-blur-sm transition-colors duration-500"></div>
+             <div className="absolute inset-x-2 top-2 bottom-3 bg-black/20 shadow-inner rounded-t-lg backdrop-blur-sm transition-colors duration-500"></div>
              
              {/* Livros */}
              <div className="relative z-10 w-full px-6 flex items-end gap-[2px] overflow-x-auto no-scrollbar h-full pb-3.5 perspective-[500px]">
@@ -273,24 +274,24 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
 
       {/* --- ADD BOOK MODAL --- */}
       {isAddingBook && (
-        <div className="absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md p-4 rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.2)] z-50 animate-in slide-in-from-bottom-4 border-t border-current/10" onClick={e => e.stopPropagation()}>
+        <div className="absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md p-4 rounded-t-2xl shadow-[0_-5px_20px_rgba(0,0,0,0.2)] z-50 animate-in slide-in-from-bottom-4" onClick={e => e.stopPropagation()}>
           <h3 className="text-xs font-bold opacity-60 mb-2">Adicionar em: <span className="text-primary">{activeCategoryData?.name}</span></h3>
           <div className="flex gap-2 mb-2 items-center">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden border shadow-sm cursor-pointer hover:scale-110 transition">
+            <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm cursor-pointer hover:scale-110 transition">
               <input type="color" className="absolute -top-2 -left-2 w-12 h-12 cursor-pointer p-0 border-0" value={newBookColor} onChange={e => setNewBookColor(e.target.value)} title="Cor da capa" />
             </div>
             
-            <input autoFocus className="flex-1 bg-black/5 border border-current/10 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 text-inherit" placeholder="Título..." value={newBookTitle} onChange={e => setNewBookTitle(e.target.value)} onKeyDown={e => e.key === 'Enter' && addBook()} />
+            <input autoFocus className="flex-1 bg-black/5 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 text-inherit" placeholder="Título..." value={newBookTitle} onChange={e => setNewBookTitle(e.target.value)} onKeyDown={e => e.key === 'Enter' && addBook()} />
             <button onClick={addBook} className="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-bold text-xs">OK</button>
           </div>
-          <input className="w-full bg-transparent border-b border-current/20 text-xs py-1 opacity-70 outline-none text-inherit" placeholder="Link (http://...) - Opcional" value={newBookLink} onChange={e => setNewBookLink(e.target.value)} />
+          <input className="w-full bg-transparent text-xs py-1 opacity-70 outline-none text-inherit" placeholder="Link (http://...) - Opcional" value={newBookLink} onChange={e => setNewBookLink(e.target.value)} />
         </div>
       )}
 
       {/* --- DETAILS CARD --- */}
       {selectedBookId && currentBook && (
         <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-in fade-in duration-200" onClick={() => setSelectedBookId(null)}>
-          <div className="bg-background w-full max-w-xs rounded-2xl p-4 shadow-2xl scale-100 animate-in zoom-in-95 duration-200 relative overflow-hidden text-foreground border border-border" onClick={e => e.stopPropagation()}>
+          <div className="bg-background w-full max-w-xs rounded-2xl p-4 shadow-2xl scale-100 animate-in zoom-in-95 duration-200 relative overflow-hidden text-foreground" onClick={e => e.stopPropagation()}>
             
             <div className="relative w-20 h-28 mx-auto mb-3 shadow-lg rounded-sm cursor-pointer group/cover transition-transform hover:scale-105" style={{ backgroundColor: currentBook.color }}>
                <input 

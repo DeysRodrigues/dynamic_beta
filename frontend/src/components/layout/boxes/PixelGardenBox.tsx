@@ -116,7 +116,7 @@ export default function PixelGardenBox() {
   };
 
   return (
-    <div className="box-padrao bg-gradient-to-b from-sky-200 to-indigo-50 border-indigo-100 relative overflow-hidden flex flex-col items-center justify-between p-4 group transition-all hover:shadow-md">
+    <div className="box-padrao bg-gradient-to-b from-sky-200 to-indigo-50 relative overflow-hidden flex flex-col items-center justify-between p-4 group transition-all hover:shadow-md">
       
       {/* Elementos de Fundo (Decorativos) */}
       <div className="absolute top-3 right-3 text-yellow-400 animate-spin-slow opacity-90">
@@ -127,7 +127,7 @@ export default function PixelGardenBox() {
       </div>
 
       {/* Título Flutuante */}
-      <div className="z-10 bg-background/70 backdrop-blur-md px-3 py-1 rounded-full border border-background/50 shadow-sm flex items-center gap-1">
+      <div className="z-10 bg-background/70 backdrop-blur-md px-3 py-1 rounded-full shadow-sm flex items-center gap-1">
         <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Pixel Garden</span>
       </div>
 
@@ -149,7 +149,7 @@ export default function PixelGardenBox() {
           <span>Nv. {stage}</span>
           <span>{messages[stage]}</span>
         </div>
-        <div className="w-full h-2 bg-primary/10 rounded-full overflow-hidden border border-background/50">
+        <div className="w-full h-2 bg-primary/10 rounded-full overflow-hidden">
           <div 
              className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-1000 ease-out shadow-[0_0_10px_#4ade80]"
              style={{ width: `${Math.max(5, (stage / 4) * 100)}%` }}

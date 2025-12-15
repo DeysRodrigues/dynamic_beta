@@ -29,15 +29,15 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      // Valores Padrão (Light Mode Indigo)
+      // Valores Padrão (Dark Mode)
       wallpaper: "plain",
       customImage: null,
-      sidebarColor: "hsl(222.2 47.4% 11.2%)",
-      primaryColor: "hsl(222.2 47.4% 11.2%)",
+      sidebarColor: "#1e1b4b", // dark-indigo
+      primaryColor: "#6366f1", // indigo-500
       boxOpacity: 1,
-      boxColor: "#ffffff",
-      textColor: "#1e293b",
-      backgroundColor: "#f9fafb",
+      boxColor: "#1e293b", // slate-800
+      textColor: "#f8fafc", // slate-50
+      backgroundColor: "#0f172a", // slate-900
       
       setWallpaper: (w) => set({ wallpaper: w }),
       setCustomImage: (img) => set({ customImage: img, wallpaper: "custom" }),

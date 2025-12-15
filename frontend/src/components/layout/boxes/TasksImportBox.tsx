@@ -38,7 +38,7 @@ export default function TasksImportBox({ onImport, onClose }: TasksImportBoxProp
   };
 
   return (
-    <div className="box-padrao relative animate-in fade-in zoom-in duration-200 border-primary/20">
+    <div className="box-padrao relative animate-in fade-in zoom-in duration-200">
       <button
         onClick={onClose}
         className="absolute top-4 right-4 text-muted-foreground hover:text-destructive transition-colors"

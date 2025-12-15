@@ -93,20 +93,20 @@ export default function RiskTrackerBox({
     }
   };
 
-  const getStatusColor = (current: number, limit: number) => {
+const getStatusColor = (current: number, limit: number) => {
     const percentage = (current / limit) * 100;
-    if (percentage >= 100) return "text-red-600 bg-red-100 border-red-200";
+    if (percentage >= 100) return "text-red-600 bg-red-100";
     if (percentage >= 80)
-      return "text-orange-500 bg-orange-100 border-orange-200";
+      return "text-orange-500 bg-orange-100";
     if (percentage >= 50)
-      return "text-yellow-600 bg-yellow-100 border-yellow-200";
-    return "text-emerald-600 bg-emerald-100 border-emerald-200";
+      return "text-yellow-600 bg-yellow-100";
+    return "text-emerald-600 bg-emerald-100";
   };
 
   return (
     <div className="box-padrao p-0 flex flex-col relative overflow-hidden h-full">
       {/* HEADER */}
-      <div className="p-3 border-b border-current/10 flex justify-between items-center bg-current/5">
+      <div className="p-3 flex justify-between items-center bg-current/5">
         <h2 className="font-bold flex items-center gap-2 text-sm">
           <AlertTriangle size={16} className="text-orange-500" /> Gestão de
           Risco
@@ -125,10 +125,10 @@ export default function RiskTrackerBox({
 
       {/* FORMULÁRIO INTELIGENTE */}
       {isAdding && (
-        <div className="p-3 bg-current/5 border-b border-current/10 animate-in slide-in-from-top-2 space-y-2">
+        <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 space-y-2">
           <input
             placeholder="O que você quer controlar? (Ex: Faltas Cálculo)"
-            className="w-full text-xs p-2 rounded bg-black/5 border border-current/10 outline-none focus:border-primary/50"
+            className="w-full text-xs p-2 rounded bg-black/5 outline-none focus:ring-1 focus:ring-primary/50"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
@@ -140,7 +140,7 @@ export default function RiskTrackerBox({
               <input
                 type="number"
                 placeholder="Total (Ex: 80 aulas)"
-                className="w-full text-xs p-2 rounded bg-black/5 border border-current/10 outline-none focus:border-primary/50"
+                className="w-full text-xs p-2 rounded bg-black/5 outline-none focus:ring-1 focus:ring-primary/50"
                 value={total}
                 onChange={(e) => setTotal(e.target.value)}
               />
@@ -155,7 +155,7 @@ export default function RiskTrackerBox({
                     ? "Max % (Ex: 25)"
                     : "Max Unid (Ex: 20)"
                 }
-                className="w-full text-xs p-2 rounded-l bg-black/5 border border-current/10 outline-none focus:border-primary/50"
+                className="w-full text-xs p-2 rounded-l bg-black/5 outline-none focus:ring-1 focus:ring-primary/50"
                 value={limitInput}
                 onChange={(e) => setLimitInput(e.target.value)}
               />
@@ -163,7 +163,7 @@ export default function RiskTrackerBox({
                 onClick={() =>
                   setLimitMode(limitMode === "percent" ? "unit" : "percent")
                 }
-                className="px-2 bg-black/10 hover:bg-black/20 rounded-r border-y border-r border-current/10 text-xs font-bold w-10 flex items-center justify-center transition"
+                className="px-2 bg-black/10 hover:bg-black/20 rounded-r text-xs font-bold w-10 flex items-center justify-center transition"
                 title={
                   limitMode === "percent"
                     ? "Mudar para Unidades"
@@ -182,7 +182,7 @@ export default function RiskTrackerBox({
           <div className="relative">
             <input
               placeholder="Consequência (Ex: Reprovação direta)"
-              className="w-full text-xs p-2 rounded bg-black/5 border border-current/10 outline-none focus:border-primary/50 pl-7"
+              className="w-full text-xs p-2 rounded bg-black/5 outline-none focus:ring-1 focus:ring-primary/50 pl-7"
               value={consequence}
               onChange={(e) => setConsequence(e.target.value)}
             />
@@ -221,7 +221,7 @@ export default function RiskTrackerBox({
           return (
             <div
               key={item.id}
-              className={`p-3 rounded-xl border transition-all relative group ${statusClass} bg-opacity-40`}
+              className={`p-3 rounded-xl transition-all relative group ${statusClass} bg-opacity-40`}
             >
               <div className="flex justify-between items-start mb-1.5">
                 <div className="flex-1 min-w-0 pr-2">
@@ -274,7 +274,7 @@ export default function RiskTrackerBox({
                 </div>
 
                 {/* Botões + / - */}
-                <div className="flex items-center gap-1 bg-white/50 backdrop-blur-sm p-0.5 rounded-lg border border-black/5 shadow-sm">
+                <div className="flex items-center gap-1 bg-white/50 backdrop-blur-sm p-0.5 rounded-lg shadow-sm">
                   <button
                     onClick={() => updateCount(item.id, -1)}
                     className="p-1 hover:bg-black/10 rounded transition text-current"

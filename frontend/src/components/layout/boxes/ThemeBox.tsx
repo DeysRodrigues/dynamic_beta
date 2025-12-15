@@ -31,10 +31,12 @@ export default function ThemeBox() {
           <button
             key={t.name}
             onClick={() => applyTheme(t)}
-            className={`h-8 rounded-lg border flex items-center justify-center transition-all ${
-              currentThemeName === t.name ? "ring-2 ring-offset-1 ring-ring scale-105" : "hover:scale-105"
+            className={`h-8 rounded-lg flex items-center justify-center transition-all transform hover:scale-105 active:scale-100 ${
+              currentThemeName === t.name
+                ? "ring-2 ring-offset-1 ring-ring"
+                : "shadow-md hover:shadow-lg"
             }`}
-            style={{ backgroundColor: t.primary, borderColor: t.sidebar }}
+            style={{ backgroundColor: t.primary }}
             title={t.name}
           >
             {currentThemeName === t.name && <Check size={12} className="text-white" />}

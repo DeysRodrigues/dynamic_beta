@@ -48,7 +48,7 @@ const ThemeCard = memo(({ theme, isApplied, onApply }: { theme: any; isApplied: 
         className={`mt-3 w-full py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 ${
           isApplied 
             ? "bg-green-500 text-white" 
-            : "bg-current/5 border border-current/10 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+            : "bg-current/5 hover:bg-primary/10 hover:text-primary"
         }`}
       >
         {isApplied ? <><CheckCircle2 size={14} /> Aplicado</> : "Aplicar Visual"}
@@ -60,13 +60,13 @@ const ThemeCard = memo(({ theme, isApplied, onApply }: { theme: any; isApplied: 
 // 3. Card de Paleta de Cores
 const PaletteCard = memo(({ palette, isApplied, onApply }: { palette: any; isApplied: boolean; onApply: (p: any) => void }) => (
   <div 
-    className="box-padrao p-3 flex flex-col items-center justify-center text-center gap-2 hover:border-primary/50 transition-colors cursor-pointer" 
+    className="box-padrao p-3 flex flex-col items-center justify-center text-center gap-2 transition-colors cursor-pointer" 
     onClick={() => onApply(palette)}
   >
     <div className="flex -space-x-2">
-      <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: palette.theme.backgroundColor }} />
-      <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: palette.theme.primaryColor }} />
-      <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: palette.theme.sidebarColor }} />
+      <div className="w-8 h-8 rounded-full shadow-sm" style={{ backgroundColor: palette.theme.backgroundColor }} />
+      <div className="w-8 h-8 rounded-full shadow-sm" style={{ backgroundColor: palette.theme.primaryColor }} />
+      <div className="w-8 h-8 rounded-full shadow-sm" style={{ backgroundColor: palette.theme.sidebarColor }} />
     </div>
     <div><h3 className="font-bold text-sm">{palette.name}</h3><p className="text-[10px] opacity-50 line-clamp-1">{palette.description}</p></div>
     <button className={`mt-1 text-[10px] font-bold px-3 py-1 rounded-full transition ${isApplied ? 'bg-green-500 text-white' : 'bg-current/10'}`}>
@@ -152,7 +152,7 @@ export default function ThemesPage() {
 
       {/* 1. SETUPS COMPLETOS */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 border-b border-current/10 pb-2">
+        <div className="flex items-center gap-2 pb-2">
           <Layout className="text-primary" size={28}/>
           <div>
             <h2 className="text-xl font-bold">Setups Completos</h2>
@@ -173,7 +173,7 @@ export default function ThemesPage() {
 
       {/* 2. TEMAS DE IMERSÃO */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 border-b border-current/10 pb-2">
+        <div className="flex items-center gap-2 pb-2">
           <ImageIcon className="text-purple-500" size={28}/>
           <div>
             <h2 className="text-xl font-bold">Temas de Imersão</h2>
@@ -195,7 +195,7 @@ export default function ThemesPage() {
 
       {/* 3. PALETAS DE CORES */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 border-b border-current/10 pb-2">
+        <div className="flex items-center gap-2 pb-2">
           <Palette className="text-pink-500" size={28}/>
           <div>
             <h2 className="text-xl font-bold">Paletas de Cores</h2>
@@ -216,10 +216,10 @@ export default function ThemesPage() {
 
       {/* SALVAR SETUP ATUAL */}
       <div className="fixed bottom-6 right-6 z-50">
-        <div className="box-padrao p-3 shadow-2xl border-primary/20 bg-background/90 backdrop-blur-md flex items-center gap-2 animate-in slide-in-from-bottom-4">
+        <div className="box-padrao p-3 shadow-2xl bg-background/90 backdrop-blur-md flex items-center gap-2 animate-in slide-in-from-bottom-4">
            <Save size={20} className="text-primary"/>
            <div className="flex flex-col md:flex-row gap-2">
-             <input type="text" placeholder="Nome do Setup..." value={newSetupName} onChange={e => setNewSetupName(e.target.value)} className="px-3 py-1.5 rounded-lg bg-black/5 border border-current/10 outline-none text-sm w-40 md:w-52" />
+             <input type="text" placeholder="Nome do Setup..." value={newSetupName} onChange={e => setNewSetupName(e.target.value)} className="px-3 py-1.5 rounded-lg bg-black/5 outline-none text-sm w-40 md:w-52" />
              <button onClick={handleSaveSetup} className="bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-sm font-bold hover:opacity-90">Backup</button>
            </div>
         </div>

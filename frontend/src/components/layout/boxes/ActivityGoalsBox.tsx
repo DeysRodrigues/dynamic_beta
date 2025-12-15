@@ -88,7 +88,7 @@ const WeekGraph = memo(({ tracker, selectedDate, onSelectDate }: { tracker: Goal
                  />
               </div>
               <div className="hidden sm:block absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
-                 <div className="bg-popover dark:bg-zinc-800 text-popover-foreground text-[9px] px-2 py-1 rounded shadow-xl border border-white/10 whitespace-nowrap font-bold">
+                 <div className="bg-popover dark:bg-zinc-800 text-popover-foreground text-[9px] px-2 py-1 rounded shadow-xl whitespace-nowrap font-bold">
                     {dayTotal} {tracker.unit}
                  </div>
               </div>
@@ -122,12 +122,12 @@ const MonthReport = memo(({ tracker, selectedDate, onSelectDate }: { tracker: Go
 
   return (
       <div className="animate-in fade-in zoom-in-95 duration-300 mt-2">
-          <div className="grid grid-cols-3 text-[10px] mb-3 bg-black/5 dark:bg-transparent p-2 rounded-lg border border-black/5 dark:border-white/10 gap-y-2">
+          <div className="grid grid-cols-3 text-[10px] mb-3 bg-black/5 dark:bg-transparent p-2 rounded-lg gap-y-2">
               <div className="text-center">
                   <p className="opacity-50 uppercase tracking-wider text-[8px]">Total Mês</p>
                   <p className="font-bold text-primary dark:text-blue-300 truncate px-1">{monthTotal.toLocaleString()}</p>
               </div>
-              <div className="text-center border-x border-current/10">
+              <div className="text-center">
                   <p className="opacity-50 uppercase tracking-wider text-[8px]">Média/Dia</p>
                   <p className="font-bold truncate px-1">{dailyAverage.toLocaleString()}</p>
               </div>
@@ -298,7 +298,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
     <div className="box-padrao p-0 flex flex-col relative overflow-hidden h-full">
       
       {/* HEADER */}
-      <div className="px-4 py-3 border-b border-current/5 flex flex-wrap justify-between items-center gap-2 bg-current/5 dark:bg-transparent backdrop-blur-md z-10 min-h-[50px]">
+      <div className="px-4 py-3 flex flex-wrap justify-between items-center gap-2 bg-current/5 dark:bg-transparent backdrop-blur-md z-10 min-h-[50px]">
         <div className="flex items-center gap-2">
           <div className="p-1.5 bg-yellow-500/10 dark:bg-yellow-400/10 rounded-lg text-yellow-600 dark:text-yellow-400 shrink-0">
             <Trophy size={16} />
@@ -314,7 +314,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
             {viewMode === 'week' ? <LayoutGrid size={16} /> : <BarChart3 size={16} />}
           </button>
 
-          <label className="flex items-center gap-2 cursor-pointer group bg-black/5 dark:bg-transparent hover:bg-black/10 dark:hover:bg-white/5 px-2 py-1 rounded-lg transition border border-transparent hover:border-current/10 shrink-0">
+          <label className="flex items-center gap-2 cursor-pointer group bg-black/5 dark:bg-transparent hover:bg-black/10 dark:hover:bg-white/5 px-2 py-1 rounded-lg transition shrink-0">
              <Calendar size={14} className={cn("transition", selectedDate === getTodayDate() ? "opacity-50" : "text-primary dark:text-blue-400 animate-pulse")}/>
              <span className="text-[10px] font-mono font-bold opacity-80">
                {selectedDate === getTodayDate() ? "Hoje" : formatDate(selectedDate).split(',')[0]}
@@ -325,8 +325,8 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
           <button 
             onClick={() => setIsAdding(!isAdding)} 
             className={cn(
-              "p-1.5 rounded-lg transition border shrink-0",
-              isAdding ? "bg-primary text-primary-foreground border-primary" : "border-transparent hover:bg-current/10 opacity-60 hover:opacity-100"
+              "p-1.5 rounded-lg transition shrink-0",
+              isAdding ? "bg-primary text-primary-foreground" : "hover:bg-current/10 opacity-60 hover:opacity-100"
             )}
           >
             <Plus size={16} />
@@ -336,25 +336,25 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
 
       {/* FORMULÁRIO */}
       {isAdding && (
-        <div className="p-4 bg-current/5 dark:bg-transparent border-b border-current/5 animate-in slide-in-from-top-2 space-y-3 shadow-inner">
+        <div className="p-4 bg-current/5 dark:bg-transparent animate-in slide-in-from-top-2 space-y-3 shadow-inner">
           <div className="flex flex-wrap gap-2">
             <div className="flex-1 min-w-[140px] space-y-1">
               <label className="text-[9px] font-bold opacity-50 uppercase ml-1">Nome</label>
-              <input placeholder="Ex: Passe de Batalha" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 border border-current/5 outline-none focus:ring-1 focus:ring-primary/50 transition" value={newTitle} onChange={e => setNewTitle(e.target.value)} autoFocus />
+              <input placeholder="Ex: Passe de Batalha" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 outline-none focus:ring-1 focus:ring-primary/50 transition" value={newTitle} onChange={e => setNewTitle(e.target.value)} autoFocus />
             </div>
             <div className="w-20 space-y-1">
               <label className="text-[9px] font-bold opacity-50 uppercase ml-1">Unidade</label>
-              <input placeholder="XP" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 border border-current/5 outline-none focus:ring-1 focus:ring-primary/50 text-center transition" value={newUnit} onChange={e => setNewUnit(e.target.value)} />
+              <input placeholder="XP" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 outline-none focus:ring-1 focus:ring-primary/50 text-center transition" value={newUnit} onChange={e => setNewUnit(e.target.value)} />
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <div className="flex-1 min-w-[100px] space-y-1">
               <label className="text-[9px] font-bold opacity-50 uppercase ml-1">Meta Diária</label>
-              <input type="number" placeholder="1000" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 border border-current/5 outline-none focus:ring-1 focus:ring-primary/50 transition" value={newDaily} onChange={e => setNewDaily(e.target.value)} />
+              <input type="number" placeholder="1000" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 outline-none focus:ring-1 focus:ring-primary/50 transition" value={newDaily} onChange={e => setNewDaily(e.target.value)} />
             </div>
             <div className="flex-1 min-w-[100px] space-y-1">
               <label className="text-[9px] font-bold opacity-50 uppercase ml-1">Meta Total</label>
-              <input type="number" placeholder="50000" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 border border-current/5 outline-none focus:ring-1 focus:ring-primary/50 transition" value={newTotal} onChange={e => setNewTotal(e.target.value)} />
+              <input type="number" placeholder="50000" className="w-full text-xs p-2 rounded-lg bg-black/5 dark:bg-black/20 outline-none focus:ring-1 focus:ring-primary/50 transition" value={newTotal} onChange={e => setNewTotal(e.target.value)} />
             </div>
           </div>
           <button onClick={addTracker} className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl text-xs font-bold hover:opacity-90 shadow-lg shadow-primary/20 transition active:scale-95">CRIAR OBJETIVO</button>
@@ -383,14 +383,14 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
           const presets = tracker.presets || [];
 
           return (
-            <div key={tracker.id} className="relative dark:bg-transparent backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all group/card">
+            <div key={tracker.id} className="relative dark:bg-transparent backdrop-blur-md rounded-2xl p-4 shadow-sm hover:shadow-md transition-all group/card">
               
               <button onClick={() => deleteTracker(tracker.id)} className="absolute top-3 right-3 opacity-0 group-hover/card:opacity-100 p-1.5 hover:bg-red-50 dark:hover:bg-red-900/50 text-red-400 rounded-lg transition"><Trash2 size={12}/></button>
 
               <div className="mb-3 pr-6">
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-bold text-sm truncate">{tracker.title}</h3>
-                  {totalPercent >= 100 && <span className="bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 text-[9px] px-1.5 rounded font-bold border border-yellow-200 dark:border-yellow-800">CONCLUÍDO</span>}
+                  {totalPercent >= 100 && <span className="bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 text-[9px] px-1.5 rounded font-bold">CONCLUÍDO</span>}
                 </div>
                 <div className="flex flex-wrap justify-between items-end text-[10px]">
                   <span className="opacity-60 font-medium">Progresso Total</span>
@@ -402,7 +402,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
               </div>
 
               {/* GRÁFICO CONTAINER */}
-              <div className="bg-black/5 dark:bg-transparent dark:border dark:border-white/10 rounded-xl p-2 mb-3">
+              <div className="bg-black/5 dark:bg-transparent rounded-xl p-2 mb-3">
                 {viewMode === 'week' 
                   ? <WeekGraph tracker={tracker} selectedDate={selectedDate} onSelectDate={setSelectedDate} /> 
                   : <MonthReport tracker={tracker} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
@@ -411,9 +411,9 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
 
               {/* CARD EXPANDIDO */}
               <div className={cn(
-                "rounded-xl transition-all duration-300 border border-transparent",
+                "rounded-xl transition-all duration-300",
                 isExpanded 
-                   ? " dark:bg-transparent shadow-lg dark:shadow-none border-black/5 dark:border-white/10 p-3 -mx-2 -mb-2" 
+                   ? " dark:bg-transparent shadow-lg dark:shadow-none p-3 -mx-2 -mb-2" 
                    : ""
               )}>
                 <div className="flex justify-between items-center mb-2">
@@ -435,7 +435,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
                     <div className="flex flex-wrap gap-1.5 mb-2 animate-in fade-in slide-in-from-left-2">
                       {presets.map(p => (
                         <div key={p.id} className="group/chip relative">
-                          <button onClick={() => usePreset(tracker.id, p)} className="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/30 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 border border-yellow-200 dark:border-yellow-800 text-[9px] px-2 py-1 rounded-full transition text-yellow-800 dark:text-yellow-400 font-medium active:scale-95">
+                          <button onClick={() => usePreset(tracker.id, p)} className="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/30 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 text-[9px] px-2 py-1 rounded-full transition text-yellow-800 dark:text-yellow-400 font-medium active:scale-95">
                             <Zap size={10} className="fill-yellow-500 text-yellow-500"/>{p.name} <span className="opacity-60">+{p.value}</span>
                           </button>
                           <button onClick={(e) => deletePreset(e, tracker.id, p.id)} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover/chip:opacity-100 transition scale-75 hover:scale-100 shadow-sm"><X size={8}/></button>
@@ -447,7 +447,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
                   <div className="flex flex-wrap gap-2 relative">
                     <input 
                       placeholder="Descrição..." 
-                      className="flex-[2] min-w-[80px] bg-current/5 dark:bg-black/20 border-0 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-primary/20 transition placeholder:opacity-40" 
+                      className="flex-[2] min-w-[80px] bg-current/5 dark:bg-black/20 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-primary/20 transition placeholder:opacity-40" 
                       value={isExpanded ? activityName : ""} 
                       onChange={e => setActivityName(e.target.value)} 
                       onFocus={() => setExpandedId(tracker.id)} 
@@ -455,7 +455,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
                     <input 
                       type="number" 
                       placeholder="Val" 
-                      className="flex-1 min-w-[50px] bg-current/5 dark:bg-black/20 border-0 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-primary/20 transition placeholder:opacity-40 text-center font-mono" 
+                      className="flex-1 min-w-[50px] bg-current/5 dark:bg-black/20 rounded-lg px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-primary/20 transition placeholder:opacity-40 text-center font-mono" 
                       value={isExpanded ? activityValue : ""} 
                       onChange={e => setActivityValue(e.target.value)} 
                       onFocus={() => setExpandedId(tracker.id)} 

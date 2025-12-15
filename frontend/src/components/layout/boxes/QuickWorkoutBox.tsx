@@ -47,7 +47,7 @@ export default function QuickWorkoutBox() {
   const isFinished = step === routine.length - 1 && timeLeft === 0;
 
   return (
-    <div className="box-padrao bg-orange-50 border-orange-200 flex flex-col items-center justify-center p-6 text-center">
+    <div className="box-padrao bg-orange-50 flex flex-col items-center justify-center p-6 text-center">
       {step === -1 && !isFinished && (
         <>
           <div className="bg-orange-100 p-4 rounded-full mb-4 text-orange-600"><Dumbbell size={32} /></div>

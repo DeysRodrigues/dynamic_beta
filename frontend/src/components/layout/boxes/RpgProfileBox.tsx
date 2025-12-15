@@ -134,7 +134,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
 
       {isEditing ? (
         <div className="absolute inset-0 bg-background/95 backdrop-blur-md z-20 p-4 flex flex-col animate-in fade-in overflow-y-auto custom-scrollbar">
-          <div className="flex justify-between items-center mb-4 border-b border-current/10 pb-2">
+          <div className="flex justify-between items-center mb-4 pb-2">
             <div className="flex gap-2">
               <button onClick={() => setEditTab('profile')} className={`text-xs font-bold px-2 py-1 rounded ${editTab === 'profile' ? 'bg-primary/10 text-primary' : 'opacity-60'}`}>PERFIL</button>
               <button onClick={() => setEditTab('rules')} className={`text-xs font-bold px-2 py-1 rounded ${editTab === 'rules' ? 'bg-primary/10 text-primary' : 'opacity-60'}`}>REGRAS</button>
@@ -144,13 +144,13 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
 
           {editTab === 'profile' && (
             <div className="space-y-3">
-              <div><label className="text-[10px] font-bold opacity-60 uppercase">Nome</label><input className="w-full border-b border-current/20 bg-transparent text-sm font-bold outline-none" value={data.name} onChange={e => setData({...data, name: e.target.value})} /></div>
-              <div><label className="text-[10px] font-bold opacity-60 uppercase">Título Custom</label><input className="w-full border-b border-current/20 bg-transparent text-sm outline-none" placeholder={autoClass.title} value={data.customTitle} onChange={e => setData({...data, customTitle: e.target.value})} /></div>
+              <div><label className="text-[10px] font-bold opacity-60 uppercase">Nome</label><input className="w-full bg-transparent text-sm font-bold outline-none" value={data.name} onChange={e => setData({...data, name: e.target.value})} /></div>
+              <div><label className="text-[10px] font-bold opacity-60 uppercase">Título Custom</label><input className="w-full bg-transparent text-sm outline-none" placeholder={autoClass.title} value={data.customTitle} onChange={e => setData({...data, customTitle: e.target.value})} /></div>
               <div>
                 <label className="text-[10px] font-bold opacity-60 uppercase mb-1 block">Cor da Aura</label>
                 <div className="flex gap-2">
                   {Object.entries(accentColors).map(([key, color]) => (
-                    <button key={key} onClick={() => setData({...data, themeColor: key})} className={`w-5 h-5 rounded-full border ${data.themeColor === key ? 'ring-2 ring-offset-1 ring-primary' : ''}`} style={{ backgroundColor: color }} />
+                    <button key={key} onClick={() => setData({...data, themeColor: key})} className={`w-5 h-5 rounded-full ${data.themeColor === key ? 'ring-2 ring-offset-1 ring-primary' : ''}`} style={{ backgroundColor: color }} />
                   ))}
                 </div>
               </div>
@@ -159,15 +159,15 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
 
           {editTab === 'rules' && (
             <div className="space-y-4">
-              <div className="bg-black/5 p-2 rounded-lg border border-current/5 space-y-2">
+              <div className="bg-black/5 p-2 rounded-lg space-y-2">
                 <p className="text-[10px] font-bold opacity-60 uppercase">Valores de XP</p>
-                <div className="flex items-center justify-between text-xs"><span className="flex gap-1 items-center"><CheckSquare size={12}/> Task</span><input type="number" className="w-12 text-center border rounded bg-transparent" value={data.rules.task} onChange={e => setData({...data, rules: {...data.rules, task: Number(e.target.value)}})} /></div>
-                <div className="flex items-center justify-between text-xs"><span className="flex gap-1 items-center"><BookOpen size={12}/> Livro</span><input type="number" className="w-12 text-center border rounded bg-transparent" value={data.rules.book} onChange={e => setData({...data, rules: {...data.rules, book: Number(e.target.value)}})} /></div>
-                <div className="flex items-center justify-between text-xs"><span className="flex gap-1 items-center"><Timer size={12}/> Pomo</span><input type="number" className="w-12 text-center border rounded bg-transparent" value={data.rules.pomodoro} onChange={e => setData({...data, rules: {...data.rules, pomodoro: Number(e.target.value)}})} /></div>
+                <div className="flex items-center justify-between text-xs"><span className="flex gap-1 items-center"><CheckSquare size={12}/> Task</span><input type="number" className="w-12 text-center rounded bg-transparent" value={data.rules.task} onChange={e => setData({...data, rules: {...data.rules, task: Number(e.target.value)}})} /></div>
+                <div className="flex items-center justify-between text-xs"><span className="flex gap-1 items-center"><BookOpen size={12}/> Livro</span><input type="number" className="w-12 text-center rounded bg-transparent" value={data.rules.book} onChange={e => setData({...data, rules: {...data.rules, book: Number(e.target.value)}})} /></div>
+                <div className="flex items-center justify-between text-xs"><span className="flex gap-1 items-center"><Timer size={12}/> Pomo</span><input type="number" className="w-12 text-center rounded bg-transparent" value={data.rules.pomodoro} onChange={e => setData({...data, rules: {...data.rules, pomodoro: Number(e.target.value)}})} /></div>
               </div>
               <div className="space-y-2">
                 <p className="text-[10px] font-bold opacity-60 uppercase">Ações Manuais</p>
-                <div className="flex gap-1"><input placeholder="Ex: Academia" className="flex-1 border-b border-current/20 bg-transparent text-xs outline-none" value={newActionLabel} onChange={e => setNewActionLabel(e.target.value)} /><input type="number" placeholder="XP" className="w-10 border-b border-current/20 bg-transparent text-xs outline-none" value={newActionXp} onChange={e => setNewActionXp(e.target.value)} /><button onClick={addCustomAction} className="text-primary"><Plus size={16}/></button></div>
+                <div className="flex gap-1"><input placeholder="Ex: Academia" className="flex-1 bg-transparent text-xs outline-none" value={newActionLabel} onChange={e => setNewActionLabel(e.target.value)} /><input type="number" placeholder="XP" className="w-10 bg-transparent text-xs outline-none" value={newActionXp} onChange={e => setNewActionXp(e.target.value)} /><button onClick={addCustomAction} className="text-primary"><Plus size={16}/></button></div>
                 <div className="max-h-24 overflow-y-auto space-y-1">{data.customActions.map(act => (<div key={act.id} className="flex justify-between items-center text-xs bg-black/5 p-1.5 rounded"><span>{act.label} (+{act.xp})</span><button onClick={() => removeCustomAction(act.id)} className="text-red-500 opacity-60 hover:opacity-100"><Trash2 size={12}/></button></div>))}</div>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
           <div className="flex items-center gap-3 mb-3">
             {/* Avatar com Borda na Cor do Tema */}
             <div 
-              className="w-12 h-12 bg-current/5 backdrop-blur-sm rounded-xl border-2 flex items-center justify-center shadow-sm"
+              className="w-12 h-12 bg-current/5 backdrop-blur-sm rounded-xl ring-2 flex items-center justify-center shadow-sm"
               style={{ borderColor: currentAccent, color: currentAccent }}
             >
               {autoClass.icon}
@@ -204,7 +204,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
               <span>{Math.floor(xpInLevel)} XP</span>
               <span>{Math.floor(xpNeeded)} PROX.</span>
             </div>
-            <div className="w-full h-2.5 bg-black/10 rounded-full overflow-hidden border border-current/10">
+            <div className="w-full h-2.5 bg-black/10 rounded-full overflow-hidden">
               <div 
                 className="h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                 style={{ width: `${progressPercent}%`, backgroundColor: currentAccent }}
@@ -215,9 +215,9 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
           {/* GRID DE AÇÕES */}
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
             <div className="flex gap-2 mb-2">
-               <div className="flex-1 bg-current/5 rounded p-1 text-center border border-current/5" title="Tarefas"><CheckSquare size={12} className="mx-auto mb-0.5 opacity-60"/><span className="text-xs font-bold">{completedTasks}</span></div>
-               <div className="flex-1 bg-current/5 rounded p-1 text-center border border-current/5" title="Livros"><BookOpen size={12} className="mx-auto mb-0.5 opacity-60"/><span className="text-xs font-bold">{completedBooks}</span></div>
-               <div className="flex-1 bg-current/5 rounded p-1 text-center border border-current/5" title="Pomodoros"><Timer size={12} className="mx-auto mb-0.5 opacity-60"/><span className="text-xs font-bold">{pomodoros}</span></div>
+               <div className="flex-1 bg-current/5 rounded p-1 text-center" title="Tarefas"><CheckSquare size={12} className="mx-auto mb-0.5 opacity-60"/><span className="text-xs font-bold">{completedTasks}</span></div>
+               <div className="flex-1 bg-current/5 rounded p-1 text-center" title="Livros"><BookOpen size={12} className="mx-auto mb-0.5 opacity-60"/><span className="text-xs font-bold">{completedBooks}</span></div>
+               <div className="flex-1 bg-current/5 rounded p-1 text-center" title="Pomodoros"><Timer size={12} className="mx-auto mb-0.5 opacity-60"/><span className="text-xs font-bold">{pomodoros}</span></div>
             </div>
 
             {data.customActions.length > 0 && (
@@ -228,7 +228,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
                     <button
                       key={action.id}
                       onClick={() => triggerCustomAction(action.xp)}
-                      className="bg-current/5 hover:bg-current/10 active:scale-95 transition text-left px-2 py-1.5 rounded border border-current/10 flex justify-between items-center group"
+                      className="bg-current/5 hover:bg-current/10 active:scale-95 transition text-left px-2 py-1.5 rounded flex justify-between items-center group"
                     >
                       <span className="text-[10px] font-medium truncate">{action.label}</span>
                       <span className="text-[9px] font-bold opacity-60 group-hover:opacity-100" style={{ color: currentAccent }}>+{action.xp}</span>

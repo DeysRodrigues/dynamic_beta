@@ -1,4 +1,4 @@
-@import './theme.css';
+@import "./theme.css";
 
 @tailwind base;
 @tailwind components;
@@ -19,33 +19,36 @@ body {
 
 /* --- CAMADA DE COMPONENTES --- */
 @layer components {
-  
   /* --- CLASSE PADRÃO PARA WIDGETS (BOXES) --- */
   .box-padrao {
-    @apply rounded-2xl p-6 shadow flex flex-col gap-4 overflow-hidden h-full w-full border backdrop-blur-md transition-colors duration-500;
-    
+    @apply rounded-2xl p-6 flex flex-col gap-4 overflow-hidden h-full w-full transition-colors duration-500 shadow-lg shadow-black/5;
+
     /* Fundo Mágico: Mistura a cor escolhida com a opacidade */
-    background-color: color-mix(in srgb, var(--box-color, #ffffff) calc(var(--box-opacity, 1) * 100%), transparent);
-    
+    background-color: color-mix(
+      in srgb,
+      var(--box-color, #ffffff) calc(var(--box-opacity, 1) * 100%),
+      transparent
+    );
+
     /* Cor do Texto Principal */
     color: var(--box-text-color, #1e293b);
-    
-    /* Borda sutil baseada na cor do texto */
-    border-color: color-mix(in srgb, var(--box-text-color, #1e293b) 10%, transparent);
   }
 
   /* --- CLASSE PADRÃO PARA BARRAS (HEADERS) --- */
   .bar-padrao {
-    @apply flex flex-col md:flex-row md:items-center justify-between p-4 rounded-2xl shadow border backdrop-blur-md transition-colors duration-500 gap-4 z-20 relative;
-    
-    background-color: color-mix(in srgb, var(--box-color, #ffffff) calc(var(--box-opacity, 1) * 100%), transparent);
+    @apply flex flex-col md:flex-row md:items-center justify-between p-4 rounded-2xl transition-colors duration-500 gap-4 z-20 relative shadow-lg shadow-black/5;
+
+    background-color: color-mix(
+      in srgb,
+      var(--box-color, #ffffff) calc(var(--box-opacity, 1) * 100%),
+      transparent
+    );
     color: var(--box-text-color, #1e293b);
-    border-color: color-mix(in srgb, var(--box-text-color, #1e293b) 10%, transparent);
   }
 
   /* Botões utilitários (ícones) dentro das barras */
   .btn-icon {
-    @apply p-2 rounded-full transition border border-transparent text-current;
+    @apply p-2 rounded-full transition-colors text-current;
     background-color: rgba(127, 127, 127, 0.1);
   }
   .btn-icon:hover {
@@ -70,26 +73,26 @@ body {
 /* 2. Ícones SVG herdam a cor do texto */
 .box-padrao svg,
 .bar-padrao svg {
-  color: currentColor; 
+  color: currentColor;
 }
 
 /* 3. INPUTS, SELECTS E TEXTAREAS (Correção dos fundos brancos) */
-.box-padrao input, 
-.box-padrao select, 
+.box-padrao input,
+.box-padrao select,
 .box-padrao textarea,
-.bar-padrao input, 
-.bar-padrao select, 
+.bar-padrao input,
+.bar-padrao select,
 .bar-padrao textarea {
   @apply transition-colors outline-none rounded-lg;
-  
+
   /* Força fundo transparente escuro e borda sutil */
   background-color: rgba(127, 127, 127, 0.1) !important;
-  border: 1px solid rgba(127, 127, 127, 0.2) !important;
+  border: 1px solid transparent !important;
   color: inherit !important;
 }
 
-.box-padrao input:focus, 
-.box-padrao select:focus, 
+.box-padrao input:focus,
+.box-padrao select:focus,
 .box-padrao textarea:focus {
   border-color: var(--primary) !important;
   background-color: rgba(127, 127, 127, 0.15) !important;

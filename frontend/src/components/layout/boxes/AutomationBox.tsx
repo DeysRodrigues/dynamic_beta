@@ -299,7 +299,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
       )}
 
       {/* Header */}
-      <div className="p-4 flex justify-between items-center border-b border-current/10">
+      <div className="p-4 flex justify-between items-center">
         <h2 className="font-bold flex items-center gap-2">
           <Zap size={18}/> Automações
         </h2>
@@ -315,7 +315,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
           </div>
         ) : (
           rules.map(rule => (
-            <div key={rule.id} className="flex items-center justify-between bg-current/5 p-3 rounded-xl border border-current/10">
+            <div key={rule.id} className="flex items-center justify-between bg-current/5 p-3 rounded-xl">
               <div className="flex flex-col overflow-hidden mr-2">
                 <span className="font-medium text-xs truncate">{rule.name}</span>
                 {/* Contagem Regressiva / Status */}
@@ -340,7 +340,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
         <div className="absolute inset-0 z-20 flex flex-col animate-in slide-in-from-bottom-10 overflow-y-auto custom-scrollbar backdrop-blur-xl" 
              style={{ backgroundColor: 'var(--box-color)', color: 'var(--box-text-color)' }}>
           
-          <div className="sticky top-0 p-4 border-b border-current/10 flex justify-between items-center z-10 bg-inherit">
+          <div className="sticky top-0 p-4 flex justify-between items-center z-10 bg-inherit">
             <h3 className="font-bold text-sm">Criar Automação</h3>
             <button onClick={() => setIsAdding(false)}><X size={18} className="opacity-60 hover:opacity-100"/></button>
           </div>
@@ -360,17 +360,17 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
                   { id: 'interval', icon: <Timer size={16}/>, label: 'Ciclo' },
                 ].map(t => (
                   <button key={t.id} onClick={() => setNewTrigger(t.id as TriggerType)} 
-                    className={`p-2 rounded-lg border flex flex-col items-center gap-1 text-xs transition-all ${newTrigger === t.id ? 'bg-primary text-primary-foreground border-primary' : 'bg-current/5 border-transparent opacity-60 hover:opacity-100'}`}>
+                    className={`p-2 rounded-lg flex flex-col items-center gap-1 text-xs transition-all ${newTrigger === t.id ? 'bg-primary text-primary-foreground' : 'bg-current/5 opacity-60 hover:opacity-100'}`}>
                     {t.icon} {t.label}
                   </button>
                 ))}
               </div>
 
-              <div className="bg-primary/10 p-3 rounded-lg border border-primary/20 text-[10px] text-primary flex gap-2 items-start">
+              <div className="bg-primary/10 p-3 rounded-lg text-[10px] text-primary flex gap-2 items-start">
                 <Info size={12} className="mt-0.5 shrink-0"/> {TRIGGER_DESC[newTrigger]}
               </div>
 
-              <div className="bg-current/5 p-2 rounded-lg border border-current/10">
+              <div className="bg-current/5 p-2 rounded-lg">
                 {newTrigger === 'time' && <input type="time" className="w-full bg-transparent outline-none text-sm text-center" value={newTriggerVal} onChange={e => setNewTriggerVal(e.target.value)} />}
                 {newTrigger === 'tasks' && <input type="number" placeholder="Quantas tasks?" className="w-full bg-transparent outline-none text-sm" value={newTriggerVal} onChange={e => setNewTriggerVal(e.target.value)} />}
                 {newTrigger === 'interval' && <input type="number" placeholder="Segundos" className="w-full bg-transparent outline-none text-sm" value={newTriggerVal} onChange={e => setNewTriggerVal(e.target.value)} />}
@@ -394,18 +394,18 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
                   { id: 'backup', icon: <Download size={14}/>, label: 'Salvar' },
                 ].map(a => (
                   <button key={a.id} onClick={() => setNewAction(a.id as ActionType)} 
-                    className={`p-2 rounded-lg border flex flex-col items-center justify-center gap-1 text-[9px] transition-all h-14 ${newAction === a.id ? 'bg-green-600 text-white border-green-500' : 'bg-current/5 border-transparent opacity-60 hover:opacity-100'}`}>
+                    className={`p-2 rounded-lg flex flex-col items-center justify-center gap-1 text-[9px] transition-all h-14 ${newAction === a.id ? 'bg-green-600 text-white' : 'bg-current/5 opacity-60 hover:opacity-100'}`}>
                     {a.icon} <span className="truncate w-full text-center">{a.label}</span>
                   </button>
                 ))}
               </div>
 
-              <div className="bg-green-500/10 p-3 rounded-lg border border-green-500/20 text-[10px] text-green-600 flex gap-2 items-start">
+              <div className="bg-green-500/10 p-3 rounded-lg text-[10px] text-green-600 flex gap-2 items-start">
                 <Info size={12} className="mt-0.5 shrink-0"/> {ACTION_DESC[newAction]}
               </div>
 
               {(newAction === 'media' || newAction === 'link' || newAction === 'sound') && (
-                <div className="bg-current/5 p-2 rounded-lg border border-current/10">
+                <div className="bg-current/5 p-2 rounded-lg">
                   {newAction === 'media' && <input type="text" placeholder="YouTube/SoundCloud URL" className="w-full bg-transparent outline-none text-xs" value={newActionVal} onChange={e => setNewActionVal(e.target.value)} />}
                   {newAction === 'link' && <input type="text" placeholder="https://..." className="w-full bg-transparent outline-none text-xs" value={newActionVal} onChange={e => setNewActionVal(e.target.value)} />}
                   {newAction === 'sound' && (

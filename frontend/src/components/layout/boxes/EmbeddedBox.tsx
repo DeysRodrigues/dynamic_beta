@@ -113,9 +113,7 @@ export default function EmbeddedBox({
 
   return (
     <div
-      className={`relative w-full h-full rounded-2xl overflow-hidden transition-all duration-500 group border flex flex-col backdrop-blur-md ${
-        mode === "video" ? "border-transparent" : "border-white/10"
-      }`}
+      className={`relative w-full h-full rounded-2xl overflow-hidden transition-all duration-500 group flex flex-col backdrop-blur-md`}
       style={{
         backgroundColor:
           mode === "video"
@@ -187,7 +185,7 @@ export default function EmbeddedBox({
             <div className="flex flex-col gap-2 max-w-full">
               {/* Barra de Input */}
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg backdrop-blur-md border border-white/10 bg-white/10 shrink-0">
+                <div className="p-2 rounded-lg backdrop-blur-md bg-white/10 shrink-0">
                   <Settings2 size={18} />
                 </div>
 
@@ -196,12 +194,12 @@ export default function EmbeddedBox({
                   value={inputUrl}
                   onChange={(e) => setInputUrl(e.target.value)}
                   placeholder="URL..."
-                  className="flex-1 px-3 py-2 text-sm rounded-lg outline-none backdrop-blur-sm border border-white/10 bg-white/10 text-white placeholder-white/50 focus:bg-white/20"
+                  className="flex-1 px-3 py-2 text-sm rounded-lg outline-none backdrop-blur-sm bg-white/10 text-white placeholder-white/50 focus:bg-white/20"
                 />
 
                 <button
                   onClick={() => setIsLocked(true)}
-                  className="p-2 rounded-lg border border-white/10 bg-white/10 hover:bg-white/20 text-white"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white"
                   title="Bloquear Menu"
                 >
                   <Unlock size={18} />
@@ -209,7 +207,7 @@ export default function EmbeddedBox({
 
                 <button
                   onClick={toggleMode}
-                  className="p-2 rounded-lg border border-white/10 bg-white/10 hover:bg-white/20 text-white"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white"
                 >
                   {mode === "video" ? (
                     <Smartphone size={18} />
@@ -220,7 +218,7 @@ export default function EmbeddedBox({
 
                 <button
                   onClick={handleRefresh}
-                  className="p-2 rounded-lg border border-white/10 bg-white/10 hover:bg-white/20 text-white"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white"
                 >
                   <RefreshCw size={18} />
                 </button>
@@ -236,11 +234,11 @@ export default function EmbeddedBox({
                       onClick={() => handleSlotClick(i)}
                       onContextMenu={(e) => clearSlot(e, i)}
                       className={`
-                        flex-1 h-8 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-all border
+                        flex-1 h-8 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-all
                         ${
                           slot
-                            ? "bg-white/20 border-white/30 text-white hover:bg-white/30"
-                            : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:border-white/30 border-dashed"
+                            ? "bg-white/20 text-white hover:bg-white/30"
+                            : "bg-white/5 text-white/40 hover:text-white"
                         }
                       `}
                       title={slot ? slot.label : "Vazio - Clique para Salvar"}

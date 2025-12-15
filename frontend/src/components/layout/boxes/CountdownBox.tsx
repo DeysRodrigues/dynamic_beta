@@ -74,12 +74,12 @@ export default function CountdownBox({ id = "countdown-default" }: CountdownBoxP
       
       {/* --- HEADER (Visível apenas ao passar o mouse ou editando) --- */}
       <div className={cn(
-        "absolute top-0 left-0 right-0 p-3 bg-current/10 backdrop-blur-md z-20 transition-all duration-300 border-b border-current/10 flex flex-col gap-2",
+        "absolute top-0 left-0 right-0 p-3 bg-current/10 backdrop-blur-md z-20 transition-all duration-300 flex flex-col gap-2",
         isEditing || !targetDate ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
       )}>
           <input
             type="text"
-            className="font-bold bg-transparent border-b border-current/20 outline-none w-full placeholder:opacity-50 text-sm pb-1 text-inherit"
+            className="font-bold bg-transparent outline-none w-full placeholder:opacity-50 text-sm pb-1 text-inherit"
             value={eventName}
             onChange={(e) => setEventName(e.target.value)}
             placeholder="Nome do Evento..."
@@ -124,13 +124,13 @@ export default function CountdownBox({ id = "countdown-default" }: CountdownBoxP
 
       {/* --- FOOTER: DATA ALVO --- */}
       {targetDate && !isExpired && (
-         <div className="text-center text-[10px] sm:text-xs opacity-50 py-3 border-t border-current/5 bg-current/5 flex items-center justify-center gap-2 font-medium uppercase tracking-wider">
+         <div className="text-center text-[10px] sm:text-xs opacity-50 py-3 bg-current/5 flex items-center justify-center gap-2 font-medium uppercase tracking-wider">
             <Clock size={12} className="text-primary animate-pulse"/>
             {new Date(targetDate).toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
          </div>
       )}
       {isExpired && (
-         <div className="text-center text-xs font-bold py-3 border-t border-current/5 bg-primary/10 text-primary flex items-center justify-center gap-2 uppercase tracking-wider">
+         <div className="text-center text-xs font-bold py-3 bg-primary/10 text-primary flex items-center justify-center gap-2 uppercase tracking-wider">
             Evento Finalizado
          </div>
       )}

@@ -164,17 +164,17 @@ export default function PresenceCalendarBox({
   return (
     <div className="box-padrao p-0 flex flex-col relative overflow-hidden h-full">
       {/* HEADER */}
-      <div className="p-2 border-b border-current/10 bg-current/5 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
+      <div className="p-2 bg-current/5 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
         {events.map((evt) => (
           <button
             key={evt.id}
             onClick={() => setActiveEventId(evt.id)}
             className={`
-              relative px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-2 border transition-all group
+              relative px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap flex items-center gap-2 transition-all group
               ${
                 activeEventId === evt.id
-                  ? "bg-white shadow-sm border-current/10 text-black"
-                  : "bg-transparent border-transparent opacity-50 hover:opacity-100 hover:bg-current/5"
+                  ? "bg-white shadow-sm text-black"
+                  : "bg-transparent opacity-50 hover:opacity-100 hover:bg-current/5"
               }
             `}
           >
@@ -205,7 +205,7 @@ export default function PresenceCalendarBox({
             Novo Evento
           </h3>
           <input
-            className="w-full text-sm p-2 rounded bg-black/5 border border-current/10 outline-none"
+            className="w-full text-sm p-2 rounded bg-black/5 outline-none"
             placeholder="Nome (Ex: Cálculo II)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -217,7 +217,7 @@ export default function PresenceCalendarBox({
               <label className="text-[10px] font-bold opacity-50">Início</label>
               <input
                 type="date"
-                className="w-full text-xs p-2 rounded bg-black/5 border border-current/10 outline-none"
+                className="w-full text-xs p-2 rounded bg-black/5 outline-none"
                 value={start}
                 onChange={(e) => setStart(e.target.value)}
               />
@@ -226,7 +226,7 @@ export default function PresenceCalendarBox({
               <label className="text-[10px] font-bold opacity-50">Fim</label>
               <input
                 type="date"
-                className="w-full text-xs p-2 rounded bg-black/5 border border-current/10 outline-none"
+                className="w-full text-xs p-2 rounded bg-black/5 outline-none"
                 value={end}
                 onChange={(e) => setEnd(e.target.value)}
               />
@@ -242,10 +242,10 @@ export default function PresenceCalendarBox({
                 <button
                   key={i}
                   onClick={() => toggleDaySelection(i)}
-                  className={`w-8 h-8 rounded-full text-xs font-bold border transition-all ${
+                  className={`w-8 h-8 rounded-full text-xs font-bold transition-all ${
                     selectedDays.includes(i)
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-transparent border-current/10 opacity-60 hover:opacity-100"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-transparent opacity-60 hover:opacity-100"
                   }`}
                 >
                   {d}
@@ -338,7 +338,7 @@ export default function PresenceCalendarBox({
                               ? `${activeEvent.color} text-white scale-100`
                               : isAbsent
                               ? "bg-red-500 text-white scale-100"
-                              : "bg-current/5 border-2 border-current/10 hover:border-primary/50 text-current/60 hover:scale-105"
+                              : "bg-current/5 hover:bg-primary/10 text-current/60 hover:scale-105"
                           }
                           ${
                             isToday && !isPresent && !isAbsent
@@ -362,13 +362,13 @@ export default function PresenceCalendarBox({
             })}
           </div>
 
-          <div className="mt-auto pt-3 border-t border-current/10 grid grid-cols-2 gap-2 text-[10px] shrink-0">
-            <div className="bg-emerald-500/10 text-emerald-600 rounded px-2 py-1.5 flex justify-between items-center font-bold border border-emerald-500/20">
+          <div className="mt-auto pt-3 grid grid-cols-2 gap-2 text-[10px] shrink-0">
+            <div className="bg-emerald-500/10 text-emerald-600 rounded px-2 py-1.5 flex justify-between items-center font-bold">
               <span>Presenças</span>
               {/* PROTEÇÃO AQUI TAMBÉM */}
               <span>{(activeEvent.presences || []).length}</span>
             </div>
-            <div className="bg-red-500/10 text-red-600 rounded px-2 py-1.5 flex justify-between items-center font-bold border border-red-500/20">
+            <div className="bg-red-500/10 text-red-600 rounded px-2 py-1.5 flex justify-between items-center font-bold">
               <span>Faltas</span>
               <span>{(activeEvent.absences || []).length}</span>
             </div>

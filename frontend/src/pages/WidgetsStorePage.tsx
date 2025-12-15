@@ -2,7 +2,6 @@ import { useState, useCallback, memo } from "react";
 import {
   Plus,
   CheckCircle2,
-  LayoutTemplate,
   Copy,
   AppWindow,
   Code,
@@ -33,7 +32,7 @@ const StoreItem = memo(({ item, isActive, type, onAction }: StoreItemProps) => {
     <div className="box-padrao flex flex-col justify-between p-5 min-h-[160px]">
       <div>
         <div
-          className={`mb-3 p-3 rounded-xl shadow-sm inline-block border ${item.color}`}
+          className={`mb-3 p-3 rounded-xl shadow-sm inline-block ${item.color}`}
         >
           {item.icon}
         </div>
@@ -45,7 +44,7 @@ const StoreItem = memo(({ item, isActive, type, onAction }: StoreItemProps) => {
         className={`w-full py-2 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 ${
           isActive
             ? "bg-green-500 text-white"
-            : "bg-current/5 border border-current/10 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+            : "bg-current/5 hover:bg-primary hover:text-primary-foreground"
         }`}
       >
         {isActive ? (
@@ -195,9 +194,7 @@ export default function WidgetsStorePage() {
 
       {/* 1. WIDGETS NATIVOS */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 border-b border-current/10 pb-2">
-          <LayoutTemplate className="text-primary" size={24} />
-          <div>
+        <div className="flex items-center gap-2 pb-2">          <div>
             <h2 className="text-xl font-bold">Nativos do Sistema</h2>
             <p className="text-sm opacity-60">
               Widgets integrados que você pode adicionar diretamente.
@@ -219,7 +216,7 @@ export default function WidgetsStorePage() {
 
       {/* 2. EMBED WIDGETS */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 border-b border-current/10 pb-2">
+        <div className="flex items-center gap-2 pb-2">
           <AppWindow className="text-purple-500" size={24} />
           <div>
             <h2 className="text-xl font-bold">Embeds Especiais</h2>
@@ -243,7 +240,7 @@ export default function WidgetsStorePage() {
 
       {/* 3. WIDGETS CUSTOMIZADOS */}
       {customWidgets.length > 0 && (
-        <section className="space-y-4 pt-8 border-t border-current/10">
+        <section className="space-y-4 pt-8">
           <div className="flex items-center gap-2">
             <Code className="text-amber-500" size={24} />
             <h2 className="text-xl font-bold">Meus HTML Widgets</h2>

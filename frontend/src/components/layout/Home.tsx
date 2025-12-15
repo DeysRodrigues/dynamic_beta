@@ -70,7 +70,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 // --- COMPONENTES VISUAIS ---
 
 const BoxLoader = React.memo(() => (
-  <div className="w-full h-full flex flex-col items-center justify-center bg-current/5 animate-pulse rounded-2xl border border-current/5 backdrop-blur-sm">
+  <div className="w-full h-full flex flex-col items-center justify-center bg-current/5 animate-pulse rounded-2xl backdrop-blur-sm">
     <Loader2 className="w-6 h-6 animate-spin opacity-50" />
     <span className="text-[10px] font-bold opacity-40 mt-2 uppercase tracking-widest">
       Carregando...
@@ -149,7 +149,7 @@ const WorkspaceTabs = React.memo(() => {
           return (
             <div
               key={w.id}
-              className="flex items-center bg-current/10 rounded-xl px-2 py-1.5 border border-current/10 backdrop-blur-md"
+              className="flex items-center bg-current/10 rounded-xl px-2 py-1.5 backdrop-blur-md"
             >
               <input
                 autoFocus
@@ -169,10 +169,10 @@ const WorkspaceTabs = React.memo(() => {
               onClick={() => setActiveWorkspace(w.id)}
               onDoubleClick={() => startRename(w.id, w.name)}
               className={cn(
-                "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 border flex items-center gap-2 select-none whitespace-nowrap",
+                "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 select-none whitespace-nowrap",
                 isActive
-                  ? "bg-current/10 border-current/20 shadow-sm opacity-100 backdrop-blur-md"
-                  : "border-transparent opacity-60 hover:opacity-100 hover:bg-current/5"
+                  ? "bg-current/10 shadow-sm opacity-100 backdrop-blur-md"
+                  : "opacity-60 hover:opacity-100 hover:bg-current/5"
               )}
             >
               {isActive && <Layout size={14} className="opacity-70" />}
@@ -308,7 +308,7 @@ const DashboardHeader = React.memo(
             <div className="flex items-center gap-4">
               <button
                 onClick={toggleFocusMode}
-                className="bg-amber-500/20 text-amber-500 p-2 rounded-xl border border-amber-500/30 flex items-center gap-2 text-xs font-bold animate-pulse hover:bg-amber-500 hover:text-white transition"
+                className="bg-amber-500/20 text-amber-500 p-2 rounded-xl flex items-center gap-2 text-xs font-bold animate-pulse hover:bg-amber-500 hover:text-white transition"
               >
                 <EyeOff size={16} /> SAIR DO FOCO
               </button>
@@ -323,10 +323,10 @@ const DashboardHeader = React.memo(
                     avatar ||
                     "https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
                   }
-                  className="w-10 h-10 rounded-xl object-cover border border-current/10 shadow-sm"
+                  className="w-10 h-10 rounded-xl object-cover shadow-sm"
                   alt="Avatar"
                 />
-                <div className="absolute -bottom-1 -right-1 bg-background p-0.5 rounded-full border border-current/10">
+                <div className="absolute -bottom-1 -right-1 bg-background p-0.5 rounded-full">
                   {greeting.icon}
                 </div>
               </div>
@@ -354,7 +354,7 @@ const DashboardHeader = React.memo(
             <WorkspaceTabs />
           </div>
 
-          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl border border-current/5 self-start md:self-auto backdrop-blur-md shadow-sm">
+          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl self-start md:self-auto backdrop-blur-md shadow-sm">
             <button
               onClick={toggleFocusMode}
               className={`p-2 rounded-lg transition-all duration-200 ${
@@ -395,7 +395,7 @@ const DashboardHeader = React.memo(
                 <div className="relative" ref={menuRef}>
                   <button
                     onClick={() => setShowAddMenu(!showAddMenu)}
-                    className="flex items-center gap-2 bg-current/10 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-current/20 transition active:scale-95 shadow-sm border border-current/5"
+                    className="flex items-center gap-2 bg-current/10 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-current/20 transition active:scale-95 shadow-sm"
                   >
                     <Plus size={14} />{" "}
                     <span className="hidden sm:inline">Widget</span>
@@ -405,7 +405,7 @@ const DashboardHeader = React.memo(
                   {showAddMenu && (
                     // Z-INDEX ALTO (z-50) para ficar acima dos widgets
                     <div
-                      className="absolute top-full right-0 mt-2 w-64 backdrop-blur-xl border border-current/10 rounded-xl shadow-2xl p-2 z-[999] animate-in fade-in zoom-in-95 origin-top-right overflow-hidden ring-1 ring-black/5"
+                      className="absolute top-full right-0 mt-2 w-64 backdrop-blur-xl rounded-xl shadow-2xl p-2 z-[999] animate-in fade-in zoom-in-95 origin-top-right overflow-hidden ring-1 ring-black/5"
                       style={{
                         backgroundColor: "var(--box-color)",
                         color: "var(--box-text-color)",
@@ -457,7 +457,7 @@ const DashboardHeader = React.memo(
                       {/* Botão da Loja */}
                       <button
                         onClick={handleNavigate("/store")}
-                        className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg flex items-center justify-center gap-2 text-xs font-bold transition-all mb-2 border border-primary/20 shadow-sm"
+                        className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg flex items-center justify-center gap-2 text-xs font-bold transition-all mb-2 shadow-sm"
                       >
                         <ShoppingBag size={14} /> Loja Completa{" "}
                         <ArrowRight size={12} />
@@ -466,13 +466,13 @@ const DashboardHeader = React.memo(
                       <div className="grid grid-cols-2 gap-1">
                         <button
                           onClick={openModal(onSave)}
-                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition border border-current/5 bg-current/5"
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition bg-current/5"
                         >
                           <Save size={14} /> Backup
                         </button>
                         <button
                           onClick={handleNavigate("/themes")}
-                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition border border-current/5 bg-current/5"
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded-lg hover:bg-current/10 text-[10px] font-bold opacity-70 hover:opacity-100 transition bg-current/5"
                         >
                           <Grid size={14} /> Temas
                         </button>
@@ -621,7 +621,7 @@ export default function Dashboard() {
               key={boxId}
               className={`h-full w-full transition-all duration-300 relative group rounded-2xl ${
                 editMode
-                  ? "border-2 border-dashed border-amber-400/50 bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
+                  ? "bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
                   : ""
               }`}
             >
@@ -633,7 +633,7 @@ export default function Dashboard() {
                       if (confirm("Remover este widget deste workspace?"))
                         removeBox(boxId);
                     }}
-                    className="bg-destructive text-destructive-foreground p-1.5 rounded-full shadow-md hover:scale-110 transition-all cursor-pointer border-2 border-background"
+                    className="bg-destructive text-destructive-foreground p-1.5 rounded-full shadow-md hover:scale-110 transition-all cursor-pointer"
                   >
                     <X size={16} strokeWidth={3} />
                   </button>

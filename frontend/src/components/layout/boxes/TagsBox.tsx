@@ -30,7 +30,7 @@ export default function TagsBox() {
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 px-3 py-1.5 rounded-lg bg-background border outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+          className="flex-1 px-3 py-1.5 rounded-lg bg-background outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
         />
         <button
           onClick={handleAddTag}
@@ -46,7 +46,7 @@ export default function TagsBox() {
           tags.map((tag, index) => (
             <div
               key={index}
-              className="flex items-center bg-background border text-foreground text-sm px-3 py-1 rounded-full shadow-sm"
+              className="flex items-center bg-background text-foreground text-sm px-3 py-1 rounded-full shadow-sm"
             >
               <span className="mr-2 font-medium">{tag}</span>
               <button

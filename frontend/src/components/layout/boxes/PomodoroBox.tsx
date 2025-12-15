@@ -29,7 +29,7 @@ export default function PomodoroBox() {
   return (
     <div className="box-padrao flex flex-col items-center justify-between h-full">
       {/* Seletor */}
-      <div className="flex gap-1 bg-current/5 p-1 rounded-xl mb-2 w-full justify-center border border-current/5">
+      <div className="flex gap-1 bg-current/5 p-1 rounded-xl mb-2 w-full justify-center">
         {(["work", "short", "long"] as const).map((m) => (
           <button
             key={m}
@@ -78,7 +78,7 @@ export default function PomodoroBox() {
 
         <button
           onClick={resetTimer}
-          className="p-3 bg-current/5 border border-current/10 hover:bg-current/10 rounded-xl transition-all shadow-sm active:scale-95"
+          className="p-3 bg-current/5 hover:bg-current/10 rounded-xl transition-all shadow-sm active:scale-95"
           title="Reiniciar Timer"
         >
           <RotateCcw size={20} />
@@ -86,7 +86,7 @@ export default function PomodoroBox() {
       </div>
 
       {/* Stats */}
-      <div className="flex gap-4 text-xs font-semibold bg-current/5 px-5 py-2.5 rounded-full border border-current/5">
+      <div className="flex gap-4 text-xs font-semibold bg-current/5 px-5 py-2.5 rounded-full">
         <div
           className="flex items-center gap-1.5 opacity-80"
           title="Sessões de Foco"

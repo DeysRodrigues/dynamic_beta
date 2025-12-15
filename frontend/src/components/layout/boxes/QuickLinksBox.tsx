@@ -114,7 +114,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
     <div className="box-padrao flex flex-col p-0 overflow-hidden relative group">
       
       {/* HEADER DAS ABAS + CONTROLES */}
-      <div className="p-2 border-b border-current/10 bg-current/5 sticky top-0 z-10 flex justify-between items-center gap-2">
+      <div className="p-2 bg-current/5 sticky top-0 z-10 flex justify-between items-center gap-2">
         
         {/* Lista de Abas */}
         <div className="flex items-center gap-1 overflow-x-auto no-scrollbar mask-gradient-right flex-1">
@@ -124,10 +124,10 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
               <div 
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
-                style={isActive ? { color: primaryColor, backgroundColor: `${primaryColor}15`, borderColor: `${primaryColor}30` } : {}}
+                style={isActive ? { color: primaryColor, backgroundColor: `${primaryColor}15` } : {}}
                 className={`
-                  relative px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all flex items-center gap-2 whitespace-nowrap group/tab select-none border
-                  ${!isActive ? "border-transparent opacity-60 hover:opacity-100 hover:bg-current/5" : ""}
+                  relative px-3 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer transition-all flex items-center gap-2 whitespace-nowrap group/tab select-none
+                  ${!isActive ? "opacity-60 hover:opacity-100 hover:bg-current/5" : ""}
                 `}
               >
                 {cat.name}
@@ -166,9 +166,9 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
           // --- MODO LISTA (Visual Detalhado) ---
           <div className="space-y-2">
             {currentCategory?.links.map(link => (
-              <div key={link.id} className="group/link relative flex items-center justify-between p-2.5 rounded-xl bg-current/5 hover:bg-current/10 border border-current/5 hover:border-current/10 transition-all duration-300">
+              <div key={link.id} className="group/link relative flex items-center justify-between p-2.5 rounded-xl bg-current/5 hover:bg-current/10 transition-all duration-300">
                 <a href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3.5 flex-1 overflow-hidden">
-                  <div className="w-8 h-8 rounded-lg bg-current/10 flex items-center justify-center shrink-0 border border-current/5 shadow-inner">
+                  <div className="w-8 h-8 rounded-lg bg-current/10 flex items-center justify-center shrink-0 shadow-inner">
                     <img src={getFavicon(link.url) || ""} onError={(e) => { e.currentTarget.style.display = 'none'; }} className="w-5 h-5 rounded-sm object-contain" alt="" />
                     <Globe size={14} className="opacity-30 absolute z-[-1]" />
                   </div>
@@ -195,7 +195,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
                 href={link.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="group/grid relative aspect-square flex flex-col items-center justify-center rounded-xl bg-current/5 hover:bg-current/10 border border-current/5 hover:border-current/20 transition-all hover:scale-105"
+                className="group/grid relative aspect-square flex flex-col items-center justify-center rounded-xl bg-current/5 hover:bg-current/10 transition-all hover:scale-105"
                 title={link.title}
               >
                 {/* Ícone Grande */}
@@ -221,7 +221,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
              {/* Card Fantasma para adicionar no modo grid */}
              <button 
                 onClick={() => setIsAddingLink(true)}
-                className="aspect-square flex flex-col items-center justify-center rounded-xl border border-dashed border-current/10 hover:border-current/30 text-current opacity-30 hover:opacity-100 transition-all"
+                className="aspect-square flex flex-col items-center justify-center rounded-xl text-current opacity-30 hover:opacity-100 transition-all"
                 title="Adicionar Link"
              >
                 <Plus size={20} />
@@ -231,12 +231,12 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
 
         {/* INPUT AREA (Comum aos dois modos) */}
         {isAddingLink ? (
-          <div className="p-3 bg-current/5 rounded-xl border border-current/10 animate-in zoom-in-95 duration-200 mt-2 space-y-3 relative overflow-hidden">
-            <div className="flex items-center gap-2 border-b border-current/10 pb-1">
+          <div className="p-3 bg-current/5 rounded-xl animate-in zoom-in-95 duration-200 mt-2 space-y-3 relative overflow-hidden">
+            <div className="flex items-center gap-2 pb-1">
               <Search size={14} style={{ color: primaryColor }} />
               <input autoFocus placeholder="Título" className="flex-1 bg-transparent text-xs p-1 outline-none placeholder-current/30" value={newLinkTitle} onChange={e => setNewLinkTitle(e.target.value)} />
             </div>
-            <div className="flex items-center gap-2 border-b border-current/10 pb-1">
+            <div className="flex items-center gap-2 pb-1">
               <Link size={14} style={{ color: primaryColor }} />
               <input placeholder="URL" className="flex-1 bg-transparent text-xs p-1 outline-none font-mono placeholder-current/30" value={newLinkUrl} onChange={e => setNewLinkUrl(e.target.value)} onKeyDown={e => e.key === 'Enter' && addLink()} />
             </div>
@@ -250,7 +250,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
           viewMode === "list" && (
             <button 
               onClick={() => setIsAddingLink(true)}
-              className="w-full py-3 mt-2 flex items-center justify-center gap-2 text-xs font-bold opacity-30 hover:opacity-100 border border-dashed border-current/20 hover:border-current/40 rounded-xl transition-all group"
+              className="w-full py-3 mt-2 flex items-center justify-center gap-2 text-xs font-bold opacity-30 hover:opacity-100 rounded-xl transition-all group"
               style={{ color: primaryColor }}
             >
               <div className="bg-current/10 p-1 rounded-md transition-colors text-inherit"><Plus size={12} strokeWidth={3} /></div>

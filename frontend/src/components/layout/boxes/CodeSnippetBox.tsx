@@ -152,7 +152,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
     <div className="box-padrao flex flex-col p-0 overflow-hidden relative group">
       
       {/* HEADER & FILTER */}
-      <div className="p-3 border-b border-current/10 bg-current/5 flex flex-col gap-3">
+      <div className="p-3 bg-current/5 flex flex-col gap-3">
         <div className="flex justify-between items-center">
           <h2 className="font-bold text-sm flex items-center gap-2 opacity-80">
             <Terminal size={16} style={{ color: primaryColor }}/> Snippet Vault
@@ -170,8 +170,8 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mask-gradient-right">
             <button 
               onClick={() => setFilter("all")}
-              className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider whitespace-nowrap border transition ${filter === "all" ? "bg-current/10 border-current/20 opacity-100" : "border-transparent opacity-40 hover:opacity-80"}`}
-              style={filter === "all" ? { borderColor: primaryColor, color: primaryColor } : {}}
+              className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition ${filter === "all" ? "bg-current/10 opacity-100" : "opacity-40 hover:opacity-80"}`}
+              style={filter === "all" ? { color: primaryColor } : {}}
             >
               Todos
             </button>
@@ -181,8 +181,8 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                 <button 
                   key={t.id}
                   onClick={() => setFilter(t.id)}
-                  className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider whitespace-nowrap border transition flex items-center gap-1.5 ${filter === t.id ? `bg-current/10 border-current/20 opacity-100` : "border-transparent opacity-40 hover:opacity-80"}`}
-                  style={filter === t.id ? { borderColor: primaryColor, color: primaryColor } : {}}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition flex items-center gap-1.5 ${filter === t.id ? `bg-current/10 opacity-100` : "opacity-40 hover:opacity-80"}`}
+                  style={filter === t.id ? { color: primaryColor } : {}}
                 >
                   <Icon size={12} className={filter === t.id ? "" : "grayscale opacity-70"} /> {t.label}
                 </button>
@@ -194,7 +194,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
 
       {/* FORMULÁRIO DE ADIÇÃO */}
       {isAdding && (
-        <div className="p-3 bg-current/5 border-b border-current/10 animate-in slide-in-from-top-2 space-y-3 z-20 relative">
+        <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 space-y-3 z-20 relative">
           
           <div className="flex gap-2">
             
@@ -202,15 +202,15 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
             <div className="relative w-1/3" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full flex items-center justify-between bg-current/5 border border-current/10 rounded-lg px-3 py-1.5 text-xs h-9 outline-none transition-all hover:bg-current/10 active:scale-[0.98]"
-                style={isDropdownOpen ? { borderColor: primaryColor } : {}}
+                className="w-full flex items-center justify-between bg-current/5 rounded-lg px-3 py-1.5 text-xs h-9 outline-none transition-all hover:bg-current/10 active:scale-[0.98]"
+                style={isDropdownOpen ? { boxShadow: `0 0 0 1px ${primaryColor}` } : {}}
               >
                 <span className="font-bold truncate opacity-90">{selectedTypeInfo.label}</span>
                 <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} style={{ color: primaryColor }} />
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute top-full mt-1 left-0 w-full bg-[#1e1e1e] border border-white/10 rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
+                <div className="absolute top-full mt-1 left-0 w-full bg-[#1e1e1e] rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
                   
                   <div className="overflow-y-auto custom-scrollbar flex-1 p-1">
                     {allTypes.map((t) => {
@@ -239,13 +239,13 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                     })}
                   </div>
 
-                  <div className="border-t border-white/10 p-2 bg-black/20">
+                  <div className="p-2 bg-black/20">
                     {isAddingType ? (
                       <form onSubmit={handleCreateType} className="flex gap-1">
                         <input 
                           autoFocus
                           placeholder="Nome..."
-                          className="flex-1 bg-white/5 border border-white/10 rounded px-2 py-1 text-[10px] text-white outline-none focus:border-white/30"
+                          className="flex-1 bg-white/5 rounded px-2 py-1 text-[10px] text-white outline-none focus:ring-1 focus:ring-white/30"
                           value={newTypeName}
                           onChange={e => setNewTypeName(e.target.value)}
                         />
@@ -268,7 +268,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
 
             <input 
               placeholder="Título..." 
-              className="flex-1 bg-current/5 border border-current/10 rounded-lg px-3 text-xs h-9 outline-none placeholder-current/30 focus:border-current/30 focus:ring-1 transition-all"
+              className="flex-1 bg-current/5 rounded-lg px-3 text-xs h-9 outline-none placeholder-current/30 focus:ring-1 transition-all"
               style={{ '--tw-ring-color': primaryColor, caretColor: primaryColor } as React.CSSProperties}
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}
@@ -278,7 +278,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
 
           <textarea 
             placeholder="Cole o código aqui..." 
-            className="w-full h-24 bg-[#1e1e1e] text-blue-200 border border-current/10 rounded-lg p-3 text-xs font-mono outline-none resize-none placeholder-white/20 focus:border-white/20 transition-all custom-scrollbar"
+            className="w-full h-24 bg-[#1e1e1e] text-blue-200 rounded-lg p-3 text-xs font-mono outline-none resize-none placeholder-white/20 focus:ring-1 focus:ring-white/20 transition-all custom-scrollbar"
             style={{ caretColor: primaryColor }}
             value={newCode}
             onChange={e => setNewCode(e.target.value)}
@@ -307,8 +307,8 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
             const Icon = typeInfo.icon || Hash;
 
             return (
-              <div key={snippet.id} className="group relative bg-current/5 rounded-xl border border-current/5 hover:border-current/10 transition-all overflow-hidden">
-                <div className="flex justify-between items-center px-3 py-2 bg-current/5 border-b border-current/5">
+              <div key={snippet.id} className="group relative bg-current/5 rounded-xl transition-all overflow-hidden">
+                <div className="flex justify-between items-center px-3 py-2 bg-current/5">
                   <div className="flex items-center gap-2 overflow-hidden">
                     <Icon size={14} className={typeInfo.color} />
                     <span className="text-xs font-bold opacity-80 truncate">{snippet.title}</span>

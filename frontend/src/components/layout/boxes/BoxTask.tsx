@@ -77,7 +77,7 @@ export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
             {Object.entries(grouped).map(([date, tasksForDate]) => (
               <div key={date} className="flex flex-col gap-2">
                 <div 
-                  className="sticky top-0 z-10 py-1 border-b border-current/10 backdrop-blur-md"
+                  className="sticky top-0 z-10 py-1 backdrop-blur-md"
                   style={{ backgroundColor: 'color-mix(in srgb, var(--box-color, #ffffff) calc(var(--box-opacity, 1) * 100%), transparent)' }}
                 >
                   <h2 className="font-bold text-sm opacity-80">{formatDate(date)}</h2>

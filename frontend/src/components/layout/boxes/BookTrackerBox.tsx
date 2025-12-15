@@ -96,7 +96,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
     <div className="box-padrao p-0 flex flex-col relative overflow-hidden">
       
       {/* HEADER */}
-      <div className="p-3 border-b border-current/10 flex justify-between items-center bg-current/5">
+      <div className="p-3 flex justify-between items-center bg-current/5">
         <h2 className="font-bold flex items-center gap-2 text-sm">
           <BookOpen size={16} className="text-primary"/> Leitura
         </h2>
@@ -109,17 +109,17 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
 
       {/* --- MODAL CONFIGURAÇÕES --- */}
       {showSettings && (
-        <div className="p-3 bg-current/5 border-b border-current/10 animate-in slide-in-from-top-2">
+        <div className="p-3 bg-current/5 animate-in slide-in-from-top-2">
           <label className="text-xs font-bold opacity-60 uppercase mb-2 block">Passo de Leitura</label>
           <div className="flex gap-2">
             {[5, 10, 20, 50].map(step => (
               <button
                 key={step}
                 onClick={() => save(books, { ...settings, pageStep: step })}
-                className={`flex-1 py-1 text-xs font-bold rounded border ${
+                className={`flex-1 py-1 text-xs font-bold rounded ${
                   settings.pageStep === step 
-                    ? "bg-primary text-primary-foreground border-primary" 
-                    : "bg-transparent border-current/20 hover:border-primary/50"
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-transparent hover:bg-current/10"
                 }`}
               >
                 {step}
@@ -131,7 +131,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
 
       {/* --- MODAL IMPORTAÇÃO --- */}
       {isImporting && (
-        <div className="p-3 bg-current/5 border-b border-current/10 animate-in slide-in-from-top-2 max-h-40 overflow-y-auto custom-scrollbar">
+        <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 max-h-40 overflow-y-auto custom-scrollbar">
           <h3 className="text-xs font-bold opacity-60 uppercase mb-2">Disponíveis na Estante</h3>
           {availableImports.length === 0 ? (
             <p className="text-xs opacity-50 italic">Nenhum livro novo encontrado.</p>
@@ -142,7 +142,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
                 <button 
                   key={b.id} 
                   onClick={() => handleImport(b.title)}
-                  className="w-full text-left text-xs p-2 bg-current/5 border border-current/10 rounded-lg hover:border-primary/50 hover:text-primary flex justify-between items-center group transition"
+                  className="w-full text-left text-xs p-2 bg-current/5 rounded-lg hover:bg-primary/10 hover:text-primary flex justify-between items-center group transition"
                 >
                   <span className="truncate font-medium">{b.title}</span>
                   <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-primary/50"/>
@@ -155,10 +155,10 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
 
       {/* --- MODAL ADICIONAR --- */}
       {isAdding && (
-        <div className="p-3 bg-current/5 border-b border-current/10 animate-in slide-in-from-top-2">
+        <div className="p-3 bg-current/5 animate-in slide-in-from-top-2">
           <input 
             placeholder="Nome do Livro" 
-            className="w-full text-sm p-2 mb-2 bg-black/5 border border-current/10 rounded focus:ring-1 focus:ring-primary text-inherit" 
+            className="w-full text-sm p-2 mb-2 bg-black/5 rounded focus:ring-1 focus:ring-primary text-inherit" 
             value={newBook.title} 
             onChange={e => setNewBook({...newBook, title: e.target.value})} 
             autoFocus
@@ -167,7 +167,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
             <input 
               type="number" 
               placeholder="Págs" 
-              className="w-20 text-sm p-2 bg-black/5 border border-current/10 rounded focus:ring-1 focus:ring-primary text-inherit" 
+              className="w-20 text-sm p-2 bg-black/5 rounded focus:ring-1 focus:ring-primary text-inherit" 
               value={newBook.total} 
               onChange={e => setNewBook({...newBook, total: e.target.value})} 
               onKeyDown={e => e.key === 'Enter' && addBook()}
@@ -191,7 +191,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
         {books.map(book => {
           const progress = Math.round((book.current / book.total) * 100);
           return (
-            <div key={book.id} className="p-3 rounded-xl border border-current/10 bg-current/5 hover:border-current/20 transition-all group">
+            <div key={book.id} className="p-3 rounded-xl bg-current/5 hover:bg-current/10 transition-all group">
               
               <div className="flex justify-between items-start mb-2">
                 <div>
