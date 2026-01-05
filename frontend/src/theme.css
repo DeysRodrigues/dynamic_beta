@@ -76,6 +76,16 @@
   --rpg-emerald-border: #a7f3d0;
   --rpg-emerald-text: #065f46;
 
+  /* --- CORES DE RISCO --- */
+  --risk-safe-bg: hsl(142.1 76.2% 96.3%);
+  --risk-safe-text: hsl(142.1 76.2% 20.3%);
+  --risk-warning-bg: hsl(47.9 95.8% 93.5%);
+  --risk-warning-text: hsl(47.9 95.8% 23.5%);
+  --risk-danger-bg: hsl(25.8 100% 95.9%);
+  --risk-danger-text: hsl(25.8 100% 25.9%);
+  --risk-critical-bg: hsl(0 84.2% 95.2%);
+  --risk-critical-text: hsl(0 84.2% 30.2%);
+
   /* --- PAPÉIS DE PAREDE --- */
   --wallpaper-plain: #f9fafb;
   --wallpaper-dots-bg: #f3f4f6;
@@ -163,4 +173,16 @@
   --box-color: #ffffff;
   --box-text-color: #1e293b;
   --box-opacity: 1;
+}
+
+.dark {
+  /* --- CORES DE RISCO (DARK) --- */
+  --risk-safe-bg: hsl(142.1 76.2% 10.3%);
+  --risk-safe-text: hsl(142.1 76.2% 70.3%);
+  --risk-warning-bg: hsl(47.9 95.8% 13.5%);
+  --risk-warning-text: hsl(47.9 95.8% 73.5%);
+  --risk-danger-bg: hsl(25.8 100% 15.9%);
+  --risk-danger-text: hsl(25.8 100% 75.9%);
+  --risk-critical-bg: hsl(0 84.2% 20.2%);
+  --risk-critical-text: hsl(0 84.2% 80.2%);
 }

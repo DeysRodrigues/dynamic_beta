@@ -6,6 +6,7 @@ import {
   X,
   Check,
   Calendar as CalIcon,
+  List,
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 
@@ -17,16 +18,8 @@ interface PresenceEvent {
   daysOfWeek: number[];
   presences: string[];
   absences: string[];
-  color: string;
 }
 
-const COLORS = [
-  "bg-emerald-500",
-  "bg-blue-500",
-  "bg-purple-500",
-  "bg-rose-500",
-  "bg-amber-500",
-];
 const DAYS_LABEL = ["D", "S", "T", "Q", "Q", "S", "S"];
 
 export default function PresenceCalendarBox({
@@ -44,7 +37,18 @@ export default function PresenceCalendarBox({
   );
 
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [isAdding, setIsAdding] = useState(false);
+  const [, setIsAdding] = useState(false);
+  const [viewMode, setViewMode] = useState<"calendar" | "addEvent" | "eventList">("calendar");
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+
+  const handleUpdateTitle = (eventId: string, newTitle: string) => {
+    const updatedEvents = events.map((event) =>
+      event.id === eventId ? { ...event, title: newTitle } : event
+    );
+    save(updatedEvents);
+    setEditingEventId(null);
+  };
 
   // Form States
   const [title, setTitle] = useState("");
@@ -79,12 +83,11 @@ export default function PresenceCalendarBox({
       daysOfWeek: selectedDays,
       presences: [],
       absences: [],
-      color: COLORS[events.length % COLORS.length],
     };
 
     const updated = [...events, newEvent];
     save(updated, newEvent.id);
-    setIsAdding(false);
+    setViewMode("calendar");
 
     setTitle("");
     setStart("");
@@ -178,8 +181,31 @@ export default function PresenceCalendarBox({
               }
             `}
           >
-            <div className={`w-2 h-2 rounded-full ${evt.color}`} />
-            {evt.title}
+            <div className="w-2 h-2 rounded-full bg-primary" />
+            {editingEventId === evt.id ? (
+              <input
+                type="text"
+                value={editingTitle}
+                onChange={(e) => setEditingTitle(e.target.value)}
+                onBlur={() => handleUpdateTitle(evt.id, editingTitle)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleUpdateTitle(evt.id, editingTitle);
+                  }
+                }}
+                className="bg-transparent outline-none"
+                autoFocus
+              />
+            ) : (
+              <span
+                onDoubleClick={() => {
+                  setEditingEventId(evt.id);
+                  setEditingTitle(evt.title);
+                }}
+              >
+                {evt.title}
+              </span>
+            )}
             {activeEventId === evt.id && (
               <div
                 onClick={(e) => deleteEvent(e, evt.id)}
@@ -191,15 +217,21 @@ export default function PresenceCalendarBox({
           </button>
         ))}
         <button
-          onClick={() => setIsAdding(true)}
+          onClick={() => setViewMode("addEvent")}
           className="p-1.5 rounded-lg bg-current/5 hover:bg-current/10 text-primary transition shrink-0"
         >
           <Plus size={14} />
         </button>
+        <button
+          onClick={() => setViewMode("eventList")}
+          className="p-1.5 rounded-lg bg-current/5 hover:bg-current/10 text-primary transition shrink-0"
+        >
+          <List size={14} />
+        </button>
       </div>
 
       {/* CONTEÚDO PRINCIPAL */}
-      {isAdding ? (
+      {viewMode === "addEvent" ? (
         <div className="p-4 space-y-3 animate-in slide-in-from-top-2 flex-1 overflow-y-auto custom-scrollbar">
           <h3 className="text-xs font-bold uppercase opacity-60">
             Novo Evento
@@ -256,7 +288,7 @@ export default function PresenceCalendarBox({
 
           <div className="flex gap-2 pt-2">
             <button
-              onClick={() => setIsAdding(false)}
+              onClick={() => setViewMode("calendar")}
               className="flex-1 py-2 text-xs font-bold opacity-60 hover:opacity-100"
             >
               Cancelar
@@ -267,6 +299,35 @@ export default function PresenceCalendarBox({
             >
               Salvar
             </button>
+          </div>
+        </div>
+      ) : viewMode === "eventList" ? (
+        <div className="p-4 space-y-3 animate-in slide-in-from-top-2 flex-1 overflow-y-auto custom-scrollbar">
+          <h3 className="text-xs font-bold uppercase opacity-60">
+            Visão Geral
+          </h3>
+          <div className="flex gap-2 text-xs">
+            <div className="flex-1 rounded px-2 py-1.5 font-bold" style={{ backgroundColor: "var(--risk-safe-bg)", color: "var(--risk-safe-text)"}}>
+              Total de Presenças: {events.reduce((acc, evt) => acc + (evt.presences?.length || 0), 0)}
+            </div>
+            <div className="flex-1 rounded px-2 py-1.5 font-bold" style={{ backgroundColor: "var(--risk-critical-bg)", color: "var(--risk-critical-text)"}}>
+              Total de Faltas: {events.reduce((acc, evt) => acc + (evt.absences?.length || 0), 0)}
+            </div>
+          </div>
+          <div className="space-y-2">
+            {events.map((evt) => (
+              <div key={evt.id} className="bg-black/5 p-2 rounded-lg">
+                <p className="font-bold text-sm">{evt.title}</p>
+                <div className="flex gap-2 text-xs mt-1">
+                  <span className="font-bold" style={{ color: "var(--risk-safe-text)"}}>
+                    Presenças: {evt.presences?.length || 0}
+                  </span>
+                  <span className="font-bold" style={{ color: "var(--risk-critical-text)"}}>
+                    Faltas: {evt.absences?.length || 0}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       ) : activeEvent ? (
@@ -335,9 +396,9 @@ export default function PresenceCalendarBox({
                           w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all shadow-sm
                           ${
                             isPresent
-                              ? `${activeEvent.color} text-white scale-100`
+                              ? `bg-primary text-primary-foreground scale-100`
                               : isAbsent
-                              ? "bg-red-500 text-white scale-100"
+                              ? "bg-destructive text-destructive-foreground scale-100"
                               : "bg-current/5 hover:bg-primary/10 text-current/60 hover:scale-105"
                           }
                           ${
@@ -363,12 +424,23 @@ export default function PresenceCalendarBox({
           </div>
 
           <div className="mt-auto pt-3 grid grid-cols-2 gap-2 text-[10px] shrink-0">
-            <div className="bg-emerald-500/10 text-emerald-600 rounded px-2 py-1.5 flex justify-between items-center font-bold">
+            <div
+              className="rounded px-2 py-1.5 flex justify-between items-center font-bold"
+              style={{
+                backgroundColor: "var(--risk-safe-bg)",
+                color: "var(--risk-safe-text)",
+              }}
+            >
               <span>Presenças</span>
-              {/* PROTEÇÃO AQUI TAMBÉM */}
               <span>{(activeEvent.presences || []).length}</span>
             </div>
-            <div className="bg-red-500/10 text-red-600 rounded px-2 py-1.5 flex justify-between items-center font-bold">
+            <div
+              className="rounded px-2 py-1.5 flex justify-between items-center font-bold"
+              style={{
+                backgroundColor: "var(--risk-critical-bg)",
+                color: "var(--risk-critical-text)",
+              }}
+            >
               <span>Faltas</span>
               <span>{(activeEvent.absences || []).length}</span>
             </div>

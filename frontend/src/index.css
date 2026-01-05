@@ -19,6 +19,47 @@ body {
 
 /* --- CAMADA DE COMPONENTES --- */
 @layer components {
+  /* Estilos para scrollbar */
+  /* Webkit-based browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(127, 127, 127, 0.3);
+    border-radius: 10px;
+    border: 2px solid transparent;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(127, 127, 127, 0.5);
+  }
+
+  /* Para elementos com a classe custom-scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(127, 127, 127, 0.3);
+    border-radius: 10px;
+    border: 2px solid transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(127, 127, 127, 0.5);
+  }
+
   /* --- CLASSE PADRÃO PARA WIDGETS (BOXES) --- */
   .box-padrao {
     @apply rounded-2xl p-6 flex flex-col gap-4 overflow-hidden h-full w-full transition-colors duration-500 shadow-lg shadow-black/5;

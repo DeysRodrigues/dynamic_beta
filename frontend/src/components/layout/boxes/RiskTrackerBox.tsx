@@ -93,14 +93,12 @@ export default function RiskTrackerBox({
     }
   };
 
-const getStatusColor = (current: number, limit: number) => {
-    const percentage = (current / limit) * 100;
-    if (percentage >= 100) return "text-red-600 bg-red-100";
-    if (percentage >= 80)
-      return "text-orange-500 bg-orange-100";
-    if (percentage >= 50)
-      return "text-yellow-600 bg-yellow-100";
-    return "text-emerald-600 bg-emerald-100";
+  const getProgressBarColor = (current: number, limit: number) => {
+    const percentage = limit > 0 ? (current / limit) * 100 : 0;
+    if (percentage >= 100) return "var(--risk-critical-text)";
+    if (percentage >= 80) return "var(--risk-danger-text)";
+    if (percentage >= 50) return "var(--risk-warning-text)";
+    return "var(--risk-safe-text)";
   };
 
   return (
@@ -108,7 +106,7 @@ const getStatusColor = (current: number, limit: number) => {
       {/* HEADER */}
       <div className="p-3 flex justify-between items-center bg-current/5">
         <h2 className="font-bold flex items-center gap-2 text-sm">
-          <AlertTriangle size={16} className="text-orange-500" /> Gestão de
+          <AlertTriangle size={16} style={{ color: "var(--risk-danger-text)" }} /> Gestão de
           Risco
         </h2>
         <button
@@ -214,14 +212,14 @@ const getStatusColor = (current: number, limit: number) => {
         {items.map((item) => {
           const percentUsed = Math.min(100, (item.current / item.limit) * 100);
           const percentTotal = Math.round((item.current / item.total) * 100);
-          const statusClass = getStatusColor(item.current, item.limit);
+          const progressBarColor = getProgressBarColor(item.current, item.limit);
           const isFailed = item.current >= item.limit;
           const remaining = item.limit - item.current;
 
           return (
             <div
               key={item.id}
-              className={`p-3 rounded-xl transition-all relative group ${statusClass} bg-opacity-40`}
+              className="p-3 rounded-xl transition-colors relative group bg-current/5"
             >
               <div className="flex justify-between items-start mb-1.5">
                 <div className="flex-1 min-w-0 pr-2">
@@ -239,7 +237,7 @@ const getStatusColor = (current: number, limit: number) => {
                 </div>
                 <button
                   onClick={() => deleteItem(item.id)}
-                  className="p-1.5 opacity-0 group-hover:opacity-50 hover:opacity-100 hover:bg-red-500 hover:text-white rounded transition absolute top-2 right-2"
+                  className="p-1.5 opacity-0 group-hover:opacity-50 hover:opacity-100 hover:bg-[var(--destructive)] hover:text-[var(--destructive-foreground)] rounded transition absolute top-2 right-2"
                 >
                   <Trash2 size={12} />
                 </button>
@@ -248,10 +246,11 @@ const getStatusColor = (current: number, limit: number) => {
               {/* Barra de Progresso */}
               <div className="relative w-full h-2 bg-black/10 rounded-full overflow-hidden mb-2">
                 <div
-                  className={`h-full transition-all duration-500 ${
-                    isFailed ? "bg-red-600" : "bg-current"
-                  }`}
-                  style={{ width: `${percentUsed}%` }}
+                  className="h-full transition-all duration-500"
+                  style={{
+                    width: `${percentUsed}%`,
+                    backgroundColor: progressBarColor,
+                  }}
                 />
               </div>
 
@@ -260,7 +259,14 @@ const getStatusColor = (current: number, limit: number) => {
                 {/* Aviso de Perigo */}
                 <div className="flex-1 min-w-0 pr-2">
                   {percentUsed >= 80 ? (
-                    <div className="flex items-center gap-1 text-[10px] font-bold text-red-700 animate-pulse truncate">
+                    <div
+                      className="flex items-center gap-1 text-[10px] font-bold animate-pulse truncate"
+                      style={{
+                        color: isFailed
+                          ? "var(--risk-critical-text)"
+                          : "var(--risk-danger-text)",
+                      }}
+                    >
                       <Skull size={10} />{" "}
                       {isFailed
                         ? `FALHOU: ${item.consequence}`
@@ -277,13 +283,13 @@ const getStatusColor = (current: number, limit: number) => {
                 <div className="flex items-center gap-1 bg-white/50 backdrop-blur-sm p-0.5 rounded-lg shadow-sm">
                   <button
                     onClick={() => updateCount(item.id, -1)}
-                    className="p-1 hover:bg-black/10 rounded transition text-current"
+                    className="p-1 hover:bg-primary/10 rounded transition text-primary"
                   >
                     <MinusCircle size={14} />
                   </button>
                   <button
                     onClick={() => updateCount(item.id, 1)}
-                    className="p-1 hover:bg-black/10 rounded transition text-current"
+                    className="p-1 hover:bg-primary/10 rounded transition text-primary"
                   >
                     <PlusCircle size={14} />
                   </button>

@@ -32,7 +32,7 @@ export default function MonthlyGoalsBox({ id = "goals-default" }: { id?: string 
   return (
     <div className="box-padrao p-4 flex flex-col">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="font-bold flex items-center gap-2"><Target size={18} className="text-rose-500"/> Metas 30 Dias</h2>
+        <h2 className="font-bold flex items-center gap-2"><Target size={18} className="text-primary"/> Metas 30 Dias</h2>
         <button onClick={() => setIsEditing(!isEditing)} className="text-muted-foreground hover:text-primary"><Plus size={18}/></button>
       </div>
 
@@ -53,7 +53,13 @@ export default function MonthlyGoalsBox({ id = "goals-default" }: { id?: string 
             <div key={goal.id} className="space-y-1">
               <div className="flex justify-between text-xs font-medium text-muted-foreground">
                 <span>{goal.title}</span>
-                <span className={percent > 70 ? "text-green-600" : "text-muted-foreground/50"}>{percent}%</span>
+                <span
+                  style={{
+                    color: percent > 70 ? "var(--risk-safe-text)" : "var(--muted-foreground)",
+                  }}
+                >
+                  {percent}%
+                </span>
               </div>
               {/* Grid de 30 dias */}
               <div className="flex flex-wrap gap-[2px]">
@@ -62,7 +68,7 @@ export default function MonthlyGoalsBox({ id = "goals-default" }: { id?: string 
                     key={dIdx} 
                     onClick={() => toggleCheck(gIdx, dIdx)}
                     className={`w-2.5 h-2.5 rounded-[1px] cursor-pointer transition-colors ${
-                      checked ? "bg-rose-500 hover:bg-rose-600" : "bg-muted hover:bg-muted/80"
+                      checked ? "bg-primary hover:bg-primary/80" : "bg-muted hover:bg-muted/80"
                     }`}
                     title={`Dia ${dIdx + 1}`}
                   />
