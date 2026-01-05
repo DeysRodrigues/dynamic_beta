@@ -25,6 +25,11 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - Complete implementation of user authentication and Firestore persistence.
 - Custom notification sounds and settings integration.
 
+--- 
+## [0.7.1] - 2025-12-12
+
+- Updated style
+
 ---
 ## [0.7.0] - 2025-12-12
 ### Added
