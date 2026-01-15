@@ -78,24 +78,6 @@ const BoxLoader = React.memo(() => (
   </div>
 ));
 
-const DigitalClock = React.memo(() => {
-  const [time, setTime] = useState(new Date());
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="font-mono text-sm opacity-60 font-bold tabular-nums tracking-widest min-w-[70px] text-center">
-      {time.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      })}
-    </div>
-  );
-});
-
 // --- WORKSPACE TABS ---
 const WorkspaceTabs = React.memo(() => {
   const {
@@ -149,7 +131,7 @@ const WorkspaceTabs = React.memo(() => {
           return (
             <div
               key={w.id}
-              className="flex items-center bg-current/10 rounded-xl px-2 py-1.5 backdrop-blur-md"
+              className="flex items-center bg-current/10 rounded-xl px-2 py-1.5"
             >
               <input
                 autoFocus
@@ -171,7 +153,7 @@ const WorkspaceTabs = React.memo(() => {
               className={cn(
                 "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 select-none whitespace-nowrap",
                 isActive
-                  ? "bg-current/10 shadow-sm opacity-100 backdrop-blur-md"
+                  ? "bg-current/10 shadow-sm opacity-100"
                   : "opacity-60 hover:opacity-100 hover:bg-current/5"
               )}
             >
@@ -312,8 +294,6 @@ const DashboardHeader = React.memo(
               >
                 <EyeOff size={16} /> SAIR DO FOCO
               </button>
-              <div className="h-4 w-px bg-current/20"></div>
-              <DigitalClock />
             </div>
           ) : (
             <div className="flex items-center gap-3 animate-in slide-in-from-left-2 duration-300">
@@ -339,8 +319,6 @@ const DashboardHeader = React.memo(
                   <span className="flex items-center gap-1">
                     <CalendarDays size={10} /> {getFormattedCurrentDate()}
                   </span>
-                  <span className="w-1 h-1 rounded-full bg-current opacity-30" />
-                  <DigitalClock />
                 </div>
               </div>
             </div>
@@ -354,7 +332,7 @@ const DashboardHeader = React.memo(
             <WorkspaceTabs />
           </div>
 
-          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl self-start md:self-auto backdrop-blur-md shadow-sm">
+          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl self-start md:self-auto shadow-sm">
             <button
               onClick={toggleFocusMode}
               className={`p-2 rounded-lg transition-all duration-200 ${
@@ -405,7 +383,7 @@ const DashboardHeader = React.memo(
                   {showAddMenu && (
                     // Z-INDEX ALTO (z-50) para ficar acima dos widgets
                     <div
-                      className="absolute top-full right-0 mt-2 w-64 backdrop-blur-xl rounded-xl shadow-2xl p-2 z-[999] animate-in fade-in zoom-in-95 origin-top-right overflow-hidden ring-1 ring-black/5"
+                      className="absolute top-full right-0 mt-2 w-64 rounded-xl shadow-2xl p-2 z-[999] animate-in fade-in zoom-in-95 origin-top-right overflow-hidden ring-1 ring-black/5"
                       style={{
                         backgroundColor: "var(--box-color)",
                         color: "var(--box-text-color)",

@@ -26,6 +26,9 @@ import {
   FileCode,
   Check,
   LayoutTemplate,
+  Sparkles,
+  Droplets,
+  SunMedium,
 } from "lucide-react";
 
 import PersonalizationModal from "./modals/PersonalizationModal";
@@ -53,6 +56,12 @@ const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
     setBackgroundColor,
     wallpaper,
     applyPreset,
+    glassEffect,
+    setGlassEffect,
+    wallpaperBlur,
+    setWallpaperBlur,
+    wallpaperBrightness,
+    setWallpaperBrightness,
   } = useThemeStore(useShallow((state) => ({ ...state })));
 
   const [monospace, setMonospace] = useState(false);
@@ -181,6 +190,58 @@ const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
                 step="0.05"
                 value={boxOpacity}
                 onChange={(e) => setBoxOpacity(Number(e.target.value))}
+                className="w-24 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+            </div>
+
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5">
+              <span className="text-xs font-medium flex items-center gap-2 text-white/80">
+                <Sparkles size={14} /> Efeito Glass
+              </span>
+              <input
+                type="range"
+                min="0"
+                max="20"
+                step="1"
+                value={glassEffect}
+                onChange={(e) => setGlassEffect(Number(e.target.value))}
+                className="w-24 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+            </div>
+          </section>
+
+          {/* NOVO: Ajustes de Papel de Parede */}
+          <section className="space-y-3">
+             <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-widest">
+              Ajustes do Fundo
+            </h3>
+            
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5">
+              <span className="text-xs font-medium flex items-center gap-2 text-white/80">
+                <Droplets size={14} className="text-cyan-400" /> Desfoque
+              </span>
+              <input
+                type="range"
+                min="0"
+                max="20"
+                step="1"
+                value={wallpaperBlur}
+                onChange={(e) => setWallpaperBlur(Number(e.target.value))}
+                className="w-24 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+            </div>
+
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5">
+              <span className="text-xs font-medium flex items-center gap-2 text-white/80">
+                <SunMedium size={14} className="text-amber-400" /> Brilho
+              </span>
+              <input
+                type="range"
+                min="0"
+                max="200"
+                step="5"
+                value={wallpaperBrightness}
+                onChange={(e) => setWallpaperBrightness(Number(e.target.value))}
                 className="w-24 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary"
               />
             </div>
@@ -424,7 +485,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       {/* Botão Mobile */}
       {!isFocusMode && (
         <button
-          className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border border-white/10 active:scale-95 transition-all text-white backdrop-blur-md"
+          className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border border-white/10 active:scale-95 transition-all text-white"
           style={{ backgroundColor: sidebarColor }}
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -434,7 +495,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
 
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/60 z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
