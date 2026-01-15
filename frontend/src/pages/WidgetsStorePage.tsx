@@ -261,7 +261,7 @@ export default function WidgetsStorePage() {
 
       {/* SEÇÃO DE FAVORITOS */}
       {hasFavorites && (
-        <section className="space-y-6 pb-8 border-b border-border/50">
+        <section className="space-y-6 pb-8">
           <div className="flex items-center gap-2">
             <Heart className="text-red-500 fill-red-500" size={24} />
             <div>
