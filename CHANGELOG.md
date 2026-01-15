@@ -25,7 +25,28 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - Complete implementation of user authentication and Firestore persistence.
 - Custom notification sounds and settings integration.
 
+---
+
+## [0.8.0] - 2026-01-15
+### Added
+- **Content Organization:**
+    - **Favorites System:** Implemented a persistent "Meus Favoritos" section at the top of both Widgets Store and Themes Gallery. Users can toggle a heart icon on any card to pin their preferred tools and styles.
+    - **Global Search:** Added real-time search bars to the Widgets Store and Themes Gallery, enabling quick filtering of system widgets, custom HTML widgets, setups, palettes, and themes.
+- **Advanced Visual Controls:**
+    - **Adjustable Glass Effect:** Introduced a numeric slider in the Settings Drawer to control the intensity of the `backdrop-filter: blur` on widgets (0-20px), replacing the previous binary toggle.
+    - **Immersive Background Controls:**
+        - **Wallpaper Blur:** New slider to defocus the active background image without affecting widget content or text.
+        - **Wallpaper Brightness:** New slider to adjust background luminosity (0-200%), perfect for enhancing readability or creating high-contrast environments.
+- **Persistence:** Created `useFavoriteStore` to manage and persist favorited items across sessions.
+
+### Changed
+- **UI/UX Polishing:**
+    - **Home Cleanup:** Removed the real-time Digital Clock from the dashboard header and focus mode for a more minimalist aesthetic.
+    - **Coherence Refactor:** Removed the `backdrop-blur` (glass) effect from fixed UI elements like the top toolbar buttons and workspace tabs. These elements now use solid colors for better visual separation from the dynamic grid content.
+    - **Background Layering:** Refactored `DashboardLayout` to use a dedicated absolute background layer, preventing wallpaper filters from distorting the foreground UI.
+
 --- 
+
 ## [0.7.1] - 2025-12-12
 
 - Updated style

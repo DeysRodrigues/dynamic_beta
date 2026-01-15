@@ -1,25 +1,26 @@
 export const APP_UPDATES = {
-  version: "0.7.0",
-  date: "12 de Dezembro",
+  version: "0.8.0",
+  date: "15 de Janeiro",
 
   // 1. O Emoji da vez
-  emoji: "🧘‍♂️",
+  emoji: "💎",
 
   // 2. Título chamativo
-  title: "Modo Zen",
+  title: "Glass & Favoritos",
 
   // 3. O recado principal
   message:
-    "Chega de bagunça! Agora você tem Workspaces para separar Trabalho de Lazer, um Modo Zen para focar no que importa(eu acho)",
+    "Eai guys, tudo certo? a devinha deixou de preguiça e meteu o louco na atualização.",
 
   // 4. As novidades explicadas de forma leve
   items: [
-    "🗂️ Multiverso de Workspaces: Crie áreas separadas para 'Estudos', 'Trabalho' ou 'Vida Pessoal'. Cada um com seus próprios widgets. Chega de misturar as bolas!",
-    "🧘‍♂️ Modo Zen (Aperte 'F'): Precisa focar? Suma com tudo! A sidebar e o header desaparecem, ficando só você, a loucura da sua mente e um relógio digital bonitão.",
-    "🧹 Faxina na Sidebar: Limpamos a casa! A barra lateral agora é só para navegar. Quer mudar cores ou fazer backup? Clica em 'Ajustes' e veja a nova gaveta deslizar sem poluir sua visão.",
-    "📸 Diga Xis: Finalmente! Agora dá pra trocar sua foto, nome e subtítulo direto pela Sidebar. O dashboard é seu, tem que ter sua cara(Vixe).",
+    "❤️ Favoritos: Amou um widget ou tema? Clique no coraçãozinho e guarde-os numa seção especial no topo da loja. Seus queridinhos, sempre à vista.",
+    "🔍 Pesquisa Poderosa: Encontre widgets, setups e temas num piscar de olhos com as novas barras de busca.",
+    "💎 Efeito Glass (Controlável): Você pediu, nós fizemos! Ajuste o nível de desfoque (blur) dos widgets com um novo slider nos Ajustes. Do sólido ao vidro jateado, você decide.",
+    "🌫️ Fundo Cinematográfico: Controle o desfoque e o brilho do seu wallpaper separadamente. Destaque seus widgets desfocando o fundo ou ajuste a luminosidade para não cansar a vista.",
+    "🧹 Visual Limpo: Removemos o relógio 'correndo' da home e limpamos o excesso de efeitos nos botões para um visual mais coerente e profissional.",
   ],
 
   // 5. Botão final
-  footer: "Bora testar o 'F'?",
+  footer: "Experimente o novo visual!",
 };
