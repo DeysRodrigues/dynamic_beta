@@ -12,6 +12,9 @@ interface ThemeState {
   boxColor: string;
   textColor: string;
   backgroundColor: string; // Cor de fundo da página
+  glassEffect: number; // Blur em px (0 = desligado)
+  wallpaperBlur: number; // Blur do fundo em px (0-20)
+  wallpaperBrightness: number; // Brilho do fundo em % (0-200)
   
   setWallpaper: (w: WallpaperType) => void;
   setCustomImage: (img: string) => void;
@@ -21,6 +24,9 @@ interface ThemeState {
   setBoxColor: (color: string) => void;
   setTextColor: (color: string) => void;
   setBackgroundColor: (color: string) => void;
+  setGlassEffect: (blur: number) => void;
+  setWallpaperBlur: (blur: number) => void;
+  setWallpaperBrightness: (brightness: number) => void;
   
   // Função mágica que carrega um tema completo de uma vez (usada pelos Setups)
   applyPreset: (preset: Partial<ThemeState>) => void;
@@ -38,6 +44,9 @@ export const useThemeStore = create<ThemeState>()(
       boxColor: "#1e293b", // slate-800
       textColor: "#f8fafc", // slate-50
       backgroundColor: "#0f172a", // slate-900
+      glassEffect: 0,
+      wallpaperBlur: 0,
+      wallpaperBrightness: 100,
       
       setWallpaper: (w) => set({ wallpaper: w }),
       setCustomImage: (img) => set({ customImage: img, wallpaper: "custom" }),
@@ -47,6 +56,9 @@ export const useThemeStore = create<ThemeState>()(
       setBoxColor: (color) => set({ boxColor: color }),
       setTextColor: (color) => set({ textColor: color }),
       setBackgroundColor: (color) => set({ backgroundColor: color }),
+      setGlassEffect: (blur) => set({ glassEffect: blur }),
+      setWallpaperBlur: (blur) => set({ wallpaperBlur: blur }),
+      setWallpaperBrightness: (brightness) => set({ wallpaperBrightness: brightness }),
       
       // Recebe um objeto com várias propriedades e atualiza tudo junto
       applyPreset: (preset) => set((state) => ({ ...state, ...preset })),
