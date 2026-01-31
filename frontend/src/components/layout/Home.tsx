@@ -43,6 +43,7 @@ import RiskTrackerBox from "./boxes/RiskTrackerBox";
 import PresenceCalendarBox from "./boxes/PresenceCalendarBox";
 import ActivityGoalsBox from "./boxes/ActivityGoalsBox";
 
+
 // --- LAZY LOADING ---
 const ProgressBox = React.lazy(() => import("./boxes/ProgressBox"));
 const MetaTagsBox = React.lazy(() => import("./boxes/MetaTagsBox"));
@@ -64,6 +65,7 @@ const CozyLibraryBox = React.lazy(() => import("./boxes/CozyLibraryBox"));
 const CountdownBox = React.lazy(() => import("./boxes/CountdownBox"));
 const CodeSnippetBox = React.lazy(() => import("./boxes/CodeSnippetBox"));
 const QuickLinksBox = React.lazy(() => import("./boxes/QuickLinksBox"));
+const ThreeFrogsBox = React.lazy(() => import("./boxes/ThreeFrogsBox"));
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -278,11 +280,10 @@ const DashboardHeader = React.memo(
     };
 
     return (
-      
+
       <div
-        className={`flex flex-col gap-4 mb-6 transition-all duration-500 relative z-50 ${
-          isFocusMode ? "opacity-30 hover:opacity-100" : ""
-        }`}
+        className={`flex flex-col gap-4 mb-6 transition-all duration-500 relative z-50 ${isFocusMode ? "opacity-30 hover:opacity-100" : ""
+          }`}
         style={{ color: "var(--box-text-color)" }}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -325,9 +326,8 @@ const DashboardHeader = React.memo(
           )}
 
           <div
-            className={`flex-1 md:flex md:justify-center overflow-hidden transition-all duration-500 ${
-              isFocusMode ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
+            className={`flex-1 md:flex md:justify-center overflow-hidden transition-all duration-500 ${isFocusMode ? "opacity-0 pointer-events-none" : "opacity-100"
+              }`}
           >
             <WorkspaceTabs />
           </div>
@@ -335,11 +335,10 @@ const DashboardHeader = React.memo(
           <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl self-start md:self-auto shadow-sm">
             <button
               onClick={toggleFocusMode}
-              className={`p-2 rounded-lg transition-all duration-200 ${
-                isFocusMode
-                  ? "bg-primary text-primary-foreground"
-                  : "opacity-50 hover:opacity-100 hover:bg-current/10"
-              }`}
+              className={`p-2 rounded-lg transition-all duration-200 ${isFocusMode
+                ? "bg-primary text-primary-foreground"
+                : "opacity-50 hover:opacity-100 hover:bg-current/10"
+                }`}
               title="Modo Foco (F)"
             >
               {isFocusMode ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -545,6 +544,8 @@ export default function Dashboard() {
         return <PresenceCalendarBox id={id} />;
       case "activity":
         return <ActivityGoalsBox id={id} />;
+      case "three_frogs":
+        return <ThreeFrogsBox id={id} />;
       default:
         return null;
     }
@@ -597,11 +598,10 @@ export default function Dashboard() {
           return (
             <div
               key={boxId}
-              className={`h-full w-full transition-all duration-300 relative group rounded-2xl ${
-                editMode
-                  ? "bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
-                  : ""
-              }`}
+              className={`h-full w-full transition-all duration-300 relative group rounded-2xl ${editMode
+                ? "bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
+                : ""
+                }`}
             >
               {editMode && (
                 <div className="absolute -top-3 -right-3 z-50 animate-in zoom-in duration-200">
@@ -618,9 +618,8 @@ export default function Dashboard() {
                 </div>
               )}
               <div
-                className={`w-full h-full overflow-hidden rounded-2xl ${
-                  editMode ? "pointer-events-none select-none opacity-80" : ""
-                }`}
+                className={`w-full h-full overflow-hidden rounded-2xl ${editMode ? "pointer-events-none select-none opacity-80" : ""
+                  }`}
               >
                 <Suspense fallback={<BoxLoader />}>{component}</Suspense>
               </div>

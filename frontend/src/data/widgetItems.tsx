@@ -25,6 +25,7 @@ import {
   AlertTriangle,
   CalendarCheck,
   TrendingUp,
+
 } from "lucide-react";
 
 // =====================================================================
@@ -187,12 +188,19 @@ export const nativeWidgets = [
     color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
   },
   {
-  id: "activity",
-  title: "Metas Cumulativas",
-  description: "Rastreie XP, calorias ou economia diária.",
-  icon: <TrendingUp size={24} />,
-  color: "text-yellow-600 bg-yellow-500/10 border-yellow-500/20",
-},
+    id: "activity",
+    title: "Metas Cumulativas",
+    description: "Rastreie XP, calorias ou economia diária.",
+    icon: <TrendingUp size={24} />,
+    color: "text-yellow-600 bg-yellow-500/10 border-yellow-500/20",
+  },
+  {
+    id: "three_frogs",
+    title: "Os 3 Sapos",
+    description: "Foque nas 3 tarefas mais importantes do dia para vencer a procrastinação.",
+    icon: <Target size={24} />,
+    color: "var(--primary-color)",
+  }
 ];
 
 // =====================================================================

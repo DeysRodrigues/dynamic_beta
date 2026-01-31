@@ -10,6 +10,7 @@ interface TaskItemProps {
   onEdit?: (task: Task) => void;
   onChange?: (id: string, field: keyof Task, value: string) => void;
   editable?: boolean;
+  compact?: boolean;
 }
 
 export default function TaskItem({
