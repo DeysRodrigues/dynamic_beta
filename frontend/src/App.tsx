@@ -6,6 +6,7 @@ import WeekPlannerPage from "./pages/WeekPlannerPage";
 import WidgetsStorePage from "./pages/WidgetsStorePage";
 import ThemesPage from "./pages/ThemesPage";
 import LandingPage from "./pages/LandingPage";
+import WikiPage from "./pages/WikiPage";
 
 // Embed Widgets
 import WaterWidget from "./widgets/WaterWidget";
@@ -19,6 +20,7 @@ export default function App() {
       <Routes>
         {/* ROTA DA APRESENTAÇÃO (SEM SIDEBAR) */}
         <Route path="/intro" element={<LandingPage />} />
+        <Route path="/wiki" element={<WikiPage />} />
 
         {/* ROTAS DO APP (COM SIDEBAR) */}
         <Route element={<DashboardLayout />}>
