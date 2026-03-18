@@ -218,7 +218,7 @@ export default function WidgetsStorePage() {
 
   return (
     <div
-      className="p-6 max-w-7xl mx-auto space-y-12 animate-in fade-in duration-500 pb-20"
+      className="p-4 sm:p-6 max-w-7xl mx-auto space-y-10 sm:space-y-12 animate-in fade-in duration-500 pb-20"
       style={{ color: "var(--box-text-color)" }}
     >
       <WidgetEditorModal
@@ -227,16 +227,16 @@ export default function WidgetsStorePage() {
         widgetToEdit={editingWidget}
       />
 
-      <div className="bar-padrao flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="bar-padrao flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Loja de Widgets</h1>
-          <p className="opacity-70 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold">Loja de Widgets</h1>
+          <p className="opacity-70 mt-1 text-xs sm:text-sm">
             Adicione funcionalidades ao seu dashboard.
           </p>
         </div>
         <button
           onClick={openCreator}
-          className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-3 rounded-xl hover:opacity-90 transition shadow-lg font-bold"
+          className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-5 py-3 rounded-xl hover:opacity-90 transition shadow-lg font-bold text-sm w-full sm:w-auto"
         >
           <Code size={20} /> Criar HTML
         </button>
@@ -265,15 +265,15 @@ export default function WidgetsStorePage() {
           <div className="flex items-center gap-2">
             <Heart className="text-red-500 fill-red-500" size={24} />
             <div>
-              <h2 className="text-2xl font-bold">Meus Favoritos</h2>
-              <p className="text-sm opacity-60">Seus widgets preferidos em um só lugar.</p>
+              <h2 className="text-xl sm:text-2xl font-bold">Meus Favoritos</h2>
+              <p className="text-xs sm:text-sm opacity-60">Seus widgets preferidos em um só lugar.</p>
             </div>
           </div>
 
           {favNative.length > 0 && (
             <div className="space-y-3">
-               <h3 className="text-sm font-bold opacity-50 uppercase tracking-wider">Nativos</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Nativos</h3>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {favNative.map((w) => (
                   <StoreItem
                     key={w.id}
@@ -291,8 +291,8 @@ export default function WidgetsStorePage() {
 
           {favEmbed.length > 0 && (
             <div className="space-y-3">
-               <h3 className="text-sm font-bold opacity-50 uppercase tracking-wider">Embeds</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Embeds</h3>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {favEmbed.map((w) => (
                   <StoreItem
                     key={w.id}
@@ -310,8 +310,8 @@ export default function WidgetsStorePage() {
 
           {favCustom.length > 0 && (
             <div className="space-y-3">
-               <h3 className="text-sm font-bold opacity-50 uppercase tracking-wider">Customizados</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Customizados</h3>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {favCustom.map((w) => (
                   <CustomStoreItem
                     key={w.id}
@@ -332,14 +332,15 @@ export default function WidgetsStorePage() {
 
       {/* 1. WIDGETS NATIVOS */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 pb-2">          <div>
-            <h2 className="text-xl font-bold">Nativos do Sistema</h2>
-            <p className="text-sm opacity-60">
+        <div className="flex items-center gap-2 pb-2">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold">Nativos do Sistema</h2>
+            <p className="text-xs sm:text-sm opacity-60">
               Widgets integrados que você pode adicionar diretamente.
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredNative.map((w) => (
             <StoreItem
               key={w.id}
@@ -359,13 +360,13 @@ export default function WidgetsStorePage() {
         <div className="flex items-center gap-2 pb-2">
           <AppWindow className="text-purple-500" size={24} />
           <div>
-            <h2 className="text-xl font-bold">Embeds Especiais</h2>
-            <p className="text-sm opacity-60">
-              Copie o link e cole dentro de um widget "Smart Embed" ou "Janela".
+            <h2 className="text-lg sm:text-xl font-bold">Embeds Especiais</h2>
+            <p className="text-xs sm:text-sm opacity-60">
+              Copie o link e cole dentro de um widget "Smart Embed".
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredEmbed.map((w) => (
             <StoreItem
               key={w.id}
@@ -385,9 +386,9 @@ export default function WidgetsStorePage() {
         <section className="space-y-4 pt-8">
           <div className="flex items-center gap-2">
             <Code className="text-amber-500" size={24} />
-            <h2 className="text-xl font-bold">Meus HTML Widgets</h2>
+            <h2 className="text-lg sm:text-xl font-bold">Meus HTML Widgets</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredCustom.map((w) => (
               <CustomStoreItem
                 key={w.id}

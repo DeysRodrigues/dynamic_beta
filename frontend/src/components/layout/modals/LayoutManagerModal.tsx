@@ -128,24 +128,24 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex flex-wrap items-center gap-2 mt-3 sm:mt-0">
                   <button
                     onClick={() => handleExport(t)}
-                    className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg"
+                    className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg shrink-0"
                     title="Exportar (Download)"
                   >
                     <Download size={18} />
                   </button>
                   <button
                     onClick={() => deleteTemplate(t.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg shrink-0"
                     title="Excluir"
                   >
                     <Trash2 size={18} />
                   </button>
                   <button
                     onClick={() => handleLoad(t)}
-                    className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black flex items-center gap-2 text-sm font-medium shadow-sm"
+                    className="flex-1 sm:flex-none px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black flex items-center justify-center gap-2 text-sm font-medium shadow-sm whitespace-nowrap"
                   >
                     <Check size={16} /> Carregar
                   </button>

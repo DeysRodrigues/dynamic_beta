@@ -280,7 +280,6 @@ const DashboardHeader = React.memo(
     };
 
     return (
-
       <div
         className={`flex flex-col gap-4 mb-6 transition-all duration-500 relative z-50 ${isFocusMode ? "opacity-30 hover:opacity-100" : ""
           }`}
@@ -297,26 +296,26 @@ const DashboardHeader = React.memo(
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-3 animate-in slide-in-from-left-2 duration-300">
-              <div className="relative">
+            <div className="flex items-center gap-2 sm:gap-3 animate-in slide-in-from-left-2 duration-300">
+              <div className="relative shrink-0">
                 <img
                   src={
                     avatar ||
                     "https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
                   }
-                  className="w-10 h-10 rounded-xl object-cover shadow-sm"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl object-cover shadow-sm"
                   alt="Avatar"
                 />
-                <div className="absolute -bottom-1 -right-1 bg-background p-0.5 rounded-full">
+                <div className="absolute -bottom-1 -right-1 bg-background p-0.5 rounded-full scale-75 sm:scale-100">
                   {greeting.icon}
                 </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold leading-tight">
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-xl font-bold leading-tight truncate">
                   {greeting.text},{" "}
                   <span className="opacity-80">{name.split(" ")[0]}</span>
                 </h1>
-                <div className="text-xs opacity-50 font-medium flex items-center gap-2 mt-1">
+                <div className="text-[10px] sm:text-xs opacity-50 font-medium flex items-center gap-2 mt-0.5 sm:mt-1">
                   <span className="flex items-center gap-1">
                     <CalendarDays size={10} /> {getFormattedCurrentDate()}
                   </span>
@@ -326,13 +325,13 @@ const DashboardHeader = React.memo(
           )}
 
           <div
-            className={`flex-1 md:flex md:justify-center overflow-hidden transition-all duration-500 ${isFocusMode ? "opacity-0 pointer-events-none" : "opacity-100"
+            className={`flex-1 w-full md:w-auto md:flex md:justify-center overflow-hidden transition-all duration-500 ${isFocusMode ? "opacity-0 pointer-events-none" : "opacity-100"
               }`}
           >
             <WorkspaceTabs />
           </div>
 
-          <div className="flex items-center gap-2 bg-current/5 p-1 rounded-xl self-start md:self-auto shadow-sm">
+          <div className="flex items-center gap-1 sm:gap-2 bg-current/5 p-1 rounded-xl self-end md:self-auto shadow-sm">
             <button
               onClick={toggleFocusMode}
               className={`p-2 rounded-lg transition-all duration-200 ${isFocusMode
@@ -582,14 +581,15 @@ export default function Dashboard() {
         key={activeWorkspaceId}
         className="layout"
         layouts={activeWorkspace.layouts}
-        breakpoints={{ lg: 1024, md: 768, sm: 480 }}
-        cols={{ lg: 4, md: 2, sm: 1 }}
+        breakpoints={{ lg: 1024, md: 768, sm: 480, xs: 0 }}
+        cols={{ lg: 4, md: 2, sm: 1, xs: 1 }}
         rowHeight={100}
         isDraggable={editMode}
         isResizable={editMode}
         onLayoutChange={(_layout, allLayouts) => setLayouts(allLayouts)}
         draggableCancel=".no-drag"
-        margin={[16, 16]}
+        margin={[12, 12]}
+        containerPadding={[0, 0]}
       >
         {(activeWorkspace.boxes || []).map((boxId) => {
           const component = renderBox(boxId);

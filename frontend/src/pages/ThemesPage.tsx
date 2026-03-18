@@ -18,8 +18,17 @@ import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
 // 1. Card de Setup Completo
 const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { setup: any; isFavorite: boolean; onInstall: (s: any) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden group flex flex-col min-h-[220px] relative hover:ring-2 ring-primary transition-all">
-    <div className="h-28 w-full relative" style={{ backgroundColor: setup.theme.backgroundColor }}>
-       {setup.theme.customImage && <img src={setup.theme.customImage} alt="bg" className="absolute inset-0 w-full h-full object-cover opacity-50" />}
+    <div className="h-28 w-full relative bg-current/5" style={{ backgroundColor: setup.theme.backgroundColor }}>
+       {setup.theme.customImage && (
+         <img 
+            src={setup.theme.customImage} 
+            alt="" 
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover opacity-50 transition-opacity duration-300" 
+            onLoad={(e) => (e.currentTarget.style.opacity = "0.5")}
+         />
+       )}
        <div className="absolute top-3 left-3 p-2 rounded-xl shadow-lg text-white z-10" style={{ backgroundColor: setup.theme.primaryColor }}>{setup.icon}</div>
        
        {/* Favorite Button */}
@@ -45,8 +54,17 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
 // 2. Card de Tema de Imersão
 const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorite }: { theme: any; isApplied: boolean; isFavorite: boolean; onApply: (t: any) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden flex flex-col min-h-[160px] relative group">
-    <div className={`h-20 w-full relative ${theme.previewColor}`}>
-      {theme.theme.customImage && <img src={theme.theme.customImage} className="w-full h-full object-cover opacity-60" />}
+    <div className={`h-20 w-full relative bg-current/5 ${theme.previewColor}`}>
+      {theme.theme.customImage && (
+        <img 
+          src={theme.theme.customImage} 
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover opacity-60 transition-opacity duration-300" 
+          onLoad={(e) => (e.currentTarget.style.opacity = "0.6")}
+          alt=""
+        />
+      )}
       {theme.theme.wallpaper === 'grid' && <div className="absolute inset-0 opacity-20 bg-[url('https://transparenttextures.com/patterns/graphy.png')]"></div>}
       {theme.theme.wallpaper === 'blueprint' && <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>}
       
@@ -192,14 +210,14 @@ export default function ThemesPage() {
 
   return (
     <div 
-      className="p-6 max-w-7xl mx-auto space-y-16 animate-in fade-in duration-500 pb-20"
+      className="p-4 sm:p-6 max-w-7xl mx-auto space-y-10 sm:space-y-16 animate-in fade-in duration-500 pb-24"
       style={{ color: 'var(--box-text-color)' }}
     >
       
       <div className="bar-padrao">
         <div>
-          <h1 className="text-3xl font-bold">Galeria de Temas</h1>
-          <p className="opacity-70 mt-1">Personalize o visual e a estrutura do seu dashboard.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Galeria de Temas</h1>
+          <p className="opacity-70 mt-1 text-xs sm:text-base">Personalize o visual e a estrutura do seu dashboard.</p>
         </div>
       </div>
 
@@ -226,15 +244,15 @@ export default function ThemesPage() {
           <div className="flex items-center gap-2">
             <Heart className="text-red-500 fill-red-500" size={24} />
             <div>
-              <h2 className="text-2xl font-bold">Meus Favoritos</h2>
-              <p className="text-sm opacity-60">Seus estilos preferidos salvos.</p>
+              <h2 className="text-xl sm:text-2xl font-bold">Meus Favoritos</h2>
+              <p className="text-xs sm:text-sm opacity-60">Seus estilos preferidos salvos.</p>
             </div>
           </div>
 
           {favSetups.length > 0 && (
             <div className="space-y-3">
-               <h3 className="text-sm font-bold opacity-50 uppercase tracking-wider">Setups Completos</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Setups Completos</h3>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {favSetups.map((setup) => (
                     <SetupCard 
                       key={setup.id} 
@@ -250,8 +268,8 @@ export default function ThemesPage() {
 
           {favThemes.length > 0 && (
             <div className="space-y-3">
-               <h3 className="text-sm font-bold opacity-50 uppercase tracking-wider">Temas de Imersão</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Temas de Imersão</h3>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {favThemes.map((t) => (
                     <ThemeCard 
                       key={t.id} 
@@ -268,8 +286,8 @@ export default function ThemesPage() {
 
           {favPalettes.length > 0 && (
             <div className="space-y-3">
-               <h3 className="text-sm font-bold opacity-50 uppercase tracking-wider">Paletas</h3>
-               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Paletas</h3>
+               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                   {favPalettes.map((p) => (
                     <PaletteCard 
                       key={p.id} 
@@ -291,12 +309,12 @@ export default function ThemesPage() {
         <div className="flex items-center gap-2 pb-2">
           <Layout className="text-primary" size={28}/>
           <div>
-            <h2 className="text-xl font-bold">Setups Completos</h2>
-            <p className="text-sm opacity-60">Layouts prontos + Widgets + Tema (Substitui tudo).</p>
+            <h2 className="text-lg sm:text-xl font-bold">Setups Completos</h2>
+            <p className="text-xs sm:text-sm opacity-60">Layouts prontos + Widgets + Tema.</p>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredSetups.map((setup) => (
             <SetupCard 
               key={setup.id} 
@@ -314,12 +332,12 @@ export default function ThemesPage() {
         <div className="flex items-center gap-2 pb-2">
           <ImageIcon className="text-purple-500" size={28}/>
           <div>
-            <h2 className="text-xl font-bold">Temas de Imersão</h2>
-            <p className="text-sm opacity-60">Altera cores e papel de parede. Mantém seus widgets.</p>
+            <h2 className="text-lg sm:text-xl font-bold">Temas de Imersão</h2>
+            <p className="text-xs sm:text-sm opacity-60">Altera cores e papel de parede.</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredThemes.map((t) => (
             <ThemeCard 
               key={t.id} 
@@ -338,11 +356,11 @@ export default function ThemesPage() {
         <div className="flex items-center gap-2 pb-2">
           <Palette className="text-pink-500" size={28}/>
           <div>
-            <h2 className="text-xl font-bold">Paletas de Cores</h2>
-            <p className="text-sm opacity-60">Troca apenas as cores.</p>
+            <h2 className="text-lg sm:text-xl font-bold">Paletas de Cores</h2>
+            <p className="text-xs sm:text-sm opacity-60">Troca apenas as cores.</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {filteredPalettes.map((p) => (
             <PaletteCard 
               key={p.id} 
@@ -357,12 +375,12 @@ export default function ThemesPage() {
       </section>
 
       {/* SALVAR SETUP ATUAL */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <div className="box-padrao p-3 shadow-2xl bg-background/90 backdrop-blur-md flex items-center gap-2 animate-in slide-in-from-bottom-4">
-           <Save size={20} className="text-primary"/>
-           <div className="flex flex-col md:flex-row gap-2">
-             <input type="text" placeholder="Nome do Setup..." value={newSetupName} onChange={e => setNewSetupName(e.target.value)} className="px-3 py-1.5 rounded-lg bg-black/5 outline-none text-sm w-40 md:w-52" />
-             <button onClick={handleSaveSetup} className="bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-sm font-bold hover:opacity-90">Backup</button>
+      <div className="fixed bottom-6 right-6 z-50 left-6 sm:left-auto sm:w-auto">
+        <div className="box-padrao p-3 shadow-2xl bg-background/90 backdrop-blur-md flex items-center gap-2 animate-in slide-in-from-bottom-4 w-full">
+           <Save size={20} className="text-primary shrink-0"/>
+           <div className="flex flex-row gap-2 w-full">
+             <input type="text" placeholder="Nome do Setup..." value={newSetupName} onChange={e => setNewSetupName(e.target.value)} className="px-3 py-1.5 rounded-lg bg-black/5 outline-none text-xs flex-1 sm:w-52" />
+             <button onClick={handleSaveSetup} className="bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 shrink-0">Backup</button>
            </div>
         </div>
       </div>

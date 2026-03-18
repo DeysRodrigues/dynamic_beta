@@ -37,8 +37,8 @@ export default function TaskItem({
   return (
     <div 
       className={cn(
-        "group relative flex items-center gap-3 p-3 rounded-xl shadow-sm transition-all duration-200",
-        "bg-black/5 border-current/10 hover:bg-black/10"
+        "group relative flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl shadow-sm transition-all duration-200",
+        "bg-black/5 border-current/10 hover:bg-black/10 w-full overflow-hidden"
       )}
     >
       
@@ -59,10 +59,10 @@ export default function TaskItem({
       )}
 
       {/* Info Principal */}
-      <div className="flex-1 min-w-0 flex items-center gap-2">
+      <div className="flex-1 min-w-0 flex items-center gap-1.5 sm:gap-2">
         {task.time && (
           <span className={cn(
-            "text-[10px] font-bold px-1.5 py-0.5 rounded-md border whitespace-nowrap",
+            "text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0",
             task.completed ? "opacity-50 line-through" : "bg-current/10 border-current/10"
           )}>
             {task.time}
@@ -75,14 +75,14 @@ export default function TaskItem({
           onChange={(e) => editable && onChange?.(task.id, "description", e.target.value)}
           readOnly={!editable}
           className={cn(
-            "bg-transparent outline-none w-full text-sm truncate transition-colors cursor-default",
+            "bg-transparent outline-none w-full text-xs sm:text-sm truncate transition-colors cursor-default min-w-0",
             task.completed ? "opacity-50 line-through" : "font-medium",
             editable && "border-b border-current focus:border-primary cursor-text"
           )}
         />
         
         {task.groupTag && (
-           <span className="hidden sm:inline-flex text-[9px] uppercase tracking-wider opacity-60 bg-current/5 px-1.5 py-0.5 rounded border border-current/10 whitespace-nowrap">
+           <span className="hidden md:inline-flex text-[9px] uppercase tracking-wider opacity-60 bg-current/5 px-1.5 py-0.5 rounded border border-current/10 whitespace-nowrap">
              {task.groupTag}
            </span>
         )}
@@ -90,7 +90,7 @@ export default function TaskItem({
 
       {/* Tag Específica */}
       {task.tag && !editable && (
-        <span className="text-[10px] opacity-70 bg-current/5 px-2 py-1 rounded-full border border-current/10 max-w-[80px] truncate hidden sm:block">
+        <span className="text-[9px] sm:text-[10px] opacity-70 bg-current/5 px-2 py-1 rounded-full border border-current/10 max-w-[60px] sm:max-w-[80px] truncate hidden xs:block shrink-0">
           {task.tag}
         </span>
       )}

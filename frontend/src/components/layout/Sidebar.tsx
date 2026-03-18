@@ -471,7 +471,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
 
   const sidebarClasses = isFocusMode
     ? "-translate-x-full w-0 opacity-0 overflow-hidden"
-    : "w-72 md:w-64 translate-x-0 opacity-100";
+    : "-translate-x-full opacity-100";
 
   return (
     <>
@@ -503,8 +503,8 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       <aside
         className={cn(
           "fixed top-0 left-0 h-screen z-50 flex flex-col justify-between py-8 transition-all duration-500 ease-in-out border-r border-white/5 shadow-2xl backdrop-blur-xl bg-background/80",
-          isOpen ? "translate-x-0 w-72" : sidebarClasses,
-          "md:translate-x-0",
+          isOpen ? "translate-x-0 w-64" : sidebarClasses,
+          "md:translate-x-0 md:static",
           isFocusMode
             ? "md:w-0 md:opacity-0 md:overflow-hidden md:py-0 md:border-none"
             : "md:relative md:w-64"

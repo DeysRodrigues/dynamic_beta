@@ -76,20 +76,20 @@ export default function WeekPlannerPage() {
     : [];
 
   return (
-    <div className="space-y-6 pt-28 px-4 relative sm:p-14 max-w-[1600px] mx-auto">
+    <div className="space-y-6 pt-6 px-4 relative sm:p-14 max-w-[1600px] mx-auto">
       {/* --- BARRA PADRONIZADA --- */}
       <div className="bar-padrao">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             <Calendar className="text-primary" /> Planejamento Semanal
           </h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-muted-foreground text-[10px] sm:text-sm mt-1">
             {activeWeek
               ? `Visualizando: ${activeWeek.name} (Grupo: ${activeWeek.mainTag})`
               : "Selecione ou crie um grupo para começar."}
           </p>
         </div>
-        <div className="flex gap-2 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <select
             className="flex-1 md:w-64 px-4 py-2 border rounded-xl bg-black/5 text-sm outline-none focus:ring-2 focus:ring-primary/20"
             value={activeWeekId || ""}
@@ -106,7 +106,7 @@ export default function WeekPlannerPage() {
           </select>
           <button
             onClick={() => setIsCreating(!isCreating)}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition flex items-center gap-2 text-sm font-medium"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2 text-sm font-medium"
           >
             <Plus size={18} /> Novo Grupo
           </button>
@@ -116,7 +116,7 @@ export default function WeekPlannerPage() {
       {isCreating && (
         <div className="box-padrao animate-in slide-in-from-top-4">
           <h3 className="font-semibold mb-4">Criar Novo Grupo Semanal</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <input
               type="text"
               placeholder="Nome"
@@ -142,7 +142,7 @@ export default function WeekPlannerPage() {
                 type="date"
                 value={startData}
                 onChange={(e) => setStartData(e.target.value)}
-                className="px-4 py-2 border rounded-lg"
+                className="px-4 py-2 border rounded-lg w-full"
               />
             </div>
             <div className="flex flex-col">
@@ -151,20 +151,20 @@ export default function WeekPlannerPage() {
                 type="date"
                 value={endData}
                 onChange={(e) => setEndData(e.target.value)}
-                className="px-4 py-2 border rounded-lg"
+                className="px-4 py-2 border rounded-lg w-full"
               />
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-4">
             <button
               onClick={() => setIsCreating(false)}
-              className="px-4 py-2 text-muted-foreground hover:bg-black/5 rounded-lg"
+              className="px-4 py-2 text-muted-foreground hover:bg-black/5 rounded-lg text-sm"
             >
               Cancelar
             </button>
             <button
               onClick={handleCreateWeek}
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+              className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 text-sm font-bold"
             >
               Salvar Semana
             </button>
