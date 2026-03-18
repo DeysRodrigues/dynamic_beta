@@ -59,11 +59,14 @@ export default function NotificationBell() {
       {isOpen &&
         createPortal(
           <div
-            className="fixed w-80 bg-[#1e1e1e] border border-white/10 rounded-xl shadow-2xl p-0 z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-gray-200 font-sans origin-top-left"
-            style={{ top: coords.top, left: coords.left }}
+            className="fixed w-[calc(100vw-32px)] sm:w-80 bg-[#1e1e1e] border border-white/10 rounded-xl shadow-2xl p-0 z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-gray-200 font-sans 
+            top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+            md:top-auto md:left-auto md:translate-x-0 md:translate-y-0 md:origin-top-left"
+            style={window.innerWidth >= 768 ? { top: coords.top, left: coords.left } : {}}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="absolute top-3 -left-1.5 w-3 h-3 bg-[#1e1e1e] border-l border-b border-white/10 rotate-45 transform" />
+            {/* Seta do Popover - Escondida no mobile */}
+            <div className="hidden md:block absolute top-3 -left-1.5 w-3 h-3 bg-[#1e1e1e] border-l border-b border-white/10 rotate-45 transform" />
 
             {/* HEADER DINÂMICO */}
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 relative">

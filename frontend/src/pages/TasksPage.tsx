@@ -56,12 +56,12 @@ export default function TasksPage() {
   });
 
   return (
-    <div className="space-y-6 pt-28 px-4 relative sm:p-14 max-w-5xl mx-auto">
+    <div className="space-y-6 pt-6 px-4 relative sm:p-14 max-w-5xl mx-auto">
       {/* --- BARRA DE FERRAMENTAS PADRONIZADA --- */}
       <div className="bar-padrao sticky top-4">
         <h1 className="font-bold text-xl">Minhas Tarefas</h1>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap justify-end">
           {/* Botão de Filtro (Alterna visualmente se ativo) */}
           <button
             onClick={() =>
@@ -103,7 +103,7 @@ export default function TasksPage() {
             onClick={() => setShowBulkModal(true)}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-full flex gap-2 items-center text-sm hover:opacity-90 transition shadow-sm font-medium"
           >
-            <Plus size={16} /> Várias
+            <Plus size={16} /> <span className="hidden xs:inline">Várias</span>
           </button>
         </div>
       </div>
@@ -145,12 +145,12 @@ export default function TasksPage() {
       />
 
       {/* --- INPUT RÁPIDO (BOX UNIFICADA) --- */}
-      <div className="box-padrao flex-row flex-wrap gap-3 items-center min-h-0">
+      <div className="box-padrao flex-col sm:flex-row flex-wrap gap-3 items-center min-h-0">
         <input
           type="time"
           value={newTime}
           onChange={(e) => setNewTime(e.target.value)}
-          className="px-3 py-2 w-auto"
+          className="px-3 py-2 w-full sm:w-auto"
         />
 
         <input
@@ -159,28 +159,30 @@ export default function TasksPage() {
           value={newDescription}
           onChange={(e) => setNewDescription(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
-          className="flex-1 px-4 py-2 min-w-[200px]"
+          className="flex-1 px-4 py-2 w-full sm:min-w-[200px]"
         />
 
-        <select
-          value={newTag}
-          onChange={(e) => setNewTag(e.target.value)}
-          className="px-3 py-2 w-auto"
-        >
-          <option value="">Tag</option>
-          {tags.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <select
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
+            className="flex-1 px-3 py-2 w-auto"
+          >
+            <option value="">Tag</option>
+            {tags.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
 
-        <button
-          onClick={handleAddTask}
-          className="bg-primary text-primary-foreground p-2 rounded-lg hover:opacity-90 transition shadow-sm"
-        >
-          <Plus size={20} />
-        </button>
+          <button
+            onClick={handleAddTask}
+            className="bg-primary text-primary-foreground p-2 rounded-lg hover:opacity-90 transition shadow-sm shrink-0"
+          >
+            <Plus size={20} />
+          </button>
+        </div>
       </div>
 
       {/* --- LISTA DE TAREFAS --- */}
