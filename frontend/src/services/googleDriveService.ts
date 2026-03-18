@@ -1,8 +1,12 @@
 // src/services/googleDriveService.ts
 
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-// src/services/googleDriveService.ts
 
+if (!CLIENT_ID) {
+  console.error("ERRO CRÍTICO: VITE_GOOGLE_CLIENT_ID não encontrado no arquivo .env");
+}
+
+// src/services/googleDriveService.ts
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 const BACKUP_FILE_NAME = "dynabox_backup_v1.json";
 const STORAGE_TOKEN_KEY = "gdrive_access_token";
@@ -57,31 +61,51 @@ export const initGoogleAuth = (onSuccess: (token?: string) => void) => {
   script.src = "https://accounts.google.com/gsi/client";
   script.async = true;
   script.defer = true;
+  script.onerror = () => {
+    console.error("Erro ao carregar o script do Google GSI");
+    alert("Não foi possível carregar o serviço do Google. Verifique sua conexão.");
+  };
   script.onload = () => {
-   
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: (response: any) => {
-        if (response.access_token) {
-          const token = response.access_token;
-          accessToken = token;
-          // Salva o token (o Google geralmente retorna expires_in = 3599 segundos)
-          saveTokenLocally(token, response.expires_in || 3600);
-          onSuccess(token);
-        } else {
-            console.error("Erro ao obter token:", response);
-        }
-      },
-    });
+    if (!CLIENT_ID) {
+        console.error("CLIENT_ID faltando ao inicializar TokenClient");
+        return;
+    }
+
+    try {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: SCOPES,
+            callback: (response: any) => {
+                if (response.access_token) {
+                    const token = response.access_token;
+                    accessToken = token;
+                    // Salva o token (o Google geralmente retorna expires_in = 3599 segundos)
+                    saveTokenLocally(token, response.expires_in || 3600);
+                    onSuccess(token);
+                } else {
+                    console.error("Erro na resposta do Google:", response);
+                    if (response.error) {
+                        alert(`Erro de Autenticação: ${response.error_description || response.error}`);
+                    }
+                }
+            },
+        });
+        console.log("Google Auth inicializado com sucesso");
+    } catch (err) {
+        console.error("Falha ao inicializar google.accounts.oauth2:", err);
+    }
   };
   document.body.appendChild(script);
 };
 
 export const loginToGoogle = () => {
   if (tokenClient) {
+    console.log("Solicitando acesso ao Google Drive...");
     // Solicita novo token (popup)
     tokenClient.requestAccessToken({ prompt: 'consent' }); 
+  } else {
+    console.error("tokenClient não inicializado. Verifique se o CLIENT_ID é válido.");
+    alert("O serviço do Google ainda não está pronto. Tente novamente em instantes.");
   }
 };
 
