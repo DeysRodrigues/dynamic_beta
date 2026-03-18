@@ -18,8 +18,17 @@ import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
 // 1. Card de Setup Completo
 const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { setup: any; isFavorite: boolean; onInstall: (s: any) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden group flex flex-col min-h-[220px] relative hover:ring-2 ring-primary transition-all">
-    <div className="h-28 w-full relative" style={{ backgroundColor: setup.theme.backgroundColor }}>
-       {setup.theme.customImage && <img src={setup.theme.customImage} alt="bg" className="absolute inset-0 w-full h-full object-cover opacity-50" />}
+    <div className="h-28 w-full relative bg-current/5" style={{ backgroundColor: setup.theme.backgroundColor }}>
+       {setup.theme.customImage && (
+         <img 
+            src={setup.theme.customImage} 
+            alt="" 
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover opacity-50 transition-opacity duration-300" 
+            onLoad={(e) => (e.currentTarget.style.opacity = "0.5")}
+         />
+       )}
        <div className="absolute top-3 left-3 p-2 rounded-xl shadow-lg text-white z-10" style={{ backgroundColor: setup.theme.primaryColor }}>{setup.icon}</div>
        
        {/* Favorite Button */}
@@ -45,8 +54,17 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
 // 2. Card de Tema de Imersão
 const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorite }: { theme: any; isApplied: boolean; isFavorite: boolean; onApply: (t: any) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden flex flex-col min-h-[160px] relative group">
-    <div className={`h-20 w-full relative ${theme.previewColor}`}>
-      {theme.theme.customImage && <img src={theme.theme.customImage} className="w-full h-full object-cover opacity-60" />}
+    <div className={`h-20 w-full relative bg-current/5 ${theme.previewColor}`}>
+      {theme.theme.customImage && (
+        <img 
+          src={theme.theme.customImage} 
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover opacity-60 transition-opacity duration-300" 
+          onLoad={(e) => (e.currentTarget.style.opacity = "0.6")}
+          alt=""
+        />
+      )}
       {theme.theme.wallpaper === 'grid' && <div className="absolute inset-0 opacity-20 bg-[url('https://transparenttextures.com/patterns/graphy.png')]"></div>}
       {theme.theme.wallpaper === 'blueprint' && <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>}
       
