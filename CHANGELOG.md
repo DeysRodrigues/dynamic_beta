@@ -27,10 +27,33 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ---
 
+## [0.9.0] - 2026-03-18
+### Added
+- **Cloud Synchronization:**
+    - **Google Drive Backup:** Integrated Google Drive API to allow users to persist their data in the cloud. Includes automatic token management and one-click backup/restore.
+- **Knowledge Base:**
+    - **Wiki Center:** Launched a comprehensive, tab-based Wiki (`/wiki`) styled with the Dyna aesthetic. Covers advanced commands, IF/THEN logic, and hidden curiosities.
+    - **Institutional Pages:** Added detailed profiles for the creator (**Deys Rodrigues**), license information (MIT), and a future roadmap.
+- **Project Governance:**
+    - **Beta Testing Program:** Formal invitation for community testers and contributors directly within the app.
+
+### Fixed
+- **Mobile Experience:**
+    - **Responsive Layout:** Adjusted `DashboardLayout`, `Home`, and all internal pages to adapt seamlessly to mobile viewports.
+    - **Sidebar Logic:** Fixed the mobile sidebar to correctly hide/show without obstructing content.
+    - **Notifications:** Re-centered and scaled the notification panel for better mobile accessibility.
+- **UI Stability:**
+    - **TaskItem:** Refactored to handle long text with smart truncation and improved flex behavior on narrow screens.
+
+### Performance
+- **Image Handling:** Implemented `loading=\"lazy\"` and `decoding=\"async\"` for the Themes Gallery cards, eliminating UI freezes during preview loads.
+
+---
+
 ## [0.8.0] - 2026-01-15
 ### Added
 - **Content Organization:**
-    - **Favorites System:** Implemented a persistent "Meus Favoritos" section at the top of both Widgets Store and Themes Gallery. Users can toggle a heart icon on any card to pin their preferred tools and styles.
+    - **Favorites System:** Implemented a persistent \"Meus Favoritos\" section at the top of both Widgets Store and Themes Gallery. Users can toggle a heart icon on any card to pin their preferred tools and styles.
     - **Global Search:** Added real-time search bars to the Widgets Store and Themes Gallery, enabling quick filtering of system widgets, custom HTML widgets, setups, palettes, and themes.
 - **Advanced Visual Controls:**
     - **Adjustable Glass Effect:** Introduced a numeric slider in the Settings Drawer to control the intensity of the `backdrop-filter: blur` on widgets (0-20px), replacing the previous binary toggle.
@@ -55,7 +78,7 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 ## [0.7.0] - 2025-12-12
 ### Added
 - **Workspaces Architecture:**
-    - **Multi-Workspaces System:** Introduced the ability to create, rename, and switch between independent dashboard contexts (e.g., "Personal", "Work", "Dev"), each maintaining its own widget layout.
+    - **Multi-Workspaces System:** Introduced the ability to create, rename, and switch between independent dashboard contexts (e.g., \"Personal\", \"Work\", \"Dev\"), each maintaining its own widget layout.
     - **Focus Mode (Zen):** Implemented a distraction-free toggle (shortcut `F`) that collapses the UI chrome (Sidebar/Header) and displays a stabilized **Digital Clock** for deep work sessions.
 - **User Personalization:**
     - **Profile Editor:** Integrated a modal to update the User Name, Title/Subtitle, and Profile Picture (upload) directly from the Sidebar.
@@ -64,8 +87,8 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ### Refactor
 - **Sidebar Overhaul:**
-    - Completely decoupled navigation from configuration. The Sidebar now focuses on routing, while a new "Settings" action triggers the dedicated drawer.
-    - Improved responsive behavior and added a "Live Preview" approach to theming.
+    - Completely decoupled navigation from configuration. The Sidebar now focuses on routing, while a new \"Settings\" action triggers the dedicated drawer.
+    - Improved responsive behavior and added a \"Live Preview\" approach to theming.
 --- 
 
 ## [0.6.0] - 2025-12-11
@@ -95,14 +118,14 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 ---
 ## [0.4.0] - 2025-12-08
 ### Added
-   - Code Snippets Box: Added a new widget to save recurring commands and code snippets (e.g., Git commands), solving the "forgetting" problem.
-   - Quick Links Box: Implemented a tabbed link manager to organize favorites, allowing separation between different contexts (e.g., "Study" vs "Leisure").
+   - Code Snippets Box: Added a new widget to save recurring commands and code snippets (e.g., Git commands), solving the \"forgetting\" problem.
+   - Quick Links Box: Implemented a tabbed link manager to organize favorites, allowing separation between different contexts (e.g., \"Study\" vs \"Leisure\").
    - Enhnced Dark Mode: Improved dark mode compatibility to ensure custom wallpapers (anime backgrounds) remain visible and aesthetically pleasing even when the interface is dark.
 
 ### Performance
 - **Rendering Optimization**:
     - Refactored `ThemesPage` and `WidgetsStorePage` using `React.memo` and `useShallow` selectors. This eliminates mass re-renders when applying themes or interacting with the store.
-    - Switched to imperative state reading (`getState`) for "Save Setup" actions to decouple UI from constant state updates.
+    - Switched to imperative state reading (`getState`) for \"Save Setup\" actions to decouple UI from constant state updates.
 
 ### Refactor
 - **Smart Embed Box**:
@@ -123,7 +146,7 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ### Refactor
 - **Store Architecture:** Rewrote `useDashboardStore` using **Immer** middleware for cleaner immutable state updates.
-- **Atomic Actions:** Implemented atomic operations (e.g., `removeBox`) within the store to update both `boxes` and `layouts` arrays simultaneously. This prevents "zombie child" crashes when modifying the grid while timers are running.
+- **Atomic Actions:** Implemented atomic operations (e.g., `removeBox`) within the store to update both `boxes` and `layouts` arrays simultaneously. This prevents \"zombie child\" crashes when modifying the grid while timers are running.
 - **Sidebar Decoupling:** Refactored `Sidebar` to be autonomous (removed dependency on parent props) and isolated the `SidebarCustomizationPanel` to contain its own state logic.
 - **Code Cleanup:** Replaced verbose `if/else` logic for widget heights with a constant configuration map (`WIDGET_HEIGHTS`).
 

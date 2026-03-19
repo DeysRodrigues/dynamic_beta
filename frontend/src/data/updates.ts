@@ -1,26 +1,26 @@
 export const APP_UPDATES = {
-  version: "0.8.0",
-  date: "15 de Janeiro",
+  version: "0.9.0",
+  date: "18 de Março",
 
   // 1. O Emoji da vez
-  emoji: "💎",
+  emoji: "🚀",
 
   // 2. Título chamativo
-  title: "Glass & Favoritos",
+  title: "Cloud Sync & Nova Wiki",
 
   // 3. O recado principal
   message:
-    "Eai guys, tudo certo? a devinha deixou de preguiça e meteu o louco na atualização.",
+    "E ai guys, finalmente a devinha saiu da caverna e atualizou o dyna!",
 
   // 4. As novidades explicadas de forma leve
   items: [
-    "❤️ Favoritos: Amou um widget ou tema? Clique no coraçãozinho e guarde-os numa seção especial no topo da loja. Seus queridinhos, sempre à vista.",
-    "🔍 Pesquisa Poderosa: Encontre widgets, setups e temas num piscar de olhos com as novas barras de busca.",
-    "💎 Efeito Glass (Controlável): Você pediu, nós fizemos! Ajuste o nível de desfoque (blur) dos widgets com um novo slider nos Ajustes. Do sólido ao vidro jateado, você decide.",
-    "🌫️ Fundo Cinematográfico: Controle o desfoque e o brilho do seu wallpaper separadamente. Destaque seus widgets desfocando o fundo ou ajuste a luminosidade para não cansar a vista.",
-    "🧹 Visual Limpo: Removemos o relógio 'correndo' da home e limpamos o excesso de efeitos nos botões para um visual mais coerente e profissional.",
+    "☁️ Google Drive Sync: Seus dados agora estão nas nuvens! Conecte seu Drive para salvar backups e sincronizar seu dashboard entre diferentes dispositivos.",
+    "📚 Nova Wiki Center: Um guia completo e imersivo com todos os segredos do Dyna, comandos rápidos e curiosidades dos bastidores.",
+    "📱 Responsividade Mobile: O Dyna agora cabe no seu bolso! Ajustamos o layout para que você possa gerenciar suas tarefas e ver seu dashboard perfeitamente no celular.",
+    "⚡ Performance Turbo: Implementamos carregamento inteligente de imagens na galeria de temas para que tudo abra num piscar de olhos.",
+    "🐞 Fix Sidebar: Corrigimos o comportamento da barra lateral no mobile para garantir que ela não cubra seu conteúdo.",
   ],
 
   // 5. Botão final
-  footer: "Experimente o novo visual!",
+  footer: "Bora testar as novidades!",
 };
