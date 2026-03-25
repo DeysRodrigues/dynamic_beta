@@ -1,9 +1,10 @@
 import { Snowflake, Cat, Ghost, Anchor, Leaf, Fish, Sprout, MonitorPlay } from "lucide-react";
+import type { ThemeItem, WallpaperThemeItem, SetupItem } from "@/types/Theme";
 
 // =====================================================================
 // 1. PALETAS DE CORES (Só muda as cores, mantém wallpaper atual)
 // =====================================================================
-export const colorPalettes = [
+export const colorPalettes: ThemeItem[] = [
   {
     id: "palette-default",
     name: "Classic Indigo",
@@ -100,7 +101,7 @@ export const colorPalettes = [
 // =====================================================================
 // 2. TEMAS DE IMERSÃO (Muda Cores + Papel de Parede, mantém Layout)
 // =====================================================================
-export const wallpaperThemes = [
+export const wallpaperThemes: WallpaperThemeItem[] = [
  
 
 // =====================================================================
@@ -415,7 +416,7 @@ export const wallpaperThemes = [
 // =====================================================================
 // 3. SETUPS COMPLETOS (Muda Layout + Cores + Widgets + Conteúdo)
 // =====================================================================
-export const readySetups = [
+export const readySetups: SetupItem[] = [
   {
     id: "setup-nordic",
     name: "Nordic Minimalist",
