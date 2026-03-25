@@ -3,14 +3,11 @@ import { persist } from "zustand/middleware";
 
 interface BoxContentState {
   // Mapa de ID do Box -> Dados (ex: { "notepad-123": { text: "Olá" } })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  contents: Record<string, any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setBoxContent: (boxId: string, data: any) => void;
-  getBoxContent: (boxId: string) => any;
+  contents: Record<string, unknown>;
+  setBoxContent: (boxId: string, data: unknown) => void;
+  getBoxContent: (boxId: string) => unknown;
   // ADICIONADO: Função para carregar todo o conteúdo de uma vez (usado pelos Setups)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  loadAllContents: (contents: Record<string, any>) => void;
+  loadAllContents: (contents: Record<string, unknown>) => void;
 }
 
 export const useBoxContentStore = create<BoxContentState>()(
@@ -19,12 +16,16 @@ export const useBoxContentStore = create<BoxContentState>()(
       contents: {},
       
       setBoxContent: (boxId, data) =>
-        set((state) => ({
-          contents: {
-            ...state.contents,
-            [boxId]: { ...state.contents[boxId], ...data },
-          },
-        })),
+        set((state) => {
+          const current = state.contents[boxId] as Record<string, unknown> || {};
+          const next = typeof data === 'object' && data !== null ? { ...current, ...data } : data;
+          return {
+            contents: {
+              ...state.contents,
+              [boxId]: next,
+            },
+          };
+        }),
         
       getBoxContent: (boxId) => get().contents[boxId] || {},
 
