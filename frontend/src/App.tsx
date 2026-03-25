@@ -7,6 +7,7 @@ import WidgetsStorePage from "./pages/WidgetsStorePage";
 import ThemesPage from "./pages/ThemesPage";
 import LandingPage from "./pages/LandingPage";
 import WikiPage from "./pages/WikiPage";
+import ProjectsPage from "./pages/ProjectsPage";
 
 // Embed Widgets
 import WaterWidget from "./widgets/WaterWidget";
@@ -26,6 +27,7 @@ export default function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/planner" element={<WeekPlannerPage />} />
           <Route path="/store" element={<WidgetsStorePage />} />
           <Route path="/themes" element={<ThemesPage />} />
