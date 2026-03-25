@@ -39,7 +39,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
   // --- FUNÇÃO DE EXPORTAR (BACKUP) ---
   const handleExport = () => {
     try {
-      const backupData: Record<string, any> = {};
+      const backupData: Record<string, unknown> = {};
       
       // 1. Coleta dados do LocalStorage
       APP_KEYS.forEach(key => {
@@ -47,7 +47,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
         if (item) {
           try {
             backupData[key] = JSON.parse(item);
-          } catch (e) {
+          } catch {
             // Se não for JSON (ex: string pura), salva como está
             backupData[key] = item;
           }
