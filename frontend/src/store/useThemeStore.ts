@@ -83,7 +83,7 @@ export const getWallpaperStyle = (type: WallpaperType, customImg?: string | null
   }
 
   // Padrões CSS (Patterns)
-  const patterns: Record<string, any> = {
+  const patterns: Record<string, React.CSSProperties> = {
     dots: { 
       backgroundColor: baseBg, 
       backgroundImage: "radial-gradient(var(--wallpaper-dots-fg) 1.5px, transparent 1.5px)", 
