@@ -28,7 +28,7 @@ export default function PresenceCalendarBox({
   id?: string;
 }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { events?: PresenceEvent[], activeEventId?: string };
 
   const [events, setEvents] = useState<PresenceEvent[]>(saved.events || []);
   // Proteção: garante que se não houver activeEventId, pega o primeiro ou string vazia

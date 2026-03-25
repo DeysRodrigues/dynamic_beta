@@ -6,7 +6,7 @@ interface Goal { id: string; title: string; checks: boolean[]; } // checks[0..30
 
 export default function MonthlyGoalsBox({ id = "goals-default" }: { id?: string }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { goals?: Goal[] };
   const [goals, setGoals] = useState<Goal[]>(saved.goals || []);
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState("");

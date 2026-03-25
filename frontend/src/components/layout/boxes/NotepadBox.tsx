@@ -10,7 +10,7 @@ export default function NotepadBox({ id = "notepad-default" }: NotepadBoxProps) 
   const { getBoxContent, setBoxContent } = useBoxContentStore();
   
   // Carrega texto salvo ou vazio
-  const [text, setText] = useState<string>(getBoxContent(id).text || "");
+  const [text, setText] = useState<string>((getBoxContent(id) as { text?: string }).text || "");
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
   // Salva automaticamente 1 segundo após parar de digitar

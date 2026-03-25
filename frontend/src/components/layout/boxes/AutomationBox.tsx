@@ -81,7 +81,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
   // Importando 'tasks' para usar no cálculo visual da regra de tarefas
   const { tasks, removeTasks, deleteAllTasks } = useTaskStore();
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { rules?: Rule[] };
 
   const [rules, setRules] = useState<Rule[]>(saved.rules || []);
   const [isAdding, setIsAdding] = useState(false);

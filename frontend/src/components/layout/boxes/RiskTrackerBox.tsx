@@ -27,7 +27,7 @@ export default function RiskTrackerBox({
   id?: string;
 }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { items?: RiskItem[] };
 
   const [items, setItems] = useState<RiskItem[]>(saved.items || []);
   const [isAdding, setIsAdding] = useState(false);

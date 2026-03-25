@@ -34,7 +34,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
   const { boxes } = useDashboardStore();
   
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as Partial<RpgData>;
 
   // --- ESTADOS ---
   const [data, setData] = useState<RpgData>({
@@ -62,9 +62,8 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
     const libIds = boxes.filter(bid => bid.startsWith("library"));
     let count = 0;
     libIds.forEach(libId => {
-      const content = getBoxContent(libId);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (content?.books) count += content.books.filter((b: any) => b.completed).length;
+      const content = getBoxContent(libId) as { books?: { completed: boolean }[] };
+      if (content?.books) count += content.books.filter((b: { completed: boolean }) => b.completed).length;
     });
     return count;
   }, [boxes, getBoxContent]);

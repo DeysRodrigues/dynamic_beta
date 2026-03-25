@@ -11,8 +11,7 @@ import { useThemeStore } from "@/store/useThemeStore";
 interface SnippetType {
   id: string;
   label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon?: any;
+  icon?: React.ElementType | null;
   color: string;
   isCustom?: boolean;
 }
@@ -51,7 +50,7 @@ const RANDOM_COLORS = [
 export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string }) {
   const { getBoxContent, setBoxContent } = useBoxContentStore();
   const primaryColor = useThemeStore(s => s.primaryColor);
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { snippets?: Snippet[], customTypes?: SnippetType[] };
 
   // Estados de Dados
   const [snippets, setSnippets] = useState<Snippet[]>(saved.snippets || DEFAULT_SNIPPETS);

@@ -33,7 +33,7 @@ const DEFAULT_DATA: Category[] = [
 export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: string }) {
   const { getBoxContent, setBoxContent } = useBoxContentStore();
   const primaryColor = useThemeStore((s) => s.primaryColor);
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { categories?: Category[], viewMode?: "list" | "grid" };
 
   const [categories, setCategories] = useState<Category[]>(saved.categories || DEFAULT_DATA);
   const [activeTab, setActiveTab] = useState<string>(categories[0]?.id || "");

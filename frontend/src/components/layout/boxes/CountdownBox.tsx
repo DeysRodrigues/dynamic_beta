@@ -9,7 +9,7 @@ interface CountdownBoxProps {
 
 export default function CountdownBox({ id = "countdown-default" }: CountdownBoxProps) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { eventName?: string, targetDate?: string };
 
   const [eventName, setEventName] = useState(saved.eventName || "Próximo Evento");
   // Data padrão: Amanhã no mesmo horário, caso não tenha nada salvo

@@ -33,8 +33,7 @@ interface LibrarySettings {
 }
 
 // --- ÍCONES ---
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ElementType> = {
   book: Book, open: BookOpen, library: Library, school: GraduationCap,
   heart: Heart, star: Star, work: Briefcase, coffee: Coffee,
   music: Music, game: Gamepad2, ghost: Ghost, rocket: Rocket,
@@ -42,7 +41,7 @@ const iconMap: Record<string, any> = {
 
 export default function CozyLibraryBox({ id = "library-default" }: { id?: string }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { categories?: LibraryCategory[], books?: LibraryBook[], settings?: LibrarySettings };
 
   const defaultCategories: LibraryCategory[] = [
     { id: "1", name: "Geral", icon: "library", color: "var(--book-color-1)" }

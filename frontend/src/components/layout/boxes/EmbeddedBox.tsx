@@ -25,7 +25,7 @@ export default function EmbeddedBox({
   id = "embedded-default",
 }: EmbeddedBoxProps) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const savedState = getBoxContent(id);
+  const savedState = getBoxContent(id) as { url?: string, mode?: "video" | "app", isLocked?: boolean, presets?: (Preset | null)[] };
 
   // 1. Inicia VAZIO para não pesar no carregamento
   const [inputUrl, setInputUrl] = useState<string>(savedState.url || "");

@@ -182,7 +182,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
   // Leitura inicial apenas (sem subscrever a updates futuros para evitar loops de render)
   // Como gerenciamos o estado localmente, só precisamos ler uma vez na montagem
   const [trackers, setTrackers] = useState<GoalTracker[]>(() => {
-    return useBoxContentStore.getState().getBoxContent(id).trackers || [];
+    return (useBoxContentStore.getState().getBoxContent(id) as { trackers?: GoalTracker[] }).trackers || [];
   });
 
   const [isAdding, setIsAdding] = useState(false);
@@ -255,7 +255,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
     save(updated);
   };
 
-  const usePreset = (trackerId: string, preset: ActivityPreset) => {
+  const handleUsePreset = (trackerId: string, preset: ActivityPreset) => {
     const updated = trackers.map(t => {
       if (t.id === trackerId) {
         const newLog: ActivityLog = {
@@ -435,7 +435,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
                     <div className="flex flex-wrap gap-1.5 mb-2 animate-in fade-in slide-in-from-left-2">
                       {presets.map(p => (
                         <div key={p.id} className="group/chip relative">
-                          <button onClick={() => usePreset(tracker.id, p)} className="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/30 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 text-[9px] px-2 py-1 rounded-full transition text-yellow-800 dark:text-yellow-400 font-medium active:scale-95">
+                          <button onClick={() => handleUsePreset(tracker.id, p)} className="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/30 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 text-[9px] px-2 py-1 rounded-full transition text-yellow-800 dark:text-yellow-400 font-medium active:scale-95">
                             <Zap size={10} className="fill-yellow-500 text-yellow-500"/>{p.name} <span className="opacity-60">+{p.value}</span>
                           </button>
                           <button onClick={(e) => deletePreset(e, tracker.id, p.id)} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover/chip:opacity-100 transition scale-75 hover:scale-100 shadow-sm"><X size={8}/></button>

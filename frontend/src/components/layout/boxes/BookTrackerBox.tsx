@@ -21,7 +21,7 @@ interface TrackerSettings {
 export default function BookTrackerBox({ id = "books-default" }: { id?: string }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
   const { boxes } = useDashboardStore();
-  const saved = getBoxContent(id);
+  const saved = getBoxContent(id) as { books?: BookItem[], settings?: TrackerSettings };
   
   const [books, setBooks] = useState<BookItem[]>(saved.books || []);
   const [settings, setSettings] = useState<TrackerSettings>(saved.settings || { pageStep: 10 });
@@ -74,10 +74,9 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
 
   const availableImports = useMemo(() => {
     const libraryIds = boxes.filter(boxId => boxId.startsWith("library"));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let allBooksFromLibraries: any[] = [];
+    let allBooksFromLibraries: { title: string }[] = [];
     libraryIds.forEach(libId => {
-      const content = getBoxContent(libId);
+      const content = getBoxContent(libId) as { books?: { title: string }[] };
       if (content && content.books) {
         allBooksFromLibraries = [...allBooksFromLibraries, ...content.books];
       }
