@@ -12,7 +12,31 @@ const BACKUP_FILE_NAME = "dynabox_backup_v1.json";
 const STORAGE_TOKEN_KEY = "gdrive_access_token";
 const STORAGE_EXPIRY_KEY = "gdrive_token_expiry";
 
-let tokenClient: any;
+interface GoogleTokenResponse {
+    access_token: string;
+    expires_in?: number;
+    error?: string;
+    error_description?: string;
+}
+
+interface GoogleTokenClient {
+    requestAccessToken: (options?: { prompt?: string }) => void;
+}
+
+declare const google: {
+    accounts: {
+        oauth2: {
+            initTokenClient: (config: {
+                client_id: string;
+                scope: string;
+                callback: (response: GoogleTokenResponse) => void;
+            }) => GoogleTokenClient;
+            revoke: (token: string, callback: () => void) => void;
+        };
+    };
+};
+
+let tokenClient: GoogleTokenClient | null = null;
 let accessToken: string | null = null;
 
 // --- GERENCIAMENTO DE TOKEN LOCAL ---
@@ -75,7 +99,7 @@ export const initGoogleAuth = (onSuccess: (token?: string) => void) => {
         tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
             scope: SCOPES,
-            callback: (response: any) => {
+            callback: (response: GoogleTokenResponse) => {
                 if (response.access_token) {
                     const token = response.access_token;
                     accessToken = token;
@@ -112,8 +136,8 @@ export const loginToGoogle = () => {
 export const logoutGoogle = () => {
   clearTokenLocally();
   // Revoga permissão no Google (Opcional, mas recomendado para logout real)
-  if (accessToken && (window as any).google) {
-    (window as any).google.accounts.oauth2.revoke(accessToken, () => {
+  if (accessToken && typeof (window as unknown as { google: typeof google }).google !== 'undefined') {
+    (window as unknown as { google: typeof google }).google.accounts.oauth2.revoke(accessToken, () => {
       console.log('Permissão revogada');
     });
   }
@@ -151,11 +175,11 @@ export const findBackupFile = async () => {
   const query = `name = '${BACKUP_FILE_NAME}' and trashed = false`;
   const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id, name, modifiedTime)`;
   const res = await fetchWithAuth(url);
-  const data = await res.json();
+  const data = (await res.json()) as { files?: { id: string; name: string; modifiedTime: string }[] };
   return data.files && data.files.length > 0 ? data.files[0] : null;
 };
 
-export const saveBackupToDrive = async (jsonData: any) => {
+export const saveBackupToDrive = async (jsonData: unknown) => {
   const fileContent = new Blob([JSON.stringify(jsonData)], { type: "application/json" });
   const existingFile = await findBackupFile();
 
