@@ -20,10 +20,26 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ---
 
-## [1.0.0] - Unreleased
-### Planned
-- Complete implementation of user authentication and Firestore persistence.
-- Custom notification sounds and settings integration.
+## [0.10.0] - 2026-03-25
+### Added
+- **Projects System:**
+    - **Centralized Management:** New `/projects` page to manage long-term goals and daily routines.
+    - **Project-Specific Dashboard:** Ability to toggle between standard workspaces and project-focused layouts.
+    - **New Project Widget:** `ProjectOverviewBox` for the dashboard, providing quick access to goals and routines.
+    - **Smart Modal:** Advanced `ProjectModal` with dynamic widget selection and automated form reset logic.
+- **Internal Notifications:**
+    - Updated `updates.ts` with a new announcement system for version 0.10.
+
+### Fixed
+- **Stability:** Resolved `ReferenceError` during `ProjectModal` initialization by reordering function declarations.
+- **UI Consistency:** 
+    - Fixed label visibility in forms for themes with white/light text.
+    - Resolved "flickering" issues in dashboard widgets by standardizing `.box-padrao` usage.
+- **Typing:** Extensive TypeScript refactor across all widgets and stores to eliminate `any` and improve data integrity.
+
+### Refactor
+- **Theme Coherence:** Updated `ProjectsPage`, `TasksPage`, and `ThemesPage` to use the standardized dynamic background ambient effects.
+- **Sidebar:** Integrated Project navigation and improved cloud sync status indicators.
 
 ---
 
