@@ -8,5 +8,5 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
-declare const google: any;
-declare const gapi: any;
+declare const google: unknown;
+declare const gapi: unknown;
