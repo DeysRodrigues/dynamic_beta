@@ -36,43 +36,45 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
         setShowEditModal(true);
     };
 
-    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && inputValue.trim()) {
-            try {
-                const data = parseTextToTaskData(inputValue);
+    const addTaskFromInput = () => {
+        if (!inputValue.trim()) return;
+        try {
+            const data = parseTextToTaskData(inputValue);
 
-                // --- LÓGICA DE INSERÇÃO INTELIGENTE ---
-                // Se a tarefa não tiver a tag "sapo" em lugar nenhum, nós forçamos a entrada dela.
-                let finalTag = data.tag;
-                let finalGroupTag = data.groupTag;
+            // --- LÓGICA DE INSERÇÃO INTELIGENTE ---
+            let finalTag = data.tag;
+            let finalGroupTag = data.groupTag;
 
-                const tagIsSapo = finalTag?.toLowerCase() === "sapo";
-                const groupIsSapo = finalGroupTag?.toLowerCase() === "sapo";
+            const tagIsSapo = finalTag?.toLowerCase() === "sapo";
+            const groupIsSapo = finalGroupTag?.toLowerCase() === "sapo";
 
-                if (!tagIsSapo && !groupIsSapo) {
-                    // Se o usuário não definiu tag nenhuma, vira [sapo]
-                    if (!finalTag) {
-                        finalTag = "sapo";
-                    }
-                    // Se já tem uma tag (ex: [matemática]), usamos a groupTag para {sapo}
-                    else {
-                        finalGroupTag = "sapo";
-                    }
+            if (!tagIsSapo && !groupIsSapo) {
+                if (!finalTag) {
+                    finalTag = "sapo";
                 }
-
-                const newTask = createTask(
-                    data.description,
-                    data.time,
-                    finalTag || "sapo",
-                    data.duration,
-                    finalGroupTag
-                );
-
-                addTask(newTask);
-                setInputValue("");
-            } catch (error) {
-                console.error("Erro ao criar sapo:", error);
+                else {
+                    finalGroupTag = "sapo";
+                }
             }
+
+            const newTask = createTask(
+                data.description,
+                data.time,
+                finalTag || "sapo",
+                data.duration,
+                finalGroupTag
+            );
+
+            addTask(newTask);
+            setInputValue("");
+        } catch (error) {
+            console.error("Erro ao criar sapo:", error);
+        }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            addTaskFromInput();
         }
     };
 
@@ -157,7 +159,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                     className="w-full bg-background/50 border border-border/60 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground/50 transition-all"
                 />
                 <button
-                    onClick={() => handleKeyDown({ key: 'Enter' } as any)}
+                    onClick={addTaskFromInput}
                     className="absolute right-1.5 top-1.5 p-1 hover:bg-primary/10 rounded-md transition-colors text-primary/70 hover:text-primary"
                 >
                     <Plus size={16} />
