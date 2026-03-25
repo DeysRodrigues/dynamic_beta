@@ -39,9 +39,10 @@ export const useCloudSync = () => {
       setSyncStatus("Salvo com sucesso!");
       setLastSync(getLastSyncTime()); 
       setTimeout(() => setSyncStatus("Conectado"), 3000);
-    } catch (error: any) {
-      console.error(error);
-      if (error.message === "SESSAO_EXPIRADA") {
+    } catch (error) {
+      const err = error as Error;
+      console.error(err);
+      if (err.message === "SESSAO_EXPIRADA") {
         setSyncStatus("Sessão expirada");
         setIsGoogleConnected(false); // Força reconexão
       } else {
@@ -66,8 +67,9 @@ export const useCloudSync = () => {
         alert("Backup restaurado! A página será recarregada.");
         window.location.reload(); 
       }
-    } catch (error: any) {
-      if (error.message === "SESSAO_EXPIRADA") {
+    } catch (error) {
+      const err = error as Error;
+      if (err.message === "SESSAO_EXPIRADA") {
         setSyncStatus("Sessão expirada");
         setIsGoogleConnected(false);
       } else {
