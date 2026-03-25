@@ -21,6 +21,7 @@ import {
   ArrowRight,
   GripVertical,
   Trash2,
+  Target,
 } from "lucide-react";
 import React, {
   useState,
@@ -29,11 +30,12 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { Responsive, WidthProvider } from "react-grid-layout";
+import { Responsive, WidthProvider, type Layouts } from "react-grid-layout";
 import { useShallow } from "zustand/react/shallow";
 import { useNavigate } from "react-router-dom";
 
 import { useDashboardStore } from "@/store/useDashboardStore";
+import { useProjectStore } from "@/store/useProjectStore";
 import { useUserStore } from "@/store/useUserStore";
 import { getFormattedCurrentDate } from "@/utils/DateUtils";
 import { cn } from "@/lib/utils";
@@ -67,6 +69,7 @@ const CountdownBox = React.lazy(() => import("./boxes/CountdownBox"));
 const CodeSnippetBox = React.lazy(() => import("./boxes/CodeSnippetBox"));
 const QuickLinksBox = React.lazy(() => import("./boxes/QuickLinksBox"));
 const ThreeFrogsBox = React.lazy(() => import("./boxes/ThreeFrogsBox"));
+const ProjectOverviewBox = React.lazy(() => import("./boxes/ProjectOverviewBox"));
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -101,6 +104,8 @@ const WorkspaceTabs = React.memo(() => {
     }))
   );
 
+  const { projects, activeProjectId, setActiveProject } = useProjectStore();
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
 
@@ -124,10 +129,20 @@ const WorkspaceTabs = React.memo(() => {
     [editName, renameWorkspace]
   );
 
+  const handleSelectWorkspace = (id: string) => {
+    setActiveProject(null);
+    setActiveWorkspace(id);
+  };
+
+  const handleSelectProject = (id: string) => {
+    setActiveProject(id);
+  };
+
   return (
     <div className="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1 mask-gradient-right">
+      {/* Workspaces Normais */}
       {workspaces.map((w) => {
-        const isActive = activeWorkspaceId === w.id;
+        const isActive = activeWorkspaceId === w.id && !activeProjectId;
         const isEditing = editingId === w.id;
 
         if (isEditing) {
@@ -151,7 +166,7 @@ const WorkspaceTabs = React.memo(() => {
         return (
           <div key={w.id} className="group relative flex items-center">
             <button
-              onClick={() => setActiveWorkspace(w.id)}
+              onClick={() => handleSelectWorkspace(w.id)}
               onDoubleClick={() => startRename(w.id, w.name)}
               className={cn(
                 "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 select-none whitespace-nowrap",
@@ -183,6 +198,27 @@ const WorkspaceTabs = React.memo(() => {
         );
       })}
 
+      {/* Projetos Ativos */}
+      {projects.filter(p => p.status === 'active').map((p) => {
+        const isActive = activeProjectId === p.id;
+        return (
+          <div key={p.id} className="group relative flex items-center">
+            <button
+              onClick={() => handleSelectProject(p.id)}
+              className={cn(
+                "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 select-none whitespace-nowrap border border-current/10",
+                isActive
+                  ? "bg-primary/20 border-primary shadow-sm opacity-100"
+                  : "opacity-60 hover:opacity-100 hover:bg-current/5"
+              )}
+            >
+              <Target size={14} className={cn(isActive ? "text-primary" : "opacity-40")} />
+              {p.name}
+            </button>
+          </div>
+        );
+      })}
+
       <button
         onClick={handleAdd}
         className="p-2 rounded-xl opacity-40 hover:opacity-100 hover:bg-current/10 transition-all"
@@ -195,13 +231,22 @@ const WorkspaceTabs = React.memo(() => {
 });
 
 // --- HEADER PRINCIPAL ---
+interface DashboardHeaderProps {
+  onSave: () => void;
+  onSetups?: () => void;
+  onReset?: () => void;
+  editMode: boolean;
+  toggleEditMode: () => void;
+  onAddWidget: (type: string) => void;
+}
+
 const DashboardHeader = React.memo(
   ({
     onSave,
     editMode,
     toggleEditMode,
     onAddWidget,
-  }: any) => {
+  }: DashboardHeaderProps) => {
     const [showAddMenu, setShowAddMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
@@ -468,9 +513,31 @@ export default function Dashboard() {
   const activeWorkspaceId = useDashboardStore(
     (state) => state.activeWorkspaceId
   );
-  const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
+  
+  const { projects, activeProjectId, updateProjectLayout, addBoxToProject, removeBoxFromProject } = useProjectStore();
 
-  const { setLayouts, resetDashboard, addBox, removeBox } = useDashboardStore(
+  const addBox = (type: string) => {
+    if (activeProjectId) {
+      addBoxToProject(activeProjectId, type);
+    } else {
+      addBoxWs(type);
+    }
+  };
+
+  const removeBox = (id: string) => {
+    if (activeProjectId) {
+      removeBoxFromProject(activeProjectId, id);
+    } else {
+      removeBoxWs(id);
+    }
+  };
+  
+  const activeProject = projects.find(p => p.id === activeProjectId);
+  const activeWorkspace = activeProject 
+    ? { id: activeProject.id, name: activeProject.name, layouts: activeProject.layouts, boxes: activeProject.boxes }
+    : workspaces.find((w) => w.id === activeWorkspaceId);
+
+  const { setLayouts, resetDashboard, addBox: addBoxWs, removeBox: removeBoxWs } = useDashboardStore(
     useShallow((state) => ({
       setLayouts: state.setLayouts,
       resetDashboard: state.resetDashboard,
@@ -489,6 +556,14 @@ export default function Dashboard() {
       resetDashboard();
   }, [resetDashboard]);
   const handleToggleEdit = useCallback(() => setEditMode((p) => !p), []);
+
+  const handleLayoutChange = (_layout: unknown, allLayouts: Layouts) => {
+    if (activeProjectId) {
+      updateProjectLayout(activeProjectId, allLayouts);
+    } else {
+      setLayouts(allLayouts);
+    }
+  };
 
   const renderBox = (id: string) => {
     const type = id.split("-")[0];
@@ -541,6 +616,8 @@ export default function Dashboard() {
         return <ActivityGoalsBox id={id} />;
       case "three_frogs":
         return <ThreeFrogsBox id={id} />;
+      case "project_overview":
+        return <ProjectOverviewBox projectId={activeProjectId!} />;
       default:
         return null;
     }
@@ -574,7 +651,7 @@ export default function Dashboard() {
       />
 
       <ResponsiveGridLayout
-        key={activeWorkspaceId}
+        key={activeProject ? activeProject.id : activeWorkspaceId}
         className="layout"
         layouts={activeWorkspace.layouts}
         breakpoints={{ lg: 1024, md: 768, sm: 480, xs: 0 }}
@@ -583,7 +660,7 @@ export default function Dashboard() {
         isDraggable={editMode}
         isResizable={editMode}
         draggableHandle=".drag-handle"
-        onLayoutChange={(_layout, allLayouts) => setLayouts(allLayouts)}
+        onLayoutChange={handleLayoutChange}
         draggableCancel=".no-drag"
         margin={[12, 12]}
         containerPadding={[0, 0]}
