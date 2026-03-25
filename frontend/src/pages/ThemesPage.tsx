@@ -13,10 +13,11 @@ import { useFavoriteStore } from "@/store/useFavoriteStore";
 
 import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
 import ShinyText from "@/components/landing/ShinyText";
+import type { ThemeItem, WallpaperThemeItem, SetupItem } from "@/types/Theme";
 
 // --- COMPONENTES MEMOIZADOS ---
 
-const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { setup: any; isFavorite: boolean; onInstall: (s: any) => void; onToggleFavorite: (id: string) => void }) => (
+const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { setup: SetupItem; isFavorite: boolean; onInstall: (s: SetupItem) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden group flex flex-col min-h-[220px] relative hover:ring-2 ring-primary transition-all">
     <div className="h-28 w-full relative bg-current/5" style={{ backgroundColor: setup.theme.backgroundColor }}>
        {setup.theme.customImage && (
@@ -49,7 +50,7 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
   </div>
 ));
 
-const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorite }: { theme: any; isApplied: boolean; isFavorite: boolean; onApply: (t: any) => void; onToggleFavorite: (id: string) => void }) => (
+const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorite }: { theme: WallpaperThemeItem; isApplied: boolean; isFavorite: boolean; onApply: (t: WallpaperThemeItem) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden flex flex-col min-h-[160px] relative group">
     <div className={`h-20 w-full relative bg-current/5 ${theme.previewColor}`}>
       {theme.theme.customImage && (
@@ -84,7 +85,7 @@ const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorit
   </div>
 ));
 
-const PaletteCard = memo(({ palette, isApplied, isFavorite, onApply, onToggleFavorite }: { palette: any; isApplied: boolean; isFavorite: boolean; onApply: (p: any) => void; onToggleFavorite: (id: string) => void }) => (
+const PaletteCard = memo(({ palette, isApplied, isFavorite, onApply, onToggleFavorite }: { palette: ThemeItem; isApplied: boolean; isFavorite: boolean; onApply: (p: ThemeItem) => void; onToggleFavorite: (id: string) => void }) => (
   <div 
     className="box-padrao p-3 flex flex-col items-center justify-center text-center gap-2 transition-colors cursor-pointer relative group" 
     onClick={() => onApply(palette)}
@@ -178,16 +179,16 @@ export default function ThemesPage() {
     alert(`Setup "${newSetupName}" salvo com sucesso!`);
   }, [newSetupName, boxes, layouts, contents, saveTemplate]);
 
-  const handleLoadSetup = useCallback((template: any) => {
+  const handleLoadSetup = useCallback((template: SetupItem) => {
     if (confirm(`Atenção: Instalar "${template.name}" irá substituir todos os seus widgets atuais. Continuar?`)) {
       loadDashboardState(template.boxes, template.layouts);
       if (template.theme) applyPreset(template.theme);
-      if (template.content) loadAllContents(template.content);
+      if (template.content) loadAllContents(template.content as Record<string, unknown>);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [loadDashboardState, applyPreset, loadAllContents]);
 
-  const handleApplyTheme = useCallback((themeItem: any) => {
+  const handleApplyTheme = useCallback((themeItem: WallpaperThemeItem | ThemeItem) => {
     applyPreset(themeItem.theme);
     setApplied(themeItem.id);
     setTimeout(() => setApplied(null), 1500);
@@ -261,7 +262,7 @@ export default function ThemesPage() {
               <div className="space-y-4">
                  <h3 className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Setups Completos</h3>
                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {favSetups.map((setup) => (
+                    {(favSetups as SetupItem[]).map((setup) => (
                       <SetupCard key={setup.id} setup={setup} isFavorite={true} onToggleFavorite={toggleThemeFavorite} onInstall={handleLoadSetup} />
                     ))}
                  </div>
@@ -299,7 +300,7 @@ export default function ThemesPage() {
             <h2 className="text-2xl font-black tracking-tight">Setups Completos</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredSetups.map((setup) => (
+            {(filteredSetups as SetupItem[]).map((setup) => (
               <SetupCard key={setup.id} setup={setup} isFavorite={favoriteThemes.includes(setup.id)} onToggleFavorite={toggleThemeFavorite} onInstall={handleLoadSetup} />
             ))}
           </div>
