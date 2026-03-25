@@ -2,7 +2,6 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
 import {
-  Undo2,
   Lock,
   Unlock,
   FileText,
@@ -13,7 +12,6 @@ import {
   Loader2,
   Plus,
   X,
-  CalendarDays,
   Moon,
   Sun,
   Eye,
@@ -21,6 +19,8 @@ import {
   Layout,
   ShoppingBag,
   ArrowRight,
+  GripVertical,
+  Trash2,
 } from "lucide-react";
 import React, {
   useState,
@@ -37,6 +37,7 @@ import { useDashboardStore } from "@/store/useDashboardStore";
 import { useUserStore } from "@/store/useUserStore";
 import { getFormattedCurrentDate } from "@/utils/DateUtils";
 import { cn } from "@/lib/utils";
+import ShinyText from "@/components/landing/ShinyText";
 
 import LayoutManagerModal from "./modals/LayoutManagerModal";
 import RiskTrackerBox from "./boxes/RiskTrackerBox";
@@ -169,7 +170,10 @@ const WorkspaceTabs = React.memo(() => {
                   e.stopPropagation();
                   if (confirm("Excluir este workspace?")) removeWorkspace(w.id);
                 }}
-                className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all scale-75 hover:scale-100 shadow-sm z-10"
+                className={cn(
+                  "absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 transition-all shadow-sm z-10",
+                  "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 scale-90 sm:scale-75 sm:hover:scale-100"
+                )}
                 title="Excluir Workspace"
               >
                 <X size={10} strokeWidth={3} />
@@ -194,7 +198,6 @@ const WorkspaceTabs = React.memo(() => {
 const DashboardHeader = React.memo(
   ({
     onSave,
-    onReset,
     editMode,
     toggleEditMode,
     onAddWidget,
@@ -281,105 +284,92 @@ const DashboardHeader = React.memo(
 
     return (
       <div
-        className={`flex flex-col gap-4 mb-6 transition-all duration-500 relative z-50 ${isFocusMode ? "opacity-30 hover:opacity-100" : ""
+        className={`flex flex-col gap-4 mb-8 transition-all duration-500 relative z-50 ${isFocusMode ? "opacity-30 hover:opacity-100" : ""
           }`}
         style={{ color: "var(--box-text-color)" }}
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Row 1: Greeting & Controls */}
+        <div className="flex items-center justify-between gap-2">
           {isFocusMode ? (
-            <div className="flex items-center gap-4">
-              <button
-                onClick={toggleFocusMode}
-                className="bg-amber-500/20 text-amber-500 p-2 rounded-xl flex items-center gap-2 text-xs font-bold animate-pulse hover:bg-amber-500 hover:text-white transition"
-              >
-                <EyeOff size={16} /> SAIR DO FOCO
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 sm:gap-3 animate-in slide-in-from-left-2 duration-300">
-              <div className="relative shrink-0">
-                <img
-                  src={
-                    avatar ||
-                    "https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
-                  }
-                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl object-cover shadow-sm"
-                  alt="Avatar"
-                />
-                <div className="absolute -bottom-1 -right-1 bg-background p-0.5 rounded-full scale-75 sm:scale-100">
-                  {greeting.icon}
-                </div>
-              </div>
-              <div className="min-w-0">
-                <h1 className="text-lg sm:text-xl font-bold leading-tight truncate">
-                  {greeting.text},{" "}
-                  <span className="opacity-80">{name.split(" ")[0]}</span>
-                </h1>
-                <div className="text-[10px] sm:text-xs opacity-50 font-medium flex items-center gap-2 mt-0.5 sm:mt-1">
-                  <span className="flex items-center gap-1">
-                    <CalendarDays size={10} /> {getFormattedCurrentDate()}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div
-            className={`flex-1 w-full md:w-auto md:flex md:justify-center overflow-hidden transition-all duration-500 ${isFocusMode ? "opacity-0 pointer-events-none" : "opacity-100"
-              }`}
-          >
-            <WorkspaceTabs />
-          </div>
-
-          <div className="flex items-center gap-1 sm:gap-2 bg-current/5 p-1 rounded-xl self-end md:self-auto shadow-sm">
             <button
               onClick={toggleFocusMode}
-              className={`p-2 rounded-lg transition-all duration-200 ${isFocusMode
-                ? "bg-primary text-primary-foreground"
-                : "opacity-50 hover:opacity-100 hover:bg-current/10"
-                }`}
-              title="Modo Foco (F)"
+              className="bg-amber-500/20 text-amber-500 p-2.5 rounded-xl flex items-center gap-2 text-xs font-black animate-pulse hover:bg-amber-500 hover:text-white transition shadow-lg shadow-amber-500/10 uppercase tracking-tighter"
             >
-              {isFocusMode ? <EyeOff size={16} /> : <Eye size={16} />}
+              <EyeOff size={16} /> SAIR DO FOCO
             </button>
+          ) : (
+            <>
+              {/* Avatar & Greeting */}
+              <div className="flex items-center gap-3 sm:gap-4 animate-in slide-in-from-left-2 duration-300 min-w-0">
+                <div className="relative shrink-0 ml-14 md:ml-0 group cursor-pointer" onClick={() => navigate("/wiki")}>
+                  <img
+                    src={
+                      avatar ||
+                      "https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg"
+                    }
+                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl object-cover shadow-xl border-2 border-current/10 group-hover:border-primary transition-all duration-500"
+                    alt="Avatar"
+                  />
+                  <div className="absolute -bottom-1 -right-1 bg-background p-1 rounded-full shadow-md">
+                    {greeting.icon}
+                  </div>
+                </div>
+                <div className="min-w-0 hidden xs:block">
+                  <div className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 mb-0.5">
+                    Dashboard • {getFormattedCurrentDate()}
+                  </div>
+                  <h1 className="text-base sm:text-xl font-black leading-tight truncate tracking-tight">
+                    {greeting.text},{" "}
+                    <ShinyText text={name.split(" ")[0]} disabled={false} speed={3} className="text-primary" />
+                  </h1>
+                </div>
+              </div>
 
-            {!isFocusMode && (
-              <>
+              {/* Controls Group */}
+              <div className="flex items-center gap-1.5 p-1.5 rounded-2xl backdrop-blur-md border transition-colors duration-500"
+                   style={{ 
+                      backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
+                      borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
+                   }}>
+                <button
+                  onClick={toggleFocusMode}
+                  className={cn(
+                    "p-2.5 rounded-xl transition-all",
+                    isFocusMode ? "bg-primary text-primary-foreground shadow-lg" : "opacity-40 hover:opacity-100 hover:bg-current/10"
+                  )}
+                  title="Modo Foco (F)"
+                >
+                  {isFocusMode ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+
                 <button
                   onClick={toggleEditMode}
                   className={cn(
-                    "p-2 rounded-lg transition-all duration-200",
+                    "p-2.5 rounded-xl transition-all",
                     editMode
-                      ? "bg-amber-500/10 text-amber-500 shadow-sm"
-                      : "opacity-50 hover:opacity-100 hover:bg-current/10"
+                      ? "bg-amber-500/20 text-amber-600 shadow-inner ring-1 ring-amber-500/30"
+                      : "opacity-40 hover:opacity-100 hover:bg-current/10"
                   )}
                   title="Editar Layout"
                 >
-                  {editMode ? <Unlock size={16} /> : <Lock size={16} />}
+                  {editMode ? <Unlock size={18} /> : <Lock size={18} />}
                 </button>
 
-                <button
-                  onClick={onReset}
-                  className="p-2 rounded-lg opacity-50 hover:opacity-100 hover:bg-current/5 transition-all"
-                  title="Resetar"
-                >
-                  <Undo2 size={16} />
-                </button>
-
-                <div className="w-px h-4 bg-current/10 mx-1"></div>
+                <div className="w-px h-5 mx-1 opacity-10" style={{ backgroundColor: 'var(--box-text-color)' }}></div>
 
                 <div className="relative" ref={menuRef}>
                   <button
                     onClick={() => setShowAddMenu(!showAddMenu)}
-                    className="flex items-center gap-2 bg-current/10 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-current/20 transition active:scale-95 shadow-sm"
+                    className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter hover:scale-105 active:scale-95 transition-all shadow-lg"
                   >
-                    <Plus size={14} />{" "}
-                    <span className="hidden sm:inline">Widget</span>
+                    <Plus size={16} strokeWidth={3} />{" "}
+                    <span className="hidden sm:inline">Adicionar</span>
                   </button>
+                  
+                  {/* ... resto do dropdown ... */}
 
                   {/* MENU DROPDOWN "VIDRO" */}
                   {showAddMenu && (
-                    // Z-INDEX ALTO (z-50) para ficar acima dos widgets
                     <div
                       className="absolute top-full right-0 mt-2 w-64 rounded-xl shadow-2xl p-2 z-[999] animate-in fade-in zoom-in-95 origin-top-right overflow-hidden ring-1 ring-black/5"
                       style={{
@@ -430,7 +420,6 @@ const DashboardHeader = React.memo(
 
                       <div className="border-t border-current/10 my-2"></div>
 
-                      {/* Botão da Loja */}
                       <button
                         onClick={handleNavigate("/store")}
                         className="w-full py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg flex items-center justify-center gap-2 text-xs font-bold transition-all mb-2 shadow-sm"
@@ -456,10 +445,17 @@ const DashboardHeader = React.memo(
                     </div>
                   )}
                 </div>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
+
+        {/* Row 2: Tabs (Centered on desktop, scrollable on mobile) */}
+        {!isFocusMode && (
+          <div className="w-full flex justify-center animate-in slide-in-from-bottom-2 duration-500">
+            <WorkspaceTabs />
+          </div>
+        )}
       </div>
     );
   }
@@ -586,6 +582,7 @@ export default function Dashboard() {
         rowHeight={100}
         isDraggable={editMode}
         isResizable={editMode}
+        draggableHandle=".drag-handle"
         onLayoutChange={(_layout, allLayouts) => setLayouts(allLayouts)}
         draggableCancel=".no-drag"
         margin={[12, 12]}
@@ -598,28 +595,41 @@ export default function Dashboard() {
           return (
             <div
               key={boxId}
-              className={`h-full w-full transition-all duration-300 relative group rounded-2xl ${editMode
-                ? "bg-amber-500/10 cursor-grab active:cursor-grabbing shadow-lg z-10"
-                : ""
-                }`}
+              className={cn(
+                "h-full w-full transition-all duration-300 relative group rounded-2xl overflow-hidden",
+                editMode && "ring-2 ring-amber-500/50 shadow-xl z-10 bg-current/5"
+              )}
             >
               {editMode && (
-                <div className="absolute -top-3 -right-3 z-50 animate-in zoom-in duration-200">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (confirm("Remover este widget deste workspace?"))
-                        removeBox(boxId);
-                    }}
-                    className="bg-destructive text-destructive-foreground p-1.5 rounded-full shadow-md hover:scale-110 transition-all cursor-pointer"
-                  >
-                    <X size={16} strokeWidth={3} />
-                  </button>
+                <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between p-2 bg-amber-500/20 backdrop-blur-md border-b border-amber-500/20 animate-in slide-in-from-top duration-200">
+                  <div className="drag-handle cursor-grab active:cursor-grabbing p-1.5 hover:bg-amber-500/30 rounded-lg transition-colors">
+                    <GripVertical size={18} className="text-amber-600" />
+                  </div>
+                  
+                  <div className="flex items-center gap-1">
+                    <span className="text-[10px] font-bold text-amber-600 uppercase tracking-tighter hidden sm:inline px-2">
+                      {boxId.split("-")[0]}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm("Remover este widget deste workspace?"))
+                          removeBox(boxId);
+                      }}
+                      className="bg-destructive/10 hover:bg-destructive text-destructive hover:text-white p-1.5 rounded-lg transition-all cursor-pointer no-drag"
+                      title="Remover Widget"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
               )}
+              
               <div
-                className={`w-full h-full overflow-hidden rounded-2xl ${editMode ? "pointer-events-none select-none opacity-80" : ""
-                  }`}
+                className={cn(
+                  "w-full h-full overflow-hidden rounded-2xl",
+                  editMode && "pointer-events-none select-none opacity-40 pt-10"
+                )}
               >
                 <Suspense fallback={<BoxLoader />}>{component}</Suspense>
               </div>
