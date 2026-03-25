@@ -13,7 +13,7 @@ const EXTRA_KEYS = [
 ];
 
 export const gatherAllData = () => {
-  const bundle: Record<string, any> = {};
+  const bundle: Record<string, unknown> = {};
 
   // 1. Pega as chaves padronizadas (do constants/storageKeys)
   Object.values(STORAGE_KEYS).forEach((key) => {
@@ -21,7 +21,7 @@ export const gatherAllData = () => {
     if (data) {
       try {
         bundle[key] = JSON.parse(data);
-      } catch (e) {
+      } catch {
         bundle[key] = data; // Salva como string se falhar o parse
       }
     }
@@ -33,7 +33,7 @@ export const gatherAllData = () => {
     if (data) {
       try {
         bundle[key] = JSON.parse(data);
-      } catch (e) {
+      } catch {
         bundle[key] = data;
       }
     }
@@ -49,13 +49,13 @@ export const gatherAllData = () => {
   };
 };
 
-export const restoreAllData = (backupJson: any) => {
+export const restoreAllData = (backupJson: { data?: Record<string, unknown>; metadata?: { lastSync?: number } }) => {
   if (!backupJson || !backupJson.data) return false;
 
   try {
     // Restaura cada chave no LocalStorage
     Object.keys(backupJson.data).forEach((key) => {
-      const value = backupJson.data[key];
+      const value = backupJson.data![key];
       // Garante que seja string para o Zustand ler corretamente
       const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
       localStorage.setItem(key, stringValue);
@@ -87,7 +87,7 @@ export const getLastSyncTime = (): string => {
       hour: '2-digit', 
       minute: '2-digit' 
     });
-  } catch (e) {
+  } catch {
     return "";
   }
 };
