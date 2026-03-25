@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import ProjectModal from "@/components/layout/modals/ProjectModal";
 import type { Project } from "@/types/Project";
 import ShinyText from "@/components/landing/ShinyText";
-import { cn } from "@/lib/utils";
 
 export default function ProjectsPage() {
   const { projects, deleteProject, setActiveProject } = useProjectStore();
