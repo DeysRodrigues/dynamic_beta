@@ -100,7 +100,14 @@ const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
   } = useCloudSync();
 
   // Componente de Cor Compacto (Input na Esquerda para não cortar)
-  const ColorPicker = ({ label, value, onChange, icon: Icon }: any) => (
+  interface ColorPickerProps {
+    label: string;
+    value: string;
+    onChange: (val: string) => void;
+    icon: React.ElementType;
+  }
+
+  const ColorPicker = ({ label, value, onChange, icon: Icon }: ColorPickerProps) => (
     <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition group/picker">
       {/* 1. Cor (Input) */}
       <div
