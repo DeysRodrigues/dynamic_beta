@@ -1,7 +1,7 @@
 import { useState, useCallback, memo } from "react";
 import { 
   CheckCircle2, Layout, 
-  Save, Download, Palette, Image as ImageIcon, Search, Heart 
+  Save, Download, Palette, Image as ImageIcon, Search, Heart, Sparkles 
 } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -12,10 +12,10 @@ import { useBoxContentStore } from "@/store/useBoxContentStore";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
 
 import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
+import ShinyText from "@/components/landing/ShinyText";
 
-// --- COMPONENTES MEMOIZADOS (Evitam Re-renders em massa) ---
+// --- COMPONENTES MEMOIZADOS ---
 
-// 1. Card de Setup Completo
 const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { setup: any; isFavorite: boolean; onInstall: (s: any) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden group flex flex-col min-h-[220px] relative hover:ring-2 ring-primary transition-all">
     <div className="h-28 w-full relative bg-current/5" style={{ backgroundColor: setup.theme.backgroundColor }}>
@@ -26,12 +26,10 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
             loading="lazy"
             decoding="async"
             className="absolute inset-0 w-full h-full object-cover opacity-50 transition-opacity duration-300" 
-            onLoad={(e) => (e.currentTarget.style.opacity = "0.5")}
          />
        )}
        <div className="absolute top-3 left-3 p-2 rounded-xl shadow-lg text-white z-10" style={{ backgroundColor: setup.theme.primaryColor }}>{setup.icon}</div>
        
-       {/* Favorite Button */}
        <button 
           onClick={(e) => { e.stopPropagation(); onToggleFavorite(setup.id); }}
           className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-sm transition-all hover:bg-black/10 z-20 ${isFavorite ? "text-red-500 scale-110 bg-white/20" : "text-white/70 hover:text-white"}`}
@@ -51,7 +49,6 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
   </div>
 ));
 
-// 2. Card de Tema de Imersão
 const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorite }: { theme: any; isApplied: boolean; isFavorite: boolean; onApply: (t: any) => void; onToggleFavorite: (id: string) => void }) => (
   <div className="box-padrao p-0 overflow-hidden flex flex-col min-h-[160px] relative group">
     <div className={`h-20 w-full relative bg-current/5 ${theme.previewColor}`}>
@@ -61,14 +58,9 @@ const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorit
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover opacity-60 transition-opacity duration-300" 
-          onLoad={(e) => (e.currentTarget.style.opacity = "0.6")}
           alt=""
         />
       )}
-      {theme.theme.wallpaper === 'grid' && <div className="absolute inset-0 opacity-20 bg-[url('https://transparenttextures.com/patterns/graphy.png')]"></div>}
-      {theme.theme.wallpaper === 'blueprint' && <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"></div>}
-      
-      {/* Favorite Button */}
       <button 
           onClick={(e) => { e.stopPropagation(); onToggleFavorite(theme.id); }}
           className={`absolute top-2 right-2 p-1.5 rounded-full backdrop-blur-sm transition-all hover:bg-black/10 z-20 ${isFavorite ? "text-red-500 scale-110 bg-white/20" : "text-white/70 hover:text-white opacity-0 group-hover:opacity-100"}`}
@@ -92,7 +84,6 @@ const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorit
   </div>
 ));
 
-// 3. Card de Paleta de Cores
 const PaletteCard = memo(({ palette, isApplied, isFavorite, onApply, onToggleFavorite }: { palette: any; isApplied: boolean; isFavorite: boolean; onApply: (p: any) => void; onToggleFavorite: (id: string) => void }) => (
   <div 
     className="box-padrao p-3 flex flex-col items-center justify-center text-center gap-2 transition-colors cursor-pointer relative group" 
@@ -120,7 +111,6 @@ const PaletteCard = memo(({ palette, isApplied, isFavorite, onApply, onToggleFav
 // --- PÁGINA PRINCIPAL ---
 
 export default function ThemesPage() {
-  // 1. OTIMIZAÇÃO: Seletores Shallow e Ações Estáveis
   const { boxes, layouts, loadDashboardState } = useDashboardStore(
     useShallow(state => ({ 
       boxes: state.boxes, 
@@ -165,17 +155,13 @@ export default function ThemesPage() {
     p.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // --- LÓGICA DE FAVORITOS ---
   const favSetups = filteredSetups.filter(s => favoriteThemes.includes(s.id));
   const favThemes = filteredThemes.filter(t => favoriteThemes.includes(t.id));
   const favPalettes = filteredPalettes.filter(p => favoriteThemes.includes(p.id));
   const hasFavorites = favSetups.length > 0 || favThemes.length > 0 || favPalettes.length > 0;
 
-  // 2. OTIMIZAÇÃO: Acesso direto ao State para salvar (sem re-render ao mudar tema)
   const handleSaveSetup = useCallback(() => {
     if (!newSetupName.trim()) return alert("Dê um nome para o seu setup!");
-    
-    // Pega o estado ATUAL do tema diretamente, sem causar re-render no componente
     const currentThemeState = useThemeStore.getState();
     const currentTheme = {
       wallpaper: currentThemeState.wallpaper, 
@@ -187,7 +173,6 @@ export default function ThemesPage() {
       textColor: currentThemeState.textColor, 
       backgroundColor: currentThemeState.backgroundColor
     };
-
     saveTemplate(newSetupName, boxes, layouts, currentTheme, contents);
     setNewSetupName("");
     alert(`Setup "${newSetupName}" salvo com sucesso!`);
@@ -209,179 +194,154 @@ export default function ThemesPage() {
   }, [applyPreset]);
 
   return (
-    <div 
-      className="p-4 sm:p-6 max-w-7xl mx-auto space-y-10 sm:space-y-16 animate-in fade-in duration-500 pb-24"
-      style={{ color: 'var(--box-text-color)' }}
-    >
-      
-      <div className="bar-padrao">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Galeria de Temas</h1>
-          <p className="opacity-70 mt-1 text-xs sm:text-base">Personalize o visual e a estrutura do seu dashboard.</p>
-        </div>
+    <div className="min-h-screen relative overflow-hidden flex flex-col items-center bg-transparent">
+       {/* Background Ambient */}
+       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div 
+          className="absolute top-[10%] right-[-5%] w-[45%] h-[45%] rounded-full blur-[120px] opacity-10" 
+          style={{ backgroundColor: 'var(--primary)' }}
+        />
+        <div 
+          className="absolute bottom-[-5%] left-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] animate-pulse opacity-10"
+          style={{ backgroundColor: 'var(--primary)' }}
+        />
       </div>
 
-      {/* SEARCH BAR */}
-      <div className="bar-padrao">
-        <div className="relative w-full">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Pesquisar setups, temas ou paletas..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2"
-          />
-        </div>
-      </div>
-
-      {/* SEÇÃO DE FAVORITOS */}
-      {hasFavorites && (
-        <section className="space-y-6 pb-8">
-          <div className="flex items-center gap-2">
-            <Heart className="text-red-500 fill-red-500" size={24} />
-            <div>
-              <h2 className="text-xl sm:text-2xl font-bold">Meus Favoritos</h2>
-              <p className="text-xs sm:text-sm opacity-60">Seus estilos preferidos salvos.</p>
-            </div>
-          </div>
-
-          {favSetups.length > 0 && (
-            <div className="space-y-3">
-               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Setups Completos</h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {favSetups.map((setup) => (
-                    <SetupCard 
-                      key={setup.id} 
-                      setup={setup} 
-                      isFavorite={true}
-                      onToggleFavorite={toggleThemeFavorite}
-                      onInstall={handleLoadSetup} 
-                    />
-                  ))}
-               </div>
-            </div>
-          )}
-
-          {favThemes.length > 0 && (
-            <div className="space-y-3">
-               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Temas de Imersão</h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {favThemes.map((t) => (
-                    <ThemeCard 
-                      key={t.id} 
-                      theme={t} 
-                      isApplied={applied === t.id}
-                      isFavorite={true}
-                      onToggleFavorite={toggleThemeFavorite}
-                      onApply={handleApplyTheme} 
-                    />
-                  ))}
-               </div>
-            </div>
-          )}
-
-          {favPalettes.length > 0 && (
-            <div className="space-y-3">
-               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Paletas</h3>
-               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                  {favPalettes.map((p) => (
-                    <PaletteCard 
-                      key={p.id} 
-                      palette={p} 
-                      isApplied={applied === p.id}
-                      isFavorite={true}
-                      onToggleFavorite={toggleThemeFavorite}
-                      onApply={handleApplyTheme} 
-                    />
-                  ))}
-               </div>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* 1. SETUPS COMPLETOS */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-2 pb-2">
-          <Layout className="text-primary" size={28}/>
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold">Setups Completos</h2>
-            <p className="text-xs sm:text-sm opacity-60">Layouts prontos + Widgets + Tema.</p>
-          </div>
-        </div>
+      <div className="w-full max-w-7xl space-y-12 pt-10 pb-32 px-4 relative z-10" style={{ color: 'var(--box-text-color)' }}>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredSetups.map((setup) => (
-            <SetupCard 
-              key={setup.id} 
-              setup={setup} 
-              isFavorite={favoriteThemes.includes(setup.id)}
-              onToggleFavorite={toggleThemeFavorite}
-              onInstall={handleLoadSetup} 
-            />
-          ))}
-        </div>
-      </section>
+        {/* --- HEADER --- */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border shrink-0 transition-colors duration-500"
+                 style={{ 
+                    backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)',
+                    borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
+                    color: 'var(--primary)'
+                 }}>
+               <Palette size={28} />
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-widest mb-1 flex items-center gap-2 opacity-60"
+                   style={{ color: 'var(--primary)' }}>
+                 <Sparkles size={10} /> Customização
+              </div>
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                  <ShinyText text="Galeria de Temas" disabled={false} speed={3} />
+              </h1>
+            </div>
+          </div>
 
-      {/* 2. TEMAS DE IMERSÃO */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-2 pb-2">
-          <ImageIcon className="text-purple-500" size={28}/>
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold">Temas de Imersão</h2>
-            <p className="text-xs sm:text-sm opacity-60">Altera cores e papel de parede.</p>
+          <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm border transition-colors duration-500 w-full md:w-auto"
+               style={{ 
+                  backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
+               }}>
+            <div className="relative w-full md:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 opacity-30" size={18} />
+              <input
+                type="text"
+                placeholder="Pesquisar estilos..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-sm bg-transparent border-none outline-none font-medium"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredThemes.map((t) => (
-            <ThemeCard 
-              key={t.id} 
-              theme={t} 
-              isApplied={applied === t.id}
-              isFavorite={favoriteThemes.includes(t.id)}
-              onToggleFavorite={toggleThemeFavorite}
-              onApply={handleApplyTheme} 
-            />
-          ))}
-        </div>
-      </section>
+        {/* SEÇÃO DE FAVORITOS */}
+        {hasFavorites && (
+          <section className="space-y-6 pb-8 border-b border-current/5">
+            <div className="flex items-center gap-3">
+              <Heart className="text-red-500 fill-red-500" size={24} />
+              <h2 className="text-2xl font-black tracking-tight">Meus Favoritos</h2>
+            </div>
 
-      {/* 3. PALETAS DE CORES */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-2 pb-2">
-          <Palette className="text-pink-500" size={28}/>
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold">Paletas de Cores</h2>
-            <p className="text-xs sm:text-sm opacity-60">Troca apenas as cores.</p>
+            {favSetups.length > 0 && (
+              <div className="space-y-4">
+                 <h3 className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Setups Completos</h3>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {favSetups.map((setup) => (
+                      <SetupCard key={setup.id} setup={setup} isFavorite={true} onToggleFavorite={toggleThemeFavorite} onInstall={handleLoadSetup} />
+                    ))}
+                 </div>
+              </div>
+            )}
+
+            {favThemes.length > 0 && (
+              <div className="space-y-4">
+                 <h3 className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Temas de Imersão</h3>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {favThemes.map((t) => (
+                      <ThemeCard key={t.id} theme={t} isApplied={applied === t.id} isFavorite={true} onToggleFavorite={toggleThemeFavorite} onApply={handleApplyTheme} />
+                    ))}
+                 </div>
+              </div>
+            )}
+
+            {favPalettes.length > 0 && (
+              <div className="space-y-4">
+                 <h3 className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Paletas</h3>
+                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                    {favPalettes.map((p) => (
+                      <PaletteCard key={p.id} palette={p} isApplied={applied === p.id} isFavorite={true} onToggleFavorite={toggleThemeFavorite} onApply={handleApplyTheme} />
+                    ))}
+                 </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* 1. SETUPS COMPLETOS */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <Layout className="text-primary" size={24}/>
+            <h2 className="text-2xl font-black tracking-tight">Setups Completos</h2>
           </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {filteredPalettes.map((p) => (
-            <PaletteCard 
-              key={p.id} 
-              palette={p} 
-              isApplied={applied === p.id}
-              isFavorite={favoriteThemes.includes(p.id)}
-              onToggleFavorite={toggleThemeFavorite}
-              onApply={handleApplyTheme} 
-            />
-          ))}
-        </div>
-      </section>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredSetups.map((setup) => (
+              <SetupCard key={setup.id} setup={setup} isFavorite={favoriteThemes.includes(setup.id)} onToggleFavorite={toggleThemeFavorite} onInstall={handleLoadSetup} />
+            ))}
+          </div>
+        </section>
 
-      {/* SALVAR SETUP ATUAL */}
-      <div className="fixed bottom-6 right-6 z-50 left-6 sm:left-auto sm:w-auto">
-        <div className="box-padrao p-3 shadow-2xl bg-background/90 backdrop-blur-md flex items-center gap-2 animate-in slide-in-from-bottom-4 w-full">
-           <Save size={20} className="text-primary shrink-0"/>
-           <div className="flex flex-row gap-2 w-full">
-             <input type="text" placeholder="Nome do Setup..." value={newSetupName} onChange={e => setNewSetupName(e.target.value)} className="px-3 py-1.5 rounded-lg bg-black/5 outline-none text-xs flex-1 sm:w-52" />
-             <button onClick={handleSaveSetup} className="bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 shrink-0">Backup</button>
-           </div>
+        {/* 2. TEMAS DE IMERSÃO */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <ImageIcon className="text-purple-500" size={24}/>
+            <h2 className="text-2xl font-black tracking-tight">Temas de Imersão</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredThemes.map((t) => (
+              <ThemeCard key={t.id} theme={t} isApplied={applied === t.id} isFavorite={favoriteThemes.includes(t.id)} onToggleFavorite={toggleThemeFavorite} onApply={handleApplyTheme} />
+            ))}
+          </div>
+        </section>
+
+        {/* 3. PALETAS DE CORES */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3">
+            <Palette className="text-pink-500" size={24}/>
+            <h2 className="text-2xl font-black tracking-tight">Paletas de Cores</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {filteredPalettes.map((p) => (
+              <PaletteCard key={p.id} palette={p} isApplied={applied === p.id} isFavorite={favoriteThemes.includes(p.id)} onToggleFavorite={toggleThemeFavorite} onApply={handleApplyTheme} />
+            ))}
+          </div>
+        </section>
+
+        {/* SALVAR SETUP ATUAL */}
+        <div className="fixed bottom-6 right-6 z-50 left-6 sm:left-auto sm:w-auto">
+          <div className="bar-padrao shadow-2xl p-4 flex items-center gap-3 animate-in slide-in-from-bottom-6 duration-500 ring-1 ring-primary/20">
+             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <Save size={20}/>
+             </div>
+             <div className="flex flex-row gap-2 w-full">
+               <input type="text" placeholder="Nome do Backup..." value={newSetupName} onChange={e => setNewSetupName(e.target.value)} className="px-4 py-2 rounded-xl bg-current/5 outline-none text-xs font-bold flex-1 sm:w-52" />
+               <button onClick={handleSaveSetup} className="bg-primary text-primary-foreground px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg">Salvar</button>
+             </div>
+          </div>
         </div>
       </div>
     </div>

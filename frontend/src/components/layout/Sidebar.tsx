@@ -168,9 +168,9 @@ const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
           </h2>
           <button
             onClick={onClose}
-            className="hover:bg-white/10 p-1.5 rounded-lg transition"
+            className="hover:bg-white/10 p-3 rounded-lg transition"
           >
-            <X size={16} />
+            <X size={20} />
           </button>
         </div>
 
@@ -459,9 +459,9 @@ const ProfileEditModal = ({ onClose }: { onClose: () => void }) => {
       <div className="bg-[#18181b] border border-white/10 p-6 rounded-2xl w-full max-w-sm shadow-2xl relative text-white">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white/50 hover:text-white"
+          className="absolute top-2 right-2 p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-xl transition-all"
         >
-          <X size={20} />
+          <X size={24} />
         </button>
         <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
           <User size={20} /> Editar Perfil

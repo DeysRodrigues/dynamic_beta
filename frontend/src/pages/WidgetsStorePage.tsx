@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useMemo } from "react";
 import {
   Plus,
   CheckCircle2,
@@ -7,20 +7,21 @@ import {
   Code,
   Search,
   Heart,
+  ShoppingBag,
+  Sparkles,
 } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
-
 import WidgetEditorModal from "@/components/layout/modals/WidgetEditorModal";
 import {
   useCustomWidgetStore,
   type CustomWidget,
 } from "@/store/useCustomWidgetStore";
 import { useDashboardStore } from "@/store/useDashboardStore";
-
 import { nativeWidgets, embedWidgets } from "@/data/widgetItems";
+import ShinyText from "@/components/landing/ShinyText";
 
-// --- COMPONENTES MEMOIZADOS (Previnem re-render da lista inteira) ---
+// --- COMPONENTES MEMOIZADOS ---
 
 interface StoreItemProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -127,283 +128,301 @@ const CustomStoreItem = memo(
   }
 );
 
-// --- PÁGINA PRINCIPAL ---
-
 export default function WidgetsStorePage() {
-  // 1. OTIMIZAÇÃO: Seletores granulares com useShallow
-  const addBox = useDashboardStore((state) => state.addBox);
-  const { widgets: customWidgets, deleteWidget } = useCustomWidgetStore(
-    useShallow((state) => ({
-      widgets: state.widgets,
-      deleteWidget: state.deleteWidget,
-    }))
-  );
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [added, setAdded] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingWidget, setEditingWidget] = useState<CustomWidget | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { favoriteWidgets, toggleWidgetFavorite } = useFavoriteStore(
-    useShallow(state => ({
+    useShallow((state) => ({
       favoriteWidgets: state.favoriteWidgets,
-      toggleWidgetFavorite: state.toggleWidgetFavorite
+      toggleWidgetFavorite: state.toggleWidgetFavorite,
     }))
   );
 
-  const filteredNative = nativeWidgets.filter((w) =>
-    w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    w.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const { customWidgets, deleteCustomWidget } = useCustomWidgetStore(
+    useShallow((state) => ({
+      customWidgets: state.widgets,
+      deleteCustomWidget: state.deleteWidget,
+    }))
   );
 
-  const filteredEmbed = embedWidgets.filter((w) =>
-    w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    w.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const addBox = useDashboardStore((state) => state.addBox);
 
-  const filteredCustom = customWidgets.filter((w) =>
-    w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    w.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // --- LÓGICA DE FAVORITOS ---
-  const favNative = filteredNative.filter(w => favoriteWidgets.includes(w.id));
-  const favEmbed = filteredEmbed.filter(w => favoriteWidgets.includes(w.id));
-  const favCustom = filteredCustom.filter(w => favoriteWidgets.includes(w.id));
-  const hasFavorites = favNative.length > 0 || favEmbed.length > 0 || favCustom.length > 0;
-
-  // 2. OTIMIZAÇÃO: Callbacks estáveis para não quebrar o React.memo dos filhos
-  const handleAddNative = useCallback(
-    (id: string) => {
-      addBox(id);
-      setAdded(id);
-      setTimeout(() => setAdded(null), 1500);
-    },
-    [addBox]
-  );
+  const handleAddNative = useCallback((id: string) => {
+    addBox(id);
+    setAdded(id);
+    setTimeout(() => setAdded(null), 2000);
+  }, [addBox]);
 
   const handleCopyEmbed = useCallback((id: string, path?: string) => {
     if (!path) return;
-    const fullUrl = `${window.location.origin}${path}`;
-    navigator.clipboard.writeText(fullUrl);
+    const url = `${window.location.origin}${path}`;
+    navigator.clipboard.writeText(url);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   }, []);
 
   const handleCopyCustom = useCallback((id: string) => {
-    const fullUrl = `${window.location.origin}/w/custom/${id}`;
-    navigator.clipboard.writeText(fullUrl);
+    const url = `${window.location.origin}/w/custom/${id}`;
+    navigator.clipboard.writeText(url);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   }, []);
 
-  const handleDeleteCustom = useCallback(
-    (id: string) => {
-      if (confirm("Apagar widget?")) deleteWidget(id);
-    },
-    [deleteWidget]
-  );
-
-  const openCreator = useCallback(() => {
+  const openCreator = () => {
     setEditingWidget(null);
-    setIsEditorOpen(true);
-  }, []);
+    setIsModalOpen(true);
+  };
 
-  const openEditor = useCallback((w: CustomWidget) => {
-    setEditingWidget(w);
-    setIsEditorOpen(true);
-  }, []);
+  const openEditor = (widget: CustomWidget) => {
+    setEditingWidget(widget);
+    setIsModalOpen(true);
+  };
+
+  const filteredNative = useMemo(() => 
+    nativeWidgets.filter(w => 
+      w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      w.description.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [searchQuery]);
+
+  const filteredEmbed = useMemo(() => 
+    embedWidgets.filter(w => 
+      w.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      w.description.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [searchQuery]);
+
+  const filteredCustom = useMemo(() => 
+    customWidgets.filter(w => 
+      w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      w.description.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [customWidgets, searchQuery]);
+
+  const favNative = useMemo(() => nativeWidgets.filter(w => favoriteWidgets.includes(w.id)), [favoriteWidgets]);
+  const favEmbed = useMemo(() => embedWidgets.filter(w => favoriteWidgets.includes(w.id)), [favoriteWidgets]);
+  const favCustom = useMemo(() => customWidgets.filter(w => favoriteWidgets.includes(w.id)), [customWidgets, favoriteWidgets]);
+
+  const hasFavorites = favNative.length > 0 || favEmbed.length > 0 || favCustom.length > 0;
 
   return (
-    <div
-      className="p-4 sm:p-6 max-w-7xl mx-auto space-y-10 sm:space-y-12 animate-in fade-in duration-500 pb-20"
-      style={{ color: "var(--box-text-color)" }}
-    >
-      <WidgetEditorModal
-        isOpen={isEditorOpen}
-        onClose={() => setIsEditorOpen(false)}
-        widgetToEdit={editingWidget}
-      />
-
-      <div className="bar-padrao flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Loja de Widgets</h1>
-          <p className="opacity-70 mt-1 text-xs sm:text-sm">
-            Adicione funcionalidades ao seu dashboard.
-          </p>
-        </div>
-        <button
-          onClick={openCreator}
-          className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-5 py-3 rounded-xl hover:opacity-90 transition shadow-lg font-bold text-sm w-full sm:w-auto"
-        >
-          <Code size={20} /> Criar HTML
-        </button>
+    <div className="min-h-screen relative overflow-hidden flex flex-col items-center bg-transparent">
+       {/* Background Ambient */}
+       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div 
+          className="absolute top-[15%] left-[-5%] w-[45%] h-[45%] rounded-full blur-[120px] opacity-10" 
+          style={{ backgroundColor: 'var(--primary)' }}
+        />
+        <div 
+          className="absolute bottom-[5%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] animate-pulse opacity-10"
+          style={{ backgroundColor: 'var(--primary)' }}
+        />
       </div>
 
-      {/* SEARCH BAR */}
-      <div className="bar-padrao">
-        <div className="relative w-full">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Pesquisar widgets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2"
-          />
-        </div>
-      </div>
-
-      {/* SEÇÃO DE FAVORITOS */}
-      {hasFavorites && (
-        <section className="space-y-6 pb-8">
-          <div className="flex items-center gap-2">
-            <Heart className="text-red-500 fill-red-500" size={24} />
+      <div className="w-full max-w-7xl space-y-12 pt-10 pb-32 px-4 relative z-10" style={{ color: 'var(--box-text-color)' }}>
+        
+        {/* --- HEADER --- */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border shrink-0 transition-colors duration-500"
+                 style={{ 
+                    backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)',
+                    borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
+                    color: 'var(--primary)'
+                 }}>
+               <ShoppingBag size={28} />
+            </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold">Meus Favoritos</h2>
-              <p className="text-xs sm:text-sm opacity-60">Seus widgets preferidos em um só lugar.</p>
+              <div className="text-[10px] font-bold uppercase tracking-widest mb-1 flex items-center gap-2 opacity-60"
+                   style={{ color: 'var(--primary)' }}>
+                 <Sparkles size={10} /> Marketplace
+              </div>
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                  <ShinyText text="Loja de Widgets" disabled={false} speed={3} />
+              </h1>
             </div>
           </div>
 
-          {favNative.length > 0 && (
-            <div className="space-y-3">
-               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Nativos</h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {favNative.map((w) => (
-                  <StoreItem
-                    key={w.id}
-                    item={w}
-                    type="native"
-                    isActive={added === w.id}
-                    isFavorite={true}
-                    onAction={handleAddNative}
-                    onToggleFavorite={toggleWidgetFavorite}
-                  />
-                ))}
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm border transition-colors duration-500 flex-1 md:flex-none"
+                 style={{ 
+                    backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
+                    borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
+                 }}>
+              <div className="relative w-full md:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 opacity-30" size={18} />
+                <input
+                  type="text"
+                  placeholder="Pesquisar widgets..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 text-sm bg-transparent border-none outline-none font-medium"
+                />
               </div>
             </div>
-          )}
 
-          {favEmbed.length > 0 && (
-            <div className="space-y-3">
-               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Embeds</h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {favEmbed.map((w) => (
-                  <StoreItem
-                    key={w.id}
-                    item={w}
-                    type="embed"
-                    isActive={copied === w.id}
-                    isFavorite={true}
-                    onAction={handleCopyEmbed}
-                    onToggleFavorite={toggleWidgetFavorite}
-                  />
-                ))}
+            <button
+              onClick={openCreator}
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg w-full sm:w-auto"
+            >
+              <Code size={18} strokeWidth={3} /> Criar HTML
+            </button>
+          </div>
+        </div>
+
+        {/* SEÇÃO DE FAVORITOS */}
+        {hasFavorites && (
+          <section className="space-y-6 pb-8">
+            <div className="flex items-center gap-2">
+              <Heart className="text-red-500 fill-red-500" size={24} />
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold">Meus Favoritos</h2>
+                <p className="text-xs sm:text-sm opacity-60">Seus widgets preferidos em um só lugar.</p>
               </div>
             </div>
-          )}
 
-          {favCustom.length > 0 && (
-            <div className="space-y-3">
-               <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Customizados</h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {favCustom.map((w) => (
-                  <CustomStoreItem
-                    key={w.id}
-                    widget={w}
-                    isCopied={copied === w.id}
-                    isFavorite={true}
-                    onCopy={handleCopyCustom}
-                    onEdit={openEditor}
-                    onDelete={handleDeleteCustom}
-                    onToggleFavorite={toggleWidgetFavorite}
-                  />
-                ))}
+            {favNative.length > 0 && (
+              <div className="space-y-3">
+                 <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Nativos</h3>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {favNative.map((w) => (
+                    <StoreItem
+                      key={w.id}
+                      item={w}
+                      type="native"
+                      isActive={added === w.id}
+                      isFavorite={true}
+                      onAction={handleAddNative}
+                      onToggleFavorite={toggleWidgetFavorite}
+                    />
+                  ))}
+                </div>
               </div>
+            )}
+
+            {favEmbed.length > 0 && (
+              <div className="space-y-3">
+                 <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Embeds</h3>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {favEmbed.map((w) => (
+                    <StoreItem
+                      key={w.id}
+                      item={w}
+                      type="embed"
+                      isActive={copied === w.id}
+                      isFavorite={true}
+                      onAction={handleCopyEmbed}
+                      onToggleFavorite={toggleWidgetFavorite}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {favCustom.length > 0 && (
+              <div className="space-y-3">
+                 <h3 className="text-[10px] sm:text-sm font-bold opacity-50 uppercase tracking-wider">Customizados</h3>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {favCustom.map((w) => (
+                    <CustomStoreItem
+                      key={w.id}
+                      widget={w}
+                      isCopied={copied === w.id}
+                      isFavorite={true}
+                      onCopy={handleCopyCustom}
+                      onEdit={openEditor}
+                      onDelete={deleteCustomWidget}
+                      onToggleFavorite={toggleWidgetFavorite}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* 1. WIDGETS NATIVOS */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2 pb-2">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold">Nativos do Sistema</h2>
+              <p className="text-xs sm:text-sm opacity-60">
+                Widgets integrados que você pode adicionar diretamente.
+              </p>
             </div>
-          )}
-        </section>
-      )}
-
-      {/* 1. WIDGETS NATIVOS */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-2 pb-2">
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold">Nativos do Sistema</h2>
-            <p className="text-xs sm:text-sm opacity-60">
-              Widgets integrados que você pode adicionar diretamente.
-            </p>
           </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredNative.map((w) => (
-            <StoreItem
-              key={w.id}
-              item={w}
-              type="native"
-              isActive={added === w.id}
-              isFavorite={favoriteWidgets.includes(w.id)}
-              onAction={handleAddNative}
-              onToggleFavorite={toggleWidgetFavorite}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* 2. EMBED WIDGETS */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-2 pb-2">
-          <AppWindow className="text-purple-500" size={24} />
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold">Embeds Especiais</h2>
-            <p className="text-xs sm:text-sm opacity-60">
-              Copie o link e cole dentro de um widget "Smart Embed".
-            </p>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredEmbed.map((w) => (
-            <StoreItem
-              key={w.id}
-              item={w}
-              type="embed"
-              isActive={copied === w.id}
-              isFavorite={favoriteWidgets.includes(w.id)}
-              onAction={handleCopyEmbed}
-              onToggleFavorite={toggleWidgetFavorite}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* 3. WIDGETS CUSTOMIZADOS */}
-      {customWidgets.length > 0 && (
-        <section className="space-y-4 pt-8">
-          <div className="flex items-center gap-2">
-            <Code className="text-amber-500" size={24} />
-            <h2 className="text-lg sm:text-xl font-bold">Meus HTML Widgets</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredCustom.map((w) => (
-              <CustomStoreItem
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredNative.map((w) => (
+              <StoreItem
                 key={w.id}
-                widget={w}
-                isCopied={copied === w.id}
+                item={w}
+                type="native"
+                isActive={added === w.id}
                 isFavorite={favoriteWidgets.includes(w.id)}
-                onCopy={handleCopyCustom}
-                onEdit={openEditor}
-                onDelete={handleDeleteCustom}
+                onAction={handleAddNative}
                 onToggleFavorite={toggleWidgetFavorite}
               />
             ))}
           </div>
         </section>
-      )}
+
+        {/* 2. EMBED WIDGETS */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2 pb-2">
+            <AppWindow className="text-purple-500" size={24} />
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold">Embeds Especiais</h2>
+              <p className="text-xs sm:text-sm opacity-60">
+                Copie o link e cole dentro de um widget "Smart Embed".
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredEmbed.map((w) => (
+              <StoreItem
+                key={w.id}
+                item={w}
+                type="embed"
+                isActive={copied === w.id}
+                isFavorite={favoriteWidgets.includes(w.id)}
+                onAction={handleCopyEmbed}
+                onToggleFavorite={toggleWidgetFavorite}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* 3. WIDGETS CUSTOMIZADOS */}
+        {customWidgets.length > 0 && (
+          <section className="space-y-4 pt-8">
+            <div className="flex items-center gap-2">
+              <Code className="text-amber-500" size={24} />
+              <h2 className="text-lg sm:text-xl font-bold">Meus HTML Widgets</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredCustom.map((w) => (
+                <CustomStoreItem
+                  key={w.id}
+                  widget={w}
+                  isCopied={copied === w.id}
+                  isFavorite={favoriteWidgets.includes(w.id)}
+                  onCopy={handleCopyCustom}
+                  onEdit={openEditor}
+                  onDelete={deleteCustomWidget}
+                  onToggleFavorite={toggleWidgetFavorite}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <WidgetEditorModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        widgetToEdit={editingWidget}
+      />
     </div>
   );
 }

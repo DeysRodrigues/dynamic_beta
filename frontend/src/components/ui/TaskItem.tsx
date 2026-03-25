@@ -99,10 +99,13 @@ export default function TaskItem({
       <div className="relative" ref={menuRef}>
         <button 
           onClick={() => setShowMenu(!showMenu)}
-          className="p-1.5 opacity-0 group-hover:opacity-100 hover:bg-current/10 rounded-lg transition"
+          className={cn(
+            "p-2 hover:bg-current/10 rounded-lg transition-all",
+            "opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+          )}
           title="Opções"
         >
-          <MoreHorizontal size={16} />
+          <MoreHorizontal size={18} />
         </button>
 
         {showMenu && (
