@@ -1,6 +1,6 @@
 import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
-import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book } from "lucide-react";
+import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target } from "lucide-react";
 import { useThemeStore, getWallpaperStyle } from "@/store/useThemeStore";
 import { ThemeApplicator } from "./ThemeApplicator";
 import { useMemo } from "react"; 
@@ -12,6 +12,7 @@ export default function DashboardLayout() {
   const sidebarItems = useMemo(() => [
     { label: "Home", path: "/", icon: <Home size={18} /> },
     { label: "Tasks", path: "/tasks", icon: <ListTodo size={18} /> },
+    { label: "Projetos", path: "/projects", icon: <Target size={18} /> },
     { label: "Planner", path: "/planner", icon: <Calendar size={18} /> },
     { label: "Widgets", path: "/store", icon: <ShoppingBag size={18} /> },
     { label: "Temas", path: "/themes", icon: <Palette size={18} /> }, 
