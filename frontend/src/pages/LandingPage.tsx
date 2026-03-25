@@ -65,7 +65,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#050505] text-white selection:bg-purple-500/30 overflow-x-hidden font-sans scroll-smooth">
       {/* Background Ambient */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[50%] -translate-x-1/2 w-[80%] h-[60%] rounded-full bg-purple-900/10 blur-[120px] animate-pulse" />
+        <div className="absolute top-[-10%] left-[50%] -translate-x-1/2 w-[80%] h-[60%] rounded-full bg-purple-900/10 blur-[120px]" />
         <div className="absolute bottom-0 left-0 w-full h-[500px] bg-gradient-to-t from-black to-transparent z-10" />
       </div>
 

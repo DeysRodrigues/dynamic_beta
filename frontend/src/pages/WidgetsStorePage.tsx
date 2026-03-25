@@ -215,7 +215,7 @@ export default function WidgetsStorePage() {
           style={{ backgroundColor: 'var(--primary)' }}
         />
         <div 
-          className="absolute bottom-[5%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] animate-pulse opacity-10"
+          className="absolute bottom-[5%] right-[-5%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-10"
           style={{ backgroundColor: 'var(--primary)' }}
         />
       </div>

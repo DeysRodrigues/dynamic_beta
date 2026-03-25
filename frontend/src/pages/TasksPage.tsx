@@ -62,7 +62,7 @@ export default function TasksPage() {
        {/* Background Ambient (Dinâmico com o Tema) */}
        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div 
-          className="absolute top-[10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[100px] animate-pulse opacity-20" 
+          className="absolute top-[10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[100px] opacity-20" 
           style={{ backgroundColor: 'var(--primary)' }}
         />
         <div 
