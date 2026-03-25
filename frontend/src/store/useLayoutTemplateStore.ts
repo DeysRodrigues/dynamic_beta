@@ -21,7 +21,7 @@ export interface LayoutTemplate {
   boxes: string[];
   layouts: Layouts;
   theme?: SavedThemeState;       // <--- AGORA SALVA O TEMA
-  content?: Record<string, any>; // <--- AGORA SALVA O CONTEÚDO (Links, Textos)
+  content?: Record<string, unknown>; // <--- AGORA SALVA O CONTEÚDO (Links, Textos)
   createdAt: string;
 }
 
@@ -33,7 +33,7 @@ interface LayoutTemplateState {
     boxes: string[], 
     layouts: Layouts, 
     theme?: SavedThemeState, 
-    content?: Record<string, any>
+    content?: Record<string, unknown>
   ) => void;
   deleteTemplate: (id: string) => void;
   importTemplate: (template: LayoutTemplate) => void;
