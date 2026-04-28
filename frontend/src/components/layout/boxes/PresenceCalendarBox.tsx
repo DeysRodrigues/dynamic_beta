@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Plus,
   ChevronLeft,
@@ -29,13 +29,19 @@ export default function PresenceCalendarBox({
   id?: string;
 }) {
   const setBoxContent = useBoxContentStore((state) => state.setBoxContent);
-  const saved = useBoxContentStore((state) => (state.contents[id] || {})) as { 
-    events?: PresenceEvent[], 
-    activeEventId?: string 
-  };
+  
+  // Seletor estável: retorna undefined se não houver conteúdo, evitando novos objetos literais no seletor
+  const saved = useBoxContentStore((state) => state.contents[id]);
 
-  const events = saved.events || [];
-  const activeEventId = saved.activeEventId || events[0]?.id || "";
+  // Valores derivados memorizados para garantir estabilidade referencial
+  const { events, activeEventId } = useMemo(() => {
+    const data = (saved || {}) as { events?: PresenceEvent[], activeEventId?: string };
+    const evts = data.events || [];
+    return {
+      events: evts,
+      activeEventId: data.activeEventId || evts[0]?.id || ""
+    };
+  }, [saved]);
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<"calendar" | "addEvent" | "eventList" | "editEvent">("calendar");
