@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { X, Save, Plus, Trash2, Target, Repeat, Pencil } from "lucide-react";
+import { X, Save, Plus, Trash2, Briefcase, Repeat, Pencil, Check } from "lucide-react";
 import { useProjectStore } from "@/store/useProjectStore";
 import type { Project, ProjectGoal, DailyRoutine } from "@/types/Project";
 import { cn } from "@/lib/utils";
 import { nativeWidgets } from "@/data/widgetItems";
+import CustomDatePicker from "@/components/ui/CustomDatePicker";
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -11,7 +12,7 @@ interface ProjectModalProps {
   projectToEdit?: Project | null;
 }
 
-const PROJECT_OVERVIEW_WIDGET = { id: "project_overview", title: "Visão Geral", icon: <Target size={20} /> };
+const PROJECT_OVERVIEW_WIDGET = { id: "project_overview", title: "Visão Geral", icon: <Briefcase size={20} /> };
 
 export default function ProjectModal({ isOpen, onClose, projectToEdit }: ProjectModalProps) {
   const { addProject, updateProject } = useProjectStore();
@@ -44,7 +45,6 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
       setDescription(projectToEdit.description);
       setStartDate(projectToEdit.startDate || "");
       setEndDate(projectToEdit.endDate || "");
-      // Extrair tipos dos widgets existentes (ex: "tasks-123" -> "tasks")
       setSelectedBoxes(projectToEdit.boxes.map(id => id.split("-")[0]));
       setGoals(projectToEdit.goals.map(g => g.text));
       setRoutines(projectToEdit.routines.map(r => r.text));
@@ -59,13 +59,11 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
     if (!name.trim()) return alert("Nome é obrigatório");
 
     if (projectToEdit) {
-      // Mesclar Objetivos: Preserva os que já existem, adiciona novos
       const updatedGoals: ProjectGoal[] = goals.map(text => {
         const existing = projectToEdit.goals.find(g => g.text === text);
         return existing || { id: crypto.randomUUID(), text, completed: false };
       });
 
-      // Mesclar Rotinas: Preserva as que já existem
       const updatedRoutines: DailyRoutine[] = routines.map(text => {
         const existing = projectToEdit.routines.find(r => r.text === text);
         return existing || { id: crypto.randomUUID(), text, completedDates: [] };
@@ -125,85 +123,81 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 backdrop-blur-xl bg-black/40 animate-in fade-in duration-300">
-      <div className="bg-[var(--box-color)] text-[var(--box-text-color)] w-full max-w-4xl rounded-[2.5rem] shadow-2xl border border-current/10 flex flex-col max-h-[95vh] overflow-hidden">
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 backdrop-blur-xl bg-black/60 animate-in fade-in duration-300">
+      <div 
+        className="box-padrao w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden p-0 gap-0 border-none"
+      >
         
         {/* Header */}
-        <div className="p-8 flex items-center justify-between border-b border-current/5">
+        <div className="p-8 pb-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-primary/10 text-primary rounded-2xl">
-              {projectToEdit ? <Pencil size={24} /> : <Plus size={24} />}
+            <div className="p-3 bg-primary/20 text-primary rounded-xl shadow-inner">
+              {projectToEdit ? <Pencil size={24} strokeWidth={2.5} /> : <Plus size={24} strokeWidth={2.5} />}
             </div>
             <div>
               <h2 className="text-2xl font-black uppercase tracking-tighter">{projectToEdit ? "Editar Projeto" : "Criar Novo Projeto"}</h2>
-              <p className="opacity-50 text-xs font-bold uppercase tracking-widest mt-1">Defina seus marcos e ferramentas</p>
+              <p className="opacity-40 text-[10px] font-black uppercase tracking-[0.2em] mt-0.5">Defina seus marcos e ferramentas</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-3 hover:bg-current/10 rounded-2xl transition-all">
+          <button onClick={onClose} className="p-2 hover:bg-current/10 rounded-xl transition-all opacity-40 hover:opacity-100">
             <X size={24} />
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-8 pt-4 space-y-10 custom-scrollbar">
           {/* Informações Básicas */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-1 space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-1 text-current">Nome do Projeto</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-1 space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1">Nome do Projeto</label>
               <input 
                 type="text" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: Projeto Emagrecer"
-                className="w-full bg-current/5 border-none outline-none rounded-2xl px-5 py-4 font-bold focus:ring-2 ring-primary/50 transition-all text-current placeholder:opacity-30"
+                className="w-full bg-current/[0.06] border-none outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all text-current placeholder:opacity-20"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-1 text-current">Data de Início (Opcional)</label>
-              <input 
-                type="date" 
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full bg-current/5 border-none outline-none rounded-2xl px-5 py-4 font-bold focus:ring-2 ring-primary/50 transition-all text-current"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-1 text-current">Data de Término (Opcional)</label>
-              <input 
-                type="date" 
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full bg-current/5 border-none outline-none rounded-2xl px-5 py-4 font-bold focus:ring-2 ring-primary/50 transition-all text-current"
-              />
-            </div>
+            
+            <CustomDatePicker 
+              label="Data de Início"
+              value={startDate}
+              onChange={setStartDate}
+            />
+
+            <CustomDatePicker 
+              label="Data de Término"
+              value={endDate}
+              onChange={setEndDate}
+            />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-1 text-current">Descrição</label>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1">Descrição do Objetivo</label>
             <textarea 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Descreva o que deseja alcançar..."
-              className="w-full bg-current/5 border-none outline-none rounded-2xl px-5 py-4 font-bold focus:ring-2 ring-primary/50 transition-all h-20 resize-none text-current placeholder:opacity-30"
+              className="w-full bg-current/[0.06] border-none outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all h-24 resize-none text-current placeholder:opacity-20"
             />
           </div>
 
           {/* Seleção de Widgets */}
-          <div className="space-y-4">
-            <label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-1 text-current">Quais ferramentas deseja usar?</label>
+          <div className="space-y-5">
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1">Quais ferramentas deseja usar?</label>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
               {/* Visão Geral (Sempre primeiro ou especial) */}
               <button
                 onClick={() => toggleBox(PROJECT_OVERVIEW_WIDGET.id)}
                 className={cn(
-                  "flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all group",
+                  "flex flex-col items-center gap-3 p-5 rounded-2xl border-none transition-all duration-300 group shadow-lg",
                   selectedBoxes.includes(PROJECT_OVERVIEW_WIDGET.id) 
-                    ? "bg-primary/10 border-primary text-primary" 
-                    : "bg-current/5 border-transparent opacity-40 hover:opacity-100"
+                    ? "bg-primary text-primary-foreground scale-105" 
+                    : "bg-current/[0.05] opacity-30 hover:opacity-100"
                 )}
               >
-                {PROJECT_OVERVIEW_WIDGET.icon}
-                <span className="text-[10px] font-black uppercase tracking-tighter text-center">{PROJECT_OVERVIEW_WIDGET.title}</span>
+                <Briefcase size={20} strokeWidth={selectedBoxes.includes(PROJECT_OVERVIEW_WIDGET.id) ? 3 : 2} />
+                <span className="text-[9px] font-black uppercase tracking-widest text-center">{PROJECT_OVERVIEW_WIDGET.title}</span>
               </button>
 
               {nativeWidgets.map(box => (
@@ -211,34 +205,34 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                   key={box.id}
                   onClick={() => toggleBox(box.id)}
                   className={cn(
-                    "flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all group",
+                    "flex flex-col items-center gap-3 p-5 rounded-2xl border-none transition-all duration-300 group shadow-lg",
                     selectedBoxes.includes(box.id) 
-                      ? "bg-primary/10 border-primary text-primary" 
-                      : "bg-current/5 border-transparent opacity-40 hover:opacity-100"
+                      ? "bg-primary text-primary-foreground scale-105" 
+                      : "bg-current/[0.05] opacity-30 hover:opacity-100"
                   )}
                 >
                   <div className="w-5 h-5 flex items-center justify-center">
                     {box.icon}
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-tighter text-center line-clamp-1">{box.title}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-center line-clamp-1">{box.title}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Objetivos e Rotinas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Metas */}
-            <div className="space-y-4">
-              <label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-1 flex items-center gap-2 text-current">
-                <Target size={14} /> Objetivos do Projeto
+            <div className="space-y-5">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1 flex items-center gap-2">
+                <Briefcase size={14} /> Objetivos do Projeto
               </label>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {goals.map((goal, idx) => (
-                  <div key={idx} className="flex items-center gap-2 bg-current/5 p-3 rounded-xl group text-current">
+                  <div key={idx} className="flex items-center gap-3 bg-current/[0.03] p-4 rounded-xl group transition-all hover:bg-current/[0.06] shadow-sm">
                     <span className="text-xs font-bold flex-1">{goal}</span>
                     <button onClick={() => setGoals(goals.filter((_, i) => i !== idx))} className="opacity-0 group-hover:opacity-100 hover:text-red-500 transition-all">
-                      <Trash2 size={14} />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 ))}
@@ -247,31 +241,31 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                     type="text" 
                     value={newGoal}
                     onChange={(e) => setNewGoal(e.target.value)}
-                    placeholder="Nova meta..."
+                    placeholder="Adicionar nova meta..."
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), newGoal && (setGoals([...goals, newGoal]), setNewGoal("")))}
-                    className="flex-1 bg-current/5 border-none outline-none rounded-xl px-4 py-2 text-xs font-bold text-current placeholder:opacity-30"
+                    className="flex-1 bg-current/[0.06] border-none outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
                   />
                   <button 
                     onClick={() => { if(newGoal) { setGoals([...goals, newGoal]); setNewGoal(""); } }}
-                    className="p-2 bg-current/10 rounded-xl hover:bg-primary hover:text-white transition-all text-current"
+                    className="p-3 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all shadow-sm"
                   >
-                    <Plus size={18} />
+                    <Plus size={20} strokeWidth={3} />
                   </button>
                 </div>
               </div>
             </div>
 
             {/* Rotinas */}
-            <div className="space-y-4">
-              <label className="text-[10px] font-black uppercase tracking-widest opacity-60 ml-1 flex items-center gap-2 text-current">
+            <div className="space-y-5">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1 flex items-center gap-2">
                 <Repeat size={14} /> Rotinas Diárias
               </label>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {routines.map((routine, idx) => (
-                  <div key={idx} className="flex items-center gap-2 bg-current/5 p-3 rounded-xl group text-current">
+                  <div key={idx} className="flex items-center gap-3 bg-current/[0.03] p-4 rounded-xl group transition-all hover:bg-current/[0.06] shadow-sm">
                     <span className="text-xs font-bold flex-1">{routine}</span>
                     <button onClick={() => setRoutines(routines.filter((_, i) => i !== idx))} className="opacity-0 group-hover:opacity-100 hover:text-red-500 transition-all">
-                      <Trash2 size={14} />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 ))}
@@ -280,15 +274,15 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                     type="text" 
                     value={newRoutine}
                     onChange={(e) => setNewRoutine(e.target.value)}
-                    placeholder="Nova rotina..."
+                    placeholder="Adicionar nova rotina..."
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), newRoutine && (setRoutines([...routines, newRoutine]), setNewRoutine("")))}
-                    className="flex-1 bg-current/5 border-none outline-none rounded-xl px-4 py-2 text-xs font-bold text-current placeholder:opacity-30"
+                    className="flex-1 bg-current/[0.06] border-none outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
                   />
                   <button 
                     onClick={() => { if(newRoutine) { setRoutines([...routines, newRoutine]); setNewRoutine(""); } }}
-                    className="p-2 bg-current/10 rounded-xl hover:bg-primary hover:text-white transition-all text-current"
+                    className="p-3 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground transition-all shadow-sm"
                   >
-                    <Plus size={18} />
+                    <Plus size={20} strokeWidth={3} />
                   </button>
                 </div>
               </div>
@@ -297,22 +291,21 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
         </div>
 
         {/* Footer */}
-        <div className="p-8 border-t border-current/5 bg-current/[0.02] flex gap-4">
+        <div className="p-8 flex gap-4">
           <button 
             onClick={onClose}
-            className="flex-1 py-5 rounded-[1.5rem] font-black uppercase tracking-widest opacity-40 hover:opacity-100 hover:bg-current/5 transition-all"
+            className="flex-1 py-4 rounded-xl font-black uppercase tracking-[0.2em] text-[10px] opacity-30 hover:opacity-100 hover:bg-current/5 transition-all"
           >
             Cancelar
           </button>
           <button 
             onClick={handleSave}
-            className="flex-[2] bg-primary text-primary-foreground py-5 rounded-[1.5rem] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20"
+            className="flex-[2] bg-primary text-primary-foreground py-4 rounded-xl font-black uppercase tracking-[0.2em] text-[10px] flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all shadow-2xl shadow-primary/30"
           >
-            <Save size={20} /> {projectToEdit ? "Salvar Alterações" : "Criar Projeto"}
+            <Check size={18} strokeWidth={4} /> {projectToEdit ? "Salvar Projeto" : "Confirmar Projeto"}
           </button>
         </div>
       </div>
     </div>
   );
 }
-
