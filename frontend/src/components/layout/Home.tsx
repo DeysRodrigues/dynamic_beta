@@ -22,6 +22,7 @@ import {
   GripVertical,
   Trash2,
   Target,
+  Briefcase,
 } from "lucide-react";
 import React, {
   useState,
@@ -139,7 +140,7 @@ const WorkspaceTabs = React.memo(() => {
   };
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full pb-1 mask-gradient-right">
+    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full pb-2 mask-gradient-right">
       {/* Workspaces Normais */}
       {workspaces.map((w) => {
         const isActive = activeWorkspaceId === w.id && !activeProjectId;
@@ -164,56 +165,67 @@ const WorkspaceTabs = React.memo(() => {
         }
 
         return (
-          <div key={w.id} className="group relative flex items-center">
-            <button
+          <div key={w.id} className="group relative flex flex-col items-center">
+            <div
               onClick={() => handleSelectWorkspace(w.id)}
               onDoubleClick={() => startRename(w.id, w.name)}
               className={cn(
-                "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 select-none whitespace-nowrap",
+                "px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 select-none whitespace-nowrap cursor-pointer",
                 isActive
-                  ? "bg-current/10 shadow-sm opacity-100"
-                  : "opacity-60 hover:opacity-100 hover:bg-current/5"
+                  ? "bg-current/10 text-primary opacity-100"
+                  : "opacity-40 hover:opacity-100 hover:bg-current/5"
               )}
             >
-              {isActive && <Layout size={14} className="opacity-70" />}
+              <Layout size={14} className={cn("transition-transform", isActive ? "scale-110" : "opacity-50")} />
               {w.name}
-            </button>
-
-            {workspaces.length > 1 && isActive && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (confirm("Excluir este workspace?")) removeWorkspace(w.id);
-                }}
-                className={cn(
-                  "absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 transition-all shadow-sm z-10",
-                  "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 scale-90 sm:scale-75 sm:hover:scale-100"
-                )}
-                title="Excluir Workspace"
-              >
-                <X size={10} strokeWidth={3} />
-              </button>
-            )}
+              
+              {workspaces.length > 1 && isActive && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (confirm("Excluir este workspace?")) removeWorkspace(w.id);
+                  }}
+                  className="ml-1 p-0.5 hover:bg-red-500 hover:text-white rounded-md transition-colors opacity-60 hover:opacity-100"
+                  title="Excluir Workspace"
+                >
+                  <X size={12} strokeWidth={3} />
+                </button>
+              )}
+            </div>
+            
+            {/* Indicador de Workspace Ativo */}
+            <div className={cn(
+              "h-1 w-1/3 rounded-full bg-primary mt-1 transition-all duration-500",
+              isActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
+            )} />
           </div>
         );
       })}
+
+      {/* Separador sutil se houver projetos */}
+      {projects.some(p => p.status === 'active') && (
+        <div className="w-px h-6 bg-current/10 mx-1" />
+      )}
 
       {/* Projetos Ativos */}
       {projects.filter(p => p.status === 'active').map((p) => {
         const isActive = activeProjectId === p.id;
         return (
-          <div key={p.id} className="group relative flex items-center">
+          <div key={p.id} className="group relative">
             <button
               onClick={() => handleSelectProject(p.id)}
               className={cn(
-                "px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 select-none whitespace-nowrap border border-current/10",
+                "px-3 py-1.5 rounded-full text-[11px] font-black transition-all duration-300 flex items-center gap-2 select-none whitespace-nowrap border uppercase tracking-tighter",
                 isActive
-                  ? "bg-primary/20 border-primary shadow-sm opacity-100"
-                  : "opacity-60 hover:opacity-100 hover:bg-current/5"
+                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105"
+                  : "bg-transparent border-current/20 opacity-40 hover:opacity-100 hover:border-current/40"
               )}
             >
-              <Target size={14} className={cn(isActive ? "text-primary" : "opacity-40")} />
-              {p.name}
+              <Briefcase size={12} strokeWidth={3} />
+              <span className="flex items-center gap-1">
+                <span className="opacity-60 font-medium lowercase italic">projeto:</span>
+                {p.name}
+              </span>
             </button>
           </div>
         );
@@ -221,7 +233,7 @@ const WorkspaceTabs = React.memo(() => {
 
       <button
         onClick={handleAdd}
-        className="p-2 rounded-xl opacity-40 hover:opacity-100 hover:bg-current/10 transition-all"
+        className="ml-2 p-2 rounded-xl opacity-30 hover:opacity-100 hover:bg-current/10 transition-all"
         title="Nova Aba"
       >
         <Plus size={16} />

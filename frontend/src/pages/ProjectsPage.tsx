@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useProjectStore } from "@/store/useProjectStore";
-import { Plus, Target, Trash2, ExternalLink, CheckCircle2, Clock, Pencil, Sparkles, LayoutGrid } from "lucide-react";
+import { Plus, Briefcase, Trash2, ExternalLink, CheckCircle2, Clock, Pencil, Sparkles, LayoutGrid } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -54,7 +54,7 @@ export default function ProjectsPage() {
                     borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
                     color: 'var(--primary)'
                  }}>
-               <Target size={28} />
+               <Briefcase size={28} />
             </div>
             <div>
               <div className="text-[10px] font-bold uppercase tracking-widest mb-1 flex items-center gap-2 opacity-60"
@@ -104,7 +104,7 @@ export default function ProjectsPage() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 bg-primary/10 text-primary rounded-2xl group-hover:scale-110 transition-transform duration-500">
-                    <Target size={24} />
+                    <Briefcase size={24} />
                   </div>
                   <div className="flex items-center gap-2">
                     <button 
