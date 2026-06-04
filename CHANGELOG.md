@@ -20,6 +20,36 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ---
 
+## [0.12.0] - 2026-06-04
+### Added
+- **Workspace Task Isolation:**
+    - Tasks are now fully context-aware and isolated by workspace.
+    - Implemented `workspaceId` tracking in the `Task` type and factory.
+    - Updated `BoxTask` and `ProgressBox` to filter data based on the active workspace, preventing context mixing.
+    - Integrated workspace context into `BulkTaskModal` and `BulkEditModal` for seamless multi-task management.
+- **Enhanced Week Planner:**
+    - **Native Drag & Drop:** Implemented fluid task moving between days using native HTML5 DnD.
+    - **Cycle Analytics:** Added a new stats panel (Total, Pending, Completed, Rate) and a global progress bar to the active cycle.
+    - **Visibility Controls:** Added a "Hide Empty Days" toggle to reduce visual clutter in long cycles.
+    - **Status Filtering:** New quick filters to view only pending or completed tasks within the weekly view.
+
+### Changed
+- **Planner Architecture Refactor:**
+    - Modularized the `WeekPlannerPage` into specialized, high-performance components (`WeekHeader`, `WeekGrid`, `DayColumn`, `WeekStats`).
+    - Developed the `useWeekPlanner` logic hook with optimized Zustand selectors and `useMemo` for $O(1)$ task lookups.
+    - Applied `React.memo` to `TaskItem` and `DayColumn` to drastically reduce redundant re-renders.
+- **Minimalist Aesthetic:**
+    - Removed all remaining borders, rings, and separator lines from the Planner to achieve a "border-less" floating design.
+    - Switched to shadows and subtle background opacities for element separation.
+
+### Fixed
+- **Global UI Stability:**
+    - Eliminated "flickering" issues across the entire application by removing aggressive `animate-ping` effects and broad `transition-all` CSS declarations.
+    - Optimized state subscription with `useShallow` in main dashboard components to prevent intermediate "loading" states during updates.
+    - Corrected workspace tab logic to ensure legacy tasks (without ID) remain visible in the "Default" workspace.
+
+---
+
 ## [0.11.0] - 2026-06-03
 ### Added
 - **Custom DatePicker Component:**
