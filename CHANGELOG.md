@@ -20,6 +20,41 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ---
 
+## [0.11.0] - 2026-06-03
+### Added
+- **Custom DatePicker Component:**
+    - Developed a new reusable `CustomDatePicker` to replace native browser date inputs across the entire application.
+    - Implemented "default" and "inline" variants for seamless integration into forms and toolbars.
+    - Integrated automated icon inversion logic that detects theme brightness to ensure visibility in dark mode.
+
+### Fixed
+- **Task Management UX:**
+    - Resolved a critical bug where the task action menu was clipped by `overflow-hidden` containers.
+    - Implemented a smart expansion system for long task titles, allowing full readability on click.
+    - Refactored task layout to `items-start` to maintain vertical alignment for multi-line descriptions.
+- **Workspace & Tabs:**
+    - Fixed the overlapping "X" delete button on workspace tabs by moving it into the inline button flow.
+    - Added a dedicated bottom indicator for active workspaces to improve navigation clarity.
+    - Redesigned project tabs as distinct "pills" with the `Briefcase` icon to avoid confusion with workspace layouts.
+- **Form & Modal Accessibility:**
+    - Fixed "white-on-white" input rendering in `ProjectModal` by applying global theme variables and `box-padrao` logic.
+    - Standardized corner rounding to `rounded-2xl` for all major UI containers.
+- **Color Picker Stability:**
+    - Fixed a React anti-pattern where the `ColorPicker` component was re-mounting on every theme update, causing it to close prematurely.
+    - Switched to the `onInput` event to support real-time "live-view" updates while dragging colors.
+
+### Changed
+- **Planner Redesign:**
+    - Completely overhauled the `WeekPlannerPage` to achieve a "line-free" glassmorphism aesthetic.
+    - Removed all explicit borders and rings, relying on spacing and elevation for section separation.
+    - Improved form intuition in the "New Cycle" configuration with better field grouping and bolder inputs.
+    - Made day cards fully adaptive to the site theme, inheriting background colors and font styles from the global store.
+- **Global Native Styling:**
+    - Applied custom theme styling to native checkboxes, radio buttons, and select menus via `index.css`.
+    - Implemented a global `accent-color` to unify browser-level elements with the site's primary color.
+
+---
+
 ## [0.10.0] - 2026-03-25
 ### Added
 - **Projects System:**

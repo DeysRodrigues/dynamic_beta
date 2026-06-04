@@ -1,26 +1,26 @@
 export const APP_UPDATES = {
-  version: "0.10.0",
-  date: "25 de Março",
+  version: "0.11.0",
+  date: "03 de Junho",
 
   // 1. O Emoji da vez
-  emoji: "📂",
+  emoji: "✨",
 
   // 2. Título chamativo
-  title: "Gestão de Projetos & Estilo",
+  title: "Interface Fluida & UX Premium",
 
   // 3. O recado principal
   message:
-    "Upgrade total! Agora o Dyna conta com um sistema completo para seus projetos de longo prazo.",
+    "Refinamos cada detalhe! O Dyna agora está mais elegante, intuitivo e livre de distrações visuais.",
 
   // 4. As novidades explicadas de forma leve
   items: [
-    "🎯 Nova Página de Projetos: Organize metas e rotinas diárias em um só lugar. Perfeito para objetivos que levam tempo!",
-    "🛠️ Widget de Visão Geral: Adicione o novo widget de projetos no seu Dashboard para acompanhar seu progresso em tempo real.",
-    "✨ Estilo Refinado: Refatoramos as páginas de tarefas e temas para serem 100% coerentes com o efeito glass e glows dinâmicos.",
-    "🔒 TypeScript Power: Fizemos uma limpeza pesada no código para garantir que tudo esteja tipado e livre de erros inesperados.",
-    "🩹 Fixes de Interface: Corrigimos a visibilidade de labels em temas claros e eliminamos o piscar indesejado nos widgets.",
+    "📅 Novo DatePicker: Substituímos os seletores de data antigos por um calendário customizado, compacto e totalmente integrado ao seu tema.",
+    "🚀 Planner Redesenhado: Removemos todas as 'linhas' pesadas do cronograma semanal, trazendo um visual glassmorphism puro e moderno.",
+    "🎨 Cores ao Vivo: O seletor de cores da sidebar agora atualiza o tema instantaneamente enquanto você arrasta, sem fechar sozinho!",
+    "🔍 Expansão de Tarefas: Clique em uma tarefa longa para expandi-la e ler o conteúdo completo. Nada de textos cortados!",
+    "🏗️ Workspaces & Abas: Redenhamos as abas para separar claramente o que é Workspace e o que é Projeto, com novos indicadores visuais.",
   ],
 
   // 5. Botão final
-  footer: "Confira seus novos projetos!",
+  footer: "Experimente o novo visual!",
 };
