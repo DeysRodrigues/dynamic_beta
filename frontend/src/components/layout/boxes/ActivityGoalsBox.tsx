@@ -9,6 +9,7 @@ import {
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 import { getTodayDate, formatDate } from "@/utils/DateUtils";
 import { cn } from "@/lib/utils";
+import CustomDatePicker from "@/components/ui/CustomDatePicker";
 
 // --- TIPOS (Movidos para fora) ---
 interface ActivityLog {
@@ -314,13 +315,12 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
             {viewMode === 'week' ? <LayoutGrid size={16} /> : <BarChart3 size={16} />}
           </button>
 
-          <label className="flex items-center gap-2 cursor-pointer group bg-black/5 dark:bg-transparent hover:bg-black/10 dark:hover:bg-white/5 px-2 py-1 rounded-lg transition shrink-0">
-             <Calendar size={14} className={cn("transition", selectedDate === getTodayDate() ? "opacity-50" : "text-primary dark:text-blue-400 animate-pulse")}/>
-             <span className="text-[10px] font-mono font-bold opacity-80">
-               {selectedDate === getTodayDate() ? "Hoje" : formatDate(selectedDate).split(',')[0]}
-             </span>
-             <input type="date" className="hidden" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
-          </label>
+          <CustomDatePicker 
+            variant="inline"
+            align="right"
+            value={selectedDate}
+            onChange={setSelectedDate}
+          />
 
           <button 
             onClick={() => setIsAdding(!isAdding)} 

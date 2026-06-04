@@ -10,6 +10,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import CustomDatePicker from "@/components/ui/CustomDatePicker";
 
 interface PresenceEvent {
   id: string;
@@ -307,27 +308,18 @@ export default function PresenceCalendarBox({
             autoFocus
           />
 
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <label className="text-[10px] font-bold opacity-50">Início</label>
-              <input
-                type="date"
-                className="w-full text-xs p-2 rounded bg-black/5 outline-none"
-                value={start}
-                onChange={(e) => setStart(e.target.value)}
-              />
-            </div>
-            <div className="flex-1">
-              <label className="text-[10px] font-bold opacity-50">Fim</label>
-              <input
-                type="date"
-                className="w-full text-xs p-2 rounded bg-black/5 outline-none"
-                value={end}
-                onChange={(e) => setEnd(e.target.value)}
-              />
-            </div>
+          <div className="flex flex-col gap-3">
+            <CustomDatePicker 
+              label="Início"
+              value={start}
+              onChange={setStart}
+            />
+            <CustomDatePicker 
+              label="Fim"
+              value={end}
+              onChange={setEnd}
+            />
           </div>
-
           <div>
             <label className="text-[10px] font-bold opacity-50 mb-1 block">
               Dias de Ocorrência
