@@ -1,4 +1,5 @@
 import { useRef, useState, type MouseEvent } from "react";
+import { cn } from "@/lib/utils";
 
 interface SpotlightCardProps {
   children: React.ReactNode;
@@ -9,7 +10,7 @@ interface SpotlightCardProps {
 export default function SpotlightCard({ 
   children, 
   className = "", 
-  spotlightColor = "rgba(255, 255, 255, 0.15)" 
+  spotlightColor = "color-mix(in srgb, var(--primary, #6366f1) 15%, transparent)" 
 }: SpotlightCardProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -30,7 +31,10 @@ export default function SpotlightCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-xl border border-white/10 bg-black/50 backdrop-blur-md ${className}`}
+      className={cn(
+        "relative overflow-hidden rounded-2xl transition-all duration-500",
+        className
+      )}
     >
       <div
         className="pointer-events-none absolute -inset-px transition duration-300"
