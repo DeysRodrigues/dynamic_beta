@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Save, Plus, Trash2, Briefcase, Repeat, Pencil, Check } from "lucide-react";
+import { X, Plus, Trash2, Briefcase, Repeat, Pencil, Check } from "lucide-react";
 import { useProjectStore } from "@/store/useProjectStore";
 import type { Project, ProjectGoal, DailyRoutine } from "@/types/Project";
 import { cn } from "@/lib/utils";

@@ -21,7 +21,6 @@ import {
   ArrowRight,
   GripVertical,
   Trash2,
-  Target,
   Briefcase,
 } from "lucide-react";
 import React, {

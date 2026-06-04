@@ -1,7 +1,7 @@
 import { useState, useCallback, memo } from "react";
 import { 
   Trophy, Plus, Trash2, 
-  Target, Calendar, 
+  Target, 
   X, ChevronUp, Activity, BarChart3, LayoutGrid,
   Star, Zap, 
   CheckCircle2
