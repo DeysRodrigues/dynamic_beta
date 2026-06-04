@@ -520,9 +520,11 @@ const DashboardHeader = React.memo(
 // --- MAIN COMPONENT ---
 
 export default function Dashboard() {
-  const workspaces = useDashboardStore((state) => state.workspaces);
-  const activeWorkspaceId = useDashboardStore(
-    (state) => state.activeWorkspaceId
+  const { workspaces, activeWorkspaceId } = useDashboardStore(
+    useShallow((state) => ({
+      workspaces: state.workspaces,
+      activeWorkspaceId: state.activeWorkspaceId,
+    }))
   );
   
   const { projects, activeProjectId, updateProjectLayout, addBoxToProject, removeBoxFromProject } = useProjectStore();

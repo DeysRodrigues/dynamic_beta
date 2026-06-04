@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { Trash2, Edit2, MoreHorizontal, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Task } from "@/types/Task";
@@ -13,7 +13,7 @@ interface TaskItemProps {
   compact?: boolean;
 }
 
-export default function TaskItem({
+function TaskItemComponent({
   task,
   onToggle,
   onDelete,
@@ -24,6 +24,11 @@ export default function TaskItem({
   const [showMenu, setShowMenu] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.setData("taskId", task.id);
+    e.dataTransfer.effectAllowed = "move";
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,9 +42,11 @@ export default function TaskItem({
 
   return (
     <div 
+      draggable={!editable}
+      onDragStart={handleDragStart}
       className={cn(
         "group relative flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl shadow-sm transition-all duration-200",
-        "bg-black/5 border-current/10 hover:bg-black/10 w-full",
+        "bg-black/5 hover:bg-black/10 w-full cursor-grab active:cursor-grabbing",
         showMenu && "z-30 shadow-md",
         isExpanded && "bg-black/[0.07]"
       )}
@@ -53,7 +60,7 @@ export default function TaskItem({
             "flex items-center justify-center w-5 h-5 rounded-md transition-all shrink-0 mt-0.5",
             task.completed
               ? "bg-green-500 text-white shadow-sm scale-110" 
-              : "border-2 border-current/30 hover:border-current/60 hover:scale-105"
+              : "bg-current/10 hover:bg-current/20 hover:scale-105"
           )}
           title={task.completed ? "Marcar como não concluída" : "Concluir tarefa"}
         >
@@ -66,8 +73,8 @@ export default function TaskItem({
         <div className="flex items-center gap-1.5 sm:gap-2">
           {task.time && (
             <span className={cn(
-              "text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0",
-              task.completed ? "opacity-50 line-through" : "bg-current/10 border-current/10"
+              "text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0",
+              task.completed ? "opacity-50 line-through" : "bg-current/10"
             )}>
               {task.time}
             </span>
@@ -86,8 +93,7 @@ export default function TaskItem({
                 onBlur={() => setShowMenu(false)}
                 className={cn(
                   "bg-transparent outline-none w-full text-xs sm:text-sm transition-colors cursor-text min-w-0",
-                  task.completed ? "opacity-50 line-through" : "font-medium",
-                  "border-b border-current focus:border-primary"
+                  task.completed ? "opacity-50 line-through" : "font-medium"
                 )}
               />
             ) : (
@@ -105,12 +111,12 @@ export default function TaskItem({
           {!isExpanded && !editable && (
             <div className="flex items-center gap-1.5 shrink-0">
               {task.tag && (
-                <span className="text-[9px] sm:text-[10px] opacity-70 bg-current/5 px-2 py-0.5 rounded-full border border-current/10 max-w-[60px] sm:max-w-[80px] truncate hidden xs:block">
+                <span className="text-[9px] sm:text-[10px] opacity-70 bg-current/5 px-2 py-0.5 rounded-full max-w-[60px] sm:max-w-[80px] truncate hidden xs:block">
                   {task.tag}
                 </span>
               )}
               {task.groupTag && (
-                 <span className="hidden md:inline-flex text-[9px] uppercase tracking-wider opacity-60 bg-current/5 px-1.5 py-0.5 rounded border border-current/10 whitespace-nowrap">
+                 <span className="hidden md:inline-flex text-[9px] uppercase tracking-wider opacity-60 bg-current/5 px-1.5 py-0.5 rounded whitespace-nowrap">
                    {task.groupTag}
                  </span>
               )}
@@ -122,12 +128,12 @@ export default function TaskItem({
         {isExpanded && !editable && (
           <div className="flex flex-wrap gap-2 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
             {task.tag && (
-              <span className="text-[9px] sm:text-[10px] opacity-70 bg-current/5 px-2 py-0.5 rounded-full border border-current/10">
+              <span className="text-[9px] sm:text-[10px] opacity-70 bg-current/5 px-2 py-0.5 rounded-full">
                 {task.tag}
               </span>
             )}
             {task.groupTag && (
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-wider opacity-60 bg-current/5 px-2 py-0.5 rounded border border-current/10">
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-wider opacity-60 bg-current/5 px-2 py-0.5 rounded">
                 {task.groupTag}
               </span>
             )}
@@ -155,7 +161,7 @@ export default function TaskItem({
         </button>
 
         {showMenu && (
-          <div className="absolute right-0 top-full mt-1 w-32 bg-popover rounded-xl shadow-xl border border-border z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 origin-top-right">
+          <div className="absolute right-0 top-full mt-1 w-32 bg-popover rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 origin-top-right">
             <div className="flex flex-col p-1">
               {onEdit && (
                 <button 
@@ -180,3 +186,6 @@ export default function TaskItem({
     </div>
   );
 }
+
+export const TaskItem = memo(TaskItemComponent);
+export default TaskItem;
