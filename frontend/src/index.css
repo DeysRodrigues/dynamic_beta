@@ -111,6 +111,11 @@ body {
 
 /* --- REGRAS GLOBAIS DE COERÊNCIA (Crucial para Dark Mode) --- */
 
+/* 0. ACENTUAÇÃO GLOBAL (Checkboxes, Radios, Sliders) */
+:root {
+  accent-color: var(--primary);
+}
+
 /* 1. Textos secundários (cinzas) ficam transparentes da cor principal */
 .box-padrao .text-muted-foreground,
 .bar-padrao .text-muted-foreground {
@@ -137,13 +142,45 @@ body {
   background-color: rgba(127, 127, 127, 0.1) !important;
   border: 1px solid transparent !important;
   color: inherit !important;
+  accent-color: var(--primary);
 }
 
 .box-padrao input:focus,
 .box-padrao select:focus,
-.box-padrao textarea:focus {
+.box-padrao textarea:focus,
+.bar-padrao input:focus {
   border-color: var(--primary) !important;
   background-color: rgba(127, 127, 127, 0.15) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+/* Checkboxes e Radios Customizados via Accent */
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Estilização para Calendários (Data) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(var(--calendar-invert, 0));
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  background-color: rgba(127, 127, 127, 0.1);
+}
+
+/* Correção para Select Options */
+select option {
+  background-color: var(--box-color, #ffffff) !important;
+  color: var(--box-text-color, #1e293b) !important;
 }
 
 /* Placeholder */
