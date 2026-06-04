@@ -1,16 +1,16 @@
 import { useRef, useState, type MouseEvent } from "react";
 import { cn } from "@/lib/utils";
 
-interface SpotlightCardProps {
+interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  className?: string;
   spotlightColor?: string;
 }
 
 export default function SpotlightCard({ 
   children, 
   className = "", 
-  spotlightColor = "color-mix(in srgb, var(--primary, #6366f1) 15%, transparent)" 
+  spotlightColor = "color-mix(in srgb, var(--primary, #6366f1) 15%, transparent)",
+  ...props
 }: SpotlightCardProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -20,14 +20,23 @@ export default function SpotlightCard({
     if (!divRef.current) return;
     const rect = divRef.current.getBoundingClientRect();
     setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    props.onMouseMove?.(e);
   };
 
-  const handleMouseEnter = () => setOpacity(1);
-  const handleMouseLeave = () => setOpacity(0);
+  const handleMouseEnter = (e: MouseEvent<HTMLDivElement>) => {
+    setOpacity(1);
+    props.onMouseEnter?.(e);
+  };
+
+  const handleMouseLeave = (e: MouseEvent<HTMLDivElement>) => {
+    setOpacity(0);
+    props.onMouseLeave?.(e);
+  };
 
   return (
     <div
       ref={divRef}
+      {...props}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
