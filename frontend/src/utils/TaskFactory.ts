@@ -6,14 +6,16 @@ export function createTask(
   time: string | undefined,
   tag: string,
   duration: number,
-  groupTag?: string // Novo parâmetro opcional
+  groupTag?: string,
+  workspaceId?: string
 ): Task {
   return {
     id: Date.now().toString() + Math.random().toString(36),
     description,
     time: time || undefined,
     tag,
-    groupTag, // Salva a Tagzona
+    groupTag, 
+    workspaceId,
     completed: false,
     date: getTodayDate(),
     duration,

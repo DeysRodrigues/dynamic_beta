@@ -31,11 +31,12 @@ export function BulkEditModal({ isOpen, onClose, tasksToEdit }: BulkEditModalPro
 
     const lines = text.split("\n").filter(l => l.trim().length > 0);
     const baseDate = tasksToEdit[0]?.date; 
+    const baseWorkspaceId = tasksToEdit[0]?.workspaceId;
 
     lines.forEach(line => {
       const data = parseTextToTaskData(line);
       if (data.description) {
-        const newTask = createTask(data.description, data.time, data.tag, data.duration, data.groupTag);
+        const newTask = createTask(data.description, data.time, data.tag, data.duration, data.groupTag, baseWorkspaceId);
         if (baseDate) newTask.date = baseDate;
         newTask.completed = data.completed;
         addTask(newTask);

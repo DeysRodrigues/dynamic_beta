@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus, Edit3 } from "lucide-react";
 import { useTaskStore } from "@/store/useTaskStore";
+import { useDashboardStore } from "@/store/useDashboardStore";
 import TaskItem from "@/components/ui/TaskItem";
 import { formatDate } from "@/utils/DateUtils";
 import { groupTasksByDate } from "@/utils/TaskUtils";
@@ -16,6 +17,7 @@ interface BoxTaskProps {
 
 export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
   const { tasks, toggleCompleted, deleteTask, addTask } = useTaskStore();
+  const activeWorkspaceId = useDashboardStore((state) => state.activeWorkspaceId);
   
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -28,6 +30,17 @@ export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
   };
 
   const filteredTasks = tasks.filter((task) => {
+    // Filtrar por Workspace
+    // Se a task tem um workspaceId, ele deve ser igual ao ativo.
+    // Se não tem (tasks antigas), permitimos que apareçam no workspace "default" ou em todos para não sumirem.
+    // Para seguir o desejo do usuário de "não misturar", vamos restringir:
+    if (task.workspaceId) {
+      if (task.workspaceId !== activeWorkspaceId) return false;
+    } else {
+      // Se não tem workspaceId, tratamos como pertencente ao 'default'
+      if (activeWorkspaceId !== "default") return false;
+    }
+
     if (filter === "completed") return task.completed;
     if (filter === "incomplete") return !task.completed;
     return true;
@@ -62,7 +75,12 @@ export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
       </div>
 
       {/* Modais */}
-      <BulkTaskModal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} onAddTasks={(newTasks) => newTasks.forEach(addTask)} />
+      <BulkTaskModal 
+        isOpen={showBulkModal} 
+        onClose={() => setShowBulkModal(false)} 
+        onAddTasks={(newTasks) => newTasks.forEach(addTask)} 
+        targetWorkspaceId={activeWorkspaceId}
+      />
       <EditTaskModal isOpen={showEditModal} onClose={() => setShowEditModal(false)} task={editingTask} />
       <BulkEditModal isOpen={showBulkEdit} onClose={() => setShowBulkEdit(false)} tasksToEdit={filteredTasks} />
 
@@ -70,7 +88,7 @@ export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
       <div className="flex-1 overflow-hidden">
         {Object.keys(grouped).length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full opacity-50 italic">
-            <p>Você ainda não possui tasks :(</p>
+            <p>Você ainda não possui tasks neste workspace :(</p>
           </div>
         ) : (
           <div className="overflow-y-auto pr-2 space-y-4 max-h-full h-full custom-scrollbar">

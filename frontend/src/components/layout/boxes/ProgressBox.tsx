@@ -1,4 +1,5 @@
 import { useTaskStore } from "@/store/useTaskStore";
+import { useDashboardStore } from "@/store/useDashboardStore";
 
 interface ProgressBoxProps {
   className?: string;
@@ -6,16 +7,24 @@ interface ProgressBoxProps {
 
 export default function ProgressBox({ className }: ProgressBoxProps) {
   const { tasks } = useTaskStore();
+  const activeWorkspaceId = useDashboardStore((state) => state.activeWorkspaceId);
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.completed).length;
-  
+  const filteredTasks = tasks.filter((task) => {
+    if (task.workspaceId) {
+      return task.workspaceId === activeWorkspaceId;
+    }
+    return activeWorkspaceId === "default";
+  });
+
+  const totalTasks = filteredTasks.length;
+  const completedTasks = filteredTasks.filter((task) => task.completed).length;
+
   const progressPercent =
     totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
 
   return (
     <div className={`box-padrao ${className || ""}`}>
-      <h2 className="text-lg font-semibold">Progresso nas tarefas</h2>
+      <h2 className="text-lg font-semibold">Progresso no Workspace</h2>
       <p className="text-muted-foreground text-sm mt-1">
         {completedTasks} de {totalTasks} tasks ({progressPercent}%)
       </p>

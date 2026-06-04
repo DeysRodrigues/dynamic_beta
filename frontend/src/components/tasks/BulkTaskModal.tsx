@@ -9,9 +9,17 @@ interface BulkTaskModalProps {
   onAddTasks: (tasks: Task[]) => void;
   targetDate?: string;
   targetGroupTag?: string;
+  targetWorkspaceId?: string;
 }
 
-export function BulkTaskModal({ isOpen, onClose, onAddTasks, targetDate, targetGroupTag }: BulkTaskModalProps) {
+export function BulkTaskModal({ 
+  isOpen, 
+  onClose, 
+  onAddTasks, 
+  targetDate, 
+  targetGroupTag,
+  targetWorkspaceId
+}: BulkTaskModalProps) {
   const { tags } = useTagStore();
   const [bulkTaskInput, setBulkTaskInput] = useState("");
   const [defaultTag, setDefaultTag] = useState("");
@@ -64,7 +72,7 @@ export function BulkTaskModal({ isOpen, onClose, onAddTasks, targetDate, targetG
       if (!description) continue;
 
       const finalTime = specificTime || currentCalcTime || undefined;
-      const task = createTask(description, finalTime, selectedTag, duration, selectedGroupTag);
+      const task = createTask(description, finalTime, selectedTag, duration, selectedGroupTag, targetWorkspaceId);
       if (targetDate) task.date = targetDate;
       tasksToAdd.push(task);
 

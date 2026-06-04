@@ -11,4 +11,5 @@ export interface Task {
   duration: number;         // duração em minutos
 
   groupTag?: string;
+  workspaceId?: string;     // ID do workspace ao qual pertence
 }
