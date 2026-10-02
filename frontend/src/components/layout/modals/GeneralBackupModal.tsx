@@ -10,7 +10,6 @@ const APP_KEYS = [
   STORAGE_KEYS.GOALS,
   STORAGE_KEYS.TAGS,
   STORAGE_KEYS.POMODORO,
-  STORAGE_KEYS.GOAL_HOURS,
   
   // Chaves definidas hardcoded nos stores
   "layout-templates-storage",
@@ -20,9 +19,11 @@ const APP_KEYS = [
   "notification-storage",
   "theme-storage",
   "pomodoro-global-storage", // Do novo sistema global
+  "projects-storage",
+  "user-profile-storage",
+  "favorites-storage",
   
   // Chaves diretas de widgets
-  "pomodoro-counts",
   "w-water-cups"
 ];
 
