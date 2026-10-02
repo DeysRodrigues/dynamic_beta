@@ -18,7 +18,7 @@ the architecture is considered ready for real use.
 
 ---
 
-## [Unreleased]
+## [0.12.1] - 2026-10-02
 ### Added
 - **Documentation Standard:**
     - `README.md` rewritten from scratch in English as the main entry point, with a full
@@ -32,8 +32,9 @@ the architecture is considered ready for real use.
       project needs and the one cloud sync fails without.
 
 ### Changed
-- **Version alignment:** Bumped `package.json` to `0.12.0`. The 0.12.0 release notes were written
-  but the version bump was missed, leaving the manifest reporting `0.11.0`.
+- **Version alignment:** `package.json` reported `0.11.0` while `0.12.0` had already shipped,
+  because that release's notes were written but the bump was missed. The manifest is in sync
+  with this release again.
 
 ### Performance
 - **Three widgets were being downloaded by everyone.** `RiskTrackerBox`,

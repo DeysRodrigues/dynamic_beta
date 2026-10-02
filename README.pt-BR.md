@@ -32,7 +32,7 @@ para quem ele foi feito; o código, os commits e este README são em inglês.
 
 ## Estado
 
-Medido em 02/10/2026: 276 commits, 97 arquivos TypeScript, 14.655 linhas em `frontend/src`.
+Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `frontend/src`.
 `npm run build` e `npm run lint` passam os dois.
 
 | Área | Estado |
@@ -51,9 +51,9 @@ Medido em 02/10/2026: 276 commits, 97 arquivos TypeScript, 14.655 linhas em `fro
 | Integração contínua | ainda não existe |
 | Layout no celular | responsivo, conferido só à mão |
 
-Dois limites que vale dizer de cara. O bundle principal tem **659,93 kB** (191,36 kB com gzip),
-porque o código compartilhado de biblioteca ainda não foi separado, mesmo cada widget já sendo
-um chunk preguiçoso próprio. E não existe suíte de teste, então toda mudança é conferida
+Dois limites que vale dizer de cara. O bundle principal tem **626,99 kB** (184,58 kB com
+gzip), porque o código compartilhado de biblioteca ainda não foi separado, mesmo cada widget
+sendo um chunk preguiçoso próprio. E não existe suíte de teste, então toda mudança é conferida
 compilando e clicando.
 
 ## Arquitetura
@@ -111,6 +111,7 @@ Rotas:
 | vite | 7.0 | servidor de desenvolvimento e build |
 | tailwindcss | 3.4 | estilo, movido pelas variáveis CSS que o motor de temas escreve |
 | zustand | 5.0 | estado global, com os middlewares `persist` e `immer` |
+| immer | 10.2 | o rascunho que as duas stores que mexem em widget e layout juntos usam |
 | react-grid-layout | 1.5 | a grade que arrasta e redimensiona |
 | react-router-dom | 7.6 | roteamento |
 | date-fns | 4.1 | conta de data no planejador e nos calendários |
