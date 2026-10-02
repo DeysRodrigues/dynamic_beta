@@ -25,15 +25,45 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - **Documentation Standard:**
     - `README.md` rewritten from scratch in English as the main entry point, with a full
       `README.pt-BR.md` translation beside it and a language selector in both.
-    - The README now states measured numbers (276 commits, 97 TypeScript files, 14,655 lines in
-      `frontend/src`), the real route map, the widget catalog, the task script syntax and the
-      technical decisions behind the local-first architecture.
+    - The README now states measured numbers, the real route map, the widget catalog, the task
+      script syntax and the technical decisions behind the local-first architecture.
+    - New `CONTRIBUTING.md` recording the commit, branch and changelog conventions. Commit
+      subjects move from past tense to the imperative mood from this release on; history is not
+      rewritten.
     - Added `frontend/.env.example` documenting `VITE_GOOGLE_CLIENT_ID`, the only variable the
       project needs and the one cloud sync fails without.
 
 ### Fixed
-- **SpotlightCard:** The component now accepts standard HTML attributes and spreads props, so it
-  can take `className`, `onClick` and the rest without a wrapper element.
+- **Widget catalog out of step with the widgets that exist:**
+    - The store offered **Pixel Mood**, which had no component at all, so adding it produced an
+      empty box with no error. It was removed from the catalog and comes back if the mood diary
+      is ever built.
+    - **Metas por Tag** (`MetaTagsBox`) was the opposite case: it rendered correctly but was in
+      no catalog, so there was no way to add it from the interface. It is now listed.
+- **RPG Profile pomodoro count was always zero.** It read a `localStorage` key that no part of
+  the app ever wrote, and polled it every five seconds forever. It now reads the pomodoro store
+  directly, and the timer is gone.
+- **Backup export left data behind.** Projects and routines, the user profile and the favorites
+  were never written to the exported file, so restoring it produced a dashboard missing all
+  three.
+- **`immer` was never declared as a dependency.** The stores import it through
+  `zustand/middleware/immer`, but it only existed in `node_modules` because an unused package
+  happened to depend on it. It is now an explicit dependency, pinned to the major the project
+  has always built against.
+- **The license was stated three ways.** The `LICENSE` file has been **CC BY-NC 4.0** since it
+  was added, but the in-app Wiki announced "Licença MIT / Projeto Open Source sob a licença MIT"
+  and the 0.9.0 notes repeated it. MIT permits commercial use and CC BY-NC forbids it, so the
+  repository was promising both. The Wiki and the 0.9.0 entry now match the `LICENSE` file, and
+  the Wiki text spells out the non-commercial condition it was missing.
+- **SpotlightCard** now accepts standard HTML attributes and spreads props, so it can take
+  `className`, `onClick` and the rest without a wrapper element.
+
+### Performance
+- **Three widgets were being downloaded by everyone.** `RiskTrackerBox`,
+  `PresenceCalendarBox` and `ActivityGoalsBox` were imported eagerly while every other widget
+  loaded on demand, so their code shipped to every visitor even with none of them on the
+  dashboard. They are now lazy like the rest, and the main bundle dropped from 659.93 kB to
+  626.52 kB (191.36 kB to 184.41 kB gzipped).
 
 ### Changed
 - **Version alignment:** Bumped `package.json` to `0.12.0`. The 0.12.0 release notes were written
@@ -42,13 +72,11 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 ### Removed
 - The stock **Vite + React template README** that was still sitting in `frontend/`, describing
   ESLint setup options instead of this project.
-
-### Fixed (documentation)
-- **License was stated three ways.** The `LICENSE` file has been **CC BY-NC 4.0** since it was
-  added, but the in-app Wiki announced "Licença MIT / Projeto Open Source sob a licença MIT" and
-  the 0.9.0 notes repeated it. MIT permits commercial use and CC BY-NC forbids it, so the repo
-  was promising both. The Wiki and the 0.9.0 entry now match the `LICENSE` file, and the Wiki text
-  spells out the non-commercial condition it was missing.
+- Two dependencies that were installed and never imported anywhere: **`recharts`** and
+  **`react-player`**.
+- Three dead entries: the `goal-hours` storage key, which no store ever wrote; a stale widget
+  key in the backup list; and a grid height registered in two stores for a widget that never
+  existed.
 
 ---
 

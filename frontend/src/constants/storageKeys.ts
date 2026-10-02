@@ -4,5 +4,4 @@ export const STORAGE_KEYS = {
   TAGS: "tags-storage",
   POMODORO: "pomodoro-storage",
   DASHBOARD: "dashboard-storage",
-  GOAL_HOURS: "goal-hours-storage",
 } as const;
