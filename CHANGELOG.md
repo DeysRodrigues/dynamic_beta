@@ -1,22 +1,20 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented in this file.
 
-The format follows [Semantic Versioning 2.0.0](https://semver.org/).
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
+[Semantic Versioning](https://semver.org/). The conventions behind it, including the order of
+the sections, are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-> Versions prior to 1.0.0 indicate the project is still under active development.  
-> Breaking changes may occur until version 1.0.0.
+> The project is below `1.0.0` and still under active development, so a minor version may
+> change existing behaviour.
 
-- **MAJOR version**: incompatible API changes  
-- **MINOR version**: backward-compatible functionality  
-- **PATCH version**: backward-compatible bug fixes  
+- **MAJOR**: incompatible changes
+- **MINOR**: new functionality, or a change to behaviour that already existed
+- **PATCH**: bug fixes only
 
-- `0.0.x` → raw prototype, initial structure  
-- `0.1.0` → first functional base (e.g., basic notes CRUD)  
-- `0.2.x` up to `0.9.x` → iterative improvements and incremental features  
-- `1.0.0` → stable release with:
-  - Well-defined interfaces (e.g., Task, User, Tag, etc.)  
-  - Architecture considered “ready” for real use  
+`1.0.0` is reserved for the point where the stored data has a declared and validated shape and
+the architecture is considered ready for real use.
 
 ---
 
@@ -32,6 +30,17 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
       rewritten.
     - Added `frontend/.env.example` documenting `VITE_GOOGLE_CLIENT_ID`, the only variable the
       project needs and the one cloud sync fails without.
+
+### Changed
+- **Version alignment:** Bumped `package.json` to `0.12.0`. The 0.12.0 release notes were written
+  but the version bump was missed, leaving the manifest reporting `0.11.0`.
+
+### Performance
+- **Three widgets were being downloaded by everyone.** `RiskTrackerBox`,
+  `PresenceCalendarBox` and `ActivityGoalsBox` were imported eagerly while every other widget
+  loaded on demand, so their code shipped to every visitor even with none of them on the
+  dashboard. They are now lazy like the rest, and the main bundle dropped from 659.93 kB to
+  626.52 kB (191.36 kB to 184.41 kB gzipped).
 
 ### Fixed
 - **Widget catalog out of step with the widgets that exist:**
@@ -58,17 +67,6 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - **SpotlightCard** now accepts standard HTML attributes and spreads props, so it can take
   `className`, `onClick` and the rest without a wrapper element.
 
-### Performance
-- **Three widgets were being downloaded by everyone.** `RiskTrackerBox`,
-  `PresenceCalendarBox` and `ActivityGoalsBox` were imported eagerly while every other widget
-  loaded on demand, so their code shipped to every visitor even with none of them on the
-  dashboard. They are now lazy like the rest, and the main bundle dropped from 659.93 kB to
-  626.52 kB (191.36 kB to 184.41 kB gzipped).
-
-### Changed
-- **Version alignment:** Bumped `package.json` to `0.12.0`. The 0.12.0 release notes were written
-  but the version bump was missed, leaving the manifest reporting `0.11.0`.
-
 ### Removed
 - The stock **Vite + React template README** that was still sitting in `frontend/`, describing
   ESLint setup options instead of this project.
@@ -77,6 +75,8 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 - Three dead entries: the `goal-hours` storage key, which no store ever wrote; a stale widget
   key in the backup list; and a grid height registered in two stores for a widget that never
   existed.
+
+---
 
 ---
 
