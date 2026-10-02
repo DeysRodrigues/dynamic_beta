@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 import { useDashboardStore } from "@/store/useDashboardStore";
+import { usePomodoroStore } from "@/store/usePomodoroStore";
 import { 
   User, Shield, Sword, Trophy, Crown,
   Edit2, Save, X, Plus, Trash2, BookOpen, Timer, CheckSquare
@@ -68,16 +69,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
     return count;
   }, [boxes, getBoxContent]);
 
-  const [pomodoros, setPomodoros] = useState(0);
-  useEffect(() => {
-    const checkPomo = () => {
-      const savedPomo = localStorage.getItem("pomodoro-counts");
-      if (savedPomo) setPomodoros(JSON.parse(savedPomo).work || 0);
-    };
-    checkPomo();
-    const interval = setInterval(checkPomo, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  const pomodoros = usePomodoroStore(state => state.counts.work);
 
   const totalXp = (completedTasks * data.rules.task) + (completedBooks * data.rules.book) + (pomodoros * data.rules.pomodoro) + data.manualXp;
   const level = Math.floor(Math.sqrt(totalXp / 100)) + 1;

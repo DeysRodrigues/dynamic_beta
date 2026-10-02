@@ -1,22 +1,81 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented in this file.
 
-The format follows [Semantic Versioning 2.0.0](https://semver.org/).
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
+[Semantic Versioning](https://semver.org/). The conventions behind it, including the order of
+the sections, are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-> Versions prior to 1.0.0 indicate the project is still under active development.  
-> Breaking changes may occur until version 1.0.0.
+> The project is below `1.0.0` and still under active development, so a minor version may
+> change existing behaviour.
 
-- **MAJOR version**: incompatible API changes  
-- **MINOR version**: backward-compatible functionality  
-- **PATCH version**: backward-compatible bug fixes  
+- **MAJOR**: incompatible changes
+- **MINOR**: new functionality, or a change to behaviour that already existed
+- **PATCH**: bug fixes only
 
-- `0.0.x` → raw prototype, initial structure  
-- `0.1.0` → first functional base (e.g., basic notes CRUD)  
-- `0.2.x` up to `0.9.x` → iterative improvements and incremental features  
-- `1.0.0` → stable release with:
-  - Well-defined interfaces (e.g., Task, User, Tag, etc.)  
-  - Architecture considered “ready” for real use  
+`1.0.0` is reserved for the point where the stored data has a declared and validated shape and
+the architecture is considered ready for real use.
+
+---
+
+## [0.12.1] - 2026-10-02
+### Added
+- **Documentation Standard:**
+    - `README.md` rewritten from scratch in English as the main entry point, with a full
+      `README.pt-BR.md` translation beside it and a language selector in both.
+    - The README now states measured numbers, the real route map, the widget catalog, the task
+      script syntax and the technical decisions behind the local-first architecture.
+    - New `CONTRIBUTING.md` recording the commit, branch and changelog conventions. Commit
+      subjects move from past tense to the imperative mood from this release on; history is not
+      rewritten.
+    - Added `frontend/.env.example` documenting `VITE_GOOGLE_CLIENT_ID`, the only variable the
+      project needs and the one cloud sync fails without.
+
+### Changed
+- **Version alignment:** `package.json` reported `0.11.0` while `0.12.0` had already shipped,
+  because that release's notes were written but the bump was missed. The manifest is in sync
+  with this release again.
+
+### Performance
+- **Three widgets were being downloaded by everyone.** `RiskTrackerBox`,
+  `PresenceCalendarBox` and `ActivityGoalsBox` were imported eagerly while every other widget
+  loaded on demand, so their code shipped to every visitor even with none of them on the
+  dashboard. They are now lazy like the rest, and the main bundle dropped from 659.93 kB to
+  626.52 kB (191.36 kB to 184.41 kB gzipped).
+
+### Fixed
+- **Widget catalog out of step with the widgets that exist:**
+    - The store offered **Pixel Mood**, which had no component at all, so adding it produced an
+      empty box with no error. It was removed from the catalog and comes back if the mood diary
+      is ever built.
+    - **Metas por Tag** (`MetaTagsBox`) was the opposite case: it rendered correctly but was in
+      no catalog, so there was no way to add it from the interface. It is now listed.
+- **RPG Profile pomodoro count was always zero.** It read a `localStorage` key that no part of
+  the app ever wrote, and polled it every five seconds forever. It now reads the pomodoro store
+  directly, and the timer is gone.
+- **Backup export left data behind.** Projects and routines, the user profile and the favorites
+  were never written to the exported file, so restoring it produced a dashboard missing all
+  three.
+- **`immer` was never declared as a dependency.** The stores import it through
+  `zustand/middleware/immer`, but it only existed in `node_modules` because an unused package
+  happened to depend on it. It is now an explicit dependency, pinned to the major the project
+  has always built against.
+- **The license was stated three ways.** The `LICENSE` file has been **CC BY-NC 4.0** since it
+  was added, but the in-app Wiki announced "Licença MIT / Projeto Open Source sob a licença MIT"
+  and the 0.9.0 notes repeated it. MIT permits commercial use and CC BY-NC forbids it, so the
+  repository was promising both. The Wiki and the 0.9.0 entry now match the `LICENSE` file, and
+  the Wiki text spells out the non-commercial condition it was missing.
+- **SpotlightCard** now accepts standard HTML attributes and spreads props, so it can take
+  `className`, `onClick` and the rest without a wrapper element.
+
+### Removed
+- The stock **Vite + React template README** that was still sitting in `frontend/`, describing
+  ESLint setup options instead of this project.
+- Two dependencies that were installed and never imported anywhere: **`recharts`** and
+  **`react-player`**.
+- Three dead entries: the `goal-hours` storage key, which no store ever wrote; a stale widget
+  key in the backup list; and a grid height registered in two stores for a widget that never
+  existed.
 
 ---
 
@@ -56,6 +115,15 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
     - Developed a new reusable `CustomDatePicker` to replace native browser date inputs across the entire application.
     - Implemented "default" and "inline" variants for seamless integration into forms and toolbars.
     - Integrated automated icon inversion logic that detects theme brightness to ensure visibility in dark mode.
+- **Native Element Theming:**
+    - Global `accent-color` bound to the theme's primary color, so checkboxes, radios and sliders follow the active palette instead of the browser default.
+    - Focus rings on inputs and textareas derived from the primary color through `color-mix`.
+    - New `--calendar-invert` variable, set by `ThemeApplicator` from the background brightness, used to invert the native date picker indicator.
+    - Forced `select option` colors from the box variables, fixing dropdowns that rendered white on white under dark themes.
+- **Presence Calendar Overhaul:**
+    - The widget now holds **multiple events** instead of a single one, with event switching, inline rename, full editing and deletion.
+    - Migrated its state to `useBoxContentStore` and added an empty state that offers to create the first event.
+    - Presence and absence marking stays scoped to each event's date range and configured weekdays.
 
 ### Fixed
 - **Task Management UX:**
@@ -114,9 +182,13 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
     - **Google Drive Backup:** Integrated Google Drive API to allow users to persist their data in the cloud. Includes automatic token management and one-click backup/restore.
 - **Knowledge Base:**
     - **Wiki Center:** Launched a comprehensive, tab-based Wiki (`/wiki`) styled with the Dyna aesthetic. Covers advanced commands, IF/THEN logic, and hidden curiosities.
-    - **Institutional Pages:** Added detailed profiles for the creator (**Deys Rodrigues**), license information (MIT), and a future roadmap.
+    - **Institutional Pages:** Added detailed profiles for the creator (**Deys Rodrigues**), license information (CC BY-NC 4.0), and a future roadmap.
 - **Project Governance:**
     - **Beta Testing Program:** Formal invitation for community testers and contributors directly within the app.
+- **New Widget:**
+    - **Three Frogs (`ThreeFrogsBox`):** "Eat the Frog" widget that pins the three hardest tasks of the day at the top of the grid.
+- **Shared UI:**
+    - **Under Construction Modal:** Added `ActionModal`, a reusable dialog for features that are announced but not shipped yet, replacing buttons that silently did nothing.
 
 ### Fixed
 - **Mobile Experience:**
@@ -242,14 +314,14 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
     - **Theme Applicator:** Dynamic CSS variable injection to apply theme changes instantly across the app.
 - **Widget Ecosystem:**
     - New **Widgets Store Page** (`/store`) to discover and install new functionalities.
-    - **Custom Widget Creator:** Added `WidgetEditorModal` to create custom widgets using HTML/CSS/JS.
-    - **New Native Widgets:** `AutomationBox` (If/Then rules), `CountdownBox`, `QuickWorkoutBox`, `SleepTrackerBox`, `CozyLibraryBox`, `MonthlyGoalsBox`, `RpgProfileBox`.
-    - **New Embed Widgets:** `SnakeWidget`, `WaterWidget`, (and more).
+    - **Custom Widget Creator:** Added `WidgetEditorModal` to create custom widgets using HTML/CSS/JS, rendered in isolation by `CustomWidgetViewer` on the `/w/custom/:id` route.
+    - **New Native Widgets:** `AutomationBox` (If/Then rules), `CountdownBox`, `QuickWorkoutBox`, `CozyLibraryBox`, `MonthlyGoalsBox`, `RpgProfileBox`, `BookTrackerBox` (pages read and reading progress), `PixelGardenBox` (plants that grow as tasks are completed), `HabitTrackerBox` (daily consistency grid), `MiniCalendarBox`, `NotepadBox` and `ThemeBox` (theme switching from inside the grid).
+    - **New Embed Widgets:** `SnakeWidget`, `WaterWidget` and `BioWidget`, each served as a standalone route under `/w/` so `EmbeddedBox` can pull it in through an iframe.
 - **Layout Management:**
     - **Layout Templates:** Feature to save the current dashboard arrangement and theme as a reusable template.
     - **Layout Manager:** New modal to save, load, import, and export (JSON) layout setups.
 
-- **Landing Page:** Added a polished Landing Page (`/intro`) with feature highlights and visual presentations.
+- **Landing Page:** Added a polished Landing Page (`/intro`) with feature highlights and visual presentations, built on the `SpotlightCard` and `ShinyText` visual components.
 
 ### Changed
 - **UI/UX Refactor:**

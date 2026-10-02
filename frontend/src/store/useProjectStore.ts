@@ -45,7 +45,6 @@ const WIDGET_HEIGHTS: Record<string, number> = {
   books: 3,
   auto: 3,
   workout: 3,
-  sleep: 3,
   library: 3,
   theme: 2,
   snippet: 3,

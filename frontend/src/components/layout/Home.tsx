@@ -42,9 +42,6 @@ import { cn } from "@/lib/utils";
 import ShinyText from "@/components/landing/ShinyText";
 
 import LayoutManagerModal from "./modals/LayoutManagerModal";
-import RiskTrackerBox from "./boxes/RiskTrackerBox";
-import PresenceCalendarBox from "./boxes/PresenceCalendarBox";
-import ActivityGoalsBox from "./boxes/ActivityGoalsBox";
 
 
 // --- LAZY LOADING ---
@@ -70,6 +67,9 @@ const CodeSnippetBox = React.lazy(() => import("./boxes/CodeSnippetBox"));
 const QuickLinksBox = React.lazy(() => import("./boxes/QuickLinksBox"));
 const ThreeFrogsBox = React.lazy(() => import("./boxes/ThreeFrogsBox"));
 const ProjectOverviewBox = React.lazy(() => import("./boxes/ProjectOverviewBox"));
+const RiskTrackerBox = React.lazy(() => import("./boxes/RiskTrackerBox"));
+const PresenceCalendarBox = React.lazy(() => import("./boxes/PresenceCalendarBox"));
+const ActivityGoalsBox = React.lazy(() => import("./boxes/ActivityGoalsBox"));
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
