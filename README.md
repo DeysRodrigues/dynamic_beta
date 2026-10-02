@@ -32,7 +32,7 @@ that is who it was built for; the code, the commits and this README are in Engli
 
 ## Status
 
-Measured on 2026-10-02: 276 commits, 97 TypeScript files, 14,655 lines in `frontend/src`.
+Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `frontend/src`.
 `npm run build` and `npm run lint` both pass.
 
 | Area | State |
@@ -51,9 +51,9 @@ Measured on 2026-10-02: 276 commits, 97 TypeScript files, 14,655 lines in `front
 | Continuous integration | none yet |
 | Mobile layout | responsive, verified by hand only |
 
-Two limits worth stating up front. The main bundle is **659.93 kB** (191.36 kB gzipped) because
-the shared vendor code is not split yet, even though every widget is already its own lazy chunk.
-And there is no test suite, so every change is verified by building and clicking.
+Two limits worth stating up front. The main bundle is **626.99 kB** (184.58 kB gzipped)
+because the shared vendor code is not split yet, even though every widget is its own lazy
+chunk. And there is no test suite, so every change is verified by building and clicking.
 
 ## Architecture
 
@@ -110,6 +110,7 @@ Routes:
 | vite | 7.0 | dev server and build |
 | tailwindcss | 3.4 | styling, driven by CSS variables the theme engine writes |
 | zustand | 5.0 | global state, with the `persist` and `immer` middlewares |
+| immer | 10.2 | the draft updates the two stores that change widgets and layout together |
 | react-grid-layout | 1.5 | the draggable and resizable grid |
 | react-router-dom | 7.6 | routing |
 | date-fns | 4.1 | date math in the planner and the calendars |
