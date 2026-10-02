@@ -51,6 +51,9 @@ refactor/04-persistence-registry
 test/03-safety-net
 ```
 
+A number means a planned step. A small correction that was not planned drops the number:
+`docs/changelog-structure`.
+
 Each branch merges into `develop` with `--no-ff`, so one branch is one identifiable merge
 commit and `git revert -m 1 <merge>` undoes the whole unit. `develop` merges into `main` only
 at a release.
@@ -60,8 +63,15 @@ at a release.
 [`CHANGELOG.md`](CHANGELOG.md) follows [Keep a Changelog](https://keepachangelog.com/) and
 [Semantic Versioning](https://semver.org/).
 
-- Work in progress goes under `## [Unreleased]`, below the right heading: `Added`, `Changed`,
-  `Fixed`, `Removed`, `Performance`.
+- Work in progress goes under `## [Unreleased]`, which carries no version and no date. A
+  version number is assigned only when the release ships.
+- Sections appear in this order, always, and one of each at most:
+
+  **`Added`** · **`Changed`** · **`Performance`** · **`Fixed`** · **`Removed`**
+
+  That is Keep a Changelog's set with `Performance` added, which this project has used since
+  `0.4.0`. A refactor with no visible effect goes under `Changed`; entries up to `0.10.0` use a
+  `Refactor` heading, which stays as history and is not used again.
 - **Grouped by theme, not by the order the work happened.** Two fixes to the same area sit
   next to each other even if they were written weeks apart.
 - **It never mentions a branch or a work phase.** Branches are for whoever is building; the
