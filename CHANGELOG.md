@@ -20,6 +20,38 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ---
 
+## [Unreleased]
+### Added
+- **Documentation Standard:**
+    - `README.md` rewritten from scratch in English as the main entry point, with a full
+      `README.pt-BR.md` translation beside it and a language selector in both.
+    - The README now states measured numbers (276 commits, 97 TypeScript files, 14,655 lines in
+      `frontend/src`), the real route map, the widget catalog, the task script syntax and the
+      technical decisions behind the local-first architecture.
+    - Added `frontend/.env.example` documenting `VITE_GOOGLE_CLIENT_ID`, the only variable the
+      project needs and the one cloud sync fails without.
+
+### Fixed
+- **SpotlightCard:** The component now accepts standard HTML attributes and spreads props, so it
+  can take `className`, `onClick` and the rest without a wrapper element.
+
+### Changed
+- **Version alignment:** Bumped `package.json` to `0.12.0`. The 0.12.0 release notes were written
+  but the version bump was missed, leaving the manifest reporting `0.11.0`.
+
+### Removed
+- The stock **Vite + React template README** that was still sitting in `frontend/`, describing
+  ESLint setup options instead of this project.
+
+### Fixed (documentation)
+- **License was stated three ways.** The `LICENSE` file has been **CC BY-NC 4.0** since it was
+  added, but the in-app Wiki announced "Licença MIT / Projeto Open Source sob a licença MIT" and
+  the 0.9.0 notes repeated it. MIT permits commercial use and CC BY-NC forbids it, so the repo
+  was promising both. The Wiki and the 0.9.0 entry now match the `LICENSE` file, and the Wiki text
+  spells out the non-commercial condition it was missing.
+
+---
+
 ## [0.12.0] - 2026-06-04
 ### Added
 - **Workspace Task Isolation:**
@@ -56,6 +88,15 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
     - Developed a new reusable `CustomDatePicker` to replace native browser date inputs across the entire application.
     - Implemented "default" and "inline" variants for seamless integration into forms and toolbars.
     - Integrated automated icon inversion logic that detects theme brightness to ensure visibility in dark mode.
+- **Native Element Theming:**
+    - Global `accent-color` bound to the theme's primary color, so checkboxes, radios and sliders follow the active palette instead of the browser default.
+    - Focus rings on inputs and textareas derived from the primary color through `color-mix`.
+    - New `--calendar-invert` variable, set by `ThemeApplicator` from the background brightness, used to invert the native date picker indicator.
+    - Forced `select option` colors from the box variables, fixing dropdowns that rendered white on white under dark themes.
+- **Presence Calendar Overhaul:**
+    - The widget now holds **multiple events** instead of a single one, with event switching, inline rename, full editing and deletion.
+    - Migrated its state to `useBoxContentStore` and added an empty state that offers to create the first event.
+    - Presence and absence marking stays scoped to each event's date range and configured weekdays.
 
 ### Fixed
 - **Task Management UX:**
@@ -114,9 +155,13 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
     - **Google Drive Backup:** Integrated Google Drive API to allow users to persist their data in the cloud. Includes automatic token management and one-click backup/restore.
 - **Knowledge Base:**
     - **Wiki Center:** Launched a comprehensive, tab-based Wiki (`/wiki`) styled with the Dyna aesthetic. Covers advanced commands, IF/THEN logic, and hidden curiosities.
-    - **Institutional Pages:** Added detailed profiles for the creator (**Deys Rodrigues**), license information (MIT), and a future roadmap.
+    - **Institutional Pages:** Added detailed profiles for the creator (**Deys Rodrigues**), license information (CC BY-NC 4.0), and a future roadmap.
 - **Project Governance:**
     - **Beta Testing Program:** Formal invitation for community testers and contributors directly within the app.
+- **New Widget:**
+    - **Three Frogs (`ThreeFrogsBox`):** "Eat the Frog" widget that pins the three hardest tasks of the day at the top of the grid.
+- **Shared UI:**
+    - **Under Construction Modal:** Added `ActionModal`, a reusable dialog for features that are announced but not shipped yet, replacing buttons that silently did nothing.
 
 ### Fixed
 - **Mobile Experience:**
@@ -242,14 +287,14 @@ The format follows [Semantic Versioning 2.0.0](https://semver.org/).
     - **Theme Applicator:** Dynamic CSS variable injection to apply theme changes instantly across the app.
 - **Widget Ecosystem:**
     - New **Widgets Store Page** (`/store`) to discover and install new functionalities.
-    - **Custom Widget Creator:** Added `WidgetEditorModal` to create custom widgets using HTML/CSS/JS.
-    - **New Native Widgets:** `AutomationBox` (If/Then rules), `CountdownBox`, `QuickWorkoutBox`, `SleepTrackerBox`, `CozyLibraryBox`, `MonthlyGoalsBox`, `RpgProfileBox`.
-    - **New Embed Widgets:** `SnakeWidget`, `WaterWidget`, (and more).
+    - **Custom Widget Creator:** Added `WidgetEditorModal` to create custom widgets using HTML/CSS/JS, rendered in isolation by `CustomWidgetViewer` on the `/w/custom/:id` route.
+    - **New Native Widgets:** `AutomationBox` (If/Then rules), `CountdownBox`, `QuickWorkoutBox`, `CozyLibraryBox`, `MonthlyGoalsBox`, `RpgProfileBox`, `BookTrackerBox` (pages read and reading progress), `PixelGardenBox` (plants that grow as tasks are completed), `HabitTrackerBox` (daily consistency grid), `MiniCalendarBox`, `NotepadBox` and `ThemeBox` (theme switching from inside the grid).
+    - **New Embed Widgets:** `SnakeWidget`, `WaterWidget` and `BioWidget`, each served as a standalone route under `/w/` so `EmbeddedBox` can pull it in through an iframe.
 - **Layout Management:**
     - **Layout Templates:** Feature to save the current dashboard arrangement and theme as a reusable template.
     - **Layout Manager:** New modal to save, load, import, and export (JSON) layout setups.
 
-- **Landing Page:** Added a polished Landing Page (`/intro`) with feature highlights and visual presentations.
+- **Landing Page:** Added a polished Landing Page (`/intro`) with feature highlights and visual presentations, built on the `SpotlightCard` and `ShinyText` visual components.
 
 ### Changed
 - **UI/UX Refactor:**
