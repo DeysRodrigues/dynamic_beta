@@ -78,8 +78,6 @@ the architecture is considered ready for real use.
 
 ---
 
----
-
 ## [0.12.0] - 2026-06-04
 ### Added
 - **Workspace Task Isolation:**
