@@ -7,13 +7,13 @@ import {
   Sprout,
   Book,
   Activity,
-  Smile,
   Dumbbell,
   CalendarDays,
   BookOpen,
   Target,
   Zap,
   Clock,
+  Hourglass,
   Palette,
   BarChart3,
   Tags,
@@ -88,14 +88,6 @@ export const nativeWidgets = [
     icon: <Activity size={24} />,
     color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
   },
-  {
-    id: "mood",
-    title: "Pixel Mood",
-    description: "Diário de humor.",
-    icon: <Smile size={24} />,
-    color: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
-  },
-
   {
     id: "workout",
     title: "Quick Workout",
@@ -200,6 +192,13 @@ export const nativeWidgets = [
     description: "Foque nas 3 tarefas mais importantes do dia para vencer a procrastinação.",
     icon: <Target size={24} />,
     color: "var(--primary-color)",
+  },
+  {
+    id: "metatags",
+    title: "Metas por Tag",
+    description: "Defina uma meta de horas para cada tag e acompanhe o progresso.",
+    icon: <Hourglass size={24} />,
+    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
   }
 ];
 
