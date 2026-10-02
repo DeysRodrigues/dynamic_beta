@@ -121,11 +121,11 @@ const WIKI_DATA: WikiSection[] = [
   },
   {
     id: "license",
-    title: "Licença MIT",
+    title: "Licença CC BY-NC 4.0",
     category: "sistema",
     icon: <Copyright size={18} />,
-    content: "Projeto Open Source sob a licença MIT.",
-    fullText: "O Dynamic Notes é software livre. Você pode baixar, modificar e distribuir, desde que mantenha os créditos da autora original. Acreditamos na construção coletiva e no livre acesso a ferramentas de qualidade."
+    content: "Projeto sob a licença Creative Commons BY-NC 4.0.",
+    fullText: "O DynaBox é livre para uso pessoal. Você pode baixar, modificar e distribuir, desde que mantenha os créditos da autora original e não use para fins comerciais. Acreditamos na construção coletiva e no livre acesso a ferramentas de qualidade."
   }
 ];
 
