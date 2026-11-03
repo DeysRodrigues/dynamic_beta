@@ -45,7 +45,7 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 137 tests (task parser, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
+| Automated tests | 162 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -111,6 +111,7 @@ Routes:
 | zustand | 5.0 | global state, with the `persist` and `immer` middlewares |
 | zod | 4.6 | the shape of what the heavier widgets save, checked on every read and write |
 | immer | 10.2 | the draft updates the two stores that change widgets and layout together |
+| react-markdown, remark-gfm | 10, 4 | the markdown preview of the notepad, GitHub flavour, without raw HTML |
 | react-grid-layout | 1.5 | the draggable and resizable grid |
 | react-router-dom | 7.6 | routing |
 | date-fns | 4.1 | date math in the planner and the calendars |
@@ -148,7 +149,7 @@ npm run preview   # serve the production build
 | Tasks | the day's task list, scoped to the active workspace |
 | Progress | how much of today is done |
 | Pomodoro | focus timer that keeps running across navigation |
-| Notepad | quick notes |
+| Notepad | quick notes, written in markdown with a preview and clickable checklists |
 | Mini Calendar | compact month view |
 | Presence Calendar | attendance tracking for recurring events |
 | Countdown | time left until a date |
@@ -231,7 +232,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 137 tests
+npm run test      # vitest, 162 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the

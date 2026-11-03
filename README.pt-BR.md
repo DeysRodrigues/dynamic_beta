@@ -45,7 +45,7 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 137 testes (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
+| Testes automatizados | 162 testes (markdown, parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -112,6 +112,7 @@ Rotas:
 | zustand | 5.0 | estado global, com os middlewares `persist` e `immer` |
 | zod | 4.6 | o formato do que os widgets mais pesados salvam, conferido a cada leitura e escrita |
 | immer | 10.2 | o rascunho que as duas stores que mexem em widget e layout juntos usam |
+| react-markdown, remark-gfm | 10, 4 | a visualização em markdown do bloco de notas, no estilo do GitHub, sem HTML cru |
 | react-grid-layout | 1.5 | a grade que arrasta e redimensiona |
 | react-router-dom | 7.6 | roteamento |
 | date-fns | 4.1 | conta de data no planejador e nos calendários |
@@ -149,7 +150,7 @@ npm run preview   # serve o build de produção
 | Tarefas | a lista de tarefas do dia, restrita ao workspace ativo |
 | Progresso | quanto do dia já está feito |
 | Pomodoro | timer de foco que continua rodando quando você troca de página |
-| Bloco de notas | anotação rápida |
+| Bloco de notas | anotação rápida, escrita em markdown, com visualização e checklist clicável |
 | Mini calendário | visão compacta do mês |
 | Calendário de presença | controle de presença em evento recorrente |
 | Contagem regressiva | quanto falta até uma data |
@@ -235,7 +236,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 137 testes
+npm run test      # vitest, 162 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as

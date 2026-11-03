@@ -19,6 +19,13 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+### Added
+- **Markdown in the notepad.** A note can be previewed as GitHub-flavoured markdown (headings,
+  lists, tables, code, links, strikethrough) with a button on the widget, and the choice is
+  remembered per note. Checklists (`- [ ]`) are clickable in the preview and update the text.
+  Raw HTML is shown as text, never run, and unsafe links are dropped. The markdown library only
+  downloads with the notepad widget.
+
 ### Performance
 - **The library code is split from the app code.** React, the router, the grid, the icons, the
   date library and the schema library each get their own file, so a deploy that only touches
