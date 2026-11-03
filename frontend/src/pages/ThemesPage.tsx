@@ -12,10 +12,21 @@ import { useLayoutTemplateStore } from "@/store/useLayoutTemplateStore";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
 
-import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
+import { colorPalettes, wallpaperThemes } from "@/data/themeItems";
+import { readySetups } from "@/data/setups";
 import ShinyText from "@/components/landing/ShinyText";
 import { themeThumbnail } from "@/lib/themeImages";
+import { widgetRegistry } from "@/widgets/registry";
+import { boxFromLegacyId } from "@/utils/BoxFactory";
 import type { ThemeItem, WallpaperThemeItem, SetupItem } from "@/types/Theme";
+
+/** "8 widgets: Tarefas, Code Snippets, Pomodoro Timer +5", for the card of a setup. */
+function setupWidgetSummary(setup: SetupItem): string {
+  const titles = setup.boxes.map((id) => widgetRegistry[boxFromLegacyId(id).type]?.title).filter(Boolean);
+  const shown = titles.slice(0, 3).join(", ");
+  const rest = titles.length - 3;
+  return `${titles.length} widgets: ${shown}${rest > 0 ? ` +${rest}` : ""}`;
+}
 
 // --- COMPONENTES MEMOIZADOS ---
 
@@ -44,6 +55,7 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
       <div>
         <h3 className="font-bold text-lg">{setup.name}</h3>
         <p className="text-xs opacity-60 line-clamp-2 mt-1">{setup.description}</p>
+        <p className="text-[10px] opacity-40 mt-2 line-clamp-1">{setupWidgetSummary(setup)}</p>
       </div>
       <button onClick={() => onInstall(setup)} className="w-full mt-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:opacity-90 flex items-center justify-center gap-2 shadow-sm">
         <Download size={14}/> Instalar Setup
