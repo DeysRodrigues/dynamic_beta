@@ -12,7 +12,6 @@ const srcDir = resolve(__dirname);
 // Where a line is part of the content or of a drawing rather than of the interface.
 const ALLOWED: Record<string, string> = {
   "widgets/SnakeWidget.tsx": "the game board frame",
-  "widgets/PixelGardenBox.tsx": "pixel-art drawing",
   "components/ui/Markdown.tsx": "the horizontal rule a note asks for with ---",
   "components/layout/boxes/CozyLibraryBox.tsx": "the spines drawn on the shelf books",
 };

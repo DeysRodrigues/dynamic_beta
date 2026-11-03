@@ -196,3 +196,12 @@ select option {
 .inverted-mode img.no-invert {
   filter: invert(1) hue-rotate(180deg);
 }
+
+/* Pixel Garden: the sparkles of a thriving plant */
+@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+.pixel-twinkle {
+  animation: twinkle 2.4s ease-in-out infinite;
+}
