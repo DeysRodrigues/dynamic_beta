@@ -24,8 +24,7 @@ Um painel de produtividade local-first: uma grade de widgets que você arruma do
 O DynaBox é um painel de página única onde cada funcionalidade é um widget (uma "box") que você
 solta numa grade redimensionável. Você escolhe quais widgets aparecem, onde ficam e como tudo
 se parece, e o arranjo é seu: não tem conta, não tem servidor e não tem banco de dados. Tudo
-mora no `localStorage`, e o único jeito de um dado sair do navegador é você conectar o seu
-próprio Google Drive para fazer backup.
+mora no `localStorage`, e o dado só sai do navegador se você mesma exportar um backup em JSON.
 
 Está no ar em **[dynabox.space](https://dynabox.space)**. A interface é em português, porque é
 para quem ele foi feito; o código, os commits e este README são em inglês.
@@ -46,7 +45,6 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Backup e restauração no Google Drive | funciona, precisa do seu `VITE_GOOGLE_CLIENT_ID` |
 | Testes automatizados | ainda não existem |
 | Integração contínua | ainda não existe |
 | Layout no celular | responsivo, conferido só à mão |
@@ -63,8 +61,6 @@ Um app React, sem backend. O estado mora em stores do Zustand, cada uma persisti
 
 ```
 componente  ->  store Zustand  ->  localStorage
-                      |
-                      +---------->  Google Drive (opcional, sob demanda)
 ```
 
 ```
@@ -80,9 +76,8 @@ frontend/src
 │   └── ui/             primitivos compartilhados: button, TaskItem, CustomDatePicker
 ├── widgets/            páginas avulsas embutidas por iframe (/w/*)
 ├── store/              14 stores do Zustand
-├── services/           cliente do Google Drive
-├── hooks/              useCloudSync, useWeekPlanner
-├── utils/              parse de tarefa, helpers de data, helpers de sync
+├── hooks/              useWeekPlanner
+├── utils/              parse de tarefa, helpers de data
 ├── data/               catálogo de widget, catálogo de tema, notas de versão no app
 └── types/              Task, Project, Theme
 ```
@@ -130,20 +125,7 @@ npm run dev
 ```
 
 O app abre em `http://localhost:5173` e funciona inteiro offline desde o primeiro carregamento.
-Nada precisa de configuração, menos a sincronização com o Google Drive.
-
-### Ligando a sincronização com o Google Drive
-
-A sincronização pede o escopo `drive.file` e escreve um arquivo só,
-`dynabox_backup_v1.json`, no seu Drive. É JSON puro, e só a conta que você autorizar consegue
-ler. Para usar, você precisa do seu próprio client ID de OAuth no console do Google Cloud:
-
-```bash
-cp .env.example .env
-# depois preencha o VITE_GOOGLE_CLIENT_ID
-```
-
-Sem essa variável o resto do app roda normal, e só os botões de sincronização falham.
+Nada precisa de configuração.
 
 ### Outros comandos
 
@@ -211,7 +193,7 @@ na entrada rápida, na criação em lote e no modal de edição:
 **Local-first, com o `localStorage` como fonte da verdade.** Não tem backend nem conta. Isso
 deixa o app instantâneo e privado por padrão, e é o motivo de o modelo de dados ter que ser
 pequeno o bastante para serializar inteiro. O custo é que nada sincroniza entre dispositivos
-sozinho, e é justamente o buraco que o backup opcional no Drive fecha.
+sozinho, e por enquanto quem cobre isso é a exportação e importação em JSON.
 
 **Zustand em vez de Context.** O app começou em provider de Context e saiu deles na 0.2.0. O
 motivo foi concreto: com o Pomodoro batendo a cada segundo, um único context no topo da árvore
@@ -250,8 +232,8 @@ npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
 ```
 
-O resto é conferido à mão: a volta completa da sincronização (fazer backup num navegador e
-restaurar em outro), a persistência do layout depois de recarregar, e os widgets de gamificação
+O resto é conferido à mão: a volta completa do backup (exportar num navegador e
+importar em outro), a persistência do layout depois de recarregar, e os widgets de gamificação
 reagindo a uma tarefa concluída. O [`FEATURES.md`](FEATURES.md) documenta o sistema widget por
 widget.
 
