@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface BoxContentState {
   // Mapa de ID do Box -> Dados (ex: { "notepad-123": { text: "Olá" } })
@@ -31,6 +32,6 @@ export const useBoxContentStore = create<BoxContentState>()(
 
       loadAllContents: (newContents) => set({ contents: newContents }),
     }),
-    { name: "box-content-storage" }
+    { ...persistConfig(PERSISTED.boxContent) }
   )
 );
