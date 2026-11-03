@@ -8,7 +8,7 @@
  * and handle the old one in that store's `migrate`.
  */
 export const PERSISTED = {
-  dashboard: { key: "dashboard-storage", version: 1 },
+  dashboard: { key: "dashboard-storage", version: 2 },
   tasks: { key: "tasks-storage", version: 1 },
   goals: { key: "goals-storage", version: 1 },
   tags: { key: "tags-storage", version: 1 },
@@ -19,7 +19,7 @@ export const PERSISTED = {
   notifications: { key: "notification-storage", version: 1 },
   theme: { key: "theme-storage", version: 1 },
   pomodoro: { key: "pomodoro-global-storage", version: 1 },
-  projects: { key: "projects-storage", version: 1 },
+  projects: { key: "projects-storage", version: 2 },
   userProfile: { key: "user-profile-storage", version: 1 },
   favorites: { key: "favorites-storage", version: 1 },
   /** Not a Zustand store: a bare counter written by the water widget. */
@@ -36,13 +36,17 @@ export const PERSISTED_KEYS: readonly string[] = Object.values(PERSISTED).map(
  * Options every persisted store shares: its key, its version and a `migrate`.
  *
  * Zustand throws away stored data whose version differs from the store's when there is no
- * `migrate`, so every store has one even while it is the identity. Data saved before
- * versioning existed (version 0) passes through unchanged.
+ * `migrate`, so every store has one. Pass a migration when the shape changes; without one it is
+ * the identity. It receives the stored state and the version it was saved with, and data saved
+ * before versioning existed arrives as version 0.
  */
-export function persistConfig(entry: PersistEntry) {
+export function persistConfig(
+  entry: PersistEntry,
+  migrate: (state: unknown, version: number) => unknown = (state) => state
+) {
   return {
     name: entry.key,
     version: entry.version,
-    migrate: (state: unknown) => state as never,
+    migrate: migrate as (state: unknown, version: number) => never,
   };
 }

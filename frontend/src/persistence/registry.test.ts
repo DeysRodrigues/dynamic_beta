@@ -19,6 +19,6 @@ describe("registry", () => {
     expect(cfg.name).toBe("tasks-storage");
     expect(cfg.version).toBe(1);
     const data = { a: 1 };
-    expect(cfg.migrate(data)).toBe(data);
+    expect(cfg.migrate(data, 0)).toBe(data);
   });
 });
