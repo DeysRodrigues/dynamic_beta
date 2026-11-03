@@ -11,25 +11,33 @@ import { appStorage } from "./adapter";
  * and handle the old one in that store's `migrate`.
  */
 export const PERSISTED = {
-  dashboard: { key: "dashboard-storage", version: 2 },
-  tasks: { key: "tasks-storage", version: 1 },
-  goals: { key: "goals-storage", version: 1 },
-  tags: { key: "tags-storage", version: 1 },
-  boxContent: { key: "box-content-storage", version: 1 },
-  layoutTemplates: { key: "layout-templates-storage", version: 1 },
-  customWidgets: { key: "custom-widgets-storage", version: 1 },
-  weeks: { key: "weeks-storage", version: 1 },
-  notifications: { key: "notification-storage", version: 1 },
-  theme: { key: "theme-storage", version: 1 },
-  pomodoro: { key: "pomodoro-global-storage", version: 1 },
-  projects: { key: "projects-storage", version: 2 },
-  userProfile: { key: "user-profile-storage", version: 1 },
-  favorites: { key: "favorites-storage", version: 1 },
+  dashboard: { key: "dashboard-storage", version: 2, label: "Painéis e widgets" },
+  tasks: { key: "tasks-storage", version: 1, label: "Tarefas" },
+  goals: { key: "goals-storage", version: 1, label: "Metas" },
+  tags: { key: "tags-storage", version: 1, label: "Tags" },
+  boxContent: { key: "box-content-storage", version: 1, label: "Conteúdo dos widgets" },
+  layoutTemplates: { key: "layout-templates-storage", version: 1, label: "Modelos de layout" },
+  customWidgets: { key: "custom-widgets-storage", version: 1, label: "Widgets personalizados" },
+  weeks: { key: "weeks-storage", version: 1, label: "Planejador semanal" },
+  notifications: { key: "notification-storage", version: 1, label: "Notificações" },
+  theme: { key: "theme-storage", version: 1, label: "Tema e cores" },
+  pomodoro: { key: "pomodoro-global-storage", version: 1, label: "Pomodoro" },
+  projects: { key: "projects-storage", version: 2, label: "Projetos" },
+  userProfile: { key: "user-profile-storage", version: 1, label: "Perfil" },
+  favorites: { key: "favorites-storage", version: 1, label: "Favoritos" },
   /** Not a Zustand store: a bare counter written by the water widget. */
-  waterCups: { key: "w-water-cups", version: 1 },
+  waterCups: { key: "w-water-cups", version: 1, label: "Copos de água" },
 } as const;
 
-export type PersistEntry = { readonly key: string; readonly version: number };
+export type PersistEntry = { readonly key: string; readonly version: number; readonly label?: string };
+
+/** The key, version and label of everything that is saved, for code that walks the whole list. */
+export const PERSISTED_ENTRIES: readonly Required<PersistEntry>[] = Object.values(PERSISTED);
+
+/** A name a person would recognise for a saved key, e.g. "Tarefas". */
+export function labelForKey(key: string): string {
+  return PERSISTED_ENTRIES.find((entry) => entry.key === key)?.label ?? key;
+}
 
 export const PERSISTED_KEYS: readonly string[] = Object.values(PERSISTED).map(
   (entry) => entry.key

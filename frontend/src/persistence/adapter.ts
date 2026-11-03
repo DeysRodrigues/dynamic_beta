@@ -40,11 +40,18 @@ function noteRevision(key: string) {
   if (revision !== undefined) revisions.set(key, revision);
 }
 
-/** Points every store at another adapter. Nothing counts as read until it is read from it. */
-export function setStorageAdapter(next: StorageAdapter) {
+/**
+ * Points every store at another adapter. Nothing counts as read until it is read from it, unless
+ * `keepReads` says the new adapter serves the very same data the old one did (the synced adapter
+ * reads the local copy, like the local one), in which case the stores are still valid and must
+ * keep saving.
+ */
+export function setStorageAdapter(next: StorageAdapter, options: { keepReads?: boolean } = {}) {
   adapter = next;
-  readKeys.clear();
-  revisions.clear();
+  if (!options.keepReads) {
+    readKeys.clear();
+    revisions.clear();
+  }
 }
 
 /** The revision the client last saw for a key, or `undefined` when the adapter has none. */

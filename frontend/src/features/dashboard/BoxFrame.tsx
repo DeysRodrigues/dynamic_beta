@@ -3,6 +3,7 @@ import { GripVertical, Trash2 } from "lucide-react";
 import type { BoxRef } from "@/types/Box";
 import { widgetRegistry } from "@/widgets/registry";
 import { cn } from "@/lib/utils";
+import { useHydration } from "@/persistence/hydration";
 import { BoxLoader } from "./BoxLoader";
 
 interface BoxFrameProps {
@@ -14,6 +15,8 @@ interface BoxFrameProps {
 
 /** One cell of the grid: the widget itself plus, in edit mode, its drag handle and delete button. */
 export function BoxFrame({ box, projectId, editMode, onRemove }: BoxFrameProps) {
+  // Changes when saved content was replaced from outside (the server), so the widget reloads it.
+  const epoch = useHydration((state) => state.epoch);
   const widget = widgetRegistry[box.type];
   if (!widget) return null;
   const Widget = widget.component;
@@ -56,7 +59,7 @@ export function BoxFrame({ box, projectId, editMode, onRemove }: BoxFrameProps) 
         )}
       >
         <Suspense fallback={<BoxLoader />}>
-          <Widget id={box.id} projectId={projectId} />
+          <Widget key={epoch} id={box.id} projectId={projectId} />
         </Suspense>
       </div>
     </div>
