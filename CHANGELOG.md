@@ -19,10 +19,23 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+### Changed
+- **All persistence is declared in one registry.** The storage keys used to be spread over
+  four places (a constants file, string literals in the stores, a hand-kept list in the backup
+  dialog and a direct `localStorage` read in the water widget). Backup, restore and reset now
+  read the same list, so none of them can forget a piece of data again.
+- **Reset only removes the app's own keys.** It used to clear the whole `localStorage` of the
+  origin.
+- **Restoring a backup only writes keys the app knows**, so an edited file cannot plant
+  arbitrary entries.
+
 ### Added
-- **First automated test suite**, with Vitest and Testing Library: 41 tests covering the task
-  text grammar (parsing and formatting, including the round trip), the date and task helpers
-  and the dashboard store actions. `npm run test` runs it once and `npm run test:watch` keeps
+- **Versioned storage:** every persisted slice now carries a format version and a migration
+  hook. Data saved before this change loads untouched, and the shape can change from here on
+  without wiping what users already have.
+- **First automated test suite**, with Vitest and Testing Library: 56 tests covering the task
+  text grammar (parsing and formatting, including the round trip), the date and task helpers,
+  the dashboard store actions, and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
   it running.
 - **Continuous integration** on GitHub Actions: lint, build and tests on every push and pull
   request to `develop` and `main`.
