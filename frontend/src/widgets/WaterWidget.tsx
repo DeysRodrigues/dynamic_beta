@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Plus, Minus } from "lucide-react";
+import { browserStorage } from "@/persistence/storage";
+import { PERSISTED } from "@/persistence/registry";
 
 export default function WaterWidget() {
-  const [cups, setCups] = useState(() => Number(localStorage.getItem("w-water-cups")) || 0);
+  const [cups, setCups] = useState(() => Number(browserStorage.getItem(PERSISTED.waterCups.key)) || 0);
   const GOAL = 8;
 
   useEffect(() => {
-    localStorage.setItem("w-water-cups", String(cups));
+    browserStorage.setItem(PERSISTED.waterCups.key, String(cups));
   }, [cups]);
 
   const percentage = Math.min((cups / GOAL) * 100, 100);
