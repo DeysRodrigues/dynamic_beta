@@ -5,19 +5,12 @@ import {
   LayoutGrid, List // 1. Novos ícones
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  quickLinksContentSchema,
+  type LinkCategory as Category,
+  type LinkItem,
+} from "@/widgets/schemas/quicklinks";
 import { useThemeStore } from "@/store/useThemeStore";
-
-interface LinkItem {
-  id: string;
-  title: string;
-  url: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  links: LinkItem[];
-}
 
 const DEFAULT_DATA: Category[] = [
   { 
@@ -33,7 +26,7 @@ const DEFAULT_DATA: Category[] = [
 export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: string }) {
   const { getBoxContent, setBoxContent } = useBoxContentStore();
   const primaryColor = useThemeStore((s) => s.primaryColor);
-  const saved = getBoxContent(id) as { categories?: Category[], viewMode?: "list" | "grid" };
+  const saved = getBoxContent(id, quickLinksContentSchema);
 
   const [categories, setCategories] = useState<Category[]>(saved.categories || DEFAULT_DATA);
   const [activeTab, setActiveTab] = useState<string>(categories[0]?.id || "");
@@ -47,13 +40,13 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
 
   const save = (data: Category[], mode: "list" | "grid" = viewMode) => {
     setCategories(data);
-    setBoxContent(id, { categories: data, viewMode: mode });
+    setBoxContent(id, { categories: data, viewMode: mode }, quickLinksContentSchema);
   };
 
   const toggleViewMode = () => {
     const newMode = viewMode === "list" ? "grid" : "list";
     setViewMode(newMode);
-    setBoxContent(id, { categories, viewMode: newMode });
+    setBoxContent(id, { categories, viewMode: newMode }, quickLinksContentSchema);
   };
 
   const addCategory = () => {

@@ -7,23 +7,15 @@ import {
 } from "lucide-react";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  automationContentSchema,
+  type ActionType,
+  type AutomationRule as Rule,
+  type TriggerType,
+} from "@/widgets/schemas/automation";
 import { getTodayDate } from "@/utils/DateUtils";
 
 const SAFETY_FLOOR_MS = 1000;
-
-type TriggerType = 'time' | 'tasks' | 'interval';
-type ActionType = 'sound' | 'media' | 'notify' | 'alert' | 'theme' | 'link' | 'clear_done' | 'clear_all' | 'backup';
-
-interface Rule {
-  id: string;
-  name: string;
-  trigger: TriggerType;
-  triggerValue: string;
-  action: ActionType;
-  actionValue: string;
-  lastRun?: number;
-  active: boolean;
-}
 
 // Constantes
 const SOUNDS = {
@@ -81,7 +73,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
   // Importando 'tasks' para usar no cálculo visual da regra de tarefas
   const { tasks, removeTasks, deleteAllTasks } = useTaskStore();
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id) as { rules?: Rule[] };
+  const saved = getBoxContent(id, automationContentSchema);
 
   const [rules, setRules] = useState<Rule[]>(saved.rules || []);
   const [isAdding, setIsAdding] = useState(false);
@@ -98,7 +90,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
   const [isPlayingAlarm, setIsPlayingAlarm] = useState(false);
 
   useEffect(() => {
-    setBoxContent(id, { rules });
+    setBoxContent(id, { rules }, automationContentSchema);
   }, [rules, id, setBoxContent]);
 
   // Efeito de Relógio para atualizar contadores visuais

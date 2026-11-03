@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import { libraryContentSchema } from "@/widgets/schemas/library";
 import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
 import type { BoxRef } from "@/types/Box";
 import { usePomodoroStore } from "@/store/usePomodoroStore";
@@ -66,8 +67,8 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
     const libIds = boxes.filter(box => box.type === "library").map(box => box.id);
     let count = 0;
     libIds.forEach(libId => {
-      const content = getBoxContent(libId) as { books?: { completed: boolean }[] };
-      if (content?.books) count += content.books.filter((b: { completed: boolean }) => b.completed).length;
+      const content = getBoxContent(libId, libraryContentSchema);
+      if (content?.books) count += content.books.filter((b) => b.completed).length;
     });
     return count;
   }, [boxes, getBoxContent]);

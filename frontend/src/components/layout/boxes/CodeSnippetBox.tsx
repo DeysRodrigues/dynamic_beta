@@ -5,24 +5,14 @@ import {
   ChevronDown, Search, Hash, X, Coffee, FileCode // Adicionei novos ícones
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  snippetContentSchema,
+  type Snippet,
+  type SnippetType,
+} from "@/widgets/schemas/snippet";
 import { useThemeStore } from "@/store/useThemeStore";
 
 // --- TIPOS ---
-interface SnippetType {
-  id: string;
-  label: string;
-  icon?: React.ElementType | null;
-  color: string;
-  isCustom?: boolean;
-}
-
-interface Snippet {
-  id: string;
-  title: string;
-  code: string;
-  type: string;
-}
-
 // --- CONFIGURAÇÃO DOS PADRÕES ---
 const DEFAULT_TYPES: SnippetType[] = [
   { id: "java", label: "Java", icon: Coffee, color: "text-red-500" },
@@ -50,7 +40,7 @@ const RANDOM_COLORS = [
 export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string }) {
   const { getBoxContent, setBoxContent } = useBoxContentStore();
   const primaryColor = useThemeStore(s => s.primaryColor);
-  const saved = getBoxContent(id) as { snippets?: Snippet[], customTypes?: SnippetType[] };
+  const saved = getBoxContent(id, snippetContentSchema);
 
   // Estados de Dados
   const [snippets, setSnippets] = useState<Snippet[]>(saved.snippets || DEFAULT_SNIPPETS);
@@ -78,7 +68,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
   const save = (newSnippets: Snippet[], newCustomTypes: SnippetType[] = customTypes) => {
     setSnippets(newSnippets);
     setCustomTypes(newCustomTypes);
-    setBoxContent(id, { snippets: newSnippets, customTypes: newCustomTypes });
+    setBoxContent(id, { snippets: newSnippets, customTypes: newCustomTypes }, snippetContentSchema);
   };
 
   const addSnippet = () => {

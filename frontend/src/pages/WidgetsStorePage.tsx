@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useMemo } from "react";
+import { useState, useCallback, memo, useMemo, type ReactNode } from "react";
 import {
   Plus,
   CheckCircle2,
@@ -23,9 +23,18 @@ import ShinyText from "@/components/landing/ShinyText";
 
 // --- COMPONENTES MEMOIZADOS ---
 
+/** What the store card needs: a native widget has no `path`, an iframe embed does. */
+interface StoreEntry {
+  id: string;
+  title: string;
+  description: string;
+  icon: ReactNode;
+  color: string;
+  path?: string;
+}
+
 interface StoreItemProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any;
+  item: StoreEntry;
   isActive: boolean;
   isFavorite: boolean;
   type: "native" | "embed";

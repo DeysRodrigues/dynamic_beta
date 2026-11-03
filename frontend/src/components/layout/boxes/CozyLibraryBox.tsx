@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { 
   Plus, Settings2, Trash2, 
   Book, BookOpen, Library, GraduationCap, Heart, Star, 
@@ -6,32 +6,18 @@ import {
   Palette, Check, ExternalLink
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  libraryContentSchema,
+  type LibraryBookContent,
+  type LibraryCategory,
+  type LibrarySettings,
+} from "@/widgets/schemas/library";
+
+// A book in the widget always has a category; saved books from before categories existed get one.
+type LibraryBook = LibraryBookContent & { categoryId: string };
 import { cn } from "@/lib/utils";
 
 // --- TIPOS ---
-interface LibraryCategory {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
-
-interface LibraryBook {
-  id: string;
-  title: string;
-  link?: string;
-  categoryId: string;
-  completed: boolean;
-  color: string;
-  height: number;
-  pattern: number;
-}
-
-interface LibrarySettings {
-  woodColor: string;
-  wallColor: string;
-}
-
 // --- ÍCONES ---
 const iconMap: Record<string, React.ElementType> = {
   book: Book, open: BookOpen, library: Library, school: GraduationCap,
@@ -41,7 +27,7 @@ const iconMap: Record<string, React.ElementType> = {
 
 export default function CozyLibraryBox({ id = "library-default" }: { id?: string }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id) as { categories?: LibraryCategory[], books?: LibraryBook[], settings?: LibrarySettings };
+  const saved = getBoxContent(id, libraryContentSchema);
 
   const defaultCategories: LibraryCategory[] = [
     { id: "1", name: "Geral", icon: "library", color: "var(--book-color-1)" }
@@ -49,8 +35,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
 
   const [categories, setCategories] = useState<LibraryCategory[]>(saved.categories || defaultCategories);
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const initialBooks = (saved.books || []).map((b: any) => ({
+  const initialBooks: LibraryBook[] = (saved.books || []).map((b) => ({
     ...b,
     categoryId: b.categoryId || categories[0].id
   }));
@@ -80,7 +65,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
     setBooks(_books);
     setCategories(_categories);
     setSettings(_settings);
-    setBoxContent(id, { books: _books, categories: _categories, settings: _settings });
+    setBoxContent(id, { books: _books, categories: _categories, settings: _settings }, libraryContentSchema);
   };
 
   const addBook = () => {
@@ -330,8 +315,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function BookItem({ book, selected, onClick }: { book: LibraryBook, selected: boolean, onClick: (e: any) => void }) {
+function BookItem({ book, selected, onClick }: { book: LibraryBook, selected: boolean, onClick: (e: MouseEvent) => void }) {
   return (
     <div onClick={onClick} className={`group relative flex flex-col items-center justify-end cursor-pointer transition-transform duration-200 origin-bottom ${selected ? 'scale-110 z-20 -translate-y-4' : 'hover:-translate-y-1 hover:z-10'}`} style={{ width: '28px', flexShrink: 0 }}>
       {/* Marcador de Lido (Fita) */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Save, FileText } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import { notepadContentSchema } from "@/widgets/schemas/notepad";
 
 interface NotepadBoxProps {
   id?: string;
@@ -10,13 +11,13 @@ export default function NotepadBox({ id = "notepad-default" }: NotepadBoxProps) 
   const { getBoxContent, setBoxContent } = useBoxContentStore();
   
   // Carrega texto salvo ou vazio
-  const [text, setText] = useState<string>((getBoxContent(id) as { text?: string }).text || "");
+  const [text, setText] = useState<string>(getBoxContent(id, notepadContentSchema).text || "");
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
   // Salva automaticamente 1 segundo após parar de digitar
   useEffect(() => {
     const timer = setTimeout(() => {
-      setBoxContent(id, { text });
+      setBoxContent(id, { text }, notepadContentSchema);
       if (text) setLastSaved(new Date().toLocaleTimeString().slice(0, 5));
     }, 1000);
 

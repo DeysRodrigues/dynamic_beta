@@ -4,27 +4,23 @@ import {
   ArrowRight, Trash2 
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  bookTrackerContentSchema,
+  type BookItem,
+  type BookTrackerContent,
+} from "@/widgets/schemas/books";
+import { libraryContentSchema, type LibraryBookContent } from "@/widgets/schemas/library";
+
+type TrackerSettings = NonNullable<BookTrackerContent["settings"]>;
 import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
 import type { BoxRef } from "@/types/Box";
-
-interface BookItem { 
-  id: string; 
-  title: string; 
-  current: number; 
-  total: number; 
-  color: string; 
-}
-
-interface TrackerSettings {
-  pageStep: number;
-}
 
 const NO_BOXES: BoxRef[] = [];
 
 export default function BookTrackerBox({ id = "books-default" }: { id?: string }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
   const boxes = useDashboardStore((state) => selectActiveWorkspace(state)?.boxes ?? NO_BOXES);
-  const saved = getBoxContent(id) as { books?: BookItem[], settings?: TrackerSettings };
+  const saved = getBoxContent(id, bookTrackerContentSchema);
   
   const [books, setBooks] = useState<BookItem[]>(saved.books || []);
   const [settings, setSettings] = useState<TrackerSettings>(saved.settings || { pageStep: 10 });
@@ -41,7 +37,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
     const newSettings = cfg || settings;
     setBooks(data);
     setSettings(newSettings);
-    setBoxContent(id, { books: data, settings: newSettings });
+    setBoxContent(id, { books: data, settings: newSettings }, bookTrackerContentSchema);
   };
 
   const addBook = () => {
@@ -77,10 +73,10 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
 
   const availableImports = useMemo(() => {
     const libraryIds = boxes.filter(box => box.type === "library").map(box => box.id);
-    let allBooksFromLibraries: { title: string }[] = [];
+    let allBooksFromLibraries: LibraryBookContent[] = [];
     libraryIds.forEach(libId => {
-      const content = getBoxContent(libId) as { books?: { title: string }[] };
-      if (content && content.books) {
+      const content = getBoxContent(libId, libraryContentSchema);
+      if (content.books) {
         allBooksFromLibraries = [...allBooksFromLibraries, ...content.books];
       }
     });
@@ -139,8 +135,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
             <p className="text-xs opacity-50 italic">Nenhum livro novo encontrado.</p>
           ) : (
             <div className="space-y-1">
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {availableImports.map((b: any) => (
+              {availableImports.map((b) => (
                 <button 
                   key={b.id} 
                   onClick={() => handleImport(b.title)}

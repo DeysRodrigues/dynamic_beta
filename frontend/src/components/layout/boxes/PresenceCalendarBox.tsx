@@ -9,18 +9,9 @@ import {
   List,
   Pencil,
 } from "lucide-react";
-import { useBoxContentStore } from "@/store/useBoxContentStore";
+import { useBoxContentStore, readContent } from "@/store/useBoxContentStore";
+import { presenceContentSchema, type PresenceEvent } from "@/widgets/schemas/presence";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
-
-interface PresenceEvent {
-  id: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  daysOfWeek: number[];
-  presences: string[];
-  absences: string[];
-}
 
 const DAYS_LABEL = ["D", "S", "T", "Q", "Q", "S", "S"];
 
@@ -36,13 +27,13 @@ export default function PresenceCalendarBox({
 
   // Valores derivados memorizados para garantir estabilidade referencial
   const { events, activeEventId } = useMemo(() => {
-    const data = (saved || {}) as { events?: PresenceEvent[], activeEventId?: string };
+    const data = readContent(saved, presenceContentSchema, id);
     const evts = data.events || [];
     return {
       events: evts,
       activeEventId: data.activeEventId || evts[0]?.id || ""
     };
-  }, [saved]);
+  }, [saved, id]);
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<"calendar" | "addEvent" | "eventList" | "editEvent">("calendar");
@@ -63,7 +54,7 @@ export default function PresenceCalendarBox({
   const save = (newEvents: PresenceEvent[], newActiveId?: string) => {
     try {
       const active = newActiveId !== undefined ? newActiveId : activeEventId;
-      setBoxContent(id, { events: newEvents, activeEventId: active });
+      setBoxContent(id, { events: newEvents, activeEventId: active }, presenceContentSchema);
       console.log("[PresenceBox] Salvo com sucesso.");
     } catch (err) {
       console.error("[PresenceBox] Erro ao salvar:", err);
@@ -230,7 +221,7 @@ export default function PresenceCalendarBox({
           <button
             key={evt.id}
             onClick={() => {
-              setBoxContent(id, { activeEventId: evt.id });
+              setBoxContent(id, { activeEventId: evt.id }, presenceContentSchema);
               setViewMode("calendar");
             }}
             className={`
