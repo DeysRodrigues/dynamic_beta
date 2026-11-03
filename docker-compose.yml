@@ -27,8 +27,25 @@ services:
       DATABASE_URL: postgres://dynabox:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/dynabox
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env (see .env.example)}
       ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      # Which websites may call this API from a browser. `*` is fine on your own machine; on a
+      # server open to the internet, put the address of the site, e.g. https://dynabox.space
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
     depends_on:
       db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        # The app is served at /, and nginx forwards /api to the API, so the app starts out
+        # pointed at its own server. Clear this to start in local-only mode.
+        VITE_DEFAULT_SERVER_URL: /api
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
         condition: service_healthy
 
 volumes:

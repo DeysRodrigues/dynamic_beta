@@ -15,6 +15,13 @@ export default defineConfig({
     },
   },
 
+  server: {
+    // In development the API runs on its own port; reach it as /api, the way nginx serves it in Docker.
+    proxy: {
+      "/api": { target: "http://localhost:3000", changeOrigin: true, rewrite: (path) => path.replace(/^\/api/, "") },
+    },
+  },
+
   build: {
     rollupOptions: {
       output: {
