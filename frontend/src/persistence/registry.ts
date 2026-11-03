@@ -1,3 +1,6 @@
+import { createJSONStorage } from "zustand/middleware";
+import { appStorage } from "./adapter";
+
 /**
  * Single list of everything the app persists in the browser.
  *
@@ -48,5 +51,7 @@ export function persistConfig(
     name: entry.key,
     version: entry.version,
     migrate: migrate as (state: unknown, version: number) => never,
+    // Through the shared storage, so the adapter can be swapped and a write never beats a read.
+    storage: createJSONStorage(() => appStorage),
   };
 }
