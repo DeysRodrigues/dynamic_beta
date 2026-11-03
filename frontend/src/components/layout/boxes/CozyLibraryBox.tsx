@@ -26,7 +26,8 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export default function CozyLibraryBox({ id = "library-default" }: { id?: string }) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const saved = getBoxContent(id, libraryContentSchema);
 
   const defaultCategories: LibraryCategory[] = [

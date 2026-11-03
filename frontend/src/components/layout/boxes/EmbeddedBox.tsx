@@ -9,12 +9,31 @@ import {
   Plus,
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 // Type of the saved shortcuts
 interface Preset {
   url: string;
   mode: "video" | "app";
   label: string;
+}
+
+function convertToEmbed(url: string): string {
+  try {
+    if (!url) return "";
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      let videoId = "";
+      if (url.includes("youtu.be/"))
+        videoId = url.split("youtu.be/")[1]?.split("?")[0];
+      else if (url.includes("v="))
+        videoId = url.split("v=")[1]?.split("&")[0];
+      if (url.includes("/embed/")) return url;
+      return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
 }
 
 interface EmbeddedBoxProps {
@@ -24,12 +43,12 @@ interface EmbeddedBoxProps {
 export default function EmbeddedBox({
   id = "embedded-default",
 }: EmbeddedBoxProps) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const savedState = getBoxContent(id) as { url?: string, mode?: "video" | "app", isLocked?: boolean, presets?: (Preset | null)[] };
 
   // 1. Starts EMPTY so it does not slow down loading
   const [inputUrl, setInputUrl] = useState<string>(savedState.url || "");
-  const [embedUrl, setEmbedUrl] = useState<string>("");
   const [mode, setMode] = useState<"video" | "app">(savedState.mode || "video");
   const [isLocked, setIsLocked] = useState<boolean>(
     savedState.isLocked || false
@@ -39,6 +58,10 @@ export default function EmbeddedBox({
   const [presets, setPresets] = useState<(Preset | null)[]>(
     savedState.presets || [null, null, null]
   );
+
+  // The iframe follows the typed address only once typing stops, instead of reloading at every
+  // key; an address that was already saved shows up at once.
+  const embedUrl = useDebouncedValue(inputUrl ? convertToEmbed(inputUrl) : "", 600);
 
   const [showControls, setShowControls] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -51,30 +74,9 @@ export default function EmbeddedBox({
       setMode("app");
     }
 
-    // Only converts when there is a URL
-    setEmbedUrl(inputUrl ? convertToEmbed(inputUrl) : "");
-
     // Saves the URL, the mode and the presets
     setBoxContent(id, { url: inputUrl, mode, isLocked, presets });
   }, [inputUrl, id, mode, isLocked, presets, setBoxContent]);
-
-  const convertToEmbed = (url: string): string => {
-    try {
-      if (!url) return "";
-      if (url.includes("youtube.com") || url.includes("youtu.be")) {
-        let videoId = "";
-        if (url.includes("youtu.be/"))
-          videoId = url.split("youtu.be/")[1]?.split("?")[0];
-        else if (url.includes("v="))
-          videoId = url.split("v=")[1]?.split("&")[0];
-        if (url.includes("/embed/")) return url;
-        return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
-      }
-      return url;
-    } catch {
-      return url;
-    }
-  };
 
   const handleRefresh = () => setRefreshKey((prev) => prev + 1);
 
@@ -134,6 +136,7 @@ export default function EmbeddedBox({
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
             allowFullScreen
+            loading="lazy"
             title={`Embed-${id}`}
             style={{ borderRadius: "0 0 1rem 1rem" }}
           />

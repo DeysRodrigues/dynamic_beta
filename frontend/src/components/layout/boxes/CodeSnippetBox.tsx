@@ -38,7 +38,8 @@ const RANDOM_COLORS = [
 ];
 
 export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string }) {
-  const { getBoxContent, setBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const primaryColor = useThemeStore(s => s.primaryColor);
   const saved = getBoxContent(id, snippetContentSchema);
 

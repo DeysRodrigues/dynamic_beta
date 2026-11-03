@@ -120,7 +120,8 @@ function RuleStatus({ rule, tasks }: { rule: Rule; tasks: Task[] }) {
 export default function AutomationBox({ id = "auto-default" }: { id?: string }) {
   // 'tasks' is used to compute the status shown for the tasks rule
   const { tasks, removeTasks, deleteAllTasks } = useTaskStore();
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const saved = getBoxContent(id, automationContentSchema);
 
   const [rules, setRules] = useState<Rule[]>(saved.rules || []);

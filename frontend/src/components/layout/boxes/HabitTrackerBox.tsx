@@ -8,7 +8,8 @@ interface HabitTrackerBoxProps {
 }
 
 export default function HabitTrackerBox({ id = "habit-default" }: HabitTrackerBoxProps) {
-  const { getBoxContent, setBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const content = getBoxContent(id) as { habitName?: string, checkedDates?: string[] };
 
   const [habitName, setHabitName] = useState(content.habitName || "Novo Hábito");

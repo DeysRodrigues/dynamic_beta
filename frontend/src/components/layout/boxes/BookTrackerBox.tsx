@@ -18,7 +18,8 @@ import type { BoxRef } from "@/types/Box";
 const NO_BOXES: BoxRef[] = [];
 
 export default function BookTrackerBox({ id = "books-default" }: { id?: string }) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const boxes = useDashboardStore((state) => selectActiveWorkspace(state)?.boxes ?? NO_BOXES);
   const saved = getBoxContent(id, bookTrackerContentSchema);
   

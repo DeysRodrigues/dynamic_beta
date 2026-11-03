@@ -24,7 +24,8 @@ const DEFAULT_DATA: Category[] = [
 ];
 
 export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: string }) {
-  const { getBoxContent, setBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const primaryColor = useThemeStore((s) => s.primaryColor);
   const saved = getBoxContent(id, quickLinksContentSchema);
 

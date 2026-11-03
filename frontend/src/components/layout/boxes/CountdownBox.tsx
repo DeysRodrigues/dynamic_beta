@@ -8,7 +8,8 @@ interface CountdownBoxProps {
 }
 
 export default function CountdownBox({ id = "countdown-default" }: CountdownBoxProps) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const saved = getBoxContent(id) as { eventName?: string, targetDate?: string };
 
   const [eventName, setEventName] = useState(saved.eventName || "Próximo Evento");

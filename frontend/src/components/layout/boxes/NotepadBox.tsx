@@ -10,7 +10,8 @@ interface NotepadBoxProps {
 }
 
 export default function NotepadBox({ id = "notepad-default" }: NotepadBoxProps) {
-  const { getBoxContent, setBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const saved = getBoxContent(id, notepadContentSchema);
 
   const [text, setText] = useState<string>(saved.text || "");
