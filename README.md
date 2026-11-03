@@ -45,13 +45,13 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | none yet |
-| Continuous integration | none yet |
+| Automated tests | 41 unit tests (task parser, date and task helpers, dashboard store) |
+| Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
 Two limits worth stating up front. The main bundle is **626.99 kB** (184.58 kB gzipped)
 because the shared vendor code is not split yet, even though every widget is its own lazy
-chunk. And there is no test suite, so every change is verified by building and clicking.
+chunk. And the test suite is young: it covers the pure logic and one store, not the widgets or the UI.
 
 ## Architecture
 
@@ -221,14 +221,16 @@ stay atomic. The other twelve are flat enough that plain updates read better.
 
 ## Tests
 
-There is no automated test suite yet. What is verified today:
+What is verified today, locally and in CI on every push:
 
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
+npm run test      # vitest, 41 tests
 ```
 
-Everything else is checked by hand: the backup round trip (export in one browser, import in
+The tests cover the task text grammar (`TaskParser`), the date and task helpers and the
+dashboard store actions. Everything else is checked by hand: the backup round trip (export in one browser, import in
 another), layout persistence across a reload, and the gamification widgets reacting to a finished
 task. [`FEATURES.md`](FEATURES.md) documents the system widget by widget.
 
