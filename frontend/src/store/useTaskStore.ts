@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import type { Task } from "@/types/Task";
-import { STORAGE_KEYS } from "@/constants/storageKeys";
 import { useTagStore } from "./useTagStore";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface TaskState {
   tasks: Task[];
@@ -102,8 +102,7 @@ export const useTaskStore = create<TaskState>()(
       },
     }),
     {
-      name: STORAGE_KEYS.TASKS,
-      storage: createJSONStorage(() => localStorage),
+      ...persistConfig(PERSISTED.tasks),
     }
   )
 );
