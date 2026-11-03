@@ -45,13 +45,15 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 130 testes (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
+| Testes automatizados | 137 testes (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
-Dois limites que vale dizer de cara. O bundle principal tem **626,99 kB** (184,58 kB com
-gzip), porque o código compartilhado de biblioteca ainda não foi separado, mesmo cada widget
-sendo um chunk preguiçoso próprio. E a suíte de teste é nova: cobre a lógica pura e uma store, não os widgets nem a interface.
+Um limite que vale dizer de cara: a suíte de teste é nova. Ela cobre a lógica pura, as stores e
+o render das telas principais, mas não o arrastar e soltar da grade nem o comportamento interno
+da maioria dos widgets. O chunk do app tem **242 kB** (64,6 kB com gzip); as bibliotecas estão
+separadas em seis chunks de vendor (react, router, grid, icons, dates, zod) e cada widget é um
+chunk preguiçoso próprio.
 
 ## Arquitetura
 
@@ -233,7 +235,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 130 testes
+npm run test      # vitest, 137 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as

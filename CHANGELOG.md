@@ -19,6 +19,14 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+### Performance
+- **The library code is split from the app code.** React, the router, the grid, the icons, the
+  date library and the schema library each get their own file, so a deploy that only touches
+  the app no longer makes the browser download them again. The app's own chunk is 242 kB
+  (64.6 kB gzipped), down from a single 707 kB file, and the build warning is gone.
+- A rule in the automation widget no longer re-renders the whole widget every second; only its
+  own countdown does.
+
 ### Added
 - **Shape validation for widget content.** The seven widgets that hold the most data (notepad,
   code snippets, quick links, book tracker, library, presence calendar and automations) now
@@ -63,7 +71,7 @@ the architecture is considered ready for real use.
 - **Versioned storage:** every persisted slice now carries a format version and a migration
   hook. Data saved before this change loads untouched, and the shape can change from here on
   without wiping what users already have.
-- **First automated test suite**, with Vitest and Testing Library: 130 tests covering the task
+- **First automated test suite**, with Vitest and Testing Library: 137 tests covering the task
   text grammar (parsing and formatting, including the round trip), the date and task helpers,
   the dashboard store actions, the box placement, the widget registry, the content schemas, the data migrations, the backup round trip and the rendering of the dashboard and the sidebar. `npm run test` runs it once and `npm run test:watch` keeps
   it running.
@@ -71,6 +79,12 @@ the architecture is considered ready for real use.
   request to `develop` and `main`.
 
 ### Fixed
+- Reordering and removing in the tag list and the tag goals list no longer shuffles the state
+  of the rows below, because each row is keyed by its tag instead of its position.
+- The pomodoro end-of-timer effect no longer depends on a disabled lint rule, and counts a
+  finished session exactly once.
+- Resetting everything, and the automation "alert" action and its form warnings, now use an
+  in-app dialog instead of the browser's `confirm` and `alert`, which also blocked the page.
 - Four places where the type of the data was unknown at compile time (two in the book
   widgets, one in the widget store and one event handler) are now typed.
 - Widgets added from the dashboard header menu always started at the default height,

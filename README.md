@@ -45,13 +45,14 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 130 tests (task parser, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
+| Automated tests | 137 tests (task parser, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
-Two limits worth stating up front. The main bundle is **626.99 kB** (184.58 kB gzipped)
-because the shared vendor code is not split yet, even though every widget is its own lazy
-chunk. And the test suite is young: it covers the pure logic and one store, not the widgets or the UI.
+One limit worth stating up front: the test suite is young. It covers the pure logic, the stores
+and the main screens' rendering, but not the drag-and-drop of the grid or most widgets' inner
+behavior. The app chunk is **242 kB** (64.6 kB gzipped); the libraries are split into six vendor
+chunks (react, router, grid, icons, dates, zod) and every widget is its own lazy chunk.
 
 ## Architecture
 
@@ -230,7 +231,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 130 tests
+npm run test      # vitest, 137 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the
