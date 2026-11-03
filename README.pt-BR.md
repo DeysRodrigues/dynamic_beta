@@ -45,7 +45,7 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 41 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard) |
+| Testes automatizados | 56 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard, registro de persistência e backup) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -229,12 +229,12 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 41 testes
+npm run test      # vitest, 56 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as
-ações da store do dashboard. O resto é conferido à mão: a volta completa do backup (exportar num navegador e
-importar em outro), a persistência do layout depois de recarregar, e os widgets de gamificação
+ações da store do dashboard e a volta do backup (exportar, limpar, importar). O resto é conferido à mão: essa mesma
+volta entre dois navegadores, a persistência do layout depois de recarregar, e os widgets de gamificação
 reagindo a uma tarefa concluída. O [`FEATURES.md`](FEATURES.md) documenta o sistema widget por
 widget.
 
