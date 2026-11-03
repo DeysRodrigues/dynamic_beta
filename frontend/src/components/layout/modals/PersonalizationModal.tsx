@@ -1,3 +1,4 @@
+import { themeThumbnail } from "@/lib/themeImages";
 import { X, Check, Upload, Image as ImageIcon, Trash2 } from "lucide-react";
 import { useThemeStore, getWallpaperStyle, type WallpaperType } from "@/store/useThemeStore";
 import { useRef } from "react";
@@ -77,7 +78,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
                 }`}
                 onClick={() => setWallpaper('custom')}
               >
-                <img src={customImage} alt="Wallpaper" className="w-full h-full object-cover" />
+                <img src={themeThumbnail(customImage) ?? undefined} alt="Wallpaper" decoding="async" className="w-full h-full object-cover" />
                 
                 {/* Indicador de Selecionado */}
                 {wallpaper === 'custom' && (

@@ -14,6 +14,7 @@ import { useFavoriteStore } from "@/store/useFavoriteStore";
 
 import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
 import ShinyText from "@/components/landing/ShinyText";
+import { themeThumbnail } from "@/lib/themeImages";
 import type { ThemeItem, WallpaperThemeItem, SetupItem } from "@/types/Theme";
 
 // --- COMPONENTES MEMOIZADOS ---
@@ -23,7 +24,7 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
     <div className="h-28 w-full relative bg-current/5" style={{ backgroundColor: setup.theme.backgroundColor }}>
        {setup.theme.customImage && (
          <img 
-            src={setup.theme.customImage} 
+            src={themeThumbnail(setup.theme.customImage) ?? undefined} 
             alt="" 
             loading="lazy"
             decoding="async"
@@ -56,7 +57,7 @@ const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorit
     <div className={`h-20 w-full relative bg-current/5 ${theme.previewColor}`}>
       {theme.theme.customImage && (
         <img 
-          src={theme.theme.customImage} 
+          src={themeThumbnail(theme.theme.customImage) ?? undefined} 
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover opacity-60 transition-opacity duration-300" 
