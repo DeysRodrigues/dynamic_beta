@@ -73,3 +73,45 @@ export function ensureLayouts(
 
   return result;
 }
+
+export interface PackItem {
+  id: string;
+  w: number;
+  h: number;
+}
+
+/**
+ * Lays boxes out on every breakpoint without any overlap, in the order given.
+ *
+ * Each box goes to the spot where it sits highest: for every column it could start at, it takes
+ * the lowest point of the columns it would cover, and picks the start with the smallest one
+ * (leftmost on a tie). Widths are cut down to the breakpoint's column count, so a box 2 wide
+ * becomes 1 wide on a phone. Used to describe a ready-made setup by sizes alone.
+ */
+export function packLayouts(items: readonly PackItem[]): Layouts {
+  const result: Layouts = {};
+
+  for (const bp of BREAKPOINTS) {
+    const cols = GRID_COLS[bp];
+    const heights: number[] = new Array(cols).fill(0);
+
+    result[bp] = items.map((item) => {
+      const w = Math.min(item.w, cols);
+      let bestX = 0;
+      let bestY = Infinity;
+
+      for (let x = 0; x <= cols - w; x++) {
+        const y = Math.max(...heights.slice(x, x + w));
+        if (y < bestY) {
+          bestY = y;
+          bestX = x;
+        }
+      }
+
+      for (let col = bestX; col < bestX + w; col++) heights[col] = bestY + item.h;
+      return { i: item.id, x: bestX, y: bestY, w, h: item.h };
+    });
+  }
+
+  return result;
+}
