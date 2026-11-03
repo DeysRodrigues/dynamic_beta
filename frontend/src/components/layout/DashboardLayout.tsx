@@ -5,8 +5,9 @@ import { useThemeStore, getWallpaperStyle } from "@/store/useThemeStore";
 import { ThemeApplicator } from "./ThemeApplicator";
 import { useMemo } from "react"; 
 import PomodoroManager from "./PomodoroManager";
+import { HydrationGate } from "./HydrationGate";
 
-export default function DashboardLayout() {
+function LayoutShell() {
   const { wallpaper, customImage, wallpaperBlur, wallpaperBrightness } = useThemeStore();
 
   const sidebarItems = useMemo(() => [
@@ -43,5 +44,14 @@ export default function DashboardLayout() {
         </div>
       </main>
     </div>
+  );
+}
+
+/** The app shell, shown only once the saved data has been read. */
+export default function DashboardLayout() {
+  return (
+    <HydrationGate>
+      <LayoutShell />
+    </HydrationGate>
   );
 }
