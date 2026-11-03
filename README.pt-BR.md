@@ -45,7 +45,7 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 162 testes (markdown, parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
+| Testes automatizados | 183 testes (markdown, parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -139,7 +139,13 @@ Nada precisa de configuração.
 npm run build     # tsc -b, depois vite build
 npm run lint      # eslint
 npm run preview   # serve o build de produção
+./scripts/make-theme-thumbs.sh   # miniaturas WebP leves dos papéis de parede dos temas (precisa do ImageMagick)
 ```
+
+A página de temas mostra miniaturas WebP pequenas em vez dos papéis de parede inteiros; a imagem
+completa só é carregada quando um tema é aplicado. Depois de adicionar ou trocar um papel de
+parede em `public/images-themes/`, rode o script e commite as miniaturas novas. Um teste falha
+se um tema apontar para um papel de parede sem miniatura.
 
 ## Como usar
 
@@ -236,7 +242,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 162 testes
+npm run test      # vitest, 183 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as

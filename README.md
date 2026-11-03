@@ -45,7 +45,7 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 162 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
+| Automated tests | 183 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -138,7 +138,13 @@ configuration is needed.
 npm run build     # tsc -b, then vite build
 npm run lint      # eslint
 npm run preview   # serve the production build
+./scripts/make-theme-thumbs.sh   # light WebP thumbnails of the theme wallpapers (needs ImageMagick)
 ```
+
+The themes page shows small WebP thumbnails instead of the full wallpapers; the full image is
+only loaded when a theme is applied. After adding or changing a wallpaper in
+`public/images-themes/`, run the script and commit the new thumbnails. A test fails if a theme
+points at a wallpaper without one.
 
 ## Usage
 
@@ -232,7 +238,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 162 tests
+npm run test      # vitest, 183 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the

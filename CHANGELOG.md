@@ -27,6 +27,10 @@ the architecture is considered ready for real use.
   downloads with the notepad widget.
 
 ### Performance
+- **The themes page loads light thumbnails instead of the full wallpapers.** The cards pulled
+  the 17 full-size PNGs, 44.9 MB in total; they now use WebP thumbnails of 7 to 46 kB each,
+  0.38 MB in total. The full image only loads once a theme is applied. The thumbnails are made
+  by `scripts/make-theme-thumbs.sh`, and a test fails if a theme has none.
 - **The library code is split from the app code.** React, the router, the grid, the icons, the
   date library and the schema library each get their own file, so a deploy that only touches
   the app no longer makes the browser download them again. The app's own chunk is 242 kB
