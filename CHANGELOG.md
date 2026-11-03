@@ -90,6 +90,11 @@ the architecture is considered ready for real use.
   request to `develop` and `main`.
 
 ### Fixed
+- **Widgets of a new project came out with the wrong size.** The project was created with
+  empty layouts, so the grid drew every widget at its minimum size, piled up in the corner;
+  only widgets added later from the menu had a proper place. A project now gets a position and
+  the widget's own height for each widget when it is created or edited, and a project saved
+  before this fix is repaired when it opens.
 - **Option menus follow the theme.** The three-dot menu on a task, the icon picker of the
   library, the language list of the snippets and the chart tooltip were a fixed white (or a
   fixed dark) card whatever the theme was. They now take their colors from the widget color and

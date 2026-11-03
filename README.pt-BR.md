@@ -45,7 +45,7 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 201 testes (markdown, parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
+| Testes automatizados | 212 testes (markdown, parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -242,7 +242,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 201 testes
+npm run test      # vitest, 212 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as
