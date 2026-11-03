@@ -16,15 +16,15 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
 
     const today = getTodayDate();
 
-    // 1. Filtra tarefas de hoje.
-    // 2. Filtra APENAS as que têm a tag 'sapo' (na tag principal ou na groupTag).
+    // 1. Keeps today's tasks.
+    // 2. Keeps only those with the 'sapo' tag (in the main tag or in the groupTag).
     const todaysFrogs = tasks.filter((t) => {
         const isToday = t.date === today;
         const hasSapoTag = t.tag?.toLowerCase() === "sapo" || t.groupTag?.toLowerCase() === "sapo";
         return isToday && hasSapoTag;
     });
 
-    // Pega no máximo 3 para manter o foco
+    // Takes at most 3 to keep the focus
     const frogs = todaysFrogs.slice(0, 3);
 
     const completedFrogs = frogs.filter(t => t.completed).length;
@@ -41,7 +41,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
         try {
             const data = parseTextToTaskData(inputValue);
 
-            // --- LÓGICA DE INSERÇÃO INTELIGENTE ---
+            // --- SMART INSERTION ---
             let finalTag = data.tag;
             let finalGroupTag = data.groupTag;
 
@@ -85,7 +85,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                 <Target size={80} />
             </div>
 
-            {/* Cabeçalho */}
+            {/* Header */}
             <div className="mb-4 space-y-2">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-primary">
@@ -108,7 +108,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                 </div>
             </div>
 
-            {/* Lista de Sapos */}
+            {/* Frog list */}
             <div className="flex-1 overflow-y-auto custom-scrollbar -mr-2 pr-2 space-y-2">
                 {frogs.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full min-h-[120px] text-center opacity-60 space-y-2 border-2 border-dashed border-border/50 rounded-xl hover:border-primary/30 transition-colors">
@@ -148,7 +148,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                 )}
             </div>
 
-            {/* Input de Adição Rápida */}
+            {/* Quick add input */}
             <div className="mt-4 relative">
                 <input
                     type="text"

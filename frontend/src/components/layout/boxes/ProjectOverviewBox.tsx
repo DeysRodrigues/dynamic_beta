@@ -40,7 +40,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
 
   return (
     <div className="box-padrao">
-      {/* Header do Projeto */}
+      {/* Project header */}
       <div className="mb-4">
         <h3 className="text-lg font-black uppercase tracking-tighter flex items-center gap-2">
           <Target className="text-primary" size={20} />
@@ -110,7 +110,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
           </div>
         </section>
 
-        {/* Rotinas Diárias */}
+        {/* Daily routines */}
         <section>
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 flex items-center gap-1">

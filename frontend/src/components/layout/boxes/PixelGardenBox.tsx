@@ -11,12 +11,12 @@ export default function PixelGardenBox() {
     const today = getTodayDate();
     const completedToday = tasks.filter(t => t.date === today && t.completed).length;
     
-    // Regra de Evolução:
+    // Growth rule:
     // 0 tasks = Terra
     // 1-2 tasks = Broto
     // 3-4 tasks = Planta Jovem
     // 5-7 tasks = Arbusto
-    // 8+ tasks = Árvore Mestra
+    // 8+ tasks = master tree
     if (completedToday === 0) setStage(0);
     else if (completedToday < 3) setStage(1);
     else if (completedToday < 5) setStage(2);
@@ -36,9 +36,9 @@ export default function PixelGardenBox() {
   // Desenhamos quadrados (pixels) usando <rect>
   const PixelPlant = ({ level }: { level: number }) => {
     const C = {
-      pote: "var(--pixel-pot)",    // Cor do Vaso
+      pote: "var(--pixel-pot)",    // Pot color
       poteSombra: "var(--pixel-pot-shadow)",
-      terra: "var(--pixel-soil)",   // Cor da Terra
+      terra: "var(--pixel-soil)",   // Soil color
       verdeClaro: "var(--pixel-green-light)",
       verde: "var(--pixel-green)",
       verdeEscuro: "var(--pixel-green-dark)",
@@ -50,16 +50,16 @@ export default function PixelGardenBox() {
     return (
       <svg viewBox="0 0 16 16" className="w-full h-full drop-shadow-xl" shapeRendering="crispEdges">
         
-        {/* VASO (Sempre visível) */}
+        {/* POT (always visible) */}
         <rect x="4" y="12" width="8" height="4" fill={C.pote} />
         <rect x="3" y="11" width="10" height="2" fill={C.poteSombra} />
         
-        {/* NÍVEL 0: Só Terra */}
+        {/* LEVEL 0: soil only */}
         {level === 0 && (
           <rect x="5" y="11" width="6" height="1" fill={C.terra} />
         )}
 
-        {/* NÍVEL 1: Broto */}
+        {/* LEVEL 1: sprout */}
         {level === 1 && (
           <g className="animate-bounce-slow">
             <rect x="7" y="10" width="2" height="2" fill={C.verdeClaro} />
@@ -67,7 +67,7 @@ export default function PixelGardenBox() {
           </g>
         )}
 
-        {/* NÍVEL 2: Planta Jovem */}
+        {/* LEVEL 2: young plant */}
         {level === 2 && (
           <g className="origin-bottom animate-sway">
             <rect x="7" y="9" width="2" height="3" fill={C.verde} />
@@ -76,7 +76,7 @@ export default function PixelGardenBox() {
           </g>
         )}
 
-        {/* NÍVEL 3: Arbusto */}
+        {/* LEVEL 3: bush */}
         {level === 3 && (
           <g>
             <rect x="7" y="8" width="2" height="4" fill={C.tronco} />
@@ -87,7 +87,7 @@ export default function PixelGardenBox() {
           </g>
         )}
 
-        {/* NÍVEL 4: Árvore Mestra */}
+        {/* LEVEL 4: master tree */}
         {level === 4 && (
           <g className="animate-pulse-slow">
             <rect x="7" y="7" width="2" height="5" fill={C.tronco} />
@@ -126,14 +126,14 @@ export default function PixelGardenBox() {
         <Cloud size={32} />
       </div>
 
-      {/* Título Flutuante */}
+      {/* Floating title */}
       <div className="z-10 bg-background/70 backdrop-blur-md px-3 py-1 rounded-full shadow-sm flex items-center gap-1">
         <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Pixel Garden</span>
       </div>
 
       {/* A PLANTA */}
       <div className="flex-1 w-full max-w-[160px] flex items-end justify-center z-10 pb-1 relative">
-         {/* Tooltip de Nível */}
+         {/* Level tooltip */}
          <div className="absolute -top-6 bg-foreground/80 text-background text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
             Estágio {stage}/4
          </div>
@@ -157,7 +157,7 @@ export default function PixelGardenBox() {
         </div>
       </div>
 
-      {/* Animações CSS Customizadas (Injetadas aqui para garantir funcionamento) */}
+      {/* Custom CSS animations (injected here so they always work) */}
       <style>{`
         @keyframes sway {
           0%, 100% { transform: rotate(-2deg); }

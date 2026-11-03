@@ -45,7 +45,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
   const [data, setData] = useState<RpgData>({
     name: saved.name || "Player 1",
     customTitle: saved.customTitle || "",
-    themeColor: saved.themeColor || "stone", // Agora define a cor de destaque, não o fundo
+    themeColor: saved.themeColor || "stone", // Now sets the accent color, not the background
     rules: saved.rules || { task: 10, book: 100, pomodoro: 25 },
     customActions: saved.customActions || [],
     manualXp: saved.manualXp || 0,
@@ -61,7 +61,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
     setBoxContent(id, data);
   }, [data, id, setBoxContent]);
 
-  // --- CÁLCULO DE XP ---
+  // --- XP CALCULATION ---
   const completedTasks = tasks.filter(t => t.completed).length;
   const completedBooks = useMemo(() => {
     const libIds = boxes.filter(box => box.type === "library").map(box => box.id);
@@ -107,7 +107,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
     setData(prev => ({ ...prev, manualXp: prev.manualXp + xp }));
   };
 
-  // Cores de Destaque (Accent) para cada tema
+  // Accent colors for each theme
   const accentColors: Record<string, string> = {
     stone: "#78716c", red: "#ef4444", blue: "#3b82f6", 
     purple: "#a855f7", amber: "#f59e0b", emerald: "#10b981",
@@ -115,7 +115,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
   const currentAccent = accentColors[data.themeColor] || accentColors.stone;
 
   return (
-    // Box padrão sem gradiente de fundo, mantendo transparência
+    // Default box without a background gradient, keeping the transparency
     <div className="box-padrao relative group overflow-hidden flex flex-col">
       
       {!isEditing && (
@@ -174,7 +174,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
           
           {/* TOPO: PERFIL */}
           <div className="flex items-center gap-3 mb-3">
-            {/* Avatar com Borda na Cor do Tema */}
+            {/* Avatar with a border in the theme color */}
             <div 
               className="w-12 h-12 bg-current/5 backdrop-blur-sm rounded-xl ring-2 flex items-center justify-center shadow-sm"
               style={{ borderColor: currentAccent, color: currentAccent }}
@@ -207,7 +207,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
             </div>
           </div>
 
-          {/* GRID DE AÇÕES */}
+          {/* ACTIONS GRID */}
           <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
             <div className="flex gap-2 mb-2">
                <div className="flex-1 bg-current/5 rounded p-1 text-center" title="Tarefas"><CheckSquare size={12} className="mx-auto mb-0.5 opacity-60"/><span className="text-xs font-bold">{completedTasks}</span></div>

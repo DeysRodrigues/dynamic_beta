@@ -27,7 +27,7 @@ export default function CustomDatePicker({
   const [viewDate, setViewDate] = useState(value ? parseISO(value) : new Date());
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Fecha ao clicar fora
+  // Closes on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -60,7 +60,7 @@ export default function CustomDatePicker({
     onChange("");
   };
 
-  // Gerar dias do calendário
+  // Builds the calendar days
   const monthStart = startOfMonth(viewDate);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -127,7 +127,7 @@ export default function CustomDatePicker({
                backdropFilter: 'blur(20px)'
              }}>
           
-          {/* Header do Calendário */}
+          {/* Calendar header */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-black uppercase tracking-tighter text-[11px]">
               {format(viewDate, 'MMMM yyyy', { locale: ptBR })}
@@ -142,7 +142,7 @@ export default function CustomDatePicker({
             </div>
           </div>
 
-          {/* Dias da Semana */}
+          {/* Days of the week */}
           <div className="grid grid-cols-7 mb-1">
             {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
               <span key={i} className="text-[8px] font-black text-center opacity-30 uppercase">{d}</span>

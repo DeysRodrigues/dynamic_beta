@@ -12,7 +12,7 @@ import { useTaskStore } from "@/store/useTaskStore";
 
 export default function WeekPlannerPage() {
   const p = useWeekPlanner();
-  const tasks = useTaskStore(state => state.tasks); // Precisamos para o BulkEditModal
+  const tasks = useTaskStore(state => state.tasks); // Needed by the BulkEditModal
 
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col items-center bg-transparent">

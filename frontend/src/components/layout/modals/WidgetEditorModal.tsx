@@ -18,9 +18,9 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
   const [js, setJs] = useState("console.log('Widget carregado!');");
   
   const [activeTab, setActiveTab] = useState<"html" | "css" | "js">("html");
-  const [previewKey, setPreviewKey] = useState(0); // Força refresh do iframe
+  const [previewKey, setPreviewKey] = useState(0); // Forces the iframe to refresh
 
-  // Carrega dados se estiver editando
+  // Loads the data when editing
   useEffect(() => {
     if (widgetToEdit) {
       setName(widgetToEdit.name);
@@ -29,7 +29,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
       setCss(widgetToEdit.css);
       setJs(widgetToEdit.js);
     } else {
-      // Reset para criar novo
+      // Reset to create a new one
       setName("");
       setDescription("");
       setHtml("<h1>Olá Mundo!</h1>");
@@ -58,7 +58,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
     alert("Widget salvo com sucesso!");
   };
 
-  // Preview em tempo real (montado localmente)
+  // Live preview (mounted locally)
   const srcDoc = `
     <html>
       <head><style>body{margin:0;font-family:sans-serif;}${css}</style></head>

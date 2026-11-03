@@ -2,10 +2,10 @@ export const APP_UPDATES = {
   version: "0.11.0",
   date: "03 de Junho",
 
-  // 1. O Emoji da vez
+  // 1. Today's emoji
   emoji: "✨",
 
-  // 2. Título chamativo
+  // 2. Catchy title
   title: "Interface Fluida & UX Premium",
 
   // 3. O recado principal
@@ -21,6 +21,6 @@ export const APP_UPDATES = {
     "🏗️ Workspaces & Abas: Redenhamos as abas para separar claramente o que é Workspace e o que é Projeto, com novos indicadores visuais.",
   ],
 
-  // 5. Botão final
+  // 5. Final button
   footer: "Experimente o novo visual!",
 };

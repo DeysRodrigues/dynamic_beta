@@ -122,7 +122,7 @@ export const WorkspaceTabs = React.memo(() => {
         );
       })}
 
-      {/* Separador sutil se houver projetos */}
+      {/* Subtle separator when there are projects */}
       {projects.some(p => p.status === 'active') && (
         <div className="w-px h-6 bg-current/10 mx-1" />
       )}

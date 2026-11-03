@@ -20,12 +20,12 @@ interface ProjectActions {
   deleteProject: (id: string) => void;
   setActiveProject: (id: string | null) => void;
   
-  // Ações de Objetivos
+  // Goal actions
   addGoal: (projectId: string, text: string) => void;
   removeGoal: (projectId: string, goalId: string) => void;
   toggleGoal: (projectId: string, goalId: string) => void;
   
-  // Ações de Rotinas
+  // Routine actions
   addRoutine: (projectId: string, text: string) => void;
   removeRoutine: (projectId: string, routineId: string) => void;
   toggleRoutine: (projectId: string, routineId: string, date: string) => void;

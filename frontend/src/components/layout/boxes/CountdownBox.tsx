@@ -12,7 +12,7 @@ export default function CountdownBox({ id = "countdown-default" }: CountdownBoxP
   const saved = getBoxContent(id) as { eventName?: string, targetDate?: string };
 
   const [eventName, setEventName] = useState(saved.eventName || "Próximo Evento");
-  // Data padrão: Amanhã no mesmo horário, caso não tenha nada salvo
+  // Default date: tomorrow at the same time, when nothing is saved
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 1);
   const [targetDate, setTargetDate] = useState(saved.targetDate || defaultDate.toISOString().slice(0, 16));
@@ -52,12 +52,12 @@ export default function CountdownBox({ id = "countdown-default" }: CountdownBoxP
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  // Componente auxiliar para cada bloco de tempo
+  // Helper component for each time block
   const TimeBlock = ({ value, label, primary = false }: { value: number, label: string, primary?: boolean }) => (
     <div className="flex flex-col items-center justify-end">
       <span className={cn(
         "font-mono leading-none mb-1 transition-all",
-        // Se for primário (segundos), usa a cor de destaque e fica maior
+        // The primary block (seconds) uses the accent color and is larger
         primary ? "text-3xl sm:text-4xl font-black text-primary tabular-nums" : "text-2xl sm:text-3xl font-bold tabular-nums opacity-90",
         // Se expirado, fica tudo cinza
         isExpired && !primary && "opacity-40",
@@ -72,7 +72,7 @@ export default function CountdownBox({ id = "countdown-default" }: CountdownBoxP
   return (
     <div className="box-padrao flex flex-col relative group overflow-hidden p-0">
       
-      {/* --- HEADER (Visível apenas ao passar o mouse ou editando) --- */}
+      {/* --- HEADER (only visible on hover or while editing) --- */}
       <div className={cn(
         "absolute top-0 left-0 right-0 p-3 bg-current/10 backdrop-blur-md z-20 transition-all duration-300 flex flex-col gap-2",
         isEditing || !targetDate ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
@@ -96,21 +96,21 @@ export default function CountdownBox({ id = "countdown-default" }: CountdownBoxP
           <button onClick={() => setIsEditing(false)} className="self-end text-xs bg-primary text-primary-foreground px-3 py-1 rounded-full font-bold mt-1">OK</button>
       </div>
 
-      {/* --- CONTEÚDO PRINCIPAL --- */}
+      {/* --- MAIN CONTENT --- */}
       <div className="flex-1 flex flex-col items-center justify-center p-6 pt-8 relative">
-        {/* Botão de Editar Rápido */}
+        {/* Quick edit button */}
         {!isEditing && (
           <button onClick={() => setIsEditing(true)} className="absolute top-3 right-3 p-1.5 rounded-full bg-current/5 hover:bg-current/10 opacity-0 group-hover:opacity-100 transition text-xs">
             <Edit2 size={14} />
           </button>
         )}
 
-        {/* Título do Evento */}
+        {/* Event title */}
         <h2 className="text-center font-bold text-lg sm:text-xl mb-6 truncate w-full px-4 opacity-90">
           {isExpired ? `${eventName} chegou!` : eventName}
         </h2>
         
-        {/* O DISPLAY DO TIMER */}
+        {/* TIMER DISPLAY */}
         <div className="flex items-end justify-center gap-3 sm:gap-5 w-full">
            <TimeBlock value={timeLeft.days} label="Dias" />
            <TimeBlock value={timeLeft.hours} label="Hrs" />

@@ -56,7 +56,7 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
         const content = event.target?.result;
         if (typeof content === "string") {
           const parsed = JSON.parse(content);
-          // Validação básica
+          // Basic validation
           if (parsed.boxes && parsed.layouts && parsed.name) {
             importTemplate(parsed);
             alert(`Modelo "${parsed.name}" importado com sucesso!`);
@@ -86,7 +86,7 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
           </button>
         </div>
 
-        {/* Salvar Novo */}
+        {/* Save new */}
         <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 space-y-3">
           <label className="text-sm font-semibold text-indigo-900">Salvar layout atual como modelo:</label>
           <div className="flex gap-2">
@@ -114,7 +114,7 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
           </label>
         </div>
 
-        {/* Lista de Templates */}
+        {/* Template list */}
         <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
           {templates.length === 0 ? (
             <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-xl">

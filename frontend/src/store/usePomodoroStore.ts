@@ -15,7 +15,7 @@ interface PomodoroState {
   toggleTimer: () => void;
   resetTimer: () => void;
   addCount: (mode: Mode) => void;
-  syncTime: () => void; // Função que recalcula o tempo
+  syncTime: () => void; // Recomputes the time
 }
 
 const TIMES = { work: 25 * 60, short: 5 * 60, long: 15 * 60 };
@@ -42,11 +42,11 @@ export const usePomodoroStore = create<PomodoroState>()(
         const { isRunning, timeLeft } = get();
         
         if (isRunning) {
-          // PAUSAR: Limpa o alvo, mantém o timeLeft atual
+          // PAUSE: clears the target, keeps the current timeLeft
           set({ isRunning: false, endTime: null });
         } else {
           // INICIAR: Define o alvo (Agora + Tempo Restante)
-          // Isso garante que o tempo corra mesmo em outra aba
+          // This keeps the time running even in another tab
           const target = Date.now() + (timeLeft * 1000);
           set({ isRunning: true, endTime: target });
         }
@@ -70,7 +70,7 @@ export const usePomodoroStore = create<PomodoroState>()(
         }));
       },
 
-      // Chamado a cada segundo pelo Manager
+      // Called every second by the manager
       syncTime: () => {
         const { isRunning, endTime } = get();
         

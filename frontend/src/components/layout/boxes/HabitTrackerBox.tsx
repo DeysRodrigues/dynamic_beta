@@ -15,7 +15,7 @@ export default function HabitTrackerBox({ id = "habit-default" }: HabitTrackerBo
   const [checkedDates, setCheckedDates] = useState<string[]>(content.checkedDates || []);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Gera os últimos 7 dias dinamicamente
+  // Builds the last 7 days
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));

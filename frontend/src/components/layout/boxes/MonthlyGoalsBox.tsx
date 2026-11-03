@@ -45,7 +45,7 @@ export default function MonthlyGoalsBox({ id = "goals-default" }: { id?: string 
 
       <div className="flex-1 overflow-y-auto custom-scrollbar space-y-4">
         {goals.map((goal, gIdx) => {
-          // Calcula consistência simples (streak)
+          // Simple consistency calculation (streak)
           const doneCount = goal.checks.filter(Boolean).length;
           const percent = Math.round((doneCount / 30) * 100);
           

@@ -12,12 +12,12 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
 
   if (!isOpen) return null;
 
-  // --- FUNÇÃO DE EXPORTAR (BACKUP) ---
+  // --- EXPORT (BACKUP) ---
   const handleExport = () => {
     try {
       const finalPayload = createBackup();
 
-      // Gera arquivo para download
+      // Builds the file for download
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(finalPayload));
       const downloadAnchorNode = document.createElement('a');
       downloadAnchorNode.setAttribute("href", dataStr);
@@ -32,7 +32,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
     }
   };
 
-  // --- FUNÇÃO DE IMPORTAR (RESTAURAR) ---
+  // --- IMPORT (RESTORE) ---
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -55,7 +55,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
           restoreBackup(parsed);
 
           alert("Backup restaurado com sucesso! A página será recarregada.");
-          window.location.reload(); // Força recarregar para os Stores pegarem os novos dados
+          window.location.reload(); // Forces a reload so the stores pick up the new data
         }
       } catch (err) {
         console.error(err);

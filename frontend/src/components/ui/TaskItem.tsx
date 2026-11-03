@@ -52,7 +52,7 @@ function TaskItemComponent({
       )}
     >
       
-      {/* Checkbox: Clica para marcar/desmarcar */}
+      {/* Checkbox: click to check or uncheck */}
       {onToggle && (
         <button
           onClick={() => onToggle(task.id)}
@@ -107,7 +107,7 @@ function TaskItemComponent({
             )}
           </div>
           
-          {/* Tags em modo colapsado */}
+          {/* Tags in collapsed mode */}
           {!isExpanded && !editable && (
             <div className="flex items-center gap-1.5 shrink-0">
               {task.tag && (
@@ -124,7 +124,7 @@ function TaskItemComponent({
           )}
         </div>
 
-        {/* Tags e Info Extra em modo expandido */}
+        {/* Tags and extra info in expanded mode */}
         {isExpanded && !editable && (
           <div className="flex flex-wrap gap-2 mt-1 animate-in fade-in slide-in-from-top-1 duration-200">
             {task.tag && (
@@ -146,7 +146,7 @@ function TaskItemComponent({
         )}
       </div>
 
-      {/* Menu de Opções */}
+      {/* Options menu */}
       <div className="relative shrink-0" ref={menuRef}>
         <button 
           onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}

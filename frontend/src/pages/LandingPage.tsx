@@ -17,7 +17,7 @@ import {
 import SpotlightCard from "@/components/landing/SpotlightCard";
 import ShinyText from "@/components/landing/ShinyText";
 
-// --- DADOS PARA O CARROSSEL ---
+// --- CAROUSEL DATA ---
 const HERO_SLIDES = [
   {
     id: 1,
@@ -39,7 +39,7 @@ const HERO_SLIDES = [
   },
 ];
 
-// --- CORES FAMOSAS ---
+// --- FAMOUS COLORS ---
 const COLOR_PALETTES = [
   { name: "Dracula", color: "#bd93f9", bg: "#282a36" },
   { name: "Nord", color: "#88c0d0", bg: "#2e3440" },
@@ -86,7 +86,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ================================================================================= */}
-      {/* 1. SEÇÃO INTUITO (MANIFESTO) */}
+      {/* 1. PURPOSE SECTION (MANIFESTO) */}
       {/* ================================================================================= */}
       <section className="relative z-10 pt-40 pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -122,14 +122,14 @@ export default function LandingPage() {
       </section>
 
       {/* ================================================================================= */}
-      {/* 2. HERO CAROUSEL (APRESENTAÇÃO) */}
+      {/* 2. HERO CAROUSEL (PRESENTATION) */}
       {/* ================================================================================= */}
       <section className="relative z-10 pb-32 px-6">
         <div className="max-w-6xl mx-auto">
           {/* O CARROSSEL */}
           <div className="relative w-full aspect-video md:h-[600px] perspective-1000 group">
             <div className="relative w-full h-full bg-[#111] rounded-2xl border border-white/10 shadow-2xl overflow-hidden transform transition-transform duration-700 ease-out hover:scale-[1.01]">
-              {/* Header do Mockup */}
+              {/* Mockup header */}
               <div className="absolute top-0 left-0 right-0 h-10 bg-[#1a1a1a]/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2 z-20">
                 <div className="w-3 h-3 rounded-full bg-red-500/50" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
@@ -193,7 +193,7 @@ export default function LandingPage() {
       </section>
 
       {/* ================================================================================= */}
-      {/* 3. RECURSOS AVANÇADOS (POWER FEATURES) */}
+      {/* 3. ADVANCED FEATURES (POWER FEATURES) */}
       {/* ================================================================================= */}
       <section className="py-24 px-6 bg-[#0a0a0a] border-t border-white/5">
         <div className="max-w-7xl mx-auto">
@@ -236,7 +236,7 @@ export default function LandingPage() {
               </div>
             </SpotlightCard>
 
-            {/* FEATURE 2: AUTOMAÇÃO */}
+            {/* FEATURE 2: AUTOMATION */}
             <SpotlightCard
               className="h-auto bg-[#111]"
               spotlightColor="rgba(234, 179, 8, 0.2)"
@@ -290,7 +290,7 @@ export default function LandingPage() {
       </section>
 
       {/* ================================================================================= */}
-      {/* 4. PALETAS DE CORES */}
+      {/* 4. COLOR PALETTES */}
       {/* ================================================================================= */}
       <section className="py-24 px-6 bg-gradient-to-b from-[#111] to-[#0a0a0a]">
         <div className="max-w-5xl mx-auto text-center">

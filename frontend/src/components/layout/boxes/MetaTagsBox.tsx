@@ -28,7 +28,7 @@ export default function MetaTagsBox() {
     <div className="box-padrao flex flex-col">
       <h2 className="text-lg font-semibold mb-3">Metas por Categoria</h2>
 
-      {/* --- ÁREA DE INPUT --- */}
+      {/* --- INPUT AREA --- */}
       <div className="flex gap-2 mb-4">
         <select
           value={selectedTag}
@@ -59,7 +59,7 @@ export default function MetaTagsBox() {
         </button>
       </div>
 
-      {/* --- LISTA DE METAS --- */}
+      {/* --- GOALS LIST --- */}
       <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
         {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full opacity-50 italic text-sm py-4">

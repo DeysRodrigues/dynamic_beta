@@ -65,13 +65,13 @@ export default function NotificationBell() {
             style={window.innerWidth >= 768 ? { top: coords.top, left: coords.left } : {}}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Seta do Popover - Escondida no mobile */}
+            {/* Popover arrow, hidden on mobile */}
             <div className="hidden md:block absolute top-3 -left-1.5 w-3 h-3 bg-[#1e1e1e] border-l border-b border-white/10 rotate-45 transform" />
 
-            {/* HEADER DINÂMICO */}
+            {/* DYNAMIC HEADER */}
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 relative">
               <div className="flex items-center gap-2 text-white font-bold text-sm pr-6 leading-tight">
-                {/* Agora usa o emoji do arquivo */}
+                {/* Now uses the emoji from the file */}
                 <span className="text-lg">{APP_UPDATES.emoji}</span>
                 {APP_UPDATES.title}
               </div>
@@ -88,14 +88,14 @@ export default function NotificationBell() {
             </div>
 
             <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
-              {/* ÁREA DO RECADO (MESSAGE) */}
+              {/* MESSAGE AREA */}
               {APP_UPDATES.message && (
                 <div className="bg-white/5 p-3 rounded-lg border border-white/5 text-sm text-gray-300 italic leading-relaxed">
                   {APP_UPDATES.message}
                 </div>
               )}
 
-              {/* LISTA DE ITEMS */}
+              {/* ITEMS LIST */}
               <div className="space-y-2">
                 {APP_UPDATES.items.map((item, i) => (
                   <div
@@ -111,7 +111,7 @@ export default function NotificationBell() {
               </div>
             </div>
 
-            {/* FOOTER DINÂMICO */}
+            {/* DYNAMIC FOOTER */}
             <div className="p-3 bg-black/20 border-t border-white/5 text-center">
               <button
                 onClick={() => setIsOpen(false)}

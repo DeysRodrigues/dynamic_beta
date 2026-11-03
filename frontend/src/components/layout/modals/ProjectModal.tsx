@@ -146,7 +146,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-8 pt-4 space-y-10 custom-scrollbar">
-          {/* Informações Básicas */}
+          {/* Basic information */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-3">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1">Nome do Projeto</label>
@@ -182,11 +182,11 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
             />
           </div>
 
-          {/* Seleção de Widgets */}
+          {/* Widget selection */}
           <div className="space-y-5">
             <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1">Quais ferramentas deseja usar?</label>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
-              {/* Visão Geral (Sempre primeiro ou especial) */}
+              {/* Overview (always first or special) */}
               <button
                 onClick={() => toggleBox(PROJECT_OVERVIEW_WIDGET.id)}
                 className={cn(

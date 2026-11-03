@@ -48,7 +48,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       {showSettings && <SettingsDrawer onClose={() => setShowSettings(false)} />}
       {showProfileEdit && <ProfileEditModal onClose={() => setShowProfileEdit(false)} />}
 
-      {/* Botão Mobile */}
+      {/* Mobile button */}
       {!isFocusMode && (
         <button
           className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border border-white/10 active:scale-95 transition-all text-white"
@@ -80,7 +80,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
           <SidebarProfile onEditProfile={() => setShowProfileEdit(true)} />
           <SidebarNav items={menuItems} />
 
-          {/* 3. RODAPÉ (Settings) */}
+          {/* 3. FOOTER (Settings) */}
           <div className="w-full mt-auto pt-6 border-t border-white/5">
             <button
               onClick={() => setShowSettings(true)}

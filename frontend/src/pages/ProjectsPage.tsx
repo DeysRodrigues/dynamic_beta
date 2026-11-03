@@ -31,7 +31,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col items-center bg-transparent animate-in fade-in duration-500">
-      {/* Background Ambient (Dinâmico com o Tema) */}
+      {/* Ambient background (follows the theme) */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div 
           className="absolute top-[10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-20" 

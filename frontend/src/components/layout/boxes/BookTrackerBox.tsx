@@ -105,7 +105,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
         </div>
       </div>
 
-      {/* --- MODAL CONFIGURAÇÕES --- */}
+      {/* --- SETTINGS MODAL --- */}
       {showSettings && (
         <div className="p-3 bg-current/5 animate-in slide-in-from-top-2">
           <label className="text-xs font-bold opacity-60 uppercase mb-2 block">Passo de Leitura</label>
@@ -127,7 +127,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
         </div>
       )}
 
-      {/* --- MODAL IMPORTAÇÃO --- */}
+      {/* --- IMPORT MODAL --- */}
       {isImporting && (
         <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 max-h-40 overflow-y-auto custom-scrollbar">
           <h3 className="text-xs font-bold opacity-60 uppercase mb-2">Disponíveis na Estante</h3>
@@ -176,7 +176,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
         </div>
       )}
 
-      {/* --- LISTA DE LIVROS --- */}
+      {/* --- BOOK LIST --- */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
         {books.length === 0 && !isAdding && !isImporting && (
           <div className="h-full flex flex-col items-center justify-center opacity-40 gap-2 min-h-[100px]">

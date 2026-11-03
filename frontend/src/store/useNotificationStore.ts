@@ -10,7 +10,7 @@ interface NotificationState {
 export const useNotificationStore = create<NotificationState>()(
   persist(
     (set) => ({
-      lastSeenVersion: null, // Começa vazio
+      lastSeenVersion: null, // Starts empty
       markAsSeen: (version) => set({ lastSeenVersion: version }),
     }),
     { ...persistConfig(PERSISTED.notifications) }

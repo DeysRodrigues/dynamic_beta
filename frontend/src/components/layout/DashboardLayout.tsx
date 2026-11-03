@@ -34,7 +34,7 @@ export default function DashboardLayout() {
         }}
       />
 
-      {/* Passa a lista congelada */}
+      {/* Passes the frozen list */}
       <Sidebar items={sidebarItems} />
       
       <main className="flex-1 flex flex-col min-w-0 h-full relative z-10 bg-transparent">

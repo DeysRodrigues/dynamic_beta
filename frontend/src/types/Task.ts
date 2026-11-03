@@ -8,8 +8,8 @@ export interface Task {
   completed: boolean | undefined;
 
   date: string;             // formato "YYYY-MM-DD"
-  duration: number;         // duração em minutos
+  duration: number;         // duration in minutes
 
   groupTag?: string;
-  workspaceId?: string;     // ID do workspace ao qual pertence
+  workspaceId?: string;     // ID of the workspace it belongs to
 }

@@ -156,7 +156,7 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
             />
           </section>
 
-          {/* 2. Cores Detalhadas */}
+          {/* 2. Detailed colors */}
           <section className="space-y-3">
             <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-widest">
               Cores do Sistema

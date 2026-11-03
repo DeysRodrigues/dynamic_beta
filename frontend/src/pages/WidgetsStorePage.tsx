@@ -280,7 +280,7 @@ export default function WidgetsStorePage() {
           </div>
         </div>
 
-        {/* SEÇÃO DE FAVORITOS */}
+        {/* FAVORITES SECTION */}
         {hasFavorites && (
           <section className="space-y-6 pb-8">
             <div className="flex items-center gap-2">

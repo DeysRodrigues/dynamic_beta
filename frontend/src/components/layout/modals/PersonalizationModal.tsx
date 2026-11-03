@@ -45,12 +45,12 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition"><X size={20} /></button>
         </div>
 
-        {/* --- ÁREA DE UPLOAD --- */}
+        {/* --- UPLOAD AREA --- */}
         <div className="space-y-2">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Imagem Personalizada</label>
           
           <div className="flex gap-4">
-            {/* Botão de Upload */}
+            {/* Upload button */}
             <div 
               onClick={() => fileInputRef.current?.click()}
               className="flex-1 h-32 border-2 border-dashed border-indigo-200 rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-indigo-50 hover:border-indigo-400 transition group"
@@ -69,7 +69,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
               />
             </div>
 
-            {/* Preview da Imagem Atual (Se houver) */}
+            {/* Preview of the current image (if any) */}
             {customImage && (
               <div 
                 className={`relative flex-1 h-32 rounded-xl overflow-hidden border-2 cursor-pointer transition ${
@@ -86,7 +86,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
                   </div>
                 )}
                 
-                {/* Botão Limpar */}
+                {/* Clear button */}
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
@@ -105,7 +105,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
 
         <hr className="border-gray-100" />
 
-        {/* --- PADRÕES CSS (Patterns) --- */}
+        {/* --- CSS PATTERNS --- */}
         <div className="space-y-2">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Padrões Leves</h3>
           <div className="grid grid-cols-3 gap-3">

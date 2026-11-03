@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { 
   Code, Copy, Plus, Trash2, Check, 
   Terminal, Database, FileJson, Layers, Command,
-  ChevronDown, Search, Hash, X, Coffee, FileCode // Adicionei novos ícones
+  ChevronDown, Search, Hash, X, Coffee, FileCode
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 import {
@@ -13,7 +13,7 @@ import {
 import { useThemeStore } from "@/store/useThemeStore";
 
 // --- TIPOS ---
-// --- CONFIGURAÇÃO DOS PADRÕES ---
+// --- DEFAULTS ---
 const DEFAULT_TYPES: SnippetType[] = [
   { id: "java", label: "Java", icon: Coffee, color: "text-red-500" },
   { id: "ts", label: "TypeScript", icon: Code, color: "text-blue-400" },
@@ -31,7 +31,7 @@ const DEFAULT_SNIPPETS: Snippet[] = [
   { id: "1", title: "Atualizar Arch (pacman)", code: "sudo pacman -Syu", type: "arch" },
 ];
 
-// Cores para novas linguagens criadas pelo user
+// Colors for languages the user adds
 const RANDOM_COLORS = [
   "text-red-400", "text-emerald-400", "text-indigo-400", 
   "text-fuchsia-400", "text-rose-400", "text-sky-400"
@@ -42,7 +42,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
   const primaryColor = useThemeStore(s => s.primaryColor);
   const saved = getBoxContent(id, snippetContentSchema);
 
-  // Estados de Dados
+  // Data state
   const [snippets, setSnippets] = useState<Snippet[]>(saved.snippets || DEFAULT_SNIPPETS);
   const [customTypes, setCustomTypes] = useState<SnippetType[]>(saved.customTypes || []);
   const [filter, setFilter] = useState<string>("all");
@@ -54,7 +54,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
   // Form States
   const [newTitle, setNewTitle] = useState("");
   const [newCode, setNewCode] = useState("");
-  const [selectedTypeId, setSelectedTypeId] = useState<string>("arch"); // Padrão selecionado
+  const [selectedTypeId, setSelectedTypeId] = useState<string>("arch"); // Selected by default
   
   // Dropdown States
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -181,7 +181,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
         )}
       </div>
 
-      {/* FORMULÁRIO DE ADIÇÃO */}
+      {/* ADD FORM */}
       {isAdding && (
         <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 space-y-3 z-20 relative">
           
@@ -283,7 +283,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
         </div>
       )}
 
-      {/* LISTA */}
+      {/* LIST */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
         {filteredSnippets.length === 0 ? (
           <div className="text-center py-8 opacity-30 text-xs flex flex-col items-center gap-2">

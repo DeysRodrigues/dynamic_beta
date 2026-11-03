@@ -40,7 +40,7 @@ const ACTION_DESC = {
   backup: "Baixa backup .json."
 };
 
-// --- FUNÇÃO AUXILIAR PARA EMBED ---
+// --- EMBED HELPER ---
 const getEmbedUrl = (url: string) => {
   if (!url) return "";
   try {
@@ -58,7 +58,7 @@ const getEmbedUrl = (url: string) => {
   }
 };
 
-// Formata milissegundos em texto (ex: "02:30" ou "1h 20m")
+// Formats milliseconds as text (e.g. "02:30" or "1h 20m")
 const formatDuration = (ms: number) => {
   if (ms <= 0) return "00:00";
   const seconds = Math.floor((ms / 1000) % 60);
@@ -70,7 +70,7 @@ const formatDuration = (ms: number) => {
 };
 
 export default function AutomationBox({ id = "auto-default" }: { id?: string }) {
-  // Importando 'tasks' para usar no cálculo visual da regra de tarefas
+  // 'tasks' is used to compute the status shown for the tasks rule
   const { tasks, removeTasks, deleteAllTasks } = useTaskStore();
   const { setBoxContent, getBoxContent } = useBoxContentStore();
   const saved = getBoxContent(id, automationContentSchema);
@@ -78,7 +78,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
   const [rules, setRules] = useState<Rule[]>(saved.rules || []);
   const [isAdding, setIsAdding] = useState(false);
   
-  // Estado para forçar re-render a cada segundo (Clock Visual)
+  // Forces a re-render every second (visual clock)
   const [, setTicker] = useState(0);
   
   const [newTrigger, setNewTrigger] = useState<TriggerType>('time');
@@ -93,7 +93,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
     setBoxContent(id, { rules }, automationContentSchema);
   }, [rules, id, setBoxContent]);
 
-  // Efeito de Relógio para atualizar contadores visuais
+  // Clock effect that refreshes the visual counters
   useEffect(() => {
     const timer = setInterval(() => setTicker(t => t + 1), 1000);
     return () => clearInterval(timer);
@@ -137,7 +137,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
     }
   }, [removeTasks, deleteAllTasks]); 
 
-  // --- MOTOR LÓGICO ---
+  // --- RULE ENGINE ---
   useEffect(() => {
     const checkRules = () => {
       const now = new Date();
@@ -154,17 +154,17 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
           const lastRun = rule.lastRun || 0;
           const timeSinceRun = Date.now() - lastRun;
           
-          // Prevenção de disparos múltiplos muito rápidos (debounce de 1s)
+          // Prevents several very fast triggers (1s debounce)
           if (timeSinceRun < SAFETY_FLOOR_MS) return rule;
 
           let shouldRun = false;
           
-          // Lógica de Tempo: Dispara se for o minuto exato e não tiver rodado no último minuto
+          // Time rule: fires on the exact minute, if it has not run in the last minute
           if (rule.trigger === 'time' && rule.triggerValue === timeStr && timeSinceRun > 60000) {
             shouldRun = true;
           }
           
-          // Lógica de Tasks: Dispara se atingiu o alvo e não disparou recentemente
+          // Tasks rule: fires when the target is reached and it has not fired recently
           if (rule.trigger === 'tasks') {
             const target = parseInt(rule.triggerValue);
             if (target > 0 && completedToday === target && timeSinceRun > 60000) {
@@ -172,7 +172,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
             }
           }
           
-          // Lógica de Intervalo: Dispara se passou o tempo
+          // Interval rule: fires when the time has passed
           if (rule.trigger === 'interval') {
             let seconds = parseFloat(rule.triggerValue);
             if (isNaN(seconds)) seconds = 60;
@@ -197,7 +197,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
     return () => clearInterval(interval);
   }, [executeAction]); 
 
-  // --- CÁLCULO DE STATUS VISUAL ---
+  // --- VISUAL STATUS ---
   const getRuleStatus = (rule: Rule) => {
     if (!rule.active) return "Inativo";
 
@@ -206,7 +206,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
       const now = new Date();
       const target = new Date();
       target.setHours(h, m, 0, 0);
-      // Se já passou hoje, alvo é amanhã
+      // If it already ran today, the target is tomorrow
       if (target.getTime() <= now.getTime()) {
         target.setDate(target.getDate() + 1);
       }
@@ -215,7 +215,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
     }
 
     if (rule.trigger === 'interval') {
-      // Se nunca rodou, está pronto
+      // If it never ran, it is ready
       if (!rule.lastRun) return "Pronto";
       const intervalMs = parseFloat(rule.triggerValue) * 1000;
       const nextRun = rule.lastRun + intervalMs;
@@ -298,7 +298,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
         <button onClick={() => setIsAdding(true)} className="bg-primary hover:opacity-90 text-primary-foreground p-1.5 rounded-lg transition"><Plus size={16} /></button>
       </div>
 
-      {/* Lista de Regras */}
+      {/* Rule list */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
         {rules.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full opacity-50 text-xs gap-2 text-center px-4">
@@ -327,7 +327,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
         )}
       </div>
 
-      {/* --- WIZARD DE CRIAÇÃO --- */}
+      {/* --- CREATION WIZARD --- */}
       {isAdding && (
         <div className="absolute inset-0 z-20 flex flex-col animate-in slide-in-from-bottom-10 overflow-y-auto custom-scrollbar backdrop-blur-xl" 
              style={{ backgroundColor: 'var(--box-color)', color: 'var(--box-text-color)' }}>
@@ -369,7 +369,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
               </div>
             </div>
 
-            {/* 2. ENTÃO... */}
+            {/* 2. THEN... */}
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-green-500 uppercase tracking-wider">
                 <Zap size={14}/> 2. Fazer...

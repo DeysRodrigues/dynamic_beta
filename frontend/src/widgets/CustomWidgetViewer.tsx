@@ -18,7 +18,7 @@ export default function CustomWidgetViewer() {
             <head>
               <style>
                 body { margin: 0; padding: 0; overflow: hidden; font-family: sans-serif; }
-                /* CSS do Usuário */
+                /* User CSS */
                 ${widget.css}
               </style>
             </head>
@@ -53,7 +53,7 @@ export default function CustomWidgetViewer() {
       srcDoc={srcDoc}
       className="w-full h-screen border-none"
       title={`Custom Widget ${id}`}
-      sandbox="allow-scripts allow-forms allow-pointer-lock allow-same-origin" // Segurança básica
+      sandbox="allow-scripts allow-forms allow-pointer-lock allow-same-origin" // Basic security
     />
   );
 }

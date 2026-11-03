@@ -9,14 +9,14 @@ export default function PomodoroManager() {
 
     if (isRunning) {
       interval = setInterval(() => {
-        syncTime(); // Sincroniza o store com o tempo real
+        syncTime(); // Syncs the store with the real time
       }, 1000);
     }
 
     return () => clearInterval(interval);
   }, [isRunning, syncTime]);
 
-  // Efeito para detectar o fim do timer (00:00)
+  // Detects the end of the timer (00:00)
   useEffect(() => {
     if (timeLeft === 0 && !isRunning) {
       // 1. Tocar Som
@@ -24,7 +24,7 @@ export default function PomodoroManager() {
       audio.volume = 0.5;
       audio.play().catch(() => {});
 
-      // 2. Notificação
+      // 2. Notification
       if (Notification.permission === "granted") {
         new Notification("Pomodoro Finalizado!", { 
           body: mode === 'work' ? "Hora da pausa!" : "Bora focar!" 
@@ -32,22 +32,22 @@ export default function PomodoroManager() {
       }
 
       // 3. Contabilizar
-      // Pequeno hack: só conta se o tempo for EXATAMENTE 0 para evitar duplo count em re-renders
-      // O store já pausou (isRunning = false), então é seguro.
-      // Precisamos verificar se acabamos de chegar no zero. 
-      // Mas para simplificar: a Box já mostra o estado parado.
-      // Vamos apenas adicionar o count e trocar o modo aqui.
+      // Only counts when the time is exactly 0, to avoid a double count on re-renders
+      // The store has already paused (isRunning = false), so this is safe.
+      // We need to check whether it just reached zero. 
+      // The box already shows the stopped state.
+      // All that is left is to add the count and switch the mode.
       
       addCount(mode);
 
-      // 4. Trocar modo automático
+      // 4. Switch mode automatically
       if (mode === "work") setMode("short");
       else setMode("work");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, isRunning]); 
 
-  // Atualiza o título da aba do navegador
+  // Updates the browser tab title
   useEffect(() => {
     const mins = Math.floor(timeLeft / 60);
     const secs = String(timeLeft % 60).padStart(2, "0");
@@ -55,5 +55,5 @@ export default function PomodoroManager() {
     document.title = `${mins}:${secs} - ${label}`;
   }, [timeLeft, mode]);
 
-  return null; // Componente invisível
+  return null; // Invisible component
 }

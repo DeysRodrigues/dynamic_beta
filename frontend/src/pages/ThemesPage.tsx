@@ -110,7 +110,7 @@ const PaletteCard = memo(({ palette, isApplied, isFavorite, onApply, onToggleFav
   </div>
 ));
 
-// --- PÁGINA PRINCIPAL ---
+// --- MAIN PAGE ---
 
 export default function ThemesPage() {
   const activeWorkspace = useDashboardStore(selectActiveWorkspace);
@@ -247,7 +247,7 @@ export default function ThemesPage() {
           </div>
         </div>
 
-        {/* SEÇÃO DE FAVORITOS */}
+        {/* FAVORITES SECTION */}
         {hasFavorites && (
           <section className="space-y-6 pb-8 border-b border-current/5">
             <div className="flex items-center gap-3">
@@ -303,7 +303,7 @@ export default function ThemesPage() {
           </div>
         </section>
 
-        {/* 2. TEMAS DE IMERSÃO */}
+        {/* 2. IMMERSION THEMES */}
         <section className="space-y-6">
           <div className="flex items-center gap-3">
             <ImageIcon className="text-purple-500" size={24}/>
@@ -316,7 +316,7 @@ export default function ThemesPage() {
           </div>
         </section>
 
-        {/* 3. PALETAS DE CORES */}
+        {/* 3. COLOR PALETTES */}
         <section className="space-y-6">
           <div className="flex items-center gap-3">
             <Palette className="text-pink-500" size={24}/>

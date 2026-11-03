@@ -2,7 +2,7 @@ import { Snowflake, Cat, Ghost, Anchor, Leaf, Fish, Sprout, MonitorPlay } from "
 import type { ThemeItem, WallpaperThemeItem, SetupItem } from "@/types/Theme";
 
 // =====================================================================
-// 1. PALETAS DE CORES (Só muda as cores, mantém wallpaper atual)
+// 1. COLOR PALETTES (change only the colors, keep the current wallpaper)
 // =====================================================================
 export const colorPalettes: ThemeItem[] = [
   {
@@ -99,7 +99,7 @@ export const colorPalettes: ThemeItem[] = [
 ];
 
 // =====================================================================
-// 2. TEMAS DE IMERSÃO (Muda Cores + Papel de Parede, mantém Layout)
+// 2. IMMERSION THEMES (change colors and wallpaper, keep the layout)
 // =====================================================================
 export const wallpaperThemes: WallpaperThemeItem[] = [
  
@@ -114,11 +114,11 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Um entardecer suave e romântico. Para momentos de paz a dois. (for u, c sz)",
     previewColor: "bg-[#8b5cf6]", // Roxo Suave
     theme: {
-      backgroundColor: "#2e2a45", // Azul/Roxo Crepúsculo (Fundo do céu)
-      boxColor: "#3e3859",        // Roxo levemente mais claro para caixas
+      backgroundColor: "#2e2a45", // Twilight blue/purple (sky background)
+      boxColor: "#3e3859",        // Slightly lighter purple for the boxes
       sidebarColor: "#1e1b2e",    // Escuro aconchegante
-      textColor: "#e9d5ff",       // Lilás claro (Texto legível)
-      primaryColor: "#f472b6",    // Rosa Suave (Cor das nuvens/flores e do amor)
+      textColor: "#e9d5ff",       // Light lilac (readable text)
+      primaryColor: "#f472b6",    // Soft pink (clouds, flowers and love)
       boxOpacity: 0.85,
       wallpaper: "custom",
       customImage: "/images-themes/cat-love.png", // Renomeie image_341ddc
@@ -132,7 +132,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     theme: {
       backgroundColor: "#f5ebe0", // Creme claro
       boxColor: "#e3d5ca",        // Latte suave
-      sidebarColor: "#4a403a",    // Marrom Café
+      sidebarColor: "#4a403a",    // Coffee brown
       textColor: "#3e2723",       // Marrom Escuro
       primaryColor: "#d4a373",    // Caramelo
       boxOpacity: 0.9,
@@ -151,11 +151,11 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Tons pastéis oníricos. Azul, ciano e o rosa vibrante das flores.",
     previewColor: "bg-[#60a5fa]", // Azul Pastel
     theme: {
-      backgroundColor: "#dbeafe", // Azul Bebê muito claro
-      boxColor: "#bfdbfe",        // Azul Céu Translucido
+      backgroundColor: "#dbeafe", // Very light baby blue
+      boxColor: "#bfdbfe",        // Translucent sky blue
       sidebarColor: "#1e3a8a",    // Azul Real Escuro
       textColor: "#172554",       // Azul Profundo
-      primaryColor: "#fb7185",    // Rosa Flor (Destaque da Hornet)
+      primaryColor: "#fb7185",    // Flower pink (Hornet's highlight)
       boxOpacity: 0.8,
       wallpaper: "custom",
       customImage: "/images-themes/hollow-garden.png", // Renomeie image_348731
@@ -170,7 +170,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
       backgroundColor: "#2e1065", // Violeta Profundo
       boxColor: "#4c1d95",        // Roxo Intenso
       sidebarColor: "#1c1917",    // Quase preto
-      textColor: "#f5d0fe",       // Rosa Pálido Brilhante
+      textColor: "#f5d0fe",       // Bright pale pink
       primaryColor: "#e879f9",    // Rosa Seda Neon
       boxOpacity: 0.85,
       wallpaper: "custom",
@@ -204,9 +204,9 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Céu de anime azul vibrante com o vermelho intenso das cerejas.",
     previewColor: "bg-[#ef4444]", // Vermelho
     theme: {
-      backgroundColor: "#e0f2fe", // Azul Céu Claro
+      backgroundColor: "#e0f2fe", // Light sky blue
       boxColor: "#ffffff",        // Branco Limpo
-      sidebarColor: "#0c4a6e",    // Azul Petróleo
+      sidebarColor: "#0c4a6e",    // Petrol blue
       textColor: "#075985",       // Azul Escuro
       primaryColor: "#dc2626",    // Vermelho Cereja
       boxOpacity: 0.9,
@@ -220,10 +220,10 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Refrescante, líquido e energizante. Laranja e dourado.",
     previewColor: "bg-[#f97316]", // Laranja
     theme: {
-      backgroundColor: "#ffedd5", // Laranja muito pálido
+      backgroundColor: "#ffedd5", // Very pale orange
       boxColor: "#fff7ed",        // Branco quente
       sidebarColor: "#7c2d12",    // Marrom Avermelhado
-      textColor: "#431407",       // Marrom Café
+      textColor: "#431407",       // Coffee brown
       primaryColor: "#ea580c",    // Laranja Vivo
       boxOpacity: 0.85,
       wallpaper: "custom",
@@ -236,7 +236,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Água cristalina e mirtilos. Frio, calmo e focado.",
     previewColor: "bg-[#3b82f6]", // Azul Real
     theme: {
-      backgroundColor: "#eff6ff", // Azul Água
+      backgroundColor: "#eff6ff", // Water blue
       boxColor: "#dbeafe",        // Azul Gelo Transparente
       sidebarColor: "#172554",    // Azul Profundo
       textColor: "#1e40af",       // Azul Escuro
@@ -275,7 +275,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     theme: {
       backgroundColor: "#4c1d95", // Roxo Base
       boxColor: "#701a75",        // Magenta Escuro
-      sidebarColor: "#2e1065",    // Índigo Profundo
+      sidebarColor: "#2e1065",    // Deep indigo
       textColor: "#fdf4ff",       // Branco Rosado
       primaryColor: "#facc15",    // Amarelo Dourado (A Estrela)
       boxOpacity: 0.8,
@@ -414,7 +414,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
 ];
 
 // =====================================================================
-// 3. SETUPS COMPLETOS (Muda Layout + Cores + Widgets + Conteúdo)
+// 3. FULL SETUPS (change layout, colors, widgets and content)
 // =====================================================================
 export const readySetups: SetupItem[] = [
   {

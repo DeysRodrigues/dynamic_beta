@@ -19,11 +19,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* ROTA DA APRESENTAÇÃO (SEM SIDEBAR) */}
+        {/* PRESENTATION ROUTE (NO SIDEBAR) */}
         <Route path="/intro" element={<LandingPage />} />
         <Route path="/wiki" element={<WikiPage />} />
 
-        {/* ROTAS DO APP (COM SIDEBAR) */}
+        {/* APP ROUTES (WITH SIDEBAR) */}
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/tasks" element={<TasksPage />} />
@@ -33,7 +33,7 @@ export default function App() {
           <Route path="/themes" element={<ThemesPage />} />
         </Route>
 
-        {/* ROTAS DE EMBEDS (TELA CHEIA) */}
+        {/* EMBED ROUTES (FULL SCREEN) */}
         <Route path="/w/water" element={<WaterWidget />} />
         <Route path="/w/snake" element={<SnakeWidget />} />
         <Route path="/w/bio" element={<BioWidget />} />

@@ -8,7 +8,7 @@ import { catalogWidgets } from "@/widgets/registry";
 export const nativeWidgets = catalogWidgets;
 
 // =====================================================================
-// 2. EMBEDS (Links para Copiar)
+// 2. EMBEDS (links to copy)
 // =====================================================================
 export const embedWidgets = [
   {

@@ -9,7 +9,7 @@ import { boxFromLegacyId, createBox } from "@/utils/BoxFactory";
 import type { BoxRef } from "@/types/Box";
 import { addBoxToLayouts } from "@/utils/layout";
 
-// --- CONFIGURAÇÃO ---
+// --- SETTINGS ---
 
 const DEFAULT_BOXES: BoxRef[] = ["tasks", "progress", "pomodoro", "tags"].map((type) => ({
   id: type,
@@ -57,7 +57,7 @@ interface DashboardActions {
   removeWorkspace: (id: string) => void;
   setActiveWorkspace: (id: string) => void;
   renameWorkspace: (id: string, name: string) => void;
-  toggleFocusMode: () => void; // NOVO
+  toggleFocusMode: () => void;
 
   setLayouts: (layouts: Layouts) => void;
   addBox: (type: string) => void;

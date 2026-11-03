@@ -11,7 +11,6 @@ import { getTodayDate, formatDate } from "@/utils/DateUtils";
 import { cn } from "@/lib/utils";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
 
-// --- TIPOS (Movidos para fora) ---
 interface ActivityLog {
   id: string;
   name: string;
@@ -35,7 +34,6 @@ interface GoalTracker {
   presets: ActivityPreset[];
 }
 
-// --- SUB-COMPONENTES (Extraídos e Memoizados para Performance) ---
 
 const ProgressBar = memo(({ current, total, colorClass = "bg-primary" }: { current: number, total: number, colorClass?: string }) => {
   const percent = Math.min((current / total) * 100, 100);
@@ -177,11 +175,11 @@ const MonthReport = memo(({ tracker, selectedDate, onSelectDate }: { tracker: Go
 // --- COMPONENTE PRINCIPAL ---
 
 export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id?: string }) {
-  // OTIMIZAÇÃO: Usa seletor para evitar re-render quando OUTROS boxes mudam
+  // Uses a selector so other boxes changing does not re-render this one
   const setBoxContent = useBoxContentStore(state => state.setBoxContent);
   
-  // Leitura inicial apenas (sem subscrever a updates futuros para evitar loops de render)
-  // Como gerenciamos o estado localmente, só precisamos ler uma vez na montagem
+  // Initial read only, with no subscription to later updates, to avoid render loops
+  // State is managed locally, so one read on mount is enough
   const [trackers, setTrackers] = useState<GoalTracker[]>(() => {
     return (useBoxContentStore.getState().getBoxContent(id) as { trackers?: GoalTracker[] }).trackers || [];
   });
@@ -199,7 +197,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
   const [activityValue, setActivityValue] = useState("");
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
 
-  // Função centralizada de salvamento
+  // Single save function
   const save = useCallback((data: GoalTracker[]) => {
     setTrackers(data);
     setBoxContent(id, { trackers: data });
@@ -334,7 +332,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
         </div>
       </div>
 
-      {/* FORMULÁRIO */}
+      {/* FORM */}
       {isAdding && (
         <div className="p-4 bg-current/5 dark:bg-transparent animate-in slide-in-from-top-2 space-y-3 shadow-inner">
           <div className="flex flex-wrap gap-2">
@@ -361,7 +359,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
         </div>
       )}
 
-      {/* LISTA */}
+      {/* LIST */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
         {trackers.length === 0 && !isAdding && (
           <div className="flex flex-col items-center justify-center h-full opacity-30 gap-3 min-h-[150px]">
@@ -401,7 +399,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
                 </div>
               </div>
 
-              {/* GRÁFICO CONTAINER */}
+              {/* CHART CONTAINER */}
               <div className="bg-black/5 dark:bg-transparent rounded-xl p-2 mb-3">
                 {viewMode === 'week' 
                   ? <WeekGraph tracker={tracker} selectedDate={selectedDate} onSelectDate={setSelectedDate} /> 
@@ -429,7 +427,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
                   <div className="w-16"><ProgressBar current={selectedDateTotal} total={tracker.dailyGoal} colorClass={selectedDatePercent >= 100 ? "bg-green-500" : "bg-primary dark:bg-blue-500"} /></div>
                 </div>
 
-                {/* ÁREA DE INPUT + PRESETS */}
+                {/* INPUT AREA + PRESETS */}
                 <div className="space-y-2">
                   {presets.length > 0 && isExpanded && (
                     <div className="flex flex-wrap gap-1.5 mb-2 animate-in fade-in slide-in-from-left-2">

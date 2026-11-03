@@ -10,11 +10,11 @@ interface NotepadBoxProps {
 export default function NotepadBox({ id = "notepad-default" }: NotepadBoxProps) {
   const { getBoxContent, setBoxContent } = useBoxContentStore();
   
-  // Carrega texto salvo ou vazio
+  // Loads the saved text, or empty
   const [text, setText] = useState<string>(getBoxContent(id, notepadContentSchema).text || "");
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
-  // Salva automaticamente 1 segundo após parar de digitar
+  // Saves automatically 1 second after typing stops
   useEffect(() => {
     const timer = setTimeout(() => {
       setBoxContent(id, { text }, notepadContentSchema);

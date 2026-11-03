@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dumbbell, RotateCcw, CheckCircle } from "lucide-react";
 
-// CORREÇÃO: Constante fora do componente
 const routine = [
   { name: "Polichinelos", time: 30 },
   { name: "Flexões (ou Parede)", time: 20 },
@@ -16,7 +15,6 @@ export default function QuickWorkoutBox() {
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    // CORREÇÃO: Tipagem do intervalo
     let interval: ReturnType<typeof setInterval>;
 
     if (isActive && timeLeft > 0) {

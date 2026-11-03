@@ -7,7 +7,7 @@ export interface WeekGroup {
   name: string;
   startDate: string;
   endDate: string;
-  mainTag: string; // A "Tagzona" que representa este grupo
+  mainTag: string; // The tag group this week stands for
 }
 
 interface WeekState {

@@ -37,7 +37,7 @@ interface WikiSection {
   links?: { label: string; url: string; icon: React.ReactNode; color: string }[];
 }
 
-// --- DADOS DA WIKI ---
+// --- WIKI DATA ---
 const WIKI_DATA: WikiSection[] = [
   {
     id: "intro",
@@ -203,7 +203,7 @@ export default function WikiPage() {
 
       <div className="flex-1 flex flex-col lg:flex-row max-w-7xl w-full mx-auto relative z-10 overflow-hidden">
         
-        {/* Sidebar de Navegação */}
+        {/* Navigation sidebar */}
         <aside className="w-full lg:w-[320px] p-6 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col gap-8 bg-black/20 backdrop-blur-sm lg:h-[calc(100vh-68px)] lg:sticky lg:top-[68px]">
           
           {/* Tabs de Categorias */}
@@ -221,7 +221,7 @@ export default function WikiPage() {
              ))}
           </div>
 
-          {/* Lista de Itens da Categoria */}
+          {/* Category item list */}
           <nav className="space-y-1 overflow-y-auto pr-2 custom-scrollbar">
             {filteredItems.filter(i => i.category === activeTab).map((item) => (
               <button
@@ -242,7 +242,7 @@ export default function WikiPage() {
             ))}
           </nav>
 
-          {/* Card de Dica Rápida */}
+          {/* Quick tip card */}
           <div className="mt-auto hidden lg:block p-5 rounded-2xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-white/5 relative overflow-hidden group">
              <div className="relative z-10">
                 <Zap size={18} className="text-yellow-400 mb-3 fill-yellow-400" />
@@ -253,11 +253,11 @@ export default function WikiPage() {
           </div>
         </aside>
 
-        {/* Área de Conteúdo */}
+        {/* Content area */}
         <main className="flex-1 p-6 lg:p-12 overflow-y-auto lg:h-[calc(100vh-68px)] custom-scrollbar">
           <div className="max-w-3xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             
-            {/* Header da Seção */}
+            {/* Section header */}
             <div className="space-y-6">
                 <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-blue-400 border border-white/10 shadow-inner group overflow-hidden relative">
@@ -305,7 +305,7 @@ export default function WikiPage() {
                         </div>
                     )}
 
-                    {/* Automações / Exemplos */}
+                    {/* Automations / examples */}
                     {activeContent.examples && (
                         <div className="space-y-4">
                             <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Exemplos de Reatividade</h3>
@@ -341,7 +341,7 @@ export default function WikiPage() {
                         </div>
                     )}
 
-                    {/* Links da Criadora */}
+                    {/* Creator's links */}
                     {activeContent.links && (
                         <div className="flex flex-wrap gap-4 pt-4">
                             {activeContent.links.map((link, i) => (
@@ -366,7 +366,7 @@ export default function WikiPage() {
                 </div>
             </SpotlightCard>
 
-            {/* Dicas / Nota de Rodapé da Seção */}
+            {/* Section tips / footnote */}
             {activeContent.tips && (
                 <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-start gap-4">
                     <Zap size={20} className="text-blue-400 shrink-0 mt-0.5" />
@@ -376,7 +376,7 @@ export default function WikiPage() {
                 </div>
             )}
 
-            {/* Rodapé Interno da Wiki */}
+            {/* Wiki inner footer */}
             <footer className="pt-20 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30 hover:opacity-100 transition-opacity">
                 <div className="text-[10px] font-bold tracking-widest uppercase">
                     Build 0.5.0 — Beta Phase

@@ -18,7 +18,7 @@ type LibraryBook = LibraryBookContent & { categoryId: string };
 import { cn } from "@/lib/utils";
 
 // --- TIPOS ---
-// --- ÍCONES ---
+// --- ICONS ---
 const iconMap: Record<string, React.ElementType> = {
   book: Book, open: BookOpen, library: Library, school: GraduationCap,
   heart: Heart, star: Star, work: Briefcase, coffee: Coffee,
@@ -204,7 +204,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
           <div className="flex gap-2 mb-4">
             {woods.map(w => (
               <button key={w.name} onClick={() => save(books, categories, { ...settings, woodColor: w.color })} className={cn("w-8 h-8 rounded-full ring-2 ring-transparent hover:ring-primary/50 transition shadow-sm relative overflow-hidden", settings.woodColor === w.color && "ring-primary")} style={{ backgroundColor: w.color }} title={w.name}>
-                 {/* Efeito de textura na bolinha */}
+                 {/* Texture effect on the knob */}
                  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.1)_50%,transparent_75%,transparent_100%)] opacity-50 bg-[length:10px_10px]" />
               </button>
             ))}
@@ -225,7 +225,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
         {[shelf1, shelf2].map((shelf, idx) => (
           <div key={idx} className="relative w-full h-32 flex items-end group/shelf">
              
-             {/* Fundo do Nicho (Parede interna escura para dar profundidade) */}
+             {/* Niche background (dark inner wall, for depth) */}
              <div className="absolute inset-x-2 top-2 bottom-3 bg-black/20 shadow-inner rounded-t-lg backdrop-blur-sm transition-colors duration-500"></div>
              
              {/* Livros */}
@@ -247,7 +247,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
                 <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black/30"></div>
              </div>
 
-             {/* Laterais da Estante (Suportes) */}
+             {/* Bookshelf sides (supports) */}
              <div className="absolute bottom-0 left-0 w-2 h-[110%] rounded-t-sm z-30 shadow-md" style={{ backgroundColor: settings.woodColor, filter: 'brightness(0.8)' }}></div>
              <div className="absolute bottom-0 right-0 w-2 h-[110%] rounded-t-sm z-30 shadow-md" style={{ backgroundColor: settings.woodColor, filter: 'brightness(0.8)' }}></div>
           </div>
@@ -329,7 +329,7 @@ function BookItem({ book, selected, onClick }: { book: LibraryBook, selected: bo
         {/* Lombada com textura sutil */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/10 pointer-events-none"></div>
         
-        {/* Padrões da lombada */}
+        {/* Spine patterns */}
         {book.pattern === 0 && <div className="w-full h-full flex flex-col justify-between py-2 px-0.5"><div className="w-full h-[1px] bg-black/30"></div><div className="w-full h-[1px] bg-black/30"></div></div>}
         {book.pattern === 1 && <div className="absolute top-4 bottom-4 left-1 right-1 bg-black/10 rounded-sm border border-black/10"></div>}
         {book.pattern === 2 && <div className="absolute top-2 w-full text-center"><div className="w-2 h-2 bg-white/30 rounded-full mx-auto shadow-inner"></div></div>}

@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 import type { Layouts } from "react-grid-layout";
 import { persistConfig, PERSISTED } from "@/persistence/registry";
 
-// Define a estrutura do Tema salvo (Cores, Papel de parede, etc)
+// Shape of a saved theme (colors, wallpaper, etc.)
 export interface SavedThemeState {
   wallpaper: string;
   customImage: string | null;
@@ -21,14 +21,13 @@ export interface LayoutTemplate {
   name: string;
   boxes: string[];
   layouts: Layouts;
-  theme?: SavedThemeState;       // <--- AGORA SALVA O TEMA
-  content?: Record<string, unknown>; // <--- AGORA SALVA O CONTEÚDO (Links, Textos)
+  theme?: SavedThemeState;
+  content?: Record<string, unknown>;
   createdAt: string;
 }
 
 interface LayoutTemplateState {
   templates: LayoutTemplate[];
-  // Atualizei a assinatura da função para aceitar tema e conteúdo
   saveTemplate: (
     name: string, 
     boxes: string[], 
@@ -51,12 +50,12 @@ export const useLayoutTemplateStore = create<LayoutTemplateState>()(
           name,
           boxes,
           layouts,
-          theme,   // Salva as cores/wallpaper
-          content, // Salva os dados internos
+          theme,   // Saves the colors and wallpaper
+          content, // Saves the inner data
           createdAt: new Date().toISOString(),
         };
         
-        // Adiciona no início da lista
+        // Adds to the start of the list
         set((state) => ({ templates: [newTemplate, ...state.templates] }));
       },
 

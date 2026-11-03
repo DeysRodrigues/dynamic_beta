@@ -59,7 +59,7 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col items-center bg-transparent">
-       {/* Background Ambient (Dinâmico com o Tema) */}
+       {/* Ambient background (follows the theme) */}
        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div 
           className="absolute top-[10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[100px] opacity-20" 
@@ -115,7 +115,6 @@ export default function TasksPage() {
               <Filter size={18} />
             </button>
             
-            {/* ... botões seguintes ... */}
             <button
               onClick={() => setShowBulkEdit(true)}
               className="p-2.5 rounded-xl opacity-50 hover:opacity-100 hover:bg-current/10 transition-all"
@@ -199,7 +198,7 @@ export default function TasksPage() {
           </div>
         </div>
 
-        {/* --- LISTA DE TAREFAS --- */}
+        {/* --- TASK LIST --- */}
         <div className="space-y-8 mt-10">
           {Object.entries(groupTasksByDate(filteredTasks)).length > 0 ? (
             Object.entries(groupTasksByDate(filteredTasks)).map(

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 
-// Tipo para os atalhos salvos
+// Type of the saved shortcuts
 interface Preset {
   url: string;
   mode: "video" | "app";
@@ -27,7 +27,7 @@ export default function EmbeddedBox({
   const { setBoxContent, getBoxContent } = useBoxContentStore();
   const savedState = getBoxContent(id) as { url?: string, mode?: "video" | "app", isLocked?: boolean, presets?: (Preset | null)[] };
 
-  // 1. Inicia VAZIO para não pesar no carregamento
+  // 1. Starts EMPTY so it does not slow down loading
   const [inputUrl, setInputUrl] = useState<string>(savedState.url || "");
   const [embedUrl, setEmbedUrl] = useState<string>("");
   const [mode, setMode] = useState<"video" | "app">(savedState.mode || "video");
@@ -35,7 +35,7 @@ export default function EmbeddedBox({
     savedState.isLocked || false
   );
 
-  // 2. Estado para os 3 Slots (Presets)
+  // 2. State for the 3 slots (presets)
   const [presets, setPresets] = useState<(Preset | null)[]>(
     savedState.presets || [null, null, null]
   );
@@ -51,10 +51,10 @@ export default function EmbeddedBox({
       setMode("app");
     }
 
-    // Só converte se tiver URL
+    // Only converts when there is a URL
     setEmbedUrl(inputUrl ? convertToEmbed(inputUrl) : "");
 
-    // Salva URL, Modo e os PRESETS
+    // Saves the URL, the mode and the presets
     setBoxContent(id, { url: inputUrl, mode, isLocked, presets });
   }, [inputUrl, id, mode, isLocked, presets, setBoxContent]);
 
@@ -83,7 +83,7 @@ export default function EmbeddedBox({
     setMode(newMode);
   };
 
-  // --- LÓGICA DOS SLOTS ---
+  // --- SLOT LOGIC ---
   const handleSlotClick = (index: number) => {
     const slot = presets[index];
     if (slot) {
@@ -124,7 +124,7 @@ export default function EmbeddedBox({
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      {/* --- IFRAME (Só renderiza se tiver URL) --- */}
+      {/* --- IFRAME (only rendered when there is a URL) --- */}
       <div className="flex-1 relative z-0 w-full h-full">
         {embedUrl ? (
           <iframe
@@ -138,7 +138,7 @@ export default function EmbeddedBox({
             style={{ borderRadius: "0 0 1rem 1rem" }}
           />
         ) : (
-          /* Placeholder leve quando vazio */
+          /* Light placeholder when empty */
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center opacity-30 select-none">
             <MonitorPlay size={40} />
             <p className="text-sm font-medium">Cole um link ou use um slot</p>
@@ -146,7 +146,7 @@ export default function EmbeddedBox({
         )}
       </div>
 
-      {/* --- BOTÃO DE DESBLOQUEAR --- */}
+      {/* --- UNLOCK BUTTON --- */}
       {isLocked && (
         <button
           onClick={() => setIsLocked(false)}

@@ -9,7 +9,7 @@ import {
 import { usePomodoroStore } from "@/store/usePomodoroStore";
 
 export default function PomodoroBox() {
-  // Conecta com a Store Global
+  // Connects to the global store
   const {
     timeLeft,
     mode,
