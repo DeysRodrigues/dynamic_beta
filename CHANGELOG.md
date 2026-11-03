@@ -19,6 +19,14 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+### Added
+- **First automated test suite**, with Vitest and Testing Library: 41 tests covering the task
+  text grammar (parsing and formatting, including the round trip), the date and task helpers
+  and the dashboard store actions. `npm run test` runs it once and `npm run test:watch` keeps
+  it running.
+- **Continuous integration** on GitHub Actions: lint, build and tests on every push and pull
+  request to `develop` and `main`.
+
 ### Removed
 - **Google Drive sync.** Its backup silently dropped the custom widgets, the planner cycles,
   the layout templates, the favorites and the projects while still reporting success. JSON
