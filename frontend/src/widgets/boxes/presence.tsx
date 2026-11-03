@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { CalendarCheck } from "lucide-react";
 import { defineWidget } from "../define";
+import { presenceContentSchema } from "../schemas/presence";
 
 export default defineWidget({
   id: "presence",
@@ -9,5 +10,6 @@ export default defineWidget({
   icon: <CalendarCheck size={24} />,
   color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
   defaultHeight: 4,
+  schema: presenceContentSchema,
   component: lazy(() => import("@/components/layout/boxes/PresenceCalendarBox")),
 });

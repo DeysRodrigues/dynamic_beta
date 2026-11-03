@@ -1,4 +1,5 @@
 import type { ComponentType, LazyExoticComponent, ReactNode } from "react";
+import type { ZodType } from "zod";
 
 /** What the grid hands to every widget component. A widget uses only what it needs. */
 export interface WidgetProps {
@@ -25,6 +26,11 @@ export interface WidgetDefinition {
    * initial bundle by accident.
    */
   component: LazyExoticComponent<ComponentType<WidgetProps>>;
+  /**
+   * Shape of the content this widget saves, when it has one. The content store validates reads
+   * and writes against it, and a server can reuse it to validate what it receives.
+   */
+  schema?: ZodType;
   /** Offered in the widget store and the project picker. Defaults to `true`. */
   inCatalog?: boolean;
 }
