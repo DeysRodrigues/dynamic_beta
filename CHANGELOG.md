@@ -27,6 +27,17 @@ the architecture is considered ready for real use.
   downloads with the notepad widget.
 
 ### Performance
+- **No more jump on reload.** The grid used to draw once at a default width and again at the
+  real one, swapping the whole layout (4 columns to 2, for instance) in front of the user. It
+  now measures its container before it draws.
+- **Embedded widgets load light.** An embedded widget is an iframe of this same app, and every
+  screen used to be bundled together, so each embed loaded the whole app again. Each screen is
+  now loaded on demand, so `/w/water` loads little more than the widget itself.
+- **The embed no longer reloads on every key** typed into its address field; it follows the
+  address once typing stops, and an address already saved appears straight away.
+- **Widgets no longer re-render when another widget saves.** Twelve widgets listened to the
+  whole content store, so any save, including the embed's own on load, re-rendered all of them.
+  They now listen only to what they use.
 - **The themes page loads light thumbnails instead of the full wallpapers.** The cards pulled
   the 17 full-size PNGs, 44.9 MB in total; they now use WebP thumbnails of 7 to 46 kB each,
   0.38 MB in total. The full image only loads once a theme is applied. The thumbnails are made
