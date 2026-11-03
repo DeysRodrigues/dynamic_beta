@@ -3,12 +3,18 @@ import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import type { Layouts } from "react-grid-layout";
 import { persistConfig, PERSISTED } from "@/persistence/registry";
+import { migrateDashboard } from "@/persistence/migrations";
 import { getDefaultHeight } from "@/widgets/registry";
+import { boxFromLegacyId, createBox } from "@/utils/BoxFactory";
+import type { BoxRef } from "@/types/Box";
 import { addBoxToLayouts } from "@/utils/layout";
 
 // --- CONFIGURAÇÃO ---
 
-const DEFAULT_BOXES = ["tasks", "progress", "pomodoro", "tags"];
+const DEFAULT_BOXES: BoxRef[] = ["tasks", "progress", "pomodoro", "tags"].map((type) => ({
+  id: type,
+  type,
+}));
 
 const DEFAULT_LAYOUTS: Layouts = {
   lg: [
@@ -31,26 +37,19 @@ const DEFAULT_LAYOUTS: Layouts = {
   ],
 };
 
-const generateId = (type: string) =>
-  `${type}-${Math.random().toString(36).substr(2, 9)}`;
-
 // --- TYPES ---
 
 export interface Workspace {
   id: string;
   name: string;
   layouts: Layouts;
-  boxes: string[];
+  boxes: BoxRef[];
 }
 
 interface DashboardState {
   workspaces: Workspace[];
   activeWorkspaceId: string;
-  isFocusMode: boolean; // NOVO
-
-  // Espelhos para retrocompatibilidade
-  layouts: Layouts;
-  boxes: string[];
+  isFocusMode: boolean;
 }
 
 interface DashboardActions {
@@ -64,7 +63,8 @@ interface DashboardActions {
   addBox: (type: string) => void;
   removeBox: (id: string) => void;
   resetDashboard: () => void;
-  loadDashboardState: (boxes: string[], layouts: Layouts) => void;
+  /** Replaces the active workspace with a saved setup. Boxes come as bare ids. */
+  loadDashboardState: (boxIds: string[], layouts: Layouts) => void;
 }
 
 // --- STORE ---
@@ -83,10 +83,7 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
             },
           ],
           activeWorkspaceId: "default",
-          isFocusMode: false, // NOVO
-
-          layouts: DEFAULT_LAYOUTS,
-          boxes: DEFAULT_BOXES,
+          isFocusMode: false,
 
           // --- WORKSPACE ACTIONS ---
 
@@ -101,8 +98,6 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               };
               state.workspaces.push(newWs);
               state.activeWorkspaceId = newId;
-              state.boxes = newWs.boxes;
-              state.layouts = newWs.layouts;
             }),
 
           removeWorkspace: (id) =>
@@ -112,8 +107,6 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               if (state.activeWorkspaceId === id) {
                 const nextWs = state.workspaces[0];
                 state.activeWorkspaceId = nextWs.id;
-                state.boxes = nextWs.boxes;
-                state.layouts = nextWs.layouts;
               }
             }),
 
@@ -122,8 +115,6 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               const ws = state.workspaces.find((w) => w.id === id);
               if (ws) {
                 state.activeWorkspaceId = id;
-                state.boxes = ws.boxes;
-                state.layouts = ws.layouts;
               }
             }),
 
@@ -147,7 +138,6 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               );
               if (ws) {
                 ws.layouts = newLayouts;
-                state.layouts = newLayouts;
               }
             }),
 
@@ -158,15 +148,10 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               );
               if (!ws) return;
 
-              const newId = generateId(type);
-              const height = getDefaultHeight(type);
+              const box = createBox(type);
+              ws.boxes.push(box);
+              addBoxToLayouts(ws.layouts, box.id, getDefaultHeight(type));
 
-              ws.boxes.push(newId);
-
-              addBoxToLayouts(ws.layouts, newId, height);
-
-              state.boxes = ws.boxes;
-              state.layouts = ws.layouts;
             }),
 
           removeBox: (id) =>
@@ -176,13 +161,11 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               );
               if (!ws) return;
 
-              ws.boxes = ws.boxes.filter((boxId) => boxId !== id);
+              ws.boxes = ws.boxes.filter((box) => box.id !== id);
               Object.keys(ws.layouts).forEach((bp) => {
                 ws.layouts[bp] = ws.layouts[bp].filter((l) => l.i !== id);
               });
 
-              state.boxes = ws.boxes;
-              state.layouts = ws.layouts;
             }),
 
           resetDashboard: () =>
@@ -193,55 +176,35 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               if (ws) {
                 ws.layouts = DEFAULT_LAYOUTS;
                 ws.boxes = DEFAULT_BOXES;
-                state.layouts = DEFAULT_LAYOUTS;
-                state.boxes = DEFAULT_BOXES;
               }
             }),
 
-          loadDashboardState: (boxes, layouts) =>
+          loadDashboardState: (boxIds, layouts) =>
             set((state) => {
               const ws = state.workspaces.find(
                 (w) => w.id === state.activeWorkspaceId
               );
               if (ws) {
-                ws.boxes = boxes;
+                ws.boxes = boxIds.map(boxFromLegacyId);
                 ws.layouts = layouts;
-                state.boxes = boxes;
-                state.layouts = layouts;
               }
             }),
         }),
         {
-          ...persistConfig(PERSISTED.dashboard),
+          ...persistConfig(PERSISTED.dashboard, migrateDashboard),
           partialize: (state) => ({
             workspaces: state.workspaces,
             activeWorkspaceId: state.activeWorkspaceId,
-            layouts: state.layouts,
-            boxes: state.boxes,
-            // Não persistimos isFocusMode (sempre começa desligado)
+            // isFocusMode is not persisted: it always starts off.
           }),
-          onRehydrateStorage: () => (state) => {
-            if (
-              state &&
-              state.layouts &&
-              (!state.workspaces || state.workspaces.length === 0)
-            ) {
-              const oldLayouts = state.layouts;
-              const oldBoxes = state.boxes;
-              const defaultWs = {
-                id: "default",
-                name: "Principal",
-                layouts: oldLayouts || DEFAULT_LAYOUTS,
-                boxes: oldBoxes || DEFAULT_BOXES,
-              };
-              state.workspaces = [defaultWs];
-              state.activeWorkspaceId = "default";
-              state.layouts = defaultWs.layouts;
-              state.boxes = defaultWs.boxes;
-            }
-          },
         }
       )
     )
   )
 );
+
+/** The workspace currently on screen. Every box and layout of the dashboard lives here. */
+export const selectActiveWorkspace = (state: {
+  workspaces: Workspace[];
+  activeWorkspaceId: string;
+}) => state.workspaces.find((w) => w.id === state.activeWorkspaceId);

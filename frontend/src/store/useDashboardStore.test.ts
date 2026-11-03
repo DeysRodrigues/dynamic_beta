@@ -1,11 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useDashboardStore } from "./useDashboardStore";
+import { useDashboardStore, selectActiveWorkspace } from "./useDashboardStore";
 
 const initial = useDashboardStore.getState();
-const active = () => {
-  const s = useDashboardStore.getState();
-  return s.workspaces.find((w) => w.id === s.activeWorkspaceId)!;
-};
+const active = () => selectActiveWorkspace(useDashboardStore.getState())!;
 
 beforeEach(() => {
   useDashboardStore.setState(initial, true);
@@ -16,11 +13,12 @@ describe("addBox", () => {
   it("cria o box no workspace ativo e nos três breakpoints", () => {
     useDashboardStore.getState().addBox("notepad");
     const ws = active();
-    const id = ws.boxes[ws.boxes.length - 1];
+    const box = ws.boxes[ws.boxes.length - 1];
 
-    expect(id.startsWith("notepad-")).toBe(true);
+    expect(box.type).toBe("notepad");
+    expect(box.id.startsWith("notepad-")).toBe(true);
     for (const bp of ["lg", "md", "sm"] as const) {
-      expect(ws.layouts[bp].some((l) => l.i === id)).toBe(true);
+      expect(ws.layouts[bp].some((l) => l.i === box.id)).toBe(true);
     }
   });
 
@@ -38,27 +36,19 @@ describe("addBox", () => {
     const lg = active().layouts.lg;
     expect(lg[lg.length - 1].x).toBe(3);
   });
-
-  it("mantém os espelhos 'boxes' e 'layouts' em sincronia", () => {
-    useDashboardStore.getState().addBox("goals");
-    const s = useDashboardStore.getState();
-    expect(s.boxes).toEqual(active().boxes);
-    expect(s.layouts).toEqual(active().layouts);
-  });
 });
 
 describe("removeBox", () => {
   it("tira o box da lista e dos três layouts", () => {
     useDashboardStore.getState().addBox("goals");
-    const id = active().boxes.at(-1)!;
+    const id = active().boxes.at(-1)!.id;
     useDashboardStore.getState().removeBox(id);
 
     const ws = active();
-    expect(ws.boxes).not.toContain(id);
+    expect(ws.boxes.map((b) => b.id)).not.toContain(id);
     for (const bp of ["lg", "md", "sm"] as const) {
       expect(ws.layouts[bp].some((l) => l.i === id)).toBe(false);
     }
-    expect(useDashboardStore.getState().boxes).not.toContain(id);
   });
 
   it("ignora id inexistente", () => {
@@ -74,7 +64,7 @@ describe("workspaces", () => {
     const s = useDashboardStore.getState();
     expect(s.workspaces).toHaveLength(2);
     expect(active().name).toBe("Estudos");
-    expect(s.boxes).toEqual([]);
+    expect(active().boxes).toEqual([]);
   });
 
   it("removeWorkspace nunca deixa zero workspaces", () => {
@@ -88,13 +78,12 @@ describe("workspaces", () => {
     useDashboardStore.getState().removeWorkspace(outroId);
     const s = useDashboardStore.getState();
     expect(s.activeWorkspaceId).toBe("default");
-    expect(s.boxes).toEqual(active().boxes);
   });
 
-  it("setActiveWorkspace troca e atualiza os espelhos", () => {
+  it("setActiveWorkspace troca o workspace ativo", () => {
     useDashboardStore.getState().addWorkspace("Outro");
     useDashboardStore.getState().setActiveWorkspace("default");
-    expect(useDashboardStore.getState().boxes).toEqual(active().boxes);
+    expect(active().id).toBe("default");
   });
 
   it("renameWorkspace renomeia", () => {
@@ -107,7 +96,7 @@ describe("resetDashboard e focus mode", () => {
   it("volta ao layout padrão de 4 widgets", () => {
     useDashboardStore.getState().addBox("goals");
     useDashboardStore.getState().resetDashboard();
-    expect(active().boxes).toEqual(["tasks", "progress", "pomodoro", "tags"]);
+    expect(active().boxes.map((b) => b.type)).toEqual(["tasks", "progress", "pomodoro", "tags"]);
   });
 
   it("toggleFocusMode alterna", () => {
@@ -115,5 +104,26 @@ describe("resetDashboard e focus mode", () => {
     expect(useDashboardStore.getState().isFocusMode).toBe(true);
     useDashboardStore.getState().toggleFocusMode();
     expect(useDashboardStore.getState().isFocusMode).toBe(false);
+  });
+});
+
+describe("loadDashboardState", () => {
+  it("converte ids soltos (modelos e temas) em boxes com tipo", () => {
+    useDashboardStore.getState().loadDashboardState(["tasks-nord", "embedded-lofi-cat", "tags"], {
+      lg: [], md: [], sm: [],
+    });
+    expect(active().boxes).toEqual([
+      { id: "tasks-nord", type: "tasks" },
+      { id: "embedded-lofi-cat", type: "embedded" },
+      { id: "tags", type: "tags" },
+    ]);
+  });
+});
+
+describe("estado persistido", () => {
+  it("não guarda mais os espelhos 'boxes' e 'layouts' no topo", () => {
+    const keys = Object.keys(useDashboardStore.getState());
+    expect(keys).not.toContain("boxes");
+    expect(keys).not.toContain("layouts");
   });
 });
