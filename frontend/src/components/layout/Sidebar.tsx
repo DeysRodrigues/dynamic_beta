@@ -38,6 +38,7 @@ import { useDashboardStore } from "@/store/useDashboardStore";
 import { useUserStore } from "@/store/useUserStore";
 import { cn } from "@/lib/utils";
 import NotificationBell from "./NotificationBell";
+import { clearAppData } from "@/persistence/backup";
 
 // --- COLOR PICKER COMPONENT ---
 interface ColorPickerProps {
@@ -322,7 +323,7 @@ const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
               <button
                 onClick={() => {
                   if (confirm("Resetar TUDO?")) {
-                    localStorage.clear();
+                    clearAppData();
                     window.location.reload();
                   }
                 }}
