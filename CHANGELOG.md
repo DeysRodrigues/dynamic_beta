@@ -90,6 +90,13 @@ the architecture is considered ready for real use.
   request to `develop` and `main`.
 
 ### Fixed
+- **Option menus follow the theme.** The three-dot menu on a task, the icon picker of the
+  library, the language list of the snippets and the chart tooltip were a fixed white (or a
+  fixed dark) card whatever the theme was. They now take their colors from the widget color and
+  text color, and so does every future popover, through the `--popover` variable.
+- **Dark themes get dark native controls.** The page now tells the browser whether it is dark
+  (by the real luminance of the background, not by the first digit of its hex code), so the
+  open list of a `<select>`, the scrollbars and the date picker icon match the theme.
 - Reordering and removing in the tag list and the tag goals list no longer shuffles the state
   of the rows below, because each row is keyed by its tag instead of its position.
 - The pomodoro end-of-timer effect no longer depends on a disabled lint rule, and counts a
