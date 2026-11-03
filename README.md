@@ -45,7 +45,7 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 266 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
+| Automated tests | 292 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -174,7 +174,7 @@ points at a wallpaper without one.
 | Automation | simple if/then rules |
 | Quick Workout | short exercise routines |
 | RPG Profile | XP and levels earned from finished tasks |
-| Pixel Garden | plants that grow as tasks are completed |
+| Pixel Garden | a potted plant in pixel art that grows through five stages as tasks are completed today |
 | Theme | theme switching from inside the grid |
 | Embedded | an iframe for YouTube, Spotify, Notion or any URL |
 
@@ -238,7 +238,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 266 tests
+npm run test      # vitest, 292 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the
