@@ -20,6 +20,12 @@ the architecture is considered ready for real use.
 
 ## [Unreleased]
 ### Changed
+- **The dashboard state keeps one copy of the active workspace.** It used to store the active
+  workspace's boxes and layouts twice, and every action had to write both. Each widget on the
+  grid now also carries its own type next to its id, instead of the type being read back out of
+  the id text. Dashboards and projects saved by the previous version are converted
+  automatically the first time they open, and no widget is lost.
+- Box ids come from a single generator instead of three slightly different ones.
 - **Each widget is declared in one place.** Its component, title, description, icon, colour and
   starting height now live in a single file under `src/widgets/boxes/`. Before, that
   information was split between the widget store catalogue, two duplicated height tables and a
@@ -41,14 +47,17 @@ the architecture is considered ready for real use.
 - **Versioned storage:** every persisted slice now carries a format version and a migration
   hook. Data saved before this change loads untouched, and the shape can change from here on
   without wiping what users already have.
-- **First automated test suite**, with Vitest and Testing Library: 72 tests covering the task
+- **First automated test suite**, with Vitest and Testing Library: 92 tests covering the task
   text grammar (parsing and formatting, including the round trip), the date and task helpers,
-  the dashboard store actions, the box placement, the widget registry and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
+  the dashboard store actions, the box placement, the widget registry, the data migrations and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
   it running.
 - **Continuous integration** on GitHub Actions: lint, build and tests on every push and pull
   request to `develop` and `main`.
 
 ### Fixed
+- Widgets added from the dashboard header menu always started at the default height,
+  because the menu passed a generated id where the widget type was expected. They now start at
+  the height their widget declares.
 - The project overview widget no longer relies on a non-null assertion when there is no
   active project; it renders nothing instead of crashing.
 

@@ -45,7 +45,7 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 72 unit tests (task parser, date and task helpers, dashboard store, layout, widget registry, persistence registry and backup) |
+| Automated tests | 92 unit tests (task parser, date and task helpers, dashboard store, layout, widget registry, persistence registry, migrations and backup) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -226,7 +226,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 72 tests
+npm run test      # vitest, 92 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the
