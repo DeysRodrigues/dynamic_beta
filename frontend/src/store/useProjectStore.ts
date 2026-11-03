@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import type { Project } from "@/types/Project";
 import type { Layouts } from "react-grid-layout";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface ProjectState {
   projects: Project[];
@@ -218,7 +219,7 @@ export const useProjectStore = create<ProjectState & ProjectActions>()(
             });
           }),
       }),
-      { name: "projects-storage" }
+      { ...persistConfig(PERSISTED.projects) }
     )
   )
 );
