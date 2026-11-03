@@ -19,6 +19,8 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+
+## [0.13.0] - 2026-11-03
 ### Added
 - **Docker guide** (`docs/DOCKER.md` and `docs/DOCKER.pt-BR.md`): `.env` variables, backup and
   restore, updating, cloud server with https, common problems.

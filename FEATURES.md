@@ -1,4 +1,4 @@
-# 📖 Documentação Técnica - DynaBox v2.0
+# 📖 Documentação Técnica - DynaBox v0.13.0
 
 Bem-vindo à documentação oficial do **DynaBox**, um dashboard de produtividade modular projetado para centralizar sua vida digital em uma única interface personalizável e privada.
 

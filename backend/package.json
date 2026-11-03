@@ -1,6 +1,6 @@
 {
   "name": "dynabox-api",
-  "version": "0.1.0",
+  "version": "0.13.0",
   "private": true,
   "type": "module",
   "description": "The optional server of DynaBox: accounts and a synced copy of the data.",
