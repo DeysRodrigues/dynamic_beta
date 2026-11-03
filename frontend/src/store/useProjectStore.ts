@@ -4,7 +4,9 @@ import { immer } from "zustand/middleware/immer";
 import type { Project } from "@/types/Project";
 import type { Layouts } from "react-grid-layout";
 import { persistConfig, PERSISTED } from "@/persistence/registry";
+import { migrateProjects } from "@/persistence/migrations";
 import { getDefaultHeight } from "@/widgets/registry";
+import { createBox } from "@/utils/BoxFactory";
 import { addBoxToLayouts } from "@/utils/layout";
 
 interface ProjectState {
@@ -143,12 +145,9 @@ export const useProjectStore = create<ProjectState & ProjectActions>()(
             const project = state.projects.find((p) => p.id === projectId);
             if (!project) return;
 
-            const newId = `${type}-${crypto.randomUUID().slice(0, 8)}`;
-            const height = getDefaultHeight(type);
-
-            project.boxes.push(newId);
-
-            addBoxToLayouts(project.layouts, newId, height);
+            const box = createBox(type);
+            project.boxes.push(box);
+            addBoxToLayouts(project.layouts, box.id, getDefaultHeight(type));
           }),
 
         removeBoxFromProject: (projectId, boxId) =>
@@ -156,13 +155,13 @@ export const useProjectStore = create<ProjectState & ProjectActions>()(
             const project = state.projects.find((p) => p.id === projectId);
             if (!project) return;
 
-            project.boxes = project.boxes.filter((id) => id !== boxId);
+            project.boxes = project.boxes.filter((box) => box.id !== boxId);
             Object.keys(project.layouts).forEach((bp) => {
               project.layouts[bp] = project.layouts[bp].filter((l) => l.i !== boxId);
             });
           }),
       }),
-      { ...persistConfig(PERSISTED.projects) }
+      { ...persistConfig(PERSISTED.projects, migrateProjects) }
     )
   )
 );
