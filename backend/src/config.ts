@@ -16,6 +16,8 @@ const schema = z.object({
   ALLOW_REGISTRATION: boolean.default(true),
   /** Origins allowed to call the API from a browser, comma separated. `*` allows any. */
   CORS_ORIGINS: z.string().default("*"),
+  /** How many sign-ins or sign-ups one address may try per minute. */
+  AUTH_RATE_LIMIT_PER_MINUTE: z.coerce.number().int().min(1).default(10),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 });
 

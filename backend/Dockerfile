@@ -16,6 +16,8 @@ WORKDIR /app
 
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
+# The SQL migrations the server applies when it starts.
+COPY --chown=node:node drizzle ./drizzle
 COPY --chown=node:node package.json ./
 
 USER node
