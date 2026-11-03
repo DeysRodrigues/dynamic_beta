@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 type Mode = "work" | "short" | "long";
 
@@ -87,7 +88,7 @@ export const usePomodoroStore = create<PomodoroState>()(
       }
     }),
     {
-      name: "pomodoro-global-storage", // Nome novo para não conflitar com o antigo
+      ...persistConfig(PERSISTED.pomodoro),
     }
   )
 );
