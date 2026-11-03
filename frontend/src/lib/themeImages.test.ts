@@ -2,7 +2,8 @@ import { describe, it, expect } from "vitest";
 import { existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { themeThumbnail } from "./themeImages";
-import { wallpaperThemes, readySetups } from "@/data/themeItems";
+import { wallpaperThemes } from "@/data/themeItems";
+import { readySetups } from "@/data/setups";
 
 const publicDir = resolve(__dirname, "../../public");
 
