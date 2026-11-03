@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Gestão de Risco",
   description: "Controle de faltas e limites com alertas.",
   icon: <AlertTriangle size={24} />,
-  color: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+  color: "text-orange-500 bg-orange-500/10",
   defaultHeight: 4,
   component: lazy(() => import("@/components/layout/boxes/RiskTrackerBox")),
 });

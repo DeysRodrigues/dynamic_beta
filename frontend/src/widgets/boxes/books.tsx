@@ -8,7 +8,7 @@ export default defineWidget({
   title: "Book Tracker",
   description: "Progresso de leitura.",
   icon: <BookOpen size={24} />,
-  color: "text-cyan-500 bg-cyan-500/10 border-cyan-500/20",
+  color: "text-cyan-500 bg-cyan-500/10",
   defaultHeight: 3,
   schema: bookTrackerContentSchema,
   component: lazy(() => import("@/components/layout/boxes/BookTrackerBox")),

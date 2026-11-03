@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Progresso",
   description: "Barra de XP geral.",
   icon: <BarChart3 size={24} />,
-  color: "text-blue-600 bg-blue-600/10 border-blue-600/20",
+  color: "text-blue-600 bg-blue-600/10",
   defaultHeight: 3,
   component: lazy(() => import("@/components/layout/boxes/ProgressBox")),
 });

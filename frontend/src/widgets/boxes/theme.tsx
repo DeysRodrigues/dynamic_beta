@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Camaleão",
   description: "Troca rápida de cor.",
   icon: <Palette size={24} />,
-  color: "text-fuchsia-500 bg-fuchsia-500/10 border-fuchsia-500/20",
+  color: "text-fuchsia-500 bg-fuchsia-500/10",
   defaultHeight: 2,
   component: lazy(() => import("@/components/layout/boxes/ThemeBox")),
 });

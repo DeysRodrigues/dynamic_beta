@@ -211,7 +211,7 @@ export default function ThemesPage() {
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border shrink-0 transition-colors duration-500"
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner shrink-0 transition-colors duration-500"
                  style={{ 
                     backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)',
                     borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
@@ -230,7 +230,7 @@ export default function ThemesPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm border transition-colors duration-500 w-full md:w-auto"
+          <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm transition-colors duration-500 w-full md:w-auto"
                style={{ 
                   backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
                   borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
@@ -242,7 +242,7 @@ export default function ThemesPage() {
                 placeholder="Pesquisar estilos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-transparent border-none outline-none font-medium"
+                className="w-full pl-10 pr-4 py-2 text-sm bg-transparent outline-none font-medium"
               />
             </div>
           </div>
@@ -250,7 +250,7 @@ export default function ThemesPage() {
 
         {/* FAVORITES SECTION */}
         {hasFavorites && (
-          <section className="space-y-6 pb-8 border-b border-current/5">
+          <section className="space-y-6 pb-8">
             <div className="flex items-center gap-3">
               <Heart className="text-red-500 fill-red-500" size={24} />
               <h2 className="text-2xl font-black tracking-tight">Meus Favoritos</h2>

@@ -17,7 +17,7 @@ export const embedWidgets = [
     description: "Jogo da cobrinha.",
     path: "/w/snake",
     icon: <Gamepad2 size={24} />,
-    color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+    color: "text-emerald-500 bg-emerald-500/10",
   },
   {
     id: "water",
@@ -25,7 +25,7 @@ export const embedWidgets = [
     description: "Contador de água.",
     path: "/w/water",
     icon: <Droplets size={24} />,
-    color: "text-cyan-500 bg-cyan-500/10 border-cyan-500/20",
+    color: "text-cyan-500 bg-cyan-500/10",
   },
   {
     id: "bio",
@@ -33,6 +33,6 @@ export const embedWidgets = [
     description: "Cartão de visitas.",
     path: "/w/bio",
     icon: <Share2 size={24} />,
-    color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    color: "text-purple-500 bg-purple-500/10",
   },
 ];

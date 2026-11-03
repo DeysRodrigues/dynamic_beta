@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import { useProjectStore } from "@/store/useProjectStore";
 import { Plus, Briefcase, Trash2, ExternalLink, CheckCircle2, Clock, Pencil, Sparkles, LayoutGrid } from "lucide-react";
@@ -48,7 +49,7 @@ export default function ProjectsPage() {
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border shrink-0 transition-colors duration-500"
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner shrink-0 transition-colors duration-500"
                  style={{ 
                     backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)',
                     borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
@@ -78,18 +79,19 @@ export default function ProjectsPage() {
         {/* --- GRID DE PROJETOS --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.length === 0 && (
-            <div className="col-span-full py-24 flex flex-col items-center justify-center box-padrao opacity-40 border-dashed border-2 bg-transparent">
-              <div className="p-6 bg-current/5 rounded-full mb-6">
-                <LayoutGrid size={48} className="opacity-20" />
-              </div>
-              <p className="font-black uppercase tracking-widest text-sm">Nenhum projeto encontrado</p>
-              <button 
-                onClick={handleNewProject}
-                className="mt-4 text-xs font-bold underline opacity-60 hover:opacity-100 transition-opacity"
-              >
-                Criar meu primeiro projeto agora
-              </button>
-            </div>
+            <EmptyState
+              className="col-span-full py-24"
+              icon={<LayoutGrid size={48} />}
+              title="Nenhum projeto encontrado"
+              action={
+                <button
+                  onClick={handleNewProject}
+                  className="px-4 py-2 rounded-xl bg-current/10 text-xs font-bold hover:bg-current/15 transition"
+                >
+                  Criar meu primeiro projeto
+                </button>
+              }
+            />
           )}
 
           {projects.map((project) => {
@@ -100,7 +102,7 @@ export default function ProjectsPage() {
             return (
               <div 
                 key={project.id}
-                className="group relative box-padrao border border-current/5 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 overflow-visible"
+                className="group relative box-padrao transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 overflow-visible"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 bg-primary/10 text-primary rounded-2xl group-hover:scale-110 transition-transform duration-500">
@@ -150,7 +152,7 @@ export default function ProjectsPage() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between pt-4 border-t border-current/5">
+                    <div className="flex items-center justify-between pt-4">
                       <div className="flex flex-wrap gap-4 w-full">
                         {project.startDate && (
                           <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider opacity-40">

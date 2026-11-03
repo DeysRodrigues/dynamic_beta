@@ -188,7 +188,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
                  {(() => { const I = iconMap[newCatIcon] || Book; return <I size={18}/> })()}
                </button>
                {showIconMenu && (
-                 <div className="absolute top-10 left-0 bg-popover text-popover-foreground border border-current/10 shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
+                 <div className="absolute top-10 left-0 bg-popover text-popover-foreground shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
                    {Object.keys(iconMap).map(k => {
                      const I = iconMap[k];
                      return <button key={k} onClick={() => { setNewCatIcon(k); setShowIconMenu(false); }} className={`p-2 rounded-lg flex items-center justify-center hover:bg-primary/10 hover:text-primary ${newCatIcon === k ? 'bg-primary/10 text-primary' : ''}`}><I size={16} /></button>
@@ -262,7 +262,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
           <h3 className="text-xs font-bold opacity-60 mb-2">Adicionar em: <span className="text-primary">{activeCategoryData?.name}</span></h3>
           <div className="flex gap-2 mb-2 items-center">
             <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm cursor-pointer hover:scale-110 transition">
-              <input type="color" className="absolute -top-2 -left-2 w-12 h-12 cursor-pointer p-0 border-0" value={newBookColor} onChange={e => setNewBookColor(e.target.value)} title="Cor da capa" />
+              <input type="color" className="absolute -top-2 -left-2 w-12 h-12 cursor-pointer p-0" value={newBookColor} onChange={e => setNewBookColor(e.target.value)} title="Cor da capa" />
             </div>
             
             <input autoFocus className="flex-1 bg-black/5 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 text-inherit" placeholder="Título..." value={newBookTitle} onChange={e => setNewBookTitle(e.target.value)} onKeyDown={e => e.key === 'Enter' && addBook()} />

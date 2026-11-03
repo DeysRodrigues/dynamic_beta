@@ -22,7 +22,7 @@ export function SidebarProfile({ onEditProfile }: { onEditProfile: () => void })
           <img
             src={avatar || DEFAULT_AVATAR}
             alt="avatar"
-            className="w-20 h-20 rounded-full object-cover border-[3px] border-white/20 group-hover:border-white transition shadow-lg"
+            className="w-20 h-20 rounded-full object-cover transition shadow-lg"
           />
           <div className="absolute bottom-0 right-0 bg-white text-black p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity scale-75 shadow-md">
             <Edit3 size={14} />
@@ -32,7 +32,7 @@ export function SidebarProfile({ onEditProfile }: { onEditProfile: () => void })
           <h2 className="font-bold text-lg tracking-tight text-white">
             {name}
           </h2>
-          <p className="text-xs text-white/50 font-medium bg-black/10 px-3 py-1 rounded-full mt-1 border border-white/5">
+          <p className="text-xs text-white/50 font-medium bg-black/10 px-3 py-1 rounded-full mt-1">
             {subtitle}
           </p>
         </div>

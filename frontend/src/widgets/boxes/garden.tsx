@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Pixel Garden",
   description: "Planta de produtividade.",
   icon: <Sprout size={24} />,
-  color: "text-green-500 bg-green-500/10 border-green-500/20",
+  color: "text-green-500 bg-green-500/10",
   defaultHeight: 4,
   component: lazy(() => import("@/components/layout/boxes/PixelGardenBox")),
 });

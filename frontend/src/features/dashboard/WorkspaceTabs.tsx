@@ -112,22 +112,11 @@ export const WorkspaceTabs = React.memo(() => {
                 </button>
               )}
             </div>
-            
-            {/* Indicador de Workspace Ativo */}
-            <div className={cn(
-              "h-1 w-1/3 rounded-full bg-primary mt-1 transition-all duration-500",
-              isActive ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0"
-            )} />
           </div>
         );
       })}
 
-      {/* Subtle separator when there are projects */}
-      {projects.some(p => p.status === 'active') && (
-        <div className="w-px h-6 bg-current/10 mx-1" />
-      )}
-
-      {/* Projetos Ativos */}
+      {/* Active projects */}
       {projects.filter(p => p.status === 'active').map((p) => {
         const isActive = activeProjectId === p.id;
         return (
@@ -135,10 +124,10 @@ export const WorkspaceTabs = React.memo(() => {
             <button
               onClick={() => handleSelectProject(p.id)}
               className={cn(
-                "px-3 py-1.5 rounded-full text-[11px] font-black transition-all duration-300 flex items-center gap-2 select-none whitespace-nowrap border uppercase tracking-tighter",
+                "px-3 py-1.5 rounded-full text-[11px] font-black transition-all duration-300 flex items-center gap-2 select-none whitespace-nowrap uppercase tracking-tighter",
                 isActive
-                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105"
-                  : "bg-transparent border-current/20 opacity-40 hover:opacity-100 hover:border-current/40"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105"
+                  : "bg-current/5 opacity-50 hover:opacity-100"
               )}
             >
               <Briefcase size={12} strokeWidth={3} />

@@ -149,7 +149,6 @@ body {
 .box-padrao select:focus,
 .box-padrao textarea:focus,
 .bar-padrao input:focus {
-  border-color: var(--primary) !important;
   background-color: rgba(127, 127, 127, 0.15) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
 }

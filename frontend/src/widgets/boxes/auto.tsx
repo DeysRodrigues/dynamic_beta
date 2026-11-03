@@ -8,7 +8,7 @@ export default defineWidget({
   title: "Automações",
   description: "Gatilhos e regras.",
   icon: <Zap size={24} />,
-  color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+  color: "text-purple-500 bg-purple-500/10",
   defaultHeight: 3,
   schema: automationContentSchema,
   component: lazy(() => import("@/components/layout/boxes/AutomationBox")),

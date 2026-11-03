@@ -52,21 +52,21 @@ export default function NotificationBell() {
           className="text-white/90 group-hover:text-white transition"
         />
         {hasNewUpdate && (
-          <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full border-2 border-primary animate-pulse shadow-sm z-10" />
+          <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full animate-pulse shadow-sm z-10" />
         )}
       </button>
 
       {isOpen &&
         createPortal(
           <div
-            className="fixed w-[calc(100vw-32px)] sm:w-80 bg-[#1e1e1e] border border-white/10 rounded-xl shadow-2xl p-0 z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-gray-200 font-sans 
+            className="fixed w-[calc(100vw-32px)] sm:w-80 bg-[#1e1e1e] rounded-xl shadow-2xl p-0 z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-gray-200 font-sans 
             top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
             md:top-auto md:left-auto md:translate-x-0 md:translate-y-0 md:origin-top-left"
             style={window.innerWidth >= 768 ? { top: coords.top, left: coords.left } : {}}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Popover arrow, hidden on mobile */}
-            <div className="hidden md:block absolute top-3 -left-1.5 w-3 h-3 bg-[#1e1e1e] border-l border-b border-white/10 rotate-45 transform" />
+            <div className="hidden md:block absolute top-3 -left-1.5 w-3 h-3 bg-[#1e1e1e] rotate-45 transform" />
 
             {/* DYNAMIC HEADER */}
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 relative">
@@ -90,7 +90,7 @@ export default function NotificationBell() {
             <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
               {/* MESSAGE AREA */}
               {APP_UPDATES.message && (
-                <div className="bg-white/5 p-3 rounded-lg border border-white/5 text-sm text-gray-300 italic leading-relaxed">
+                <div className="bg-white/5 p-3 rounded-lg text-sm text-gray-300 italic leading-relaxed">
                   {APP_UPDATES.message}
                 </div>
               )}
@@ -112,7 +112,7 @@ export default function NotificationBell() {
             </div>
 
             {/* DYNAMIC FOOTER */}
-            <div className="p-3 bg-black/20 border-t border-white/5 text-center">
+            <div className="p-3 bg-black/20 text-center">
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-[10px] font-bold text-purple-400 hover:text-purple-300 uppercase tracking-widest transition"

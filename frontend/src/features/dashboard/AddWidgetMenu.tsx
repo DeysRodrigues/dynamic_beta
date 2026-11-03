@@ -102,7 +102,7 @@ export function AddWidgetMenu({ onAddWidget, onBackup }: AddWidgetMenuProps) {
             ))}
           </div>
 
-          <div className="border-t border-current/10 my-2"></div>
+          <div className="my-2"></div>
 
           <button
             onClick={handleNavigate("/store")}

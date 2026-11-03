@@ -8,10 +8,10 @@ interface ColorPickerProps {
 }
 
 export const ColorPicker = React.memo(({ label, value, onChange, icon: Icon }: ColorPickerProps) => (
-  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition group/picker">
+  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/5 transition group/picker">
     {/* 1. Color (input) */}
     <div
-      className="relative h-8 w-8 rounded-full shadow-sm border border-white/20 overflow-hidden cursor-pointer ring-2 ring-white/5 hover:ring-white/20 transition shrink-0"
+      className="relative h-8 w-8 rounded-full shadow-sm overflow-hidden cursor-pointer ring-2 ring-white/5 hover:ring-white/20 transition shrink-0"
       style={{ backgroundColor: value }}
     >
       <input

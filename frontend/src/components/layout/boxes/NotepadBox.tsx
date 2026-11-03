@@ -64,7 +64,7 @@ export default function NotepadBox({ id = "notepad-default" }: NotepadBoxProps) 
         </div>
       ) : (
         <textarea
-          className="flex-1 w-full bg-yellow-50/50 border-none outline-none resize-none font-handwriting p-3 rounded-xl text-sm leading-relaxed custom-scrollbar focus:bg-yellow-50 focus:ring-2 focus:ring-yellow-200 transition-all"
+          className="flex-1 w-full bg-yellow-50/50 outline-none resize-none font-handwriting p-3 rounded-xl text-sm leading-relaxed custom-scrollbar focus:bg-yellow-50 focus:ring-2 focus:ring-yellow-200 transition-all"
           placeholder="Ideias, lembretes... (aceita markdown)"
           value={text}
           onChange={(e) => setText(e.target.value)}

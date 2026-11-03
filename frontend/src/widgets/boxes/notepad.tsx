@@ -8,7 +8,7 @@ export default defineWidget({
   title: "Bloco de Notas",
   description: "Rascunhos rápidos.",
   icon: <FileText size={24} />,
-  color: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
+  color: "text-yellow-500 bg-yellow-500/10",
   defaultHeight: 4,
   schema: notepadContentSchema,
   component: lazy(() => import("@/components/layout/boxes/NotepadBox")),

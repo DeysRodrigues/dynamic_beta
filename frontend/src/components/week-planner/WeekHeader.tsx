@@ -42,7 +42,7 @@ export function WeekHeader({
            }}>
         <div className="relative flex-1 md:flex-none">
           <select
-            className="w-full md:w-64 pl-4 pr-10 py-2.5 text-[11px] font-bold uppercase tracking-wider bg-transparent outline-none cursor-pointer appearance-none border-none"
+            className="w-full md:w-64 pl-4 pr-10 py-2.5 text-[11px] font-bold uppercase tracking-wider bg-transparent outline-none cursor-pointer appearance-none"
             value={activeWeekId || ""}
             onChange={(e) => onSetActiveWeek(e.target.value)}
           >

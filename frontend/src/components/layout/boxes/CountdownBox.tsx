@@ -88,7 +88,7 @@ export default function CountdownBox({ id = "countdown-default" }: CountdownBoxP
              <Calendar size={14} />
              <input 
                type="datetime-local" 
-               className="bg-transparent outline-none cursor-pointer p-0 border-none text-inherit w-full font-medium"
+               className="bg-transparent outline-none cursor-pointer p-0 text-inherit w-full font-medium"
                value={targetDate}
                onChange={(e) => setTargetDate(e.target.value)}
              />

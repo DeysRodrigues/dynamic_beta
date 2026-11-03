@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import { X, Save, Download, Upload, Trash2, Layout, Check } from "lucide-react";
 import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
@@ -87,7 +88,7 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
         </div>
 
         {/* Save new */}
-        <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100 space-y-3">
+        <div className="bg-indigo-50 p-4 rounded-xl space-y-3">
           <label className="text-sm font-semibold text-indigo-900">Salvar layout atual como modelo:</label>
           <div className="flex gap-2">
             <input
@@ -95,7 +96,7 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
               placeholder="Ex: Modo Foco, Modo Estudo..."
               value={newTemplateName}
               onChange={(e) => setNewTemplateName(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-lg border border-indigo-200 outline-none focus:ring-2 focus:ring-indigo-300"
+              className="flex-1 px-4 py-2 rounded-lg outline-none focus:ring-2 focus:ring-indigo-300"
             />
             <button
               onClick={handleSaveCurrent}
@@ -108,7 +109,7 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
 
         {/* Importar */}
         <div className="flex justify-end">
-          <label className="cursor-pointer flex items-center gap-2 text-sm text-gray-600 hover:text-indigo-600 transition bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-indigo-200">
+          <label className="cursor-pointer flex items-center gap-2 text-sm text-gray-600 hover:text-indigo-600 transition bg-gray-100 px-3 py-1.5 rounded-lg">
             <Upload size={16} /> Importar Arquivo .JSON
             <input type="file" accept=".json" onChange={handleImportFile} className="hidden" />
           </label>
@@ -117,13 +118,10 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
         {/* Template list */}
         <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
           {templates.length === 0 ? (
-            <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-xl">
-              <Layout size={40} className="mx-auto mb-2 opacity-20" />
-              <p>Nenhum modelo salvo ainda.</p>
-            </div>
+            <EmptyState icon={<Layout size={32} />} title="Nenhum modelo salvo ainda" hint="Salve o layout atual para reutilizar depois." />
           ) : (
             templates.map((t) => (
-              <div key={t.id} className="group flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-all hover:border-indigo-200">
+              <div key={t.id} className="group flex items-center justify-between p-4 bg-white rounded-xl hover:shadow-md transition-all">
                 <div>
                   <h3 className="font-bold text-gray-800">{t.name}</h3>
                   <p className="text-xs text-gray-500">

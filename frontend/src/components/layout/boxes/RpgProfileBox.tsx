@@ -174,7 +174,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
           
           {/* TOPO: PERFIL */}
           <div className="flex items-center gap-3 mb-3">
-            {/* Avatar with a border in the theme color */}
+            {/* Avatar in the theme color */}
             <div 
               className="w-12 h-12 bg-current/5 backdrop-blur-sm rounded-xl ring-2 flex items-center justify-center shadow-sm"
               style={{ borderColor: currentAccent, color: currentAccent }}

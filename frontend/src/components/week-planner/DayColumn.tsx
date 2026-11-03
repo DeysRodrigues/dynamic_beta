@@ -56,7 +56,7 @@ function DayColumnComponent({
   return (
     <SpotlightCard 
       className={cn(
-        "box-padrao min-w-[320px] md:min-w-[360px] snap-center overflow-hidden border-none shadow-2xl p-0 gap-0 transition-opacity",
+        "box-padrao min-w-[320px] md:min-w-[360px] snap-center overflow-hidden shadow-2xl p-0 gap-0 transition-opacity",
         isPast ? "opacity-70" : "opacity-100"
       )}
       spotlightColor="color-mix(in srgb, var(--primary) 20%, transparent)"

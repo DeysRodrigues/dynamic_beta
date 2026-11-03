@@ -26,7 +26,7 @@ export const ProfileEditModal = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in zoom-in-95">
-      <div className="bg-[#18181b] border border-white/10 p-6 rounded-2xl w-full max-w-sm shadow-2xl relative text-white">
+      <div className="bg-[#18181b] p-6 rounded-2xl w-full max-w-sm shadow-2xl relative text-white">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 p-2 text-white/50 hover:text-white hover:bg-white/10 rounded-xl transition-all"
@@ -43,7 +43,7 @@ export const ProfileEditModal = ({ onClose }: { onClose: () => void }) => {
           >
             <img
               src={avatar || DEFAULT_AVATAR}
-              className="w-24 h-24 rounded-full object-cover border-4 border-white/10 group-hover:border-purple-500 transition-all"
+              className="w-24 h-24 rounded-full object-cover transition-all"
               alt="Profile"
             />
             <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -67,7 +67,7 @@ export const ProfileEditModal = ({ onClose }: { onClose: () => void }) => {
             <input
               value={localName}
               onChange={(e) => setLocalName(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-purple-500 transition-colors"
+              className="w-full bg-white/5 rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-purple-500 transition-colors"
             />
           </div>
           <div>
@@ -77,7 +77,7 @@ export const ProfileEditModal = ({ onClose }: { onClose: () => void }) => {
             <input
               value={localSub}
               onChange={(e) => setLocalSub(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-purple-500 transition-colors"
+              className="w-full bg-white/5 rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-purple-500 transition-colors"
             />
           </div>
         </div>

@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Quick Workout",
   description: "Exercícios rápidos.",
   icon: <Dumbbell size={24} />,
-  color: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+  color: "text-orange-500 bg-orange-500/10",
   defaultHeight: 3,
   component: lazy(() => import("@/components/layout/boxes/QuickWorkoutBox")),
 });

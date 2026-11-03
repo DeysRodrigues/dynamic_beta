@@ -8,7 +8,7 @@ export default defineWidget({
   title: "Cozy Library",
   description: "Estante de livros.",
   icon: <Book size={24} />,
-  color: "text-amber-600 bg-amber-600/10 border-amber-600/20",
+  color: "text-amber-600 bg-amber-600/10",
   defaultHeight: 3,
   schema: libraryContentSchema,
   component: lazy(() => import("@/components/layout/boxes/CozyLibraryBox")),

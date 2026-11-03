@@ -83,8 +83,8 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
       {/* Transparent click area that closes the drawer */}
       <div className="absolute inset-0 pointer-events-auto" onClick={onClose} />
 
-      <div className="h-full w-80 bg-[#09090b]/95 backdrop-blur-xl border-l border-white/10 shadow-2xl pointer-events-auto animate-in slide-in-from-right duration-300 flex flex-col text-white">
-        <div className="p-5 border-b border-white/5 flex justify-between items-center bg-white/5">
+      <div className="h-full w-80 bg-[#09090b]/95 backdrop-blur-xl shadow-2xl pointer-events-auto animate-in slide-in-from-right duration-300 flex flex-col text-white">
+        <div className="p-5 flex justify-between items-center bg-white/5">
           <h2 className="font-bold text-sm flex items-center gap-2">
             <Settings size={16} className="text-primary" /> Personalizar
           </h2>
@@ -99,7 +99,7 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={toggleDarkMode}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-primary/30 transition text-xs font-medium text-white/80 hover:text-white"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition text-xs font-medium text-white/80 hover:text-white"
               >
                 {backgroundColor === "#020617" ? (
                   <Moon size={14} className="text-purple-400" />
@@ -110,7 +110,7 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
               </button>
               <button
                 onClick={() => setShowPersonalization(true)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-primary/30 transition text-xs font-medium text-white/80 hover:text-white"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition text-xs font-medium text-white/80 hover:text-white"
               >
                 <Image size={14} className="text-blue-400" />
                 <span>Fundo</span>
@@ -204,9 +204,9 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
             </h3>
             <button
               onClick={() => setMonospace(!monospace)}
-              className={`w-full flex items-center justify-between p-2.5 rounded-xl border transition text-xs font-medium ${monospace
-                ? "bg-primary/10 border-primary/30 text-primary"
-                : "bg-white/5 border-white/5 text-white/60 hover:text-white"
+              className={`w-full flex items-center justify-between p-2.5 rounded-xl transition text-xs font-medium ${monospace
+                ? "bg-primary/10 text-primary"
+                : "bg-white/5 text-white/60 hover:text-white"
                 }`}
             >
               <span className="flex items-center gap-2">
@@ -218,13 +218,13 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
             <div className="grid grid-cols-2 gap-2 pt-2">
               <button
                 onClick={() => setShowBackup(true)}
-                className="py-2.5 rounded-lg bg-white/5 hover:bg-purple-500/20 text-white/60 hover:text-purple-300 text-[10px] font-bold transition flex items-center justify-center gap-1.5 border border-white/5"
+                className="py-2.5 rounded-lg bg-white/5 hover:bg-purple-500/20 text-white/60 hover:text-purple-300 text-[10px] font-bold transition flex items-center justify-center gap-1.5"
               >
                 <Database size={14} /> Backup
               </button>
               <button
                 onClick={() => setConfirmReset(true)}
-                className="py-2.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/60 hover:text-red-300 text-[10px] font-bold transition flex items-center justify-center gap-1.5 border border-white/5"
+                className="py-2.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/60 hover:text-red-300 text-[10px] font-bold transition flex items-center justify-center gap-1.5"
               >
                 <RotateCcw size={14} /> Reset
               </button>

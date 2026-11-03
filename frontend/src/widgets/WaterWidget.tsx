@@ -21,7 +21,7 @@ export default function WaterWidget() {
         style={{ height: `${percentage}%` }}
       />
       
-      <div className="z-10 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl border border-cyan-100 text-center w-full max-w-[280px]">
+      <div className="z-10 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl text-center w-full max-w-[280px]">
         <h2 className="text-cyan-800 font-bold text-lg mb-1">Hidratação</h2>
         <div className="text-4xl font-black text-cyan-600 mb-2">{cups} <span className="text-lg text-cyan-400 font-medium">/ {GOAL}</span></div>
         

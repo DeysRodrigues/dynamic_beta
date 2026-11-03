@@ -101,7 +101,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
                 value={newGoal}
                 onChange={(e) => setNewGoal(e.target.value)}
                 placeholder="Novo objetivo..."
-                className="bg-current/5 border-none outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
+                className="bg-current/5 outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
               />
               <button type="submit" className="p-1.5 bg-primary text-primary-foreground rounded-lg hover:scale-105 transition-transform">
                 <Plus size={16} />
@@ -147,7 +147,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
                 value={newRoutine}
                 onChange={(e) => setNewRoutine(e.target.value)}
                 placeholder="Nova rotina..."
-                className="bg-current/5 border-none outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
+                className="bg-current/5 outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
               />
               <button type="submit" className="p-1.5 bg-primary text-primary-foreground rounded-lg hover:scale-105 transition-transform">
                 <Plus size={16} />

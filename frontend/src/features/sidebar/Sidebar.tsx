@@ -51,7 +51,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       {/* Mobile button */}
       {!isFocusMode && (
         <button
-          className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border border-white/10 active:scale-95 transition-all text-white"
+          className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg active:scale-95 transition-all text-white"
           style={{ backgroundColor: sidebarColor }}
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -67,11 +67,11 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
       )}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-screen z-50 flex flex-col justify-between py-8 transition-all duration-500 ease-in-out border-r border-white/5 shadow-2xl backdrop-blur-xl bg-background/80",
+          "fixed top-0 left-0 h-screen z-50 flex flex-col justify-between py-8 transition-all duration-500 ease-in-out shadow-2xl backdrop-blur-xl bg-background/80",
           isOpen ? "translate-x-0 w-64" : sidebarClasses,
           "md:translate-x-0 md:static",
           isFocusMode
-            ? "md:w-0 md:opacity-0 md:overflow-hidden md:py-0 md:border-none"
+            ? "md:w-0 md:opacity-0 md:overflow-hidden md:py-0"
             : "md:relative md:w-64"
         )}
         style={{ backgroundColor: sidebarColor }}
@@ -81,7 +81,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
           <SidebarNav items={menuItems} />
 
           {/* 3. FOOTER (Settings) */}
-          <div className="w-full mt-auto pt-6 border-t border-white/5">
+          <div className="w-full mt-auto pt-6">
             <button
               onClick={() => setShowSettings(true)}
               className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-white/60 hover:text-white hover:bg-white/5 transition-all group"

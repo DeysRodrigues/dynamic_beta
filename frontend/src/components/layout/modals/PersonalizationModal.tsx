@@ -54,7 +54,7 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
             {/* Upload button */}
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="flex-1 h-32 border-2 border-dashed border-indigo-200 rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-indigo-50 hover:border-indigo-400 transition group"
+              className="flex-1 h-32 rounded-xl bg-indigo-50/70 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-indigo-50 transition group"
             >
               <div className="p-3 bg-indigo-100 text-indigo-600 rounded-full group-hover:scale-110 transition">
                 <Upload size={20} />
@@ -73,8 +73,8 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
             {/* Preview of the current image (if any) */}
             {customImage && (
               <div 
-                className={`relative flex-1 h-32 rounded-xl overflow-hidden border-2 cursor-pointer transition ${
-                  wallpaper === 'custom' ? "border-indigo-600 ring-2 ring-indigo-100" : "border-gray-200 opacity-70 hover:opacity-100"
+                className={`relative flex-1 h-32 rounded-xl overflow-hidden cursor-pointer transition ${
+                  wallpaper === 'custom' ? "ring-2 ring-indigo-500" : "opacity-70 hover:opacity-100"
                 }`}
                 onClick={() => setWallpaper('custom')}
               >
@@ -104,7 +104,6 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
           </div>
         </div>
 
-        <hr className="border-gray-100" />
 
         {/* --- CSS PATTERNS --- */}
         <div className="space-y-2">
@@ -114,8 +113,8 @@ export default function PersonalizationModal({ isOpen, onClose }: Personalizatio
               <button
                 key={opt.id}
                 onClick={() => setWallpaper(opt.id)}
-                className={`relative h-20 rounded-xl border-2 transition-all overflow-hidden ${
-                  wallpaper === opt.id ? "border-indigo-600 ring-2 ring-indigo-100 scale-[1.02]" : "border-gray-200 hover:border-indigo-300"
+                className={`relative h-20 rounded-xl transition-all overflow-hidden ${
+                  wallpaper === opt.id ? "ring-2 ring-indigo-500 scale-[1.02]" : "opacity-80 hover:opacity-100"
                 }`}
               >
                 <div className="absolute inset-0" style={getWallpaperStyle(opt.id, null)} />

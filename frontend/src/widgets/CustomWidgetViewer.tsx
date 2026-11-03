@@ -51,7 +51,7 @@ export default function CustomWidgetViewer() {
   return (
     <iframe
       srcDoc={srcDoc}
-      className="w-full h-screen border-none"
+      className="w-full h-screen"
       title={`Custom Widget ${id}`}
       sandbox="allow-scripts allow-forms allow-pointer-lock allow-same-origin" // Basic security
     />

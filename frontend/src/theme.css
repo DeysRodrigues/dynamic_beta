@@ -50,32 +50,26 @@
   /* --- TEMAS RPG --- */
   --rpg-stone-from: #f5f5f4;
   --rpg-stone-to: #e7e5e4;
-  --rpg-stone-border: #d6d3d1;
   --rpg-stone-text: #3f3f46;
 
   --rpg-red-from: #fef2f2;
   --rpg-red-to: #fee2e2;
-  --rpg-red-border: #fecaca;
   --rpg-red-text: #991b1b;
 
   --rpg-blue-from: #eff6ff;
   --rpg-blue-to: #dbeafe;
-  --rpg-blue-border: #bfdbfe;
   --rpg-blue-text: #1e40af;
 
   --rpg-purple-from: #f5f3ff;
   --rpg-purple-to: #ede9fe;
-  --rpg-purple-border: #ddd6fe;
   --rpg-purple-text: #5b21b6;
 
   --rpg-amber-from: #fffbeb;
   --rpg-amber-to: #fef3c7;
-  --rpg-amber-border: #fde68a;
   --rpg-amber-text: #b45309;
 
   --rpg-emerald-from: #ecfdf5;
   --rpg-emerald-to: #d1fae5;
-  --rpg-emerald-border: #a7f3d0;
   --rpg-emerald-text: #065f46;
 
   /* --- CORES DE RISCO --- */
@@ -103,71 +97,54 @@
 
   /* --- CORES DOS WIDGETS --- */
   --widget-emerald-bg: #ecfdf5;
-  --widget-emerald-border: #a7f3d0;
   --widget-emerald-text: #065f46;
 
   --widget-red-bg: #fef2f2;
-  --widget-red-border: #fee2e2;
   --widget-red-text: #991b1b;
 
   --widget-yellow-bg: #fefce8;
-  --widget-yellow-border: #fef08a;
   --widget-yellow-text: #a16207;
 
   --widget-gray-bg: #f8fafc;
-  --widget-gray-border: #e2e8f0;
   --widget-gray-text: #475569;
 
   --widget-stone-bg: #f5f5f4;
-  --widget-stone-border: #d6d3d1;
   --widget-stone-text: #3f3f46;
 
   --widget-green-bg: #f0fdf4;
-  --widget-green-border: #bbf7d0;
   --widget-green-text: #166534;
 
   --widget-amber-bg: #fffbeb;
-  --widget-amber-border: #fde68a;
   --widget-amber-text: #b45309;
 
   --widget-rose-bg: #fff1f2;
-  --widget-rose-border: #fecdd3;
   --widget-rose-text: #be123c;
   
   --widget-indigo-bg: #eef2ff;
-  --widget-indigo-border: #c7d2fe;
   --widget-indigo-text: #3730a3;
 
   --widget-orange-bg: #fff7ed;
-  --widget-orange-border: #fed7aa;
   --widget-orange-text: #c2410c;
 
   --widget-blue-bg: #eff6ff;
-  --widget-blue-border: #bfdbfe;
   --widget-blue-text: #1e40af;
 
   --widget-cyan-bg: #ecfeff;
-  --widget-cyan-border: #a5f3fc;
   --widget-cyan-text: #0e7490;
 
   --widget-pink-bg: #fdf2f8;
-  --widget-pink-border: #fbcfe8;
   --widget-pink-text: #be185d;
 
   --widget-fuchsia-bg: #fdf4ff;
-  --widget-fuchsia-border: #f5d0fe;
   --widget-fuchsia-text: #a21caf;
 
   --widget-violet-bg: #f5f3ff;
-  --widget-violet-border: #ddd6fe;
   --widget-violet-text: #5b21b6;
   
   --widget-sky-bg: #f0f9ff;
-  --widget-sky-border: #bae6fd;
   --widget-sky-text: #0369a1;
 
   --widget-purple-bg: #faf5ff;
-  --widget-purple-border: #e9d5ff;
   --widget-purple-text: #7e22ce;
 
   /* --- FALLBACKS PARA CUSTOMIZAÇÃO DINÂMICA --- */

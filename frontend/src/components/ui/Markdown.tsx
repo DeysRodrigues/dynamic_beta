@@ -60,7 +60,7 @@ function MarkdownView({ children, className, onToggleTask }: MarkdownProps) {
               />
             );
           },
-          blockquote: ({ children }) => <blockquote className="my-2 border-l-4 border-current/20 pl-3 opacity-80 italic">{children}</blockquote>,
+          blockquote: ({ children }) => <blockquote className="my-2 pl-3 pr-3 py-1.5 rounded-lg bg-current/5 opacity-80 italic">{children}</blockquote>,
           hr: () => <hr className="my-3 border-current/20" />,
           pre: ({ children }) => <pre className="my-2 p-3 rounded-lg bg-black/10 overflow-x-auto text-xs font-mono">{children}</pre>,
           code: ({ className, children }) => {
@@ -76,8 +76,8 @@ function MarkdownView({ children, className, onToggleTask }: MarkdownProps) {
               <table className="w-full border-collapse text-xs">{children}</table>
             </div>
           ),
-          th: ({ children }) => <th className="border border-current/20 px-2 py-1 text-left font-bold bg-current/5">{children}</th>,
-          td: ({ children }) => <td className="border border-current/20 px-2 py-1">{children}</td>,
+          th: ({ children }) => <th className="px-2 py-1 text-left font-bold bg-current/10">{children}</th>,
+          td: ({ children }) => <td className="px-2 py-1 even:bg-current/5">{children}</td>,
           img: ({ src, alt }) => <img src={src} alt={alt ?? ""} loading="lazy" className="max-w-full rounded-lg my-2" />,
         }}
       >

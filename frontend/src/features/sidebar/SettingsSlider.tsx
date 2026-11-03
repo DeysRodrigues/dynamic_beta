@@ -13,7 +13,7 @@ interface SettingsSliderProps {
 /** A labelled range input, the row used by every slider in the settings drawer. */
 export function SettingsSlider({ icon, label, value, min, max, step, onChange }: SettingsSliderProps) {
   return (
-    <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5">
+    <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5">
       <span className="text-xs font-medium flex items-center gap-2 text-white/80">
         {icon} {label}
       </span>

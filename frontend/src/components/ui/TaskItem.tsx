@@ -161,7 +161,7 @@ function TaskItemComponent({
         </button>
 
         {showMenu && (
-          <div className="absolute right-0 top-full mt-1 w-32 bg-popover text-popover-foreground border border-current/10 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 origin-top-right">
+          <div className="absolute right-0 top-full mt-1 w-32 bg-popover text-popover-foreground rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 origin-top-right">
             <div className="flex flex-col p-1">
               {onEdit && (
                 <button 

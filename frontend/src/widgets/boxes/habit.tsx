@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Hábito Tracker",
   description: "Consistência diária.",
   icon: <Activity size={24} />,
-  color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
+  color: "text-rose-500 bg-rose-500/10",
   defaultHeight: 3,
   component: lazy(() => import("@/components/layout/boxes/HabitTrackerBox")),
 });

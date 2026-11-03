@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Smart Embed",
   description: "Vídeos e iframes.",
   icon: <LayoutTemplate size={24} />,
-  color: "text-slate-500 bg-slate-500/10 border-slate-500/20",
+  color: "text-slate-500 bg-slate-500/10",
   defaultHeight: 3,
   component: lazy(() => import("@/components/layout/boxes/EmbeddedBox")),
 });

@@ -26,7 +26,7 @@ export function BoxFrame({ box, projectId, editMode, onRemove }: BoxFrameProps) 
       )}
     >
       {editMode && (
-        <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between p-2 bg-amber-500/20 backdrop-blur-md border-b border-amber-500/20 animate-in slide-in-from-top duration-200">
+        <div className="absolute inset-x-0 top-0 z-50 flex items-center justify-between p-2 bg-amber-500/20 backdrop-blur-md animate-in slide-in-from-top duration-200">
           <div className="drag-handle cursor-grab active:cursor-grabbing p-1.5 hover:bg-amber-500/30 rounded-lg transition-colors">
             <GripVertical size={18} className="text-amber-600" />
           </div>

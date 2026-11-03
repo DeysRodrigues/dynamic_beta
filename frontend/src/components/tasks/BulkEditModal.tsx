@@ -53,7 +53,7 @@ export function BulkEditModal({ isOpen, onClose, tasksToEdit }: BulkEditModalPro
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
       <div 
-        className="rounded-xl shadow-2xl w-full max-w-2xl p-6 space-y-4 animate-in fade-in zoom-in duration-200 border border-white/10"
+        className="rounded-xl shadow-2xl w-full max-w-2xl p-6 space-y-4 animate-in fade-in zoom-in duration-200"
         style={{ backgroundColor: 'var(--box-color)', color: 'var(--box-text-color)' }}
       >
         <div className="flex justify-between items-center">
@@ -61,14 +61,14 @@ export function BulkEditModal({ isOpen, onClose, tasksToEdit }: BulkEditModalPro
           <button onClick={onClose} className="opacity-60 hover:opacity-100 hover:text-red-500 transition"><X size={24} /></button>
         </div>
 
-        <div className="text-sm p-3 rounded border border-current/10 bg-black/5 opacity-80">
+        <div className="text-sm p-3 rounded bg-black/5 opacity-80">
           <p>Edite livremente. Use <code>- [x]</code> para tarefas concluídas.</p>
         </div>
 
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="w-full h-64 p-4 border rounded-xl font-mono text-sm outline-none resize-none leading-relaxed bg-black/5 border-current/20 text-inherit focus:ring-2 focus:ring-primary/20"
+          className="w-full h-64 p-4 rounded-xl font-mono text-sm outline-none resize-none leading-relaxed bg-black/5 text-inherit focus:ring-2 focus:ring-primary/20"
         />
 
         <div className="flex justify-end gap-3 pt-2">

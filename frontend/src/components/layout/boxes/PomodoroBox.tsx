@@ -93,14 +93,12 @@ export default function PomodoroBox() {
         >
           <CheckCircle size={14} /> {counts.work}
         </div>
-        <div className="w-px h-4 bg-current/20"></div>
         <div
           className="flex items-center gap-1.5 opacity-80"
           title="Pausas Curtas"
         >
           <Coffee size={14} /> {counts.short}
         </div>
-        <div className="w-px h-4 bg-current/20"></div>
         <div
           className="flex items-center gap-1.5 opacity-80"
           title="Pausas Longas"

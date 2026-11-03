@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Metas 30 Dias",
   description: "Desafios mensais.",
   icon: <Target size={24} />,
-  color: "text-pink-500 bg-pink-500/10 border-pink-500/20",
+  color: "text-pink-500 bg-pink-500/10",
   defaultHeight: 4,
   component: lazy(() => import("@/components/layout/boxes/MonthlyGoalsBox")),
 });

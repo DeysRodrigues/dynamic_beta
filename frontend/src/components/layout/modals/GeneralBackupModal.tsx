@@ -70,12 +70,12 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div 
-        className="bg-[#18181b] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
+        className="bg-[#18181b] rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
         style={{ color: '#f4f4f5' }}
       >
         
         {/* Header */}
-        <div className="p-5 border-b border-white/10 flex justify-between items-center bg-white/5">
+        <div className="p-5 flex justify-between items-center bg-white/5">
           <h2 className="text-lg font-bold flex items-center gap-2">
             <Database className="text-purple-500" /> Backup & Restauração
           </h2>
@@ -85,7 +85,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
         <div className="p-6 space-y-6">
           
           {/* Card Exportar */}
-          <div className="bg-white/5 border border-white/5 rounded-xl p-4 hover:border-purple-500/50 transition-colors group">
+          <div className="bg-white/5 rounded-xl p-4 transition-colors group">
             <div className="flex items-start gap-4">
               <div className="p-3 bg-purple-500/20 rounded-lg text-purple-400 group-hover:scale-110 transition-transform">
                 <Download size={24} />
@@ -103,13 +103,10 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
             </div>
           </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/10" /></div>
-            <div className="relative flex justify-center text-xs uppercase"><span className="bg-[#18181b] px-2 text-white/30">Zona de Perigo</span></div>
-          </div>
+          <p className="text-center text-xs uppercase text-white/30">Zona de Perigo</p>
 
           {/* Card Importar */}
-          <div className="bg-red-500/5 border border-red-500/10 rounded-xl p-4 hover:border-red-500/30 transition-colors group">
+          <div className="bg-red-500/5 rounded-xl p-4 transition-colors group">
             <div className="flex items-start gap-4">
               <div className="p-3 bg-red-500/10 rounded-lg text-red-400 group-hover:scale-110 transition-transform">
                 <Upload size={24} />
@@ -118,7 +115,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
                 <h3 className="font-bold text-sm mb-1 text-red-100">Restaurar Dados</h3>
                 <p className="text-xs text-red-200/50 mb-3">Carrega um arquivo de backup anterior. <br/><span className="text-red-400 font-bold flex items-center gap-1 mt-1"><AlertTriangle size={10}/> Cuidado: Isso apaga os dados atuais!</span></p>
                 
-                <label className={`bg-white/5 hover:bg-white/10 text-white border border-white/10 px-4 py-2 rounded-lg text-xs font-bold w-full transition flex items-center justify-center gap-2 cursor-pointer ${isRestoring ? 'opacity-50 pointer-events-none' : ''}`}>
+                <label className={`bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-lg text-xs font-bold w-full transition flex items-center justify-center gap-2 cursor-pointer ${isRestoring ? 'opacity-50 pointer-events-none' : ''}`}>
                   {isRestoring ? "Restaurando..." : "SELECIONAR ARQUIVO"}
                   <input type="file" accept=".json" className="hidden" onChange={handleImport} disabled={isRestoring} />
                 </label>
@@ -128,7 +125,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
 
         </div>
 
-        <div className="p-4 bg-black/20 text-center border-t border-white/5">
+        <div className="p-4 bg-black/20 text-center">
           <p className="text-[10px] text-white/30">O backup não inclui imagens customizadas (apenas o link/base64 se for pequeno).</p>
         </div>
 

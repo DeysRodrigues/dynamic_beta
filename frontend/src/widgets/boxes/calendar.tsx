@@ -7,7 +7,7 @@ export default defineWidget({
   title: "Calendário",
   description: "Visão mensal.",
   icon: <CalendarDays size={24} />,
-  color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+  color: "text-blue-500 bg-blue-500/10",
   defaultHeight: 3,
   component: lazy(() => import("@/components/layout/boxes/MiniCalendarBox")),
 });

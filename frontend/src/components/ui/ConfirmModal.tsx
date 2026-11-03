@@ -31,10 +31,10 @@ export default function ConfirmModal({
       <div
         role="alertdialog"
         aria-label={title}
-        className="w-full max-w-sm bg-[#111] border border-white/10 rounded-2xl p-8 shadow-2xl text-center space-y-6"
+        className="w-full max-w-sm bg-[#111] rounded-2xl p-8 shadow-2xl text-center space-y-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto text-red-400 border border-red-500/20">
+        <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto text-red-400">
           <AlertTriangle size={32} />
         </div>
         <div className="space-y-2">

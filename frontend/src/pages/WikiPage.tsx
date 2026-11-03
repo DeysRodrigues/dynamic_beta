@@ -163,7 +163,7 @@ export default function WikiPage() {
       </div>
 
       {/* Navbar Superior */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/5">
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
              <button 
@@ -188,7 +188,7 @@ export default function WikiPage() {
                   placeholder="Buscar..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-full py-1.5 pl-9 pr-4 text-xs outline-none focus:border-blue-500/50 transition-all w-32 sm:w-48"
+                  className="bg-white/5 rounded-full py-1.5 pl-9 pr-4 text-xs outline-none focus:ring-1 focus:ring-blue-500/50 transition-all w-32 sm:w-48"
                 />
              </div>
              <button 
@@ -204,10 +204,10 @@ export default function WikiPage() {
       <div className="flex-1 flex flex-col lg:flex-row max-w-7xl w-full mx-auto relative z-10 overflow-hidden">
         
         {/* Navigation sidebar */}
-        <aside className="w-full lg:w-[320px] p-6 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col gap-8 bg-black/20 backdrop-blur-sm lg:h-[calc(100vh-68px)] lg:sticky lg:top-[68px]">
+        <aside className="w-full lg:w-[320px] p-6 flex flex-col gap-8 bg-black/20 backdrop-blur-sm lg:h-[calc(100vh-68px)] lg:sticky lg:top-[68px]">
           
           {/* Tabs de Categorias */}
-          <div className="flex p-1 bg-white/5 rounded-xl border border-white/5">
+          <div className="flex p-1 bg-white/5 rounded-xl">
              {(['guia', 'sistema', 'comunidade'] as const).map(tab => (
                <button
                  key={tab}
@@ -229,8 +229,8 @@ export default function WikiPage() {
                 onClick={() => setActiveId(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${
                   activeId === item.id 
-                    ? "bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]" 
-                    : "text-white/40 hover:text-white hover:bg-white/5 border border-transparent"
+                    ? "bg-blue-500/10 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.1)]" 
+                    : "text-white/40 hover:text-white hover:bg-white/5"
                 }`}
               >
                 <span className={`${activeId === item.id ? "text-blue-400" : "text-white/20 group-hover:text-white/60"}`}>
@@ -243,7 +243,7 @@ export default function WikiPage() {
           </nav>
 
           {/* Quick tip card */}
-          <div className="mt-auto hidden lg:block p-5 rounded-2xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-white/5 relative overflow-hidden group">
+          <div className="mt-auto hidden lg:block p-5 rounded-2xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 relative overflow-hidden group">
              <div className="relative z-10">
                 <Zap size={18} className="text-yellow-400 mb-3 fill-yellow-400" />
                 <p className="text-[10px] font-bold mb-1 opacity-50 uppercase tracking-tighter">Sabia que?</p>
@@ -260,7 +260,7 @@ export default function WikiPage() {
             {/* Section header */}
             <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-blue-400 border border-white/10 shadow-inner group overflow-hidden relative">
+                    <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-blue-400 shadow-inner group overflow-hidden relative">
                         <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform duration-700" />
                         <span className="relative z-10 scale-125">{activeContent.icon}</span>
                     </div>
@@ -278,7 +278,7 @@ export default function WikiPage() {
                 </p>
             </div>
 
-            <SpotlightCard className="bg-[#0a0a0a] border-white/5" spotlightColor="rgba(59, 130, 246, 0.1)">
+            <SpotlightCard className="bg-[#0a0a0a]" spotlightColor="rgba(59, 130, 246, 0.1)">
                 <div className="p-8 space-y-12">
                     {/* Texto Detalhado */}
                     {activeContent.fullText && (
@@ -293,7 +293,7 @@ export default function WikiPage() {
                             <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Sintaxe & Parâmetros</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {activeContent.details.map((detail, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group hover:border-blue-500/30 transition-all">
+                                    <div key={i} className="p-4 rounded-2xl bg-white/5 flex items-center justify-between group transition-all">
                                         <div className="space-y-1">
                                             <span className="text-blue-400 font-mono text-xs font-bold bg-blue-500/10 px-2 py-0.5 rounded">{detail.label}</span>
                                             <p className="text-[11px] text-white/40 font-medium">{detail.desc}</p>
@@ -311,7 +311,7 @@ export default function WikiPage() {
                             <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Exemplos de Reatividade</h3>
                             <div className="space-y-3">
                                 {activeContent.examples.map((ex, i) => (
-                                    <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 border-l-blue-500 border-l-4 hover:bg-black/60 transition-colors">
+                                    <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 p-5 rounded-2xl bg-black/40 hover:bg-black/60 transition-colors">
                                         <div className="flex-1">
                                             <span className="text-[9px] font-bold text-white/20 uppercase tracking-tighter">Trigger (IF)</span>
                                             <p className="text-sm font-bold text-white/90">{ex.trigger}</p>
@@ -333,7 +333,7 @@ export default function WikiPage() {
                     {activeContent.curiosities && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {activeContent.curiosities.map((c, i) => (
-                                <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/5 relative overflow-hidden group hover:border-blue-500/20 transition-all">
+                                <div key={i} className="p-6 rounded-2xl bg-white/5 relative overflow-hidden group transition-all">
                                     <div className="text-2xl font-black text-white/5 absolute -top-2 -right-2 italic group-hover:text-blue-500/10 transition-colors">0{i+1}</div>
                                     <p className="text-sm text-white/60 leading-relaxed relative z-10">{c}</p>
                                 </div>
@@ -368,7 +368,7 @@ export default function WikiPage() {
 
             {/* Section tips / footnote */}
             {activeContent.tips && (
-                <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-start gap-4">
+                <div className="p-5 rounded-2xl bg-blue-500/5 flex items-start gap-4">
                     <Zap size={20} className="text-blue-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-blue-400/80 leading-relaxed italic">
                         <strong>Dica Expert:</strong> {activeContent.tips}
@@ -377,7 +377,7 @@ export default function WikiPage() {
             )}
 
             {/* Wiki inner footer */}
-            <footer className="pt-20 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30 hover:opacity-100 transition-opacity">
+            <footer className="pt-20 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30 hover:opacity-100 transition-opacity">
                 <div className="text-[10px] font-bold tracking-widest uppercase">
                     Build 0.5.0 — Beta Phase
                 </div>

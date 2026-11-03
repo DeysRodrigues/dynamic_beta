@@ -76,7 +76,7 @@ export const DashboardHeader = React.memo(
                 <div className="relative shrink-0 ml-14 md:ml-0 group cursor-pointer" onClick={() => navigate("/wiki")}>
                   <img
                     src={avatar || DEFAULT_AVATAR}
-                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl object-cover shadow-xl border-2 border-current/10 group-hover:border-primary transition-all duration-500"
+                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl object-cover shadow-xl transition-all duration-500"
                     alt="Avatar"
                   />
                   <div className="absolute -bottom-1 -right-1 bg-background p-1 rounded-full shadow-md">
@@ -95,7 +95,7 @@ export const DashboardHeader = React.memo(
               </div>
 
               {/* Controls Group */}
-              <div className="flex items-center gap-1.5 p-1.5 rounded-2xl backdrop-blur-md border transition-colors duration-500"
+              <div className="flex items-center gap-1.5 p-1.5 rounded-2xl backdrop-blur-md transition-colors duration-500"
                    style={{ 
                       backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
                       borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
@@ -123,8 +123,6 @@ export const DashboardHeader = React.memo(
                 >
                   {editMode ? <Unlock size={18} /> : <Lock size={18} />}
                 </button>
-
-                <div className="w-px h-5 mx-1 opacity-10" style={{ backgroundColor: 'var(--box-text-color)' }}></div>
 
                 <AddWidgetMenu onAddWidget={onAddWidget} onBackup={onSave} />
               </div>

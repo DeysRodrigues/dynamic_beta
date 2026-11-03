@@ -292,7 +292,7 @@ export default function PresenceCalendarBox({
           )}
 
           <input
-            className="w-full text-sm p-2 rounded bg-black/5 outline-none border border-transparent focus:border-primary/30 transition-all"
+            className="w-full text-sm p-2 rounded bg-black/5 outline-none focus:ring-1 focus:ring-primary/30 transition-all"
             placeholder="Nome (Ex: Cálculo II)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -324,7 +324,7 @@ export default function PresenceCalendarBox({
                   className={`w-8 h-8 rounded-full text-xs font-bold transition-all ${
                     selectedDays.includes(i)
                       ? "bg-primary text-primary-foreground scale-110 shadow-md"
-                      : "bg-transparent opacity-60 hover:opacity-100 border border-current/10"
+                      : "bg-current/5 opacity-60 hover:opacity-100"
                   }`}
                 >
                   {d}

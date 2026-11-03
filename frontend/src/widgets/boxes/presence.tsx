@@ -8,7 +8,7 @@ export default defineWidget({
   title: "Calendário de Presença",
   description: "Rastreie frequência em eventos recorrentes.",
   icon: <CalendarCheck size={24} />,
-  color: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
+  color: "text-indigo-500 bg-indigo-500/10",
   defaultHeight: 4,
   schema: presenceContentSchema,
   component: lazy(() => import("@/components/layout/boxes/PresenceCalendarBox")),

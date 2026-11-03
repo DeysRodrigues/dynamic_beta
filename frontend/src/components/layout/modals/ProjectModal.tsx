@@ -129,7 +129,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 backdrop-blur-xl bg-black/60 animate-in fade-in duration-300">
       <div 
-        className="box-padrao w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden p-0 gap-0 border-none"
+        className="box-padrao w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden p-0 gap-0"
       >
         
         {/* Header */}
@@ -159,7 +159,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: Projeto Emagrecer"
-                className="w-full bg-current/[0.06] border-none outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all text-current placeholder:opacity-20"
+                className="w-full bg-current/[0.06] outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all text-current placeholder:opacity-20"
               />
             </div>
             
@@ -182,7 +182,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Descreva o que deseja alcançar..."
-              className="w-full bg-current/[0.06] border-none outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all h-24 resize-none text-current placeholder:opacity-20"
+              className="w-full bg-current/[0.06] outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all h-24 resize-none text-current placeholder:opacity-20"
             />
           </div>
 
@@ -194,7 +194,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
               <button
                 onClick={() => toggleBox(PROJECT_OVERVIEW_WIDGET.id)}
                 className={cn(
-                  "flex flex-col items-center gap-3 p-5 rounded-2xl border-none transition-all duration-300 group shadow-lg",
+                  "flex flex-col items-center gap-3 p-5 rounded-2xl transition-all duration-300 group shadow-lg",
                   selectedBoxes.includes(PROJECT_OVERVIEW_WIDGET.id) 
                     ? "bg-primary text-primary-foreground scale-105" 
                     : "bg-current/[0.05] opacity-30 hover:opacity-100"
@@ -209,7 +209,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                   key={box.id}
                   onClick={() => toggleBox(box.id)}
                   className={cn(
-                    "flex flex-col items-center gap-3 p-5 rounded-2xl border-none transition-all duration-300 group shadow-lg",
+                    "flex flex-col items-center gap-3 p-5 rounded-2xl transition-all duration-300 group shadow-lg",
                     selectedBoxes.includes(box.id) 
                       ? "bg-primary text-primary-foreground scale-105" 
                       : "bg-current/[0.05] opacity-30 hover:opacity-100"
@@ -247,7 +247,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                     onChange={(e) => setNewGoal(e.target.value)}
                     placeholder="Adicionar nova meta..."
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), newGoal && (setGoals([...goals, newGoal]), setNewGoal("")))}
-                    className="flex-1 bg-current/[0.06] border-none outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
+                    className="flex-1 bg-current/[0.06] outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
                   />
                   <button 
                     onClick={() => { if(newGoal) { setGoals([...goals, newGoal]); setNewGoal(""); } }}
@@ -280,7 +280,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                     onChange={(e) => setNewRoutine(e.target.value)}
                     placeholder="Adicionar nova rotina..."
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), newRoutine && (setRoutines([...routines, newRoutine]), setNewRoutine("")))}
-                    className="flex-1 bg-current/[0.06] border-none outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
+                    className="flex-1 bg-current/[0.06] outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
                   />
                   <button 
                     onClick={() => { if(newRoutine) { setRoutines([...routines, newRoutine]); setNewRoutine(""); } }}

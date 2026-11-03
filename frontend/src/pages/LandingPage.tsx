@@ -70,7 +70,7 @@ export default function LandingPage() {
       </div>
 
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto backdrop-blur-md bg-black/20 border-b border-white/5">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto backdrop-blur-md bg-black/20">
         <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
           <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/20">
             <Star size={16} className="text-white fill-white" />
@@ -90,7 +90,7 @@ export default function LandingPage() {
       {/* ================================================================================= */}
       <section className="relative z-10 pt-40 pb-20 px-6 text-center">
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-white/60 mb-4 hover:bg-white/10 transition cursor-default">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 text-xs font-medium text-white/60 mb-4 hover:bg-white/10 transition cursor-default">
             <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
             A produtividade ficou bonita.
           </div>
@@ -128,9 +128,9 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           {/* O CARROSSEL */}
           <div className="relative w-full aspect-video md:h-[600px] perspective-1000 group">
-            <div className="relative w-full h-full bg-[#111] rounded-2xl border border-white/10 shadow-2xl overflow-hidden transform transition-transform duration-700 ease-out hover:scale-[1.01]">
+            <div className="relative w-full h-full bg-[#111] rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-700 ease-out hover:scale-[1.01]">
               {/* Mockup header */}
-              <div className="absolute top-0 left-0 right-0 h-10 bg-[#1a1a1a]/90 backdrop-blur border-b border-white/5 flex items-center px-4 gap-2 z-20">
+              <div className="absolute top-0 left-0 right-0 h-10 bg-[#1a1a1a]/90 backdrop-blur flex items-center px-4 gap-2 z-20">
                 <div className="w-3 h-3 rounded-full bg-red-500/50" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
                 <div className="w-3 h-3 rounded-full bg-green-500/50" />
@@ -156,7 +156,7 @@ export default function LandingPage() {
                   />
 
                   {/* Legenda Flutuante */}
-                  <div className="absolute bottom-8 left-8 px-6 py-4 bg-black/60 backdrop-blur-xl rounded-2xl border border-white/10 text-left shadow-2xl max-w-sm">
+                  <div className="absolute bottom-8 left-8 px-6 py-4 bg-black/60 backdrop-blur-xl rounded-2xl text-left shadow-2xl max-w-sm">
                     <h3 className="font-bold text-white text-lg mb-1">
                       {slide.title}
                     </h3>
@@ -176,7 +176,7 @@ export default function LandingPage() {
                   (p) => (p - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
                 )
               }
-              className="absolute left-[-20px] top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur border border-white/10 text-white transition md:flex hidden hover:scale-110"
+              className="absolute left-[-20px] top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur text-white transition md:flex hidden hover:scale-110"
             >
               <ChevronLeft />
             </button>
@@ -184,7 +184,7 @@ export default function LandingPage() {
               onClick={() =>
                 setCurrentSlide((p) => (p + 1) % HERO_SLIDES.length)
               }
-              className="absolute right-[-20px] top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur border border-white/10 text-white transition md:flex hidden hover:scale-110"
+              className="absolute right-[-20px] top-1/2 -translate-y-1/2 p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur text-white transition md:flex hidden hover:scale-110"
             >
               <ChevronRight />
             </button>
@@ -195,7 +195,7 @@ export default function LandingPage() {
       {/* ================================================================================= */}
       {/* 3. ADVANCED FEATURES (POWER FEATURES) */}
       {/* ================================================================================= */}
-      <section className="py-24 px-6 bg-[#0a0a0a] border-t border-white/5">
+      <section className="py-24 px-6 bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
@@ -222,7 +222,7 @@ export default function LandingPage() {
                   Escreva tarefas na velocidade do pensamento. Use códigos
                   simples para definir tudo em uma linha.
                 </p>
-                <div className="mt-auto bg-black/50 rounded-lg p-4 font-mono text-xs border border-white/10 space-y-3">
+                <div className="mt-auto bg-black/50 rounded-lg p-4 font-mono text-xs space-y-3">
                   <div className="flex gap-2 items-center text-white/40">
                     <span>$</span>
                     <span className="text-white">
@@ -251,11 +251,11 @@ export default function LandingPage() {
                   toque uma música de vitória".
                 </p>
                 <div className="mt-auto space-y-2 font-mono text-xs">
-                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/5">
+                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
                     <span className="text-yellow-500 font-bold">IF</span>{" "}
                     <span className="text-white/70">Tasks &gt; 5</span>
                   </div>
-                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/5">
+                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
                     <span className="text-green-500 font-bold">THEN</span>{" "}
                     <span className="text-white/70">Play Sound</span>
                   </div>
@@ -277,7 +277,7 @@ export default function LandingPage() {
                   Não encontrou o widget perfeito? Crie o seu com HTML/CSS ou
                   cole qualquer iframe (Spotify, YouTube).
                 </p>
-                <div className="mt-auto relative group overflow-hidden rounded-lg border border-blue-500/30">
+                <div className="mt-auto relative group overflow-hidden rounded-lg">
                   <div className="absolute inset-0 bg-blue-500/10 z-0" />
                   <div className="p-3 font-mono text-[10px] text-blue-200 relative z-10">
                     &lt;div&gt;Meu Widget&lt;/div&gt;
@@ -313,7 +313,7 @@ export default function LandingPage() {
             {COLOR_PALETTES.map((theme) => (
               <div key={theme.name} className="group relative cursor-default">
                 <div
-                  className="h-32 rounded-2xl border border-white/5 flex flex-col items-center justify-center gap-3 transition-all duration-300 group-hover:scale-105 group-hover:border-white/20 shadow-xl"
+                  className="h-32 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all duration-300 group-hover:scale-105 shadow-xl"
                   style={{ backgroundColor: theme.bg }}
                 >
                   <div
@@ -328,7 +328,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div className="mt-16 p-8 rounded-2xl border border-dashed border-white/10 bg-white/5 flex flex-col md:flex-row items-center justify-between gap-6 hover:bg-white/10 transition-colors">
+          <div className="mt-16 p-8 rounded-2xl bg-white/5 flex flex-col md:flex-row items-center justify-between gap-6 hover:bg-white/10 transition-colors">
             <div className="text-left">
               <h3 className="text-xl font-bold flex items-center gap-2">
                 <Brush size={20} className="text-pink-400" /> Crie do Zero
@@ -397,9 +397,9 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="relative h-[500px] w-full bg-gradient-to-tr from-blue-900/20 to-purple-900/20 rounded-3xl border border-white/10 p-8 flex items-center justify-center overflow-hidden group">
+          <div className="relative h-[500px] w-full bg-gradient-to-tr from-blue-900/20 to-purple-900/20 rounded-3xl p-8 flex items-center justify-center overflow-hidden group">
             <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/diagmonds-light.png')] opacity-10" />
-            <div className="relative z-10 w-64 h-80 bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-2xl transform group-hover:rotate-3 transition duration-700">
+            <div className="relative z-10 w-64 h-80 bg-black/80 backdrop-blur-xl rounded-2xl p-6 shadow-2xl transform group-hover:rotate-3 transition duration-700">
               <div className="flex justify-between items-center mb-6">
                 <span className="text-xs font-bold text-white/40">
                   CURRENT MODE
@@ -423,7 +423,7 @@ export default function LandingPage() {
       </section>
 
       {/* --- FOOTER CTA --- */}
-      <footer className="relative z-10 py-32 px-6 text-center border-t border-white/5 bg-black">
+      <footer className="relative z-10 py-32 px-6 text-center bg-black">
         <h2 className="text-4xl md:text-7xl font-bold mb-8 tracking-tighter">
           Seu{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">

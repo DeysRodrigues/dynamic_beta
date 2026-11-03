@@ -199,7 +199,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute top-full mt-1 left-0 w-full bg-popover text-popover-foreground border border-current/10 rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
+                <div className="absolute top-full mt-1 left-0 w-full bg-popover text-popover-foreground rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
                   
                   <div className="overflow-y-auto custom-scrollbar flex-1 p-1">
                     {allTypes.map((t) => {
