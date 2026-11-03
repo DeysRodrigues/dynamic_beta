@@ -199,7 +199,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute top-full mt-1 left-0 w-full bg-[#1e1e1e] rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
+                <div className="absolute top-full mt-1 left-0 w-full bg-popover text-popover-foreground border border-current/10 rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
                   
                   <div className="overflow-y-auto custom-scrollbar flex-1 p-1">
                     {allTypes.map((t) => {
@@ -208,17 +208,17 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                         <div
                           key={t.id}
                           onClick={() => { setSelectedTypeId(t.id); setIsDropdownOpen(false); }}
-                          className="group/item px-2 py-1.5 text-xs cursor-pointer flex items-center justify-between hover:bg-white/10 rounded-md transition-colors"
+                          className="group/item px-2 py-1.5 text-xs cursor-pointer flex items-center justify-between hover:bg-current/10 rounded-md transition-colors"
                         >
                           <div className="flex items-center gap-2">
                             <Icon size={12} className={selectedTypeId === t.id ? "" : "opacity-50 grayscale"} style={selectedTypeId === t.id ? { color: primaryColor } : {}} />
-                            <span className={selectedTypeId === t.id ? "text-white font-bold" : "text-white/70"}>{t.label}</span>
+                            <span className={selectedTypeId === t.id ? "font-bold" : "opacity-70"}>{t.label}</span>
                           </div>
                           
                           {t.isCustom && (
                             <button 
                               onClick={(e) => handleDeleteType(e, t.id)}
-                              className="opacity-0 group-hover/item:opacity-100 p-1 text-white/30 hover:text-red-400 transition"
+                              className="opacity-0 group-hover/item:opacity-50 hover:!opacity-100 p-1 hover:text-red-400 transition"
                             >
                               <X size={10} />
                             </button>
@@ -228,13 +228,13 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                     })}
                   </div>
 
-                  <div className="p-2 bg-black/20">
+                  <div className="p-2 bg-current/5">
                     {isAddingType ? (
                       <form onSubmit={handleCreateType} className="flex gap-1">
                         <input 
                           autoFocus
                           placeholder="Nome..."
-                          className="flex-1 bg-white/5 rounded px-2 py-1 text-[10px] text-white outline-none focus:ring-1 focus:ring-white/30"
+                          className="flex-1 bg-current/10 rounded px-2 py-1 text-[10px] outline-none focus:ring-1 focus:ring-current/30"
                           value={newTypeName}
                           onChange={e => setNewTypeName(e.target.value)}
                         />
@@ -245,7 +245,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                     ) : (
                       <button 
                         onClick={(e) => { e.stopPropagation(); setIsAddingType(true); }}
-                        className="w-full text-[10px] font-bold text-white/50 hover:text-white flex items-center justify-center gap-1 py-1 rounded hover:bg-white/5 transition"
+                        className="w-full text-[10px] font-bold opacity-60 hover:opacity-100 flex items-center justify-center gap-1 py-1 rounded hover:bg-current/10 transition"
                       >
                         <Plus size={10} /> Nova Linguagem
                       </button>

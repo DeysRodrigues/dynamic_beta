@@ -87,7 +87,7 @@ const WeekGraph = memo(({ tracker, selectedDate, onSelectDate }: { tracker: Goal
                  />
               </div>
               <div className="hidden sm:block absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
-                 <div className="bg-popover dark:bg-zinc-800 text-popover-foreground text-[9px] px-2 py-1 rounded shadow-xl whitespace-nowrap font-bold">
+                 <div className="bg-popover text-popover-foreground border border-current/10 text-[9px] px-2 py-1 rounded shadow-xl whitespace-nowrap font-bold">
                     {dayTotal} {tracker.unit}
                  </div>
               </div>

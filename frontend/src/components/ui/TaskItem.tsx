@@ -161,12 +161,12 @@ function TaskItemComponent({
         </button>
 
         {showMenu && (
-          <div className="absolute right-0 top-full mt-1 w-32 bg-popover rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 origin-top-right">
+          <div className="absolute right-0 top-full mt-1 w-32 bg-popover text-popover-foreground border border-current/10 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 origin-top-right">
             <div className="flex flex-col p-1">
               {onEdit && (
                 <button 
                   onClick={() => { onEdit(task); setShowMenu(false); }}
-                  className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-primary/10 hover:text-primary rounded-lg transition text-left"
+                  className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-current/10 rounded-lg transition text-left"
                 >
                   <Edit2 size={14} /> Editar
                 </button>

@@ -188,7 +188,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
                  {(() => { const I = iconMap[newCatIcon] || Book; return <I size={18}/> })()}
                </button>
                {showIconMenu && (
-                 <div className="absolute top-10 left-0 bg-popover shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
+                 <div className="absolute top-10 left-0 bg-popover text-popover-foreground border border-current/10 shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
                    {Object.keys(iconMap).map(k => {
                      const I = iconMap[k];
                      return <button key={k} onClick={() => { setNewCatIcon(k); setShowIconMenu(false); }} className={`p-2 rounded-lg flex items-center justify-center hover:bg-primary/10 hover:text-primary ${newCatIcon === k ? 'bg-primary/10 text-primary' : ''}`}><I size={16} /></button>
