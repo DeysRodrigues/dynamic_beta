@@ -27,6 +27,12 @@ the architecture is considered ready for real use.
   invalid write is refused instead of being saved.
 
 ### Changed
+- **The dashboard page and the sidebar were split into focused components.** `Home.tsx` (653
+  lines, four components) became a page, a header, the workspace tabs, the add-widget menu, the
+  grid and the frame around each box, with the store wiring gathered in one `useDashboard` hook.
+  The sidebar (612 lines) became the sidebar proper, the profile block, the navigation, the
+  settings drawer and the profile editor, and the four identical slider rows of the drawer now
+  share one component. Nothing changes on screen. They live in `src/features/`.
 - **The dashboard state keeps one copy of the active workspace.** It used to store the active
   workspace's boxes and layouts twice, and every action had to write both. Each widget on the
   grid now also carries its own type next to its id, instead of the type being read back out of
@@ -54,9 +60,9 @@ the architecture is considered ready for real use.
 - **Versioned storage:** every persisted slice now carries a format version and a migration
   hook. Data saved before this change loads untouched, and the shape can change from here on
   without wiping what users already have.
-- **First automated test suite**, with Vitest and Testing Library: 119 tests covering the task
+- **First automated test suite**, with Vitest and Testing Library: 130 tests covering the task
   text grammar (parsing and formatting, including the round trip), the date and task helpers,
-  the dashboard store actions, the box placement, the widget registry, the content schemas, the data migrations and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
+  the dashboard store actions, the box placement, the widget registry, the content schemas, the data migrations, the backup round trip and the rendering of the dashboard and the sidebar. `npm run test` runs it once and `npm run test:watch` keeps
   it running.
 - **Continuous integration** on GitHub Actions: lint, build and tests on every push and pull
   request to `develop` and `main`.

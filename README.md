@@ -45,7 +45,7 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 119 unit tests (task parser, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations and backup) |
+| Automated tests | 130 tests (task parser, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -66,13 +66,16 @@ component  ->  Zustand store  ->  localStorage
 frontend/src
 ├── pages/              the 8 routed screens
 ├── components/
-│   ├── layout/         app shell: Sidebar, DashboardLayout, Home (the grid itself)
+│   ├── layout/         app shell: DashboardLayout, theme and pomodoro managers
 │   │   ├── boxes/      the widgets that live in the grid
 │   │   └── modals/     layout manager, personalization, backup, widget editor
 │   ├── week-planner/   the planner split into memoized parts
 │   ├── tasks/          bulk and single-task editors
 │   ├── landing/        visual components used by /intro
 │   └── ui/             shared primitives: button, TaskItem, CustomDatePicker
+├── features/
+│   ├── dashboard/      the grid page: header, workspace tabs, add menu, grid, box frame
+│   └── sidebar/        the sidebar: profile, nav, settings drawer
 ├── widgets/            the widget registry (boxes/<id>.tsx) and the iframe pages (/w/*)
 ├── store/              14 Zustand stores
 ├── hooks/              useWeekPlanner
@@ -227,7 +230,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 119 tests
+npm run test      # vitest, 130 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the

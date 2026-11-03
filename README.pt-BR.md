@@ -45,7 +45,7 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 119 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações e backup) |
+| Testes automatizados | 130 testes (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -66,13 +66,16 @@ componente  ->  store Zustand  ->  localStorage
 frontend/src
 ├── pages/              as 8 telas com rota
 ├── components/
-│   ├── layout/         a casca do app: Sidebar, DashboardLayout, Home (a grade em si)
+│   ├── layout/         a casca do app: DashboardLayout, gerenciadores de tema e de pomodoro
 │   │   ├── boxes/      os widgets que moram na grade
 │   │   └── modals/     gerenciador de layout, personalização, backup, editor de widget
 │   ├── week-planner/   o planejador quebrado em partes memoizadas
 │   ├── tasks/          editores de tarefa, em lote e individual
 │   ├── landing/        componentes visuais usados pelo /intro
 │   └── ui/             primitivos compartilhados: button, TaskItem, CustomDatePicker
+├── features/
+│   ├── dashboard/      a página da grade: cabeçalho, abas de workspace, menu de adicionar, grade, moldura do box
+│   └── sidebar/        a barra lateral: perfil, navegação, painel de ajustes
 ├── widgets/            o registro de widgets (boxes/<id>.tsx) e as páginas de iframe (/w/*)
 ├── store/              14 stores do Zustand
 ├── hooks/              useWeekPlanner
@@ -230,7 +233,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 119 testes
+npm run test      # vitest, 130 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as
