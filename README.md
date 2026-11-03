@@ -24,8 +24,7 @@ A local-first productivity dashboard: a grid of widgets you arrange yourself, wi
 DynaBox is a single-page dashboard where each feature is a widget ("box") you drop onto a
 resizable grid. You pick which widgets to show, where they sit and how the whole thing looks,
 and the arrangement is yours: there is no account, no server and no database. Everything lives
-in `localStorage`, and the only way data leaves the browser is if you explicitly connect your
-own Google Drive to back it up.
+in `localStorage`, and data only leaves the browser if you export a JSON backup yourself.
 
 It is live at **[dynabox.space](https://dynabox.space)**. The interface is in Portuguese, since
 that is who it was built for; the code, the commits and this README are in English.
@@ -46,7 +45,6 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Google Drive backup and restore | works, needs your own `VITE_GOOGLE_CLIENT_ID` |
 | Automated tests | none yet |
 | Continuous integration | none yet |
 | Mobile layout | responsive, verified by hand only |
@@ -62,8 +60,6 @@ under its own key. Nothing is fetched on load.
 
 ```
 component  ->  Zustand store  ->  localStorage
-                     |
-                     +---------->  Google Drive (opt-in, on demand)
 ```
 
 ```
@@ -79,9 +75,8 @@ frontend/src
 │   └── ui/             shared primitives: button, TaskItem, CustomDatePicker
 ├── widgets/            standalone pages embedded through an iframe (/w/*)
 ├── store/              14 Zustand stores
-├── services/           Google Drive client
-├── hooks/              useCloudSync, useWeekPlanner
-├── utils/              task parsing, date helpers, sync helpers
+├── hooks/              useWeekPlanner
+├── utils/              task parsing, date helpers
 ├── data/               widget catalog, theme catalog, in-app release notes
 └── types/              Task, Project, Theme
 ```
@@ -129,20 +124,7 @@ npm run dev
 ```
 
 The app opens on `http://localhost:5173` and works fully offline from the first load. No
-configuration is needed for anything except Google Drive sync.
-
-### Enabling Google Drive sync
-
-Cloud sync asks for the `drive.file` scope and writes a single file, `dynabox_backup_v1.json`,
-to your Drive. It is plain JSON and only the account you authorize can read it. To use it you
-need your own OAuth client ID from the Google Cloud console:
-
-```bash
-cp .env.example .env
-# then fill in VITE_GOOGLE_CLIENT_ID
-```
-
-Without that variable the rest of the app runs normally and only the sync buttons fail.
+configuration is needed.
 
 ### Other commands
 
@@ -210,7 +192,7 @@ quick input, in bulk creation and in the edit modal:
 **Local-first, with `localStorage` as the source of truth.** There is no backend and no account.
 That makes the app instant and private by default, and it is the reason the data model had to be
 small enough to serialize whole. The cost is that nothing syncs between devices on its own, which
-is exactly the hole the opt-in Drive backup fills.
+the JSON export and import cover for now.
 
 **Zustand instead of Context.** The app started on Context providers and moved off them in 0.2.0.
 The reason was concrete: with the Pomodoro ticking once a second, a single context at the top of
@@ -246,7 +228,7 @@ npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
 ```
 
-Everything else is checked by hand: the sync round trip (back up in one browser, restore in
+Everything else is checked by hand: the backup round trip (export in one browser, import in
 another), layout persistence across a reload, and the gamification widgets reacting to a finished
 task. [`FEATURES.md`](FEATURES.md) documents the system widget by widget.
 
