@@ -57,9 +57,9 @@ the architecture is considered ready for real use.
   invalid write is refused instead of being saved.
 
 ### Changed
-- **The Pixel Garden was redrawn.** The plant is now outlined pixel art on a beige card: an empty
-  white pot, a sprout, a round-leaved plant in a clay pot, a monstera in a blue-grey pot and a
-  tall bird-of-paradise with a flower, one per growth stage (0, 1-2, 3-4, 5-7, 8+ tasks done
+- **The Pixel Garden was redrawn.** The plant is now outlined pixel art on a beige card, always in
+  the same terracotta pot: an empty pot, a sprout, a round-leaved plant, a monstera and a tall
+  bird-of-paradise with a flower, one per growth stage (0, 1-2, 3-4, 5-7, 8+ tasks done
   today). The art is drawn by code (shaded leaves along a curve, veins, automatic outline), so it
   is tested and easy to tune, and no longer depends on theme colors.
 - **The ready-made setups were rebuilt.** Ten setups, most of them an empty task list and one

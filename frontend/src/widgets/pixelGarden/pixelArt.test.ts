@@ -26,12 +26,13 @@ describe("o desenho do jardim", () => {
     for (let i = 1; i < leaves.length; i++) expect(leaves[i], `estágio ${i}`).toBeGreaterThan(leaves[i - 1]);
   });
 
-  it("cada estágio tem vaso diferente, como na referência (branco, barro, azul-acinzentado)", () => {
-    const hasPot = (s: (string | null)[][], prefix: string) => count(s, (k) => k.startsWith(prefix)) > 0;
-    expect(hasPot(sprites[1], "W")).toBe(true);
-    expect(hasPot(sprites[2], "T")).toBe(true);
-    expect(hasPot(sprites[3], "B")).toBe(true);
-    expect(hasPot(sprites[4], "W")).toBe(true);
+  it("o vaso é sempre o marrom de barro, em todos os estágios", () => {
+    for (const [stage, sprite] of sprites.entries()) {
+      expect(count(sprite, (k) => /^T[1-3]$/.test(k)), `estágio ${stage}`).toBeGreaterThan(20);
+      expect(count(sprite, (k) => /^[WB][1-3]$/.test(k)), `estágio ${stage}`).toBe(0);
+    }
+    const pots = sprites.map((s) => s.slice(36).map((row) => row.join(",")).join("|"));
+    expect(new Set(pots).size).toBe(1); // o corpo do vaso (abaixo da terra e das hastes) é idêntico
   });
 
   it("o desenho todo tem contorno: nenhuma folha encosta no vazio", () => {

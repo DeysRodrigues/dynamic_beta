@@ -12,11 +12,7 @@ export type Grid = Pixel[][];
 export const PALETTE: Record<string, string> = {
   // leaves, light to dark, and their outline
   L1: "#dff08a", L2: "#b4d94c", L3: "#7fb83e", L4: "#4f8f36", L5: "#2f6a30", LO: "#1f4a2a",
-  // white pot
-  W1: "#fbfaf4", W2: "#dedfe2", W3: "#aeb3be", PO: "#383c4b",
-  // grey-blue pot
-  B1: "#c9d4e0", B2: "#9aabbf", B3: "#6c7d95",
-  // terracotta pot
+  // the terracotta pot
   T1: "#e39a80", T2: "#bf6e5e", T3: "#8c4b47", TO: "#4a2a2d",
   // soil
   S1: "#6b4a3a", S2: "#46302a",
@@ -120,16 +116,9 @@ function leaf(grid: Grid, o: LeafOptions) {
   }
 }
 
-type Shades = [light: string, mid: string, dark: string];
-const POTS: Record<"white" | "blue" | "clay", Shades> = {
-  white: ["W1", "W2", "W3"],
-  blue: ["B1", "B2", "B3"],
-  clay: ["T1", "T2", "T3"],
-};
-
-/** A pot with a rim, a body that narrows toward the bottom and a bit of soil on top. */
-function pot(grid: Grid, cx: number, top: number, kind: keyof typeof POTS, w = 14, h = 9) {
-  const [light, mid, dark] = POTS[kind];
+/** The terracotta pot, the same at every stage: a rim, a body that narrows downward, soil on top. */
+function pot(grid: Grid, cx: number, top: number, w = 14, h = 9) {
+  const [light, mid, dark] = ["T1", "T2", "T3"];
   const left = cx - w / 2 - 1;
   const right = cx + w / 2;
 
@@ -167,7 +156,7 @@ function outline(grid: Grid) {
         const n = grid[y + dy]?.[x + dx];
         if (!n || n.endsWith("O")) continue;
         const family = n[0];
-        edge.push([x, y, family === "T" ? "TO" : family === "L" || family === "F" ? "LO" : "PO"]);
+        edge.push([x, y, family === "L" || family === "F" ? "LO" : "TO"]);
         break;
       }
     }
@@ -185,20 +174,20 @@ function drawStage(stage: number): Grid {
 
   switch (stage) {
     case 0: {
-      pot(g, CX, POT_TOP, "white");
+      pot(g, CX, POT_TOP);
       // a small mound of fresh soil
       for (let x = CX - 4; x <= CX + 4; x++) put(g, x, POT_TOP - 1, x < CX ? "S1" : "S2");
       for (let x = CX - 2; x <= CX + 2; x++) put(g, x, POT_TOP - 2, "S1");
       break;
     }
     case 1: {
-      pot(g, CX, POT_TOP, "white");
+      pot(g, CX, POT_TOP);
       leaf(g, { x: bx, y: by, angle: -14, bend: -55, stem: 4, len: 7, wid: 2.4 });
       leaf(g, { x: bx, y: by, angle: 14, bend: 55, stem: 5, len: 7, wid: 2.4 });
       break;
     }
     case 2: {
-      pot(g, CX, POT_TOP, "clay");
+      pot(g, CX, POT_TOP);
       leaf(g, { x: bx, y: by, angle: -36, bend: -50, stem: 6, len: 9, wid: 3.4 });
       leaf(g, { x: bx, y: by, angle: 36, bend: 50, stem: 6, len: 9, wid: 3.4 });
       leaf(g, { x: bx, y: by, angle: -14, bend: -34, stem: 10, len: 9, wid: 3.6 });
@@ -207,7 +196,7 @@ function drawStage(stage: number): Grid {
       break;
     }
     case 3: {
-      pot(g, CX, POT_TOP, "blue");
+      pot(g, CX, POT_TOP);
       leaf(g, { x: bx, y: by, angle: -46, bend: -62, stem: 5, len: 12, wid: 5, slits: true });
       leaf(g, { x: bx, y: by, angle: 46, bend: 62, stem: 5, len: 12, wid: 5, slits: true });
       leaf(g, { x: bx, y: by, angle: -20, bend: -40, stem: 11, len: 12, wid: 5, slits: true });
@@ -216,7 +205,7 @@ function drawStage(stage: number): Grid {
       break;
     }
     default: {
-      pot(g, CX, POT_TOP, "white");
+      pot(g, CX, POT_TOP);
       // the flower: a thin stem rising to a bird-of-paradise crest, behind the leaves
       line(g, bx + 1, by, bx + 10, by - 20, "L5");
       for (const [dx, dy, key] of [
