@@ -42,34 +42,8 @@ import { cn } from "@/lib/utils";
 import ShinyText from "@/components/landing/ShinyText";
 
 import LayoutManagerModal from "./modals/LayoutManagerModal";
+import { widgetRegistry } from "@/widgets/registry";
 
-
-// --- LAZY LOADING ---
-const ProgressBox = React.lazy(() => import("./boxes/ProgressBox"));
-const MetaTagsBox = React.lazy(() => import("./boxes/MetaTagsBox"));
-const PomodoroBox = React.lazy(() => import("./boxes/PomodoroBox"));
-const EmbeddedBox = React.lazy(() => import("./boxes/EmbeddedBox"));
-const TagsBox = React.lazy(() => import("./boxes/TagsBox"));
-const BoxTask = React.lazy(() => import("./boxes/BoxTask"));
-const NotepadBox = React.lazy(() => import("./boxes/NotepadBox"));
-const HabitTrackerBox = React.lazy(() => import("./boxes/HabitTrackerBox"));
-const MiniCalendarBox = React.lazy(() => import("./boxes/MiniCalendarBox"));
-const PixelGardenBox = React.lazy(() => import("./boxes/PixelGardenBox"));
-const ThemeBox = React.lazy(() => import("./boxes/ThemeBox"));
-const RpgProfileBox = React.lazy(() => import("./boxes/RpgProfileBox"));
-const BookTrackerBox = React.lazy(() => import("./boxes/BookTrackerBox"));
-const MonthlyGoalsBox = React.lazy(() => import("./boxes/MonthlyGoalsBox"));
-const AutomationBox = React.lazy(() => import("./boxes/AutomationBox"));
-const QuickWorkoutBox = React.lazy(() => import("./boxes/QuickWorkoutBox"));
-const CozyLibraryBox = React.lazy(() => import("./boxes/CozyLibraryBox"));
-const CountdownBox = React.lazy(() => import("./boxes/CountdownBox"));
-const CodeSnippetBox = React.lazy(() => import("./boxes/CodeSnippetBox"));
-const QuickLinksBox = React.lazy(() => import("./boxes/QuickLinksBox"));
-const ThreeFrogsBox = React.lazy(() => import("./boxes/ThreeFrogsBox"));
-const ProjectOverviewBox = React.lazy(() => import("./boxes/ProjectOverviewBox"));
-const RiskTrackerBox = React.lazy(() => import("./boxes/RiskTrackerBox"));
-const PresenceCalendarBox = React.lazy(() => import("./boxes/PresenceCalendarBox"));
-const ActivityGoalsBox = React.lazy(() => import("./boxes/ActivityGoalsBox"));
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -579,61 +553,10 @@ export default function Dashboard() {
   };
 
   const renderBox = (id: string) => {
-    const type = id.split("-")[0];
-    switch (type) {
-      case "tasks":
-        return <BoxTask />;
-      case "progress":
-        return <ProgressBox />;
-      case "metatags":
-        return <MetaTagsBox />;
-      case "pomodoro":
-        return <PomodoroBox />;
-      case "tags":
-        return <TagsBox />;
-      case "embedded":
-        return <EmbeddedBox id={id} />;
-      case "notepad":
-        return <NotepadBox id={id} />;
-      case "habit":
-        return <HabitTrackerBox id={id} />;
-      case "garden":
-        return <PixelGardenBox />;
-      case "theme":
-        return <ThemeBox />;
-      case "rpg":
-        return <RpgProfileBox />;
-      case "books":
-        return <BookTrackerBox id={id} />;
-      case "goals":
-        return <MonthlyGoalsBox id={id} />;
-      case "auto":
-        return <AutomationBox id={id} />;
-      case "workout":
-        return <QuickWorkoutBox />;
-      case "calendar":
-        return <MiniCalendarBox />;
-      case "library":
-        return <CozyLibraryBox id={id} />;
-      case "countdown":
-        return <CountdownBox id={id} />;
-      case "snippet":
-        return <CodeSnippetBox id={id} />;
-      case "quicklinks":
-        return <QuickLinksBox id={id} />;
-      case "risk":
-        return <RiskTrackerBox id={id} />;
-      case "presence":
-        return <PresenceCalendarBox id={id} />;
-      case "activity":
-        return <ActivityGoalsBox id={id} />;
-      case "three_frogs":
-        return <ThreeFrogsBox id={id} />;
-      case "project_overview":
-        return <ProjectOverviewBox projectId={activeProjectId!} />;
-      default:
-        return null;
-    }
+    const widget = widgetRegistry[id.split("-")[0]];
+    if (!widget) return null;
+    const Widget = widget.component;
+    return <Widget id={id} projectId={activeProjectId} />;
   };
 
   if (!activeWorkspace) {
