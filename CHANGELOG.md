@@ -46,6 +46,11 @@ the architecture is considered ready for real use.
   invalid write is refused instead of being saved.
 
 ### Changed
+- **The interface has no outlines.** Cards, menus, modals, inputs and tags are separated by
+  filled surfaces and shadow instead of borders, divider lines and dashed or dotted frames.
+  Selection is shown by a ring or a tint, and the "nothing here yet" screens (projects, frogs,
+  layout models) share one filled `EmptyState`. Keyboard focus rings stay. A test fails if a
+  border, divider or dashed frame comes back.
 - **Code comments are in English** now, matching the code, the commits and the READMEs. Stale
   markers ("new", "added", "fix" notes left from past edits) were removed instead of translated,
   and the task text grammar got a proper doc comment. The interface stays in Portuguese.

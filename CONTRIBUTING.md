@@ -34,6 +34,14 @@ commit should still build.
 **Subject only, no body.** If the subject cannot say it, the change is too big and should be
 two commits.
 
+## Interface
+
+No outlines: no borders, no divider lines, no dashed or dotted frames. Separate things with a
+filled surface (`bg-current/5`), spacing and shadow, and show a selection with a ring or a tint.
+Keyboard focus rings are kept. Use `EmptyState` for "nothing here yet". `src/design.test.ts`
+enforces this and lists the few places where a line is part of a drawing or of the user's own
+content.
+
 ## Branches
 
 `main` is what Vercel publishes. Nothing is pushed to it directly.
