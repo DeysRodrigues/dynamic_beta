@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface UserState {
   name: string;
@@ -20,6 +21,6 @@ export const useUserStore = create<UserState>()(
       setSubtitle: (subtitle) => set({ subtitle }),
       setAvatar: (avatar) => set({ avatar }),
     }),
-    { name: "user-profile-storage" }
+    { ...persistConfig(PERSISTED.userProfile) }
   )
 );
