@@ -4,6 +4,8 @@ import { immer } from "zustand/middleware/immer";
 import type { Project } from "@/types/Project";
 import type { Layouts } from "react-grid-layout";
 import { persistConfig, PERSISTED } from "@/persistence/registry";
+import { getDefaultHeight } from "@/widgets/registry";
+import { addBoxToLayouts } from "@/utils/layout";
 
 interface ProjectState {
   projects: Project[];
@@ -31,32 +33,6 @@ interface ProjectActions {
   addBoxToProject: (projectId: string, type: string) => void;
   removeBoxFromProject: (projectId: string, boxId: string) => void;
 }
-
-const WIDGET_HEIGHTS: Record<string, number> = {
-  project_overview: 5,
-  embedded: 3,
-  calendar: 3,
-  tasks: 3,
-  pomodoro: 3,
-  notepad: 4,
-  goals: 4,
-  garden: 4,
-  habit: 3,
-  rpg: 3,
-  books: 3,
-  auto: 3,
-  workout: 3,
-  library: 3,
-  theme: 2,
-  snippet: 3,
-  quicklinks: 3,
-  risk: 4,
-  presence: 4,
-  activity: 4,
-  default: 3,
-};
-
-const COLS = { lg: 4, md: 2, sm: 1 };
 
 export const useProjectStore = create<ProjectState & ProjectActions>()(
   immer(
@@ -168,44 +144,11 @@ export const useProjectStore = create<ProjectState & ProjectActions>()(
             if (!project) return;
 
             const newId = `${type}-${crypto.randomUUID().slice(0, 8)}`;
-            const height = WIDGET_HEIGHTS[type] || WIDGET_HEIGHTS.default;
+            const height = getDefaultHeight(type);
 
             project.boxes.push(newId);
 
-            (["lg", "md", "sm"] as const).forEach((bp) => {
-              if (!project.layouts[bp]) project.layouts[bp] = [];
-              const currentLayout = project.layouts[bp];
-              const numCols = COLS[bp];
-              const colY = new Array(numCols).fill(0);
-
-              currentLayout.forEach((item) => {
-                const bottom = (item.y || 0) + (item.h || 1);
-                for (
-                  let i = item.x || 0;
-                  i < (item.x || 0) + (item.w || 1) && i < numCols;
-                  i++
-                ) {
-                  if (bottom > colY[i]) colY[i] = bottom;
-                }
-              });
-
-              let targetX = 0;
-              let minY = Infinity;
-              for (let i = 0; i < numCols; i++) {
-                if (colY[i] < minY) {
-                  minY = colY[i];
-                  targetX = i;
-                }
-              }
-
-              project.layouts[bp].push({
-                i: newId,
-                x: targetX,
-                y: Infinity,
-                w: 1,
-                h: height,
-              });
-            });
+            addBoxToLayouts(project.layouts, newId, height);
           }),
 
         removeBoxFromProject: (projectId, boxId) =>
