@@ -20,6 +20,40 @@ the architecture is considered ready for real use.
 
 ## [Unreleased]
 ### Added
+- **Docker guide** (`docs/DOCKER.md` and `docs/DOCKER.pt-BR.md`): `.env` variables, backup and
+  restore, updating, cloud server with https, common problems.
+- **What's new in the bell** now announces the account and database update and links to a new Wiki
+  section about it. The Conta page warns that the login lasts 14 days.
+- **"Restaurar widgets" on the Conta page.** Puts the current panel back to the default widgets and
+  layout without touching tasks, theme or the account, so there is no need to wipe all the account
+  data just to fix the layout. The danger actions now sit in their own "Seus dados" block.
+- **An optional account and a database.** The app still works exactly as before with only the
+  browser's storage, and now a person can also connect it to a DynaBox server they run themselves.
+  The choice is made inside the app, on the new **Conta** page: type the server's address, press
+  "Testar conexão", then sign in or create an account. The page is only about the account: the
+  sync status, "Sair" (back to local-only, deleting nothing) and "Apagar dados da conta" (removes
+  only the server's copy). How to run your own server is a section of the Wiki ("Ter o seu
+  servidor", with copyable commands), and the page links to it. A short summary also sits in the
+  settings drawer.
+- **The account page shows what is on the server.** A list of what has been sent (by a friendly
+  name such as "Perfil" or "Tarefas", with its version and how long ago) and how many changes are
+  still waiting to be sent, so you can see the sync working instead of trusting it.
+- **The sync keeps the browser as the source of truth.** The app reads and writes `localStorage`
+  as always, so it stays instant and works offline; a sync engine sends what changed a moment
+  later, naming the revision it last saw so the server can refuse a stale write, and brings back what
+  changed on other devices (when the tab is shown again, when the network returns and every
+  minute). If the same data changed in both places the app asks which version to keep, key by key,
+  and overwrites nothing before the answer. A browser that only holds default values is treated as
+  empty, so connecting a fresh browser does not raise a pointless conflict.
+- **The server (`backend/`).** Fastify, PostgreSQL 17 and Drizzle: accounts with argon2id
+  passwords and signed login tokens, rate-limited sign-in, and one saved JSON document per user and
+  key with an atomic revision check. 77 tests run against a real PostgreSQL started in Docker.
+- **One command to run all of it:** `docker compose up --build` starts the app (nginx), the API
+  and the database; only the app's port is exposed. `scripts/smoke.sh` checks a running server
+  end to end, and CI builds the containers and runs it on every change.
+- The published site stays local-only until the person points it at their own server (the server
+  has a `CORS_ORIGINS` setting for that). The screen detects the cases a browser blocks (an https
+  site calling an http server that is not `localhost`) and says so before trying.
 - **The storage can now be slow or remote without losing data.** Every store saves through one
   adapter (`localStorage` by default, still instant), and the app was proven against one that
   answers after half a second. Two rules make that safe: a write to a key that has not been read
@@ -131,6 +165,12 @@ the architecture is considered ready for real use.
   request to `develop` and `main`.
 
 ### Fixed
+- The Reset button in Personalizar now says, while signed in, that it only clears this browser and
+  that the server copy comes back on reload.
+- **The Pomodoro no longer writes to storage once a second while it runs.** It saved the time left
+  at every tick, which, signed in, sent a request to the server every second (153 in seven
+  minutes). The time left is now worked out from the end time and only saved when the timer is
+  paused. A timer that was running when the page closed comes back with the right time at once.
 - Reading the saved data again with widgets on screen (after a login, say) now shows the data
   that came, instead of leaving widgets with what they had.
 - **Widgets of a new project came out with the wrong size.** The project was created with

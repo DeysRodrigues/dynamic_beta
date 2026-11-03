@@ -19,7 +19,7 @@ O DynaBox opera como um **Local-First Web App**.
 - **Frontend:** React + TypeScript + Tailwind CSS.
 - **Estado:** Zustand com persistência em `localStorage`.
 - **Layout:** React-Grid-Layout para interatividade drag-and-drop.
-- **Privacidade:** Sem banco de dados centralizado; sincronização opcional via Google Drive API.
+- **Privacidade:** por padrão tudo fica só no navegador. A conta e a cópia em banco de dados são opcionais e rodam num servidor que a própria pessoa liga (Docker).
 
 ---
 
@@ -42,9 +42,13 @@ Controle total sobre o visual:
 - **Visual FX:** Glassmorphism, desfoque de fundo e ajuste de brilho.
 - **Color Sync:** Sincronização de cores primárias entre todos os componentes da UI.
 
-### 2.4 Cloud Sync
-Integração direta com Google Drive.
-- Os dados são empacotados em um arquivo JSON criptografado na pasta `AppData` do Google Drive do usuário.
+### 2.4 Conta e sincronização (opcional)
+Um servidor DynaBox (Fastify + PostgreSQL), que a pessoa roda com `docker compose up`, guarda a conta e uma cópia dos dados.
+- **Escolha na própria tela:** a página **Conta** (`/account`) conecta o app a um servidor (endereço, testar conexão, entrar ou criar conta). Sem conectar, o app segue só com o `localStorage`.
+- **Local primeiro:** o app continua lendo e gravando no navegador (instantâneo e funciona offline); o servidor é uma cópia. Mudanças vão ao servidor poucos segundos depois, e as de outro aparelho chegam ao voltar para a aba, ao reconectar e a cada minuto.
+- **Conflito:** se a mesma coisa mudou nos dois lugares, o app pergunta qual versão manter, chave por chave. Não existe merge campo a campo.
+- **Sair** volta ao modo local sem apagar nada. **Apagar dados da conta** remove só a cópia do servidor.
+- O site publicado pode usar o servidor da própria pessoa (ver o README). O passo a passo para ligar um servidor está na Wiki do app, na seção "Ter o seu servidor".
 
 ---
 
