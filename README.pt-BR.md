@@ -39,13 +39,13 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Grade do painel: arrastar, redimensionar, adicionar, remover, múltiplos workspaces | funciona |
 | 25 widgets nativos renderizados na grade | funciona |
 | Widgets personalizados escritos em HTML, CSS e JS | funciona |
-| Motor de temas: 7 paletas, 18 papéis de parede, 10 setups prontos, mais cor livre | funciona |
+| Motor de temas: 7 paletas, 18 papéis de parede, 4 setups prontos (dev, estudo focado, estudo relax, semana de provas), mais cor livre | funciona |
 | Tarefas: entrada por script de texto, edição em lote, isolamento por workspace | funciona |
 | Planejador semanal com arrastar e soltar nativo e estatística por ciclo | funciona |
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 225 testes (markdown, parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
+| Testes automatizados | 266 testes (markdown, parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações, backup, e testes de render do dashboard e da sidebar) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -242,7 +242,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 225 testes
+npm run test      # vitest, 266 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as

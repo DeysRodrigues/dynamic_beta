@@ -39,13 +39,13 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Dashboard grid: drag, resize, add, remove, multiple workspaces | works |
 | 25 native widgets rendered in the grid | works |
 | Custom widgets written in HTML, CSS and JS | works |
-| Theme engine: 7 color palettes, 18 wallpapers, 10 ready setups, plus free color choice | works |
+| Theme engine: 7 color palettes, 18 wallpapers, 4 ready setups (dev, focused study, relaxed study, exam week), plus free color choice | works |
 | Tasks: text-script input, bulk edit, isolation per workspace | works |
 | Week planner with native drag and drop, per-cycle stats | works |
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 225 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
+| Automated tests | 266 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -238,7 +238,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 225 tests
+npm run test      # vitest, 266 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the

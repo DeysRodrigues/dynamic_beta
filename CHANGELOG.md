@@ -57,6 +57,16 @@ the architecture is considered ready for real use.
   invalid write is refused instead of being saved.
 
 ### Changed
+- **The ready-made setups were rebuilt.** Ten setups, most of them an empty task list and one
+  or two widgets (some pointing at widgets that do not exist, so they installed blank boxes),
+  became four that are complete from the first second: *Dev Workstation* (14 snippets for git,
+  docker, SQL and shell, three groups of docs and tools links, markdown notes, pomodoro, habit,
+  progress and lo-fi), *Estudo: Foco Total*, *Estudo Relax: Lo-fi e Livros* and *Semana de
+  Provas*. Each widget has a size that fits its content, and the layouts are generated, so they
+  never overlap on any screen size. The cards of the themes page list what each setup installs.
+- **Installing a setup no longer wipes the content of the widgets it does not include.** It
+  used to replace everything the widgets had saved, in every workspace and project; it now adds
+  to it.
 - **The interface has no outlines.** Cards, menus, modals, inputs and tags are separated by
   filled surfaces and shadow instead of borders, divider lines and dashed or dotted frames.
   Selection is shown by a ring or a tint, and the "nothing here yet" screens (projects, frogs,
