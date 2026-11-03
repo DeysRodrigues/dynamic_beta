@@ -28,6 +28,10 @@ export default defineConfig({
         // Library code changes far less often than the app, so splitting it keeps it cached
         // across deploys and lets the browser fetch the pieces in parallel.
         manualChunks(id: string) {
+          // Rollup's helper for CommonJS packages. Left alone it lands in whichever chunk uses it
+          // first, and React (a CommonJS package itself) then imports it back from the grid chunk,
+          // which imports React: a cycle that leaves React half-loaded and the page blank.
+          if (id.includes("commonjsHelpers")) return "react";
           if (!id.includes("node_modules")) return undefined;
           if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react";
           if (/node_modules\/(react-router|react-router-dom)\//.test(id)) return "router";
