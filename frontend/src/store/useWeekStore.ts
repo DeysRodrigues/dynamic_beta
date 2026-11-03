@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 export interface WeekGroup {
   id: string;
@@ -34,8 +35,7 @@ export const useWeekStore = create<WeekState>()(
       setActiveWeek: (id) => set({ activeWeekId: id }),
     }),
     {
-      name: "weeks-storage",
-      storage: createJSONStorage(() => localStorage),
+      ...persistConfig(PERSISTED.weeks),
     }
   )
 );
