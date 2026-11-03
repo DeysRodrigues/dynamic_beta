@@ -1,31 +1,6 @@
 import { useState } from "react";
 import { X, Download, Upload, Database, AlertTriangle, } from "lucide-react";
-import { STORAGE_KEYS } from "@/constants/storageKeys";
-
-// Lista de TODAS as chaves que o app usa para salvar dados
-const APP_KEYS = [
-  // Chaves definidas em constants
-  STORAGE_KEYS.DASHBOARD,
-  STORAGE_KEYS.TASKS,
-  STORAGE_KEYS.GOALS,
-  STORAGE_KEYS.TAGS,
-  STORAGE_KEYS.POMODORO,
-  
-  // Chaves definidas hardcoded nos stores
-  "layout-templates-storage",
-  "box-content-storage",
-  "custom-widgets-storage",
-  "weeks-storage",
-  "notification-storage",
-  "theme-storage",
-  "pomodoro-global-storage", // Do novo sistema global
-  "projects-storage",
-  "user-profile-storage",
-  "favorites-storage",
-  
-  // Chaves diretas de widgets
-  "w-water-cups"
-];
+import { createBackup, assertValidBackup, restoreBackup } from "@/persistence/backup";
 
 interface GeneralBackupModalProps {
   isOpen: boolean;
@@ -40,32 +15,9 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
   // --- FUNÇÃO DE EXPORTAR (BACKUP) ---
   const handleExport = () => {
     try {
-      const backupData: Record<string, unknown> = {};
-      
-      // 1. Coleta dados do LocalStorage
-      APP_KEYS.forEach(key => {
-        const item = localStorage.getItem(key);
-        if (item) {
-          try {
-            backupData[key] = JSON.parse(item);
-          } catch {
-            // Se não for JSON (ex: string pura), salva como está
-            backupData[key] = item;
-          }
-        }
-      });
+      const finalPayload = createBackup();
 
-      // 2. Metadados do Backup
-      const finalPayload = {
-        meta: {
-          app: "Dynamic Notes",
-          version: "0.5.0",
-          date: new Date().toISOString(),
-        },
-        data: backupData
-      };
-
-      // 3. Gera arquivo para download
+      // Gera arquivo para download
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(finalPayload));
       const downloadAnchorNode = document.createElement('a');
       downloadAnchorNode.setAttribute("href", dataStr);
@@ -99,21 +51,8 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
         if (typeof content === "string") {
           const parsed = JSON.parse(content);
 
-          // Validação básica
-          if (!parsed.meta || parsed.meta.app !== "Dynamic Notes" || !parsed.data) {
-            throw new Error("Arquivo inválido ou de outro aplicativo.");
-          }
-
-          // Limpa e Restaura
-          // Opcional: localStorage.clear(); // Se quiser limpar tudo antes (perigoso se tiver outras coisas no localhost)
-          
-          Object.entries(parsed.data).forEach(([key, value]) => {
-            if (typeof value === 'object') {
-              localStorage.setItem(key, JSON.stringify(value));
-            } else {
-              localStorage.setItem(key, String(value));
-            }
-          });
+          assertValidBackup(parsed);
+          restoreBackup(parsed);
 
           alert("Backup restaurado com sucesso! A página será recarregada.");
           window.location.reload(); // Força recarregar para os Stores pegarem os novos dados
