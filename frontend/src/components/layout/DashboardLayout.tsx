@@ -1,4 +1,4 @@
-import Sidebar from "./Sidebar";
+import Sidebar from "@/features/sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target } from "lucide-react";
 import { useThemeStore, getWallpaperStyle } from "@/store/useThemeStore";
