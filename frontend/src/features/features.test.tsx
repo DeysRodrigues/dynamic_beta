@@ -6,12 +6,6 @@ import DashboardPage from "./dashboard/DashboardPage";
 import Sidebar from "./sidebar/Sidebar";
 import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
 
-// react-grid-layout measures its container; jsdom has no layout, so give it a width.
-vi.mock("react-grid-layout", async () => {
-  const actual = await vi.importActual<typeof import("react-grid-layout")>("react-grid-layout");
-  return { ...actual, WidthProvider: <P,>(C: React.ComponentType<P>) => (props: P) => <C {...props} width={1200} /> };
-});
-
 const initial = useDashboardStore.getState();
 const active = () => selectActiveWorkspace(useDashboardStore.getState())!;
 
@@ -33,6 +27,13 @@ describe("DashboardPage", () => {
     expect(screen.getByText(/Bom dia|Boa tarde|Boa noite/)).toBeInTheDocument();
     expect(screen.getByText("Principal")).toBeInTheDocument();
     expect(screen.getByText("Adicionar")).toBeInTheDocument();
+  });
+
+  it("desenha os widgets do workspace na grade (nunca uma grade vazia)", () => {
+    const { container } = renderDashboard();
+    const items = container.querySelectorAll(".react-grid-item");
+    expect(items).toHaveLength(active().boxes.length);
+    expect(items.length).toBeGreaterThanOrEqual(4);
   });
 
   it("o menu Adicionar cria o widget no workspace ativo", async () => {
