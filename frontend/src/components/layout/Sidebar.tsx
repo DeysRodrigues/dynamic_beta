@@ -29,15 +29,6 @@ import {
   Sparkles,
   Droplets,
   SunMedium,
-
-  //icons para o drive
-
-  CloudUpload,
-  CloudDownload,
-  LogIn,
-  CheckCircle2,
-  RefreshCw, // Ícone para loading se quiser
-  Cloud
 } from "lucide-react";
 
 import PersonalizationModal from "./modals/PersonalizationModal";
@@ -47,7 +38,6 @@ import { useDashboardStore } from "@/store/useDashboardStore";
 import { useUserStore } from "@/store/useUserStore";
 import { cn } from "@/lib/utils";
 import NotificationBell from "./NotificationBell";
-import { useCloudSync } from "@/hooks/useCloudSync";
 
 // --- COLOR PICKER COMPONENT ---
 interface ColorPickerProps {
@@ -123,17 +113,6 @@ const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
     else document.body.style.removeProperty("font-family");
   }, [monospace]);
 
-  const {
-    isGoogleConnected,
-    syncStatus,
-    lastSync,
-    isLoading,
-    handleLogin,
-    handleCloudSave,
-    handleCloudLoad,
-    handleLogout
-  } = useCloudSync();
-
   const toggleDarkMode = () => {
     const isLight =
       backgroundColor === "#f9fafb" || backgroundColor === "#ffffff";
@@ -184,77 +163,6 @@ const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
         {/* Scroll Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-8">
 
-          {/* --- NOVA SEÇÃO: NUVEM & SYNC --- */}
-          <section className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-widest">
-                Nuvem & Backup
-              </h3>
-              {lastSync && (
-                <span className="text-[9px] text-white/30 font-mono">
-                  Último: {lastSync}
-                </span>
-              )}
-            </div>
-
-            {!isGoogleConnected ? (
-              <button
-                onClick={handleLogin}
-                className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-blue-600/20 hover:bg-blue-600 border border-blue-600/30 text-blue-100 hover:text-white font-bold text-xs transition-all shadow-lg hover:shadow-blue-900/50"
-              >
-                <LogIn size={16} /> Conectar Google Drive
-              </button>
-            ) : (
-              <div className="space-y-3 bg-white/5 p-3 rounded-xl border border-white/5">
-                <div className="flex items-center gap-2 text-xs font-medium px-1 text-green-400">
-                  {isLoading ? <RefreshCw size={12} className="animate-spin" /> : <CheckCircle2 size={12} />}
-                  {syncStatus}
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-
-                  {/* BOTÃO DE SALVAR */}
-                  <button
-                    onClick={handleCloudSave}
-                    disabled={isLoading}
-                    className="flex flex-col items-center gap-2 p-3 rounded-lg bg-white/5 hover:bg-blue-500/20 border border-white/5 hover:border-blue-500/50 transition group disabled:opacity-50"
-                  >
-                    <CloudUpload size={20} className="text-white/60 group-hover:text-blue-400 mb-1" />
-                    <span className="text-[10px] uppercase font-bold text-white/60 group-hover:text-blue-100">
-                      Salvar
-                    </span>
-                  </button>
-
-                  {/* BOTÃO DE BAIXAR */}
-                  <button
-                    onClick={handleCloudLoad}
-                    disabled={isLoading}
-                    className="flex flex-col items-center gap-2 p-3 rounded-lg bg-white/5 hover:bg-green-500/20 border border-white/5 hover:border-green-500/50 transition group disabled:opacity-50"
-                  >
-                    <CloudDownload size={20} className="text-white/60 group-hover:text-green-400 mb-1" />
-                    <span className="text-[10px] uppercase font-bold text-white/60 group-hover:text-green-100">
-                      Baixar
-                    </span>
-                  </button>
-
-                  {/* BOTÃO DE LOGOUT */}
-                  <button
-                    onClick={handleLogout}
-                    className="w-full mt-2 text-[10px] text-red-400/60 hover:text-red-400 hover:underline text-center transition"
-                  >
-                    Desconectar conta Google
-                  </button>
-                </div>
-
-                <p className="text-[9px] text-white/30 text-center leading-tight">
-                  Salva em <span className="font-mono text-white/50">dynabox_backup_v1.json</span> no seu Drive.
-                </p>
-              </div>
-            )}
-          </section>
-          {/* -------------------------------- */}
-
-          {/* 1. Tema Rápido (Seu código original continua daqui para baixo) */}
           <section className="space-y-3">
             <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-widest">
               Ambiente
@@ -567,7 +475,6 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
     },
   ];
   const menuItems = items && items.length > 0 ? items : defaultItems;
-  const { isGoogleConnected, handleLogin } = useCloudSync();
 
   const sidebarClasses = isFocusMode
     ? "-translate-x-full w-0 opacity-0 overflow-hidden"
@@ -615,24 +522,7 @@ const Sidebar = React.memo(({ items }: SidebarProps) => {
           {/* 1. PERFIL DO USUÁRIO */}
           <div className="flex flex-col items-center gap-4 w-full mb-8 pt-2">
          
-            <div className="w-full flex justify-between -mr-2">
-                 {/* NUVEM FOFINHA */}
-              <button
-                onClick={!isGoogleConnected ? handleLogin : () => setShowSettings(true)}
-                title={isGoogleConnected ? "Salvo na Nuvem" : "Desconectado"}
-                className="p-2 rounded-full hover:bg-white/10 transition group/cloud"
-              >
-                <Cloud 
-                  size={20} 
-                  // Lógica de cores: Verde se conectado, Vermelho se não.
-                  className={cn(
-                    "transition-all duration-500",
-                    isGoogleConnected 
-                      ? "text-green-400 fill-green-400/20 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]" 
-                      : "text-red-400/80 fill-red-400/10 group-hover:text-red-400"
-                  )} 
-                />
-              </button>
+            <div className="w-full flex justify-end -mr-2">
               <NotificationBell />
             </div>
 
