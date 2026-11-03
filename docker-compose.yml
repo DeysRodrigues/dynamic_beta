@@ -1,0 +1,36 @@
+# DynaBox with an account and a database: `docker compose up --build`, then open
+# http://localhost:8080. Without this, the app works on its own with the browser's storage.
+name: dynabox
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dynabox
+      POSTGRES_DB: dynabox
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (see .env.example)}
+    volumes:
+      - dynabox_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dynabox -d dynabox"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # No `ports`: the database is only reachable from the other containers of this project.
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://dynabox:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/dynabox
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env (see .env.example)}
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  # `docker compose down -v` deletes this volume, and with it every account and saved document.
+  dynabox_pgdata:
