@@ -3,31 +3,10 @@ import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import type { Layouts } from "react-grid-layout";
 import { persistConfig, PERSISTED } from "@/persistence/registry";
+import { getDefaultHeight } from "@/widgets/registry";
+import { addBoxToLayouts } from "@/utils/layout";
 
 // --- CONFIGURAÇÃO ---
-
-const WIDGET_HEIGHTS: Record<string, number> = {
-  embedded: 3,
-  calendar: 3,
-  tasks: 3,
-  pomodoro: 3,
-  notepad: 4,
-  goals: 4,
-  garden: 4,
-  habit: 3,
-  rpg: 3,
-  books: 3,
-  auto: 3,
-  workout: 3,
-  library: 3,
-  theme: 2,
-  snippet: 3,
-  quicklinks: 3,
-  risk: 4,
-  presence: 4,
-  activity: 4,
-  default: 3,
-};
 
 const DEFAULT_BOXES = ["tasks", "progress", "pomodoro", "tags"];
 
@@ -54,8 +33,6 @@ const DEFAULT_LAYOUTS: Layouts = {
 
 const generateId = (type: string) =>
   `${type}-${Math.random().toString(36).substr(2, 9)}`;
-
-const COLS = { lg: 4, md: 2, sm: 1 };
 
 // --- TYPES ---
 
@@ -182,44 +159,11 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
               if (!ws) return;
 
               const newId = generateId(type);
-              const height = WIDGET_HEIGHTS[type] || WIDGET_HEIGHTS.default;
+              const height = getDefaultHeight(type);
 
               ws.boxes.push(newId);
 
-              (["lg", "md", "sm"] as const).forEach((bp) => {
-                if (!ws.layouts[bp]) ws.layouts[bp] = [];
-                const currentLayout = ws.layouts[bp];
-                const numCols = COLS[bp];
-                const colY = new Array(numCols).fill(0);
-
-                currentLayout.forEach((item) => {
-                  const bottom = (item.y || 0) + (item.h || 1);
-                  for (
-                    let i = item.x || 0;
-                    i < (item.x || 0) + (item.w || 1) && i < numCols;
-                    i++
-                  ) {
-                    if (bottom > colY[i]) colY[i] = bottom;
-                  }
-                });
-
-                let targetX = 0;
-                let minY = Infinity;
-                for (let i = 0; i < numCols; i++) {
-                  if (colY[i] < minY) {
-                    minY = colY[i];
-                    targetX = i;
-                  }
-                }
-
-                ws.layouts[bp].push({
-                  i: newId,
-                  x: targetX,
-                  y: Infinity,
-                  w: 1,
-                  h: height,
-                });
-              });
+              addBoxToLayouts(ws.layouts, newId, height);
 
               state.boxes = ws.boxes;
               state.layouts = ws.layouts;
