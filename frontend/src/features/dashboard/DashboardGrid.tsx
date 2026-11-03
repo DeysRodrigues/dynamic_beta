@@ -3,7 +3,9 @@ import "react-resizable/css/styles.css";
 
 import { Responsive, WidthProvider, type Layouts } from "react-grid-layout";
 import type { BoxRef } from "@/types/Box";
-import { widgetRegistry } from "@/widgets/registry";
+import { useMemo } from "react";
+import { getDefaultHeight, widgetRegistry } from "@/widgets/registry";
+import { ensureLayouts } from "@/utils/layout";
 import { BoxFrame } from "./BoxFrame";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -28,11 +30,17 @@ export function DashboardGrid({
   onLayoutChange,
   onRemoveBox,
 }: DashboardGridProps) {
+  // A box with no layout entry would be drawn at the minimum size, so fill the gaps. This also
+  // repairs projects saved before they got proper layouts; the grid reports the result back.
+  // A box whose type has no widget (an old preset, say) is skipped, as it always was.
+  const renderable = useMemo(() => boxes.filter((box) => widgetRegistry[box.type]), [boxes]);
+  const fullLayouts = useMemo(() => ensureLayouts(renderable, layouts, getDefaultHeight), [renderable, layouts]);
+
   return (
     <ResponsiveGridLayout
       key={boardKey}
       className="layout"
-      layouts={layouts}
+      layouts={fullLayouts}
       breakpoints={{ lg: 1024, md: 768, sm: 480, xs: 0 }}
       cols={{ lg: 4, md: 2, sm: 1, xs: 1 }}
       rowHeight={100}
@@ -44,8 +52,7 @@ export function DashboardGrid({
       margin={[12, 12]}
       containerPadding={[0, 0]}
     >
-      {/* A box whose type has no widget (an old preset, say) is skipped, as it always was. */}
-      {boxes.filter((box) => widgetRegistry[box.type]).map((box) => (
+      {renderable.map((box) => (
         <div key={box.id}>
           <BoxFrame box={box} projectId={projectId} editMode={editMode} onRemove={onRemoveBox} />
         </div>

@@ -5,6 +5,8 @@ import type { Project, ProjectGoal, DailyRoutine } from "@/types/Project";
 import { cn } from "@/lib/utils";
 import { nativeWidgets } from "@/data/widgetItems";
 import { createBox } from "@/utils/BoxFactory";
+import { ensureLayouts } from "@/utils/layout";
+import { getDefaultHeight } from "@/widgets/registry";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
 
 interface ProjectModalProps {
@@ -80,6 +82,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
         startDate: startDate || undefined,
         endDate: endDate || undefined,
         boxes: updatedBoxes,
+        layouts: ensureLayouts(updatedBoxes, projectToEdit.layouts, getDefaultHeight),
         goals: updatedGoals,
         routines: updatedRoutines,
       });
@@ -96,14 +99,15 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
         completedDates: []
       }));
 
+      const newBoxes = selectedBoxes.map(createBox);
       const newProject: Project = {
         id: crypto.randomUUID(),
         name,
         description,
         startDate: startDate || undefined,
         endDate: endDate || undefined,
-        layouts: { lg: [], md: [], sm: [] },
-        boxes: selectedBoxes.map(createBox),
+        layouts: ensureLayouts(newBoxes, undefined, getDefaultHeight),
+        boxes: newBoxes,
         goals: projectGoals,
         routines: projectRoutines,
         createdAt: new Date().toISOString(),

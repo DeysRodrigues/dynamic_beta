@@ -111,3 +111,28 @@ describe("Sidebar", () => {
     expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
   });
 });
+
+import { DashboardGrid } from "./dashboard/DashboardGrid";
+
+describe("DashboardGrid com layout incompleto", () => {
+  it("um projeto salvo com layouts vazios ainda mostra os widgets no tamanho certo", () => {
+    const boxes = [{ id: "notepad-a", type: "notepad" }, { id: "tasks-b", type: "tasks" }];
+    const { container } = render(
+      <MemoryRouter>
+        <DashboardGrid
+          boardKey="p1"
+          layouts={{ lg: [], md: [], sm: [] }}
+          boxes={boxes}
+          projectId="p1"
+          editMode={false}
+          onLayoutChange={() => {}}
+          onRemoveBox={() => {}}
+        />
+      </MemoryRouter>
+    );
+    const items = [...container.querySelectorAll<HTMLElement>(".react-grid-item")];
+    expect(items).toHaveLength(2);
+    // notepad has 4 rows (4 * 100 + 3 * 12 gaps = 436px), tasks 3 rows (324px): never the 1-row minimum
+    expect(items.map((i) => i.style.height).sort()).toEqual(["324px", "436px"]);
+  });
+});
