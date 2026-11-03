@@ -45,7 +45,7 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 56 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard, registro de persistência e backup) |
+| Testes automatizados | 72 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, registro de persistência e backup) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -73,11 +73,11 @@ frontend/src
 │   ├── tasks/          editores de tarefa, em lote e individual
 │   ├── landing/        componentes visuais usados pelo /intro
 │   └── ui/             primitivos compartilhados: button, TaskItem, CustomDatePicker
-├── widgets/            páginas avulsas embutidas por iframe (/w/*)
+├── widgets/            o registro de widgets (boxes/<id>.tsx) e as páginas de iframe (/w/*)
 ├── store/              14 stores do Zustand
 ├── hooks/              useWeekPlanner
 ├── utils/              parse de tarefa, helpers de data
-├── data/               catálogo de widget, catálogo de tema, notas de versão no app
+├── data/               catálogo de tema, lista de widgets de iframe, notas de versão no app
 └── types/              Task, Project, Theme
 ```
 
@@ -229,7 +229,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 56 testes
+npm run test      # vitest, 72 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as
