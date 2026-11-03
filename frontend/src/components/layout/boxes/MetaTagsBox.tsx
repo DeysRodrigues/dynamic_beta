@@ -67,14 +67,14 @@ export default function MetaTagsBox() {
           </div>
         ) : (
           goals.map((goal, index) => {
-            // Busca o tempo completado (agora somando Tag + Tagzona)
+            // Looks up the completed time (summing the tag and its tag group)
             const completedMinutes = completedTimeByTag[goal.tag.toLowerCase()] || 0;
             const completedHours = Number((completedMinutes / 60).toFixed(1));
             const percentage = Math.min((completedHours / goal.hours) * 100, 100);
 
             return (
               <div 
-                key={index} 
+                key={goal.tag} 
                 className="bg-current/5 p-3 rounded-xl hover:bg-current/10 transition-all"
               >
                 <div className="flex justify-between items-center mb-1">
