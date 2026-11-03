@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Layouts } from "react-grid-layout";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 // Define a estrutura do Tema salvo (Cores, Papel de parede, etc)
 export interface SavedThemeState {
@@ -72,6 +73,6 @@ export const useLayoutTemplateStore = create<LayoutTemplateState>()(
           ],
         })),
     }),
-    { name: "layout-templates-storage" }
+    { ...persistConfig(PERSISTED.layoutTemplates) }
   )
 );
