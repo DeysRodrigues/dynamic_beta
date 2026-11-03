@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import { Bell, X } from "lucide-react";
 import { APP_UPDATES } from "@/data/updates";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { useShallow } from "zustand/react/shallow";
 
 export default function NotificationBell() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -114,10 +116,13 @@ export default function NotificationBell() {
             {/* DYNAMIC FOOTER */}
             <div className="p-3 bg-black/20 text-center">
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  if (APP_UPDATES.link) navigate(APP_UPDATES.link.to);
+                }}
                 className="text-[10px] font-bold text-purple-400 hover:text-purple-300 uppercase tracking-widest transition"
               >
-                {APP_UPDATES.footer || "FECHAR"}
+                {APP_UPDATES.link ? APP_UPDATES.link.label : APP_UPDATES.footer || "FECHAR"}
               </button>
             </div>
           </div>,

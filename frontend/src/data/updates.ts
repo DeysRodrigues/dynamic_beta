@@ -1,26 +1,24 @@
 export const APP_UPDATES = {
-  version: "0.11.0",
-  date: "03 de Junho",
+  version: "0.13.0",
+  date: "Novembro de 2026",
 
-  // 1. Today's emoji
-  emoji: "✨",
+  emoji: "☁️",
 
-  // 2. Catchy title
-  title: "Interface Fluida & UX Premium",
+  title: "Conta e banco de dados (opcional)",
 
-  // 3. O recado principal
   message:
-    "Refinamos cada detalhe! O Dyna agora está mais elegante, intuitivo e livre de distrações visuais.",
+    "A maior atualização do Dyna: agora você pode ter uma conta e uma cópia dos seus dados num banco, rodando no seu próprio Docker. Se preferir, continua tudo só no navegador.",
 
-  // 4. As novidades explicadas de forma leve
   items: [
-    "📅 Novo DatePicker: Substituímos os seletores de data antigos por um calendário customizado, compacto e totalmente integrado ao seu tema.",
-    "🚀 Planner Redesenhado: Removemos todas as 'linhas' pesadas do cronograma semanal, trazendo um visual glassmorphism puro e moderno.",
-    "🎨 Cores ao Vivo: O seletor de cores da sidebar agora atualiza o tema instantaneamente enquanto você arrasta, sem fechar sozinho!",
-    "🔍 Expansão de Tarefas: Clique em uma tarefa longa para expandi-la e ler o conteúdo completo. Nada de textos cortados!",
-    "🏗️ Workspaces & Abas: Redenhamos as abas para separar claramente o que é Workspace e o que é Projeto, com novos indicadores visuais.",
+    "🗄️ Dois modos: só no navegador (como sempre) ou com conta e banco PostgreSQL. A escolha é feita dentro do app, em Conta.",
+    "🔄 Sincronização entre aparelhos, com conflitos resolvidos por você e funcionamento offline.",
+    "🐳 Um comando sobe tudo: app, API e banco com docker compose.",
+    "🧹 Em Conta, o novo 'Restaurar widgets' devolve o painel ao padrão sem apagar seus dados.",
+    "⏱️ O login dura 14 dias; depois disso o app volta ao modo local sem perder nada.",
   ],
 
-  // 5. Final button
-  footer: "Experimente o novo visual!",
+  footer: "Ver como funciona",
+
+  /** Where the bell sends the person to read more. */
+  link: { to: "/wiki?secao=news", label: "Ler na Wiki" },
 };

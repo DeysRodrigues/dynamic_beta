@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { 
   Book, 
   Search, 
@@ -16,11 +16,13 @@ import {
   Linkedin,
   Github,
   Sparkles,
-  Zap
+  Zap,
+  Server
 } from "lucide-react";
 import SpotlightCard from "@/components/landing/SpotlightCard";
 import ShinyText from "@/components/landing/ShinyText";
 import ActionModal from "@/components/ui/ActionModal";
+import { CopyBlock } from "@/components/ui/CopyBlock";
 
 // --- TIPAGEM ---
 interface WikiSection {
@@ -31,6 +33,10 @@ interface WikiSection {
   content: string;
   fullText?: string;
   details?: { label: string; desc: string }[];
+  /** Heading above `details`; "Sintaxe & Parâmetros" when missing. */
+  detailsTitle?: string;
+  /** A numbered walk-through; a step may carry a command to copy. */
+  steps?: { title: string; body?: string; code?: string }[];
   examples?: { trigger: string; action: string }[];
   tips?: string;
   curiosities?: string[];
@@ -48,6 +54,23 @@ const WIKI_DATA: WikiSection[] = [
     fullText: "A filosofia do Dyna é a adaptação: o workspace deve mudar conforme seu humor e necessidade. Do foco extremo ao planejamento criativo, o Dyna é sua tela em branco tecnológica."
   },
   {
+    id: "news",
+    title: "Novidade: conta e banco de dados",
+    category: "guia",
+    icon: <Sparkles size={18} />,
+    content: "O Dyna agora pode, se você quiser, guardar uma cópia dos seus dados num banco de dados e sincronizar entre aparelhos. Continua funcionando só no navegador, como sempre.",
+    fullText: "Nada muda para quem não quiser: sem conta, tudo fica no navegador, sem internet e sem servidor. Para usar a conta, você liga o seu próprio servidor (Docker) e conecta pela página Conta, no menu lateral. Seus dados continuam salvos no navegador e o servidor guarda uma cópia.",
+    details: [
+      { label: "Dois modos", desc: "Só no navegador (padrão) ou com conta e banco. A escolha é feita dentro do app, em Conta, e dá para voltar atrás quando quiser com o botão Sair." },
+      { label: "Sincronização", desc: "As mudanças vão pro servidor em instantes e as de outros aparelhos chegam ao focar a aba, voltar a internet ou a cada 1 minuto. Funciona offline e sincroniza quando voltar." },
+      { label: "Conflitos", desc: "Se o mesmo dado mudou nos dois lados, o app pergunta qual versão manter. Não há mistura campo a campo." },
+      { label: "Login de 14 dias", desc: "Depois de 14 dias o app volta sozinho ao modo local, sem apagar nada. É só entrar de novo." },
+      { label: "Restaurar widgets", desc: "Em Conta, devolve o painel atual ao padrão sem apagar os outros dados nem a conta." },
+      { label: "Sem servidor público", desc: "O site publicado não guarda dado de ninguém: cada pessoa aponta para o servidor que ela mesma liga." },
+    ],
+    tips: "Quer ligar o seu servidor? Abra a seção 'Ter o seu servidor (conta e banco)' aqui na Wiki: é um passo a passo com Docker.",
+  },
+  {
     id: "shortcuts",
     title: "Comandos de Elite",
     category: "guia",
@@ -62,6 +85,30 @@ const WIKI_DATA: WikiSection[] = [
       { label: "Ref: link", desc: "Adiciona uma URL de referência à tarefa automaticamente." }
     ],
     tips: "Exemplo Real: 'Codar Projeto >10:00 >>120 [Dev] !1' -> Cria uma tarefa para as 10h, com 2h de duração, na tag Dev e com alta prioridade."
+  },
+  {
+    id: "server",
+    title: "Ter o seu servidor (conta e banco)",
+    category: "guia",
+    icon: <Server size={18} />,
+    content: "Por padrão o Dyna guarda tudo só no seu navegador. Se quiser uma conta e uma cópia dos dados num banco, você liga o seu próprio servidor com Docker.",
+    fullText: "O servidor guarda a sua conta e uma cópia dos seus dados num banco de dados (PostgreSQL). Você liga no seu computador e só você tem acesso. Sem ele o app continua funcionando normalmente, só com o navegador.",
+    steps: [
+      { title: "Instale o Docker", body: "É o que roda o servidor e o banco. Baixe em docs.docker.com/get-docker." },
+      { title: "Baixe o DynaBox", code: "git clone https://github.com/DeysRodrigues/dynamic_beta.git\ncd dynamic_beta" },
+      {
+        title: "Crie as senhas do servidor",
+        body: "Copie o arquivo de exemplo e preencha JWT_SECRET e POSTGRES_PASSWORD com valores aleatórios (o openssl gera).",
+        code: "cp .env.example .env\nopenssl rand -hex 32   # use como JWT_SECRET\nopenssl rand -hex 16   # use como POSTGRES_PASSWORD",
+      },
+      { title: "Ligue tudo", code: "docker compose up --build -d" },
+    ],
+    detailsTitle: "Depois de ligar, duas opções",
+    details: [
+      { label: "App do Docker", desc: "Abra http://localhost:8080, vá em Conta no menu e crie a conta. Esse app já vem ligado ao seu servidor." },
+      { label: "Site publicado", desc: "No .env ponha CORS_ORIGINS=https://dynabox.space (o endereço do site que você usa), rode docker compose up -d e, em Conta no site, informe http://localhost:8080." },
+    ],
+    tips: "O Safari bloqueia um servidor http a partir de um site https, e um servidor em outra máquina precisa de endereço https: nesses casos use o app do Docker. Depois de criar a sua conta, ponha ALLOW_REGISTRATION=false no .env e rode docker compose up -d, para ninguém mais criar conta. O login dura 14 dias. Para parar: docker compose down (os dados ficam), e docker compose down -v apaga o banco. O guia completo (variáveis do .env, backup, atualização, servidor na nuvem e problemas comuns) está em docs/DOCKER.pt-BR.md no repositório.",
   },
   {
     id: "automation",
@@ -131,8 +178,11 @@ const WIKI_DATA: WikiSection[] = [
 
 export default function WikiPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<WikiSection["category"]>("guia");
-  const [activeId, setActiveId] = useState("intro");
+  // A link can open a section directly: /wiki?secao=server
+  const [params] = useSearchParams();
+  const linked = WIKI_DATA.find((item) => item.id === params.get("secao"));
+  const [activeTab, setActiveTab] = useState<WikiSection["category"]>(linked?.category ?? "guia");
+  const [activeId, setActiveId] = useState(linked?.id ?? "intro");
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -287,10 +337,29 @@ export default function WikiPage() {
                         </div>
                     )}
 
+                    {/* Numbered steps */}
+                    {activeContent.steps && (
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Passo a passo</h3>
+                            <ol className="space-y-5">
+                                {activeContent.steps.map((step, i) => (
+                                    <li key={step.title} className="flex gap-4">
+                                        <span className="shrink-0 w-7 h-7 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                                        <div className="flex-1 min-w-0 space-y-2">
+                                            <p className="font-bold text-white/90">{step.title}</p>
+                                            {step.body && <p className="text-sm text-white/50">{step.body}</p>}
+                                            {step.code && <CopyBlock text={step.code} />}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    )}
+
                     {/* Comandos / Detalhes Grid */}
                     {activeContent.details && (
                         <div className="space-y-4">
-                            <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Sintaxe & Parâmetros</h3>
+                            <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">{activeContent.detailsTitle ?? "Sintaxe & Parâmetros"}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {activeContent.details.map((detail, i) => (
                                     <div key={i} className="p-4 rounded-2xl bg-white/5 flex items-center justify-between group transition-all">
