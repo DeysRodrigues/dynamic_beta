@@ -20,6 +20,15 @@ the architecture is considered ready for real use.
 
 ## [Unreleased]
 ### Added
+- **The storage can now be slow or remote without losing data.** Every store saves through one
+  adapter (`localStorage` by default, still instant), and the app was proven against one that
+  answers after half a second. Two rules make that safe: a write to a key that has not been read
+  yet is dropped, because a store starts from its defaults and saving them would overwrite the
+  real data; and the screen waits until every store has read its data, so the dashboard never
+  draws the default widgets and then jumps to the real ones. If a read fails, the app says so and
+  offers to try again, and nothing is overwritten. This is the groundwork for a server.
+- The adapter remembers the revision the backend reports for each key, which a conflict check on
+  a write will need.
 - **Markdown in the notepad.** A note can be previewed as GitHub-flavoured markdown (headings,
   lists, tables, code, links, strikethrough) with a button on the widget, and the choice is
   remembered per note. Checklists (`- [ ]`) are clickable in the preview and update the text.
@@ -122,6 +131,8 @@ the architecture is considered ready for real use.
   request to `develop` and `main`.
 
 ### Fixed
+- Reading the saved data again with widgets on screen (after a login, say) now shows the data
+  that came, instead of leaving widgets with what they had.
 - **Widgets of a new project came out with the wrong size.** The project was created with
   empty layouts, so the grid drew every widget at its minimum size, piled up in the corner;
   only widgets added later from the menu had a proper place. A project now gets a position and

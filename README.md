@@ -45,7 +45,7 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 294 tests (task parser, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
+| Automated tests | 307 tests (task parser, slow and failing storage, markdown, date and task helpers, dashboard store, layout, widget registry, widget content schemas, persistence registry, migrations, backup, and render tests of the dashboard and the sidebar) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -79,6 +79,7 @@ frontend/src
 │   └── sidebar/        the sidebar: profile, nav, settings drawer
 ├── widgets/            the widget registry (boxes/<id>.tsx) and the iframe pages (/w/*)
 ├── store/              14 Zustand stores
+├── persistence/        the registry of saved keys, the storage adapter, migrations, backup and hydration
 ├── hooks/              useWeekPlanner
 ├── utils/              task parsing, date helpers
 ├── data/               theme catalog, iframe widget list, in-app release notes
@@ -238,7 +239,7 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 294 tests
+npm run test      # vitest, 307 tests
 ```
 
 The tests cover the task text grammar (`TaskParser`), the date and task helpers, the
