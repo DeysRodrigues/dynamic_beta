@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 export interface CustomWidget {
   id: string;
@@ -41,6 +42,6 @@ export const useCustomWidgetStore = create<CustomWidgetState>()(
 
       getWidget: (id) => get().widgets.find((w) => w.id === id),
     }),
-    { name: "custom-widgets-storage" }
+    { ...persistConfig(PERSISTED.customWidgets) }
   )
 );
