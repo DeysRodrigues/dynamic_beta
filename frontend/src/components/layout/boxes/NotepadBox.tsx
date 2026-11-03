@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Save, FileText } from "lucide-react";
+import { Save, FileText, Eye, Pencil } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 import { notepadContentSchema } from "@/widgets/schemas/notepad";
+import { Markdown } from "@/components/ui/Markdown";
+import { toggleTaskAt } from "@/utils/markdown";
 
 interface NotepadBoxProps {
   id?: string;
@@ -9,20 +11,23 @@ interface NotepadBoxProps {
 
 export default function NotepadBox({ id = "notepad-default" }: NotepadBoxProps) {
   const { getBoxContent, setBoxContent } = useBoxContentStore();
-  
-  // Loads the saved text, or empty
-  const [text, setText] = useState<string>(getBoxContent(id, notepadContentSchema).text || "");
+  const saved = getBoxContent(id, notepadContentSchema);
+
+  const [text, setText] = useState<string>(saved.text || "");
+  const [view, setView] = useState<"edit" | "preview">(saved.view || "edit");
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
   // Saves automatically 1 second after typing stops
   useEffect(() => {
     const timer = setTimeout(() => {
-      setBoxContent(id, { text }, notepadContentSchema);
+      setBoxContent(id, { text, view }, notepadContentSchema);
       if (text) setLastSaved(new Date().toLocaleTimeString().slice(0, 5));
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [text, id, setBoxContent]);
+  }, [text, view, id, setBoxContent]);
+
+  const isPreview = view === "preview";
 
   return (
     <div className="box-padrao flex flex-col h-full relative group">
@@ -33,20 +38,39 @@ export default function NotepadBox({ id = "notepad-default" }: NotepadBoxProps) 
             </div>
             <h2 className="text-lg font-semibold">Notas</h2>
         </div>
-        {lastSaved && (
-          <span className="text-[10px] text-muted-foreground flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Save size={10} /> Salvo às {lastSaved}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {lastSaved && (
+            <span className="text-[10px] text-muted-foreground flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Save size={10} /> Salvo às {lastSaved}
+            </span>
+          )}
+          <button
+            onClick={() => setView(isPreview ? "edit" : "preview")}
+            className="p-1.5 rounded-lg opacity-50 hover:opacity-100 hover:bg-current/10 transition no-drag"
+            title={isPreview ? "Editar" : "Visualizar markdown"}
+          >
+            {isPreview ? <Pencil size={14} /> : <Eye size={14} />}
+          </button>
+        </div>
       </div>
 
-      <textarea
-        className="flex-1 w-full bg-yellow-50/50 border-none outline-none resize-none font-handwriting p-3 rounded-xl text-sm leading-relaxed custom-scrollbar focus:bg-yellow-50 focus:ring-2 focus:ring-yellow-200 transition-all"
-        placeholder="Ideias, lembretes..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        style={{ fontFamily: '"Comic Sans MS", "Chalkboard SE", sans-serif' }}
-      />
+      {isPreview ? (
+        <div className="flex-1 w-full overflow-y-auto custom-scrollbar p-3 rounded-xl bg-yellow-50/50 text-neutral-800">
+          {text.trim() ? (
+            <Markdown onToggleTask={(index) => setText((current) => toggleTaskAt(current, index))}>{text}</Markdown>
+          ) : (
+            <p className="text-sm opacity-50 italic">Nada para mostrar ainda.</p>
+          )}
+        </div>
+      ) : (
+        <textarea
+          className="flex-1 w-full bg-yellow-50/50 border-none outline-none resize-none font-handwriting p-3 rounded-xl text-sm leading-relaxed custom-scrollbar focus:bg-yellow-50 focus:ring-2 focus:ring-yellow-200 transition-all"
+          placeholder="Ideias, lembretes... (aceita markdown)"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          style={{ fontFamily: '"Comic Sans MS", "Chalkboard SE", sans-serif' }}
+        />
+      )}
     </div>
   );
 }
