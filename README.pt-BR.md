@@ -45,14 +45,13 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | ainda não existem |
-| Integração contínua | ainda não existe |
+| Testes automatizados | 41 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard) |
+| Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
 Dois limites que vale dizer de cara. O bundle principal tem **626,99 kB** (184,58 kB com
 gzip), porque o código compartilhado de biblioteca ainda não foi separado, mesmo cada widget
-sendo um chunk preguiçoso próprio. E não existe suíte de teste, então toda mudança é conferida
-compilando e clicando.
+sendo um chunk preguiçoso próprio. E a suíte de teste é nova: cobre a lógica pura e uma store, não os widgets nem a interface.
 
 ## Arquitetura
 
@@ -225,14 +224,16 @@ melhor.
 
 ## Testes
 
-Ainda não existe suíte de teste automatizado. O que é conferido hoje:
+O que é conferido hoje, localmente e na CI a cada push:
 
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
+npm run test      # vitest, 41 testes
 ```
 
-O resto é conferido à mão: a volta completa do backup (exportar num navegador e
+Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as
+ações da store do dashboard. O resto é conferido à mão: a volta completa do backup (exportar num navegador e
 importar em outro), a persistência do layout depois de recarregar, e os widgets de gamificação
 reagindo a uma tarefa concluída. O [`FEATURES.md`](FEATURES.md) documenta o sistema widget por
 widget.
