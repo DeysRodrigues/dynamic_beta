@@ -12,6 +12,7 @@ const ThemesPage = lazy(() => import("./pages/ThemesPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const WikiPage = lazy(() => import("./pages/WikiPage"));
 const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
+const AccountPage = lazy(() => import("./pages/AccountPage"));
 
 // Embed widgets
 const WaterWidget = lazy(() => import("./widgets/WaterWidget"));
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="/planner" element={<WeekPlannerPage />} />
             <Route path="/store" element={<WidgetsStorePage />} />
             <Route path="/themes" element={<ThemesPage />} />
+            <Route path="/account" element={<AccountPage />} />
           </Route>
 
           {/* EMBED ROUTES (FULL SCREEN) */}

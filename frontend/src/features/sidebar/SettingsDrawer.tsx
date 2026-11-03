@@ -9,6 +9,8 @@ import GeneralBackupModal from "@/components/layout/modals/GeneralBackupModal";
 import { useThemeStore } from "@/store/useThemeStore";
 import { clearAppData } from "@/persistence/backup";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import { useSession } from "@/sync/session";
+import { AccountSummary } from "@/features/account/AccountSummary";
 import { ColorPicker } from "./ColorPicker";
 import { SettingsSlider } from "./SettingsSlider";
 
@@ -40,6 +42,7 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
   const [showPersonalization, setShowPersonalization] = useState(false);
   const [showBackup, setShowBackup] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const connected = useSession((s) => !!s.token);
 
   useEffect(() => {
     if (monospace)
@@ -94,6 +97,8 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-8">
+          <AccountSummary onNavigate={onClose} />
+
           <section className="space-y-3">
             <h3 className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Ambiente</h3>
             <div className="grid grid-cols-2 gap-2">
@@ -243,7 +248,11 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
         <ConfirmModal
           isOpen={confirmReset}
           title="Resetar tudo?"
-          message="Isso apaga todos os dados do app neste navegador: tarefas, widgets, projetos e tema. Faça um backup antes se precisar."
+          message={
+            connected
+              ? "Isso apaga os dados deste navegador: tarefas, widgets, projetos e tema. A cópia no servidor NÃO é apagada, então ao recarregar ela volta pra cá. Para só arrumar os widgets, use a página Conta. Faça um backup antes se precisar."
+              : "Isso apaga todos os dados do app neste navegador: tarefas, widgets, projetos e tema. Faça um backup antes se precisar."
+          }
           confirmLabel="Resetar"
           onCancel={() => setConfirmReset(false)}
           onConfirm={() => {

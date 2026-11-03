@@ -1,11 +1,12 @@
 import Sidebar from "@/features/sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
-import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target } from "lucide-react";
+import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target, Cloud } from "lucide-react";
 import { useThemeStore, getWallpaperStyle } from "@/store/useThemeStore";
 import { ThemeApplicator } from "./ThemeApplicator";
 import { useMemo } from "react"; 
 import PomodoroManager from "./PomodoroManager";
 import { HydrationGate } from "./HydrationGate";
+import ConflictDialog from "@/features/account/ConflictDialog";
 
 function LayoutShell() {
   const { wallpaper, customImage, wallpaperBlur, wallpaperBrightness } = useThemeStore();
@@ -16,13 +17,15 @@ function LayoutShell() {
     { label: "Projetos", path: "/projects", icon: <Target size={18} /> },
     { label: "Planner", path: "/planner", icon: <Calendar size={18} /> },
     { label: "Widgets", path: "/store", icon: <ShoppingBag size={18} /> },
-    { label: "Temas", path: "/themes", icon: <Palette size={18} /> }, 
+    { label: "Temas", path: "/themes", icon: <Palette size={18} /> },
+    { label: "Conta", path: "/account", icon: <Cloud size={18} /> },
     { label: "Wiki", path: "/wiki", icon: <Book size={18} /> },
   ], []);
 
   return (
     <div className="flex h-screen w-full overflow-hidden relative bg-[var(--background-color)]">
       <ThemeApplicator />
+      <ConflictDialog />
       <PomodoroManager />
       
       {/* BACKGROUND LAYER (Fixed & Filtered) */}
