@@ -9,7 +9,15 @@ describe("GET /health", () => {
   it("responde 200 com status ok", async () => {
     const res = await t.app.inject({ method: "GET", url: "/health" });
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ status: "ok" });
+    expect(res.json()).toEqual({ status: "ok", service: "dynabox-api", registration: true });
+  });
+
+  it("diz se o servidor aceita novas contas, e nada mais sobre a configuração", async () => {
+    const closed = await createTestApp({ ALLOW_REGISTRATION: "false" });
+    const body = (await closed.app.inject({ method: "GET", url: "/health" })).json();
+    await closed.close();
+    expect(body.registration).toBe(false);
+    expect(Object.keys(body).sort()).toEqual(["registration", "service", "status"]);
   });
 
   it("rota que não existe dá 404", async () => {
