@@ -18,6 +18,13 @@ the architecture is considered ready for real use.
 
 ---
 
+## [Unreleased]
+### Removed
+- **Google Drive sync.** Its backup silently dropped the custom widgets, the planner cycles,
+  the layout templates, the favorites and the projects while still reporting success. JSON
+  backup and restore from a file remain the supported path, and cloud sync returns later
+  together with a server of its own.
+
 ## [0.12.1] - 2026-10-02
 ### Added
 - **Documentation Standard:**
