@@ -45,7 +45,7 @@ Measured on 2026-10-02: 299 commits, 97 TypeScript files, 14,644 lines in `front
 | Projects: dedicated page and a project-focused dashboard | works |
 | Wiki (`/wiki`) and landing page (`/intro`) | works |
 | Local backup: full state export and import as JSON | works |
-| Automated tests | 41 unit tests (task parser, date and task helpers, dashboard store) |
+| Automated tests | 56 unit tests (task parser, date and task helpers, dashboard store, persistence registry and backup) |
 | Continuous integration | GitHub Actions: lint, build and test on every push and PR |
 | Mobile layout | responsive, verified by hand only |
 
@@ -226,12 +226,11 @@ What is verified today, locally and in CI on every push:
 ```bash
 npm run build     # tsc -b plus vite build, passing
 npm run lint      # eslint, clean
-npm run test      # vitest, 41 tests
+npm run test      # vitest, 56 tests
 ```
 
-The tests cover the task text grammar (`TaskParser`), the date and task helpers and the
-dashboard store actions. Everything else is checked by hand: the backup round trip (export in one browser, import in
-another), layout persistence across a reload, and the gamification widgets reacting to a finished
+The tests cover the task text grammar (`TaskParser`), the date and task helpers, the
+dashboard store actions and the backup round trip (export, clear, import). Everything else is checked by hand: the same round trip across two browsers, layout persistence across a reload, and the gamification widgets reacting to a finished
 task. [`FEATURES.md`](FEATURES.md) documents the system widget by widget.
 
 ## License
