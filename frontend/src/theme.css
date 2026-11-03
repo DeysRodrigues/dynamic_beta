@@ -4,8 +4,10 @@
   --foreground: hsl(222.2 84% 4.9%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(222.2 84% 4.9%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(222.2 84% 4.9%);
+  /* Menus and popovers follow the theme: the box color nudged toward the text color, so a menu
+     reads as a surface above the box instead of a fixed white card. */
+  --popover: color-mix(in srgb, var(--box-color, #ffffff) 92%, var(--box-text-color, #1e293b) 8%);
+  --popover-foreground: var(--box-text-color, #1e293b);
   --primary: hsl(222.2 47.4% 11.2%);
   --primary-foreground: hsl(210 40% 98%);
   --secondary: hsl(210 40% 96.1%);
