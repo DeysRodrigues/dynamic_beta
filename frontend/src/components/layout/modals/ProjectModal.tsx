@@ -4,6 +4,7 @@ import { useProjectStore } from "@/store/useProjectStore";
 import type { Project, ProjectGoal, DailyRoutine } from "@/types/Project";
 import { cn } from "@/lib/utils";
 import { nativeWidgets } from "@/data/widgetItems";
+import { createBox } from "@/utils/BoxFactory";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
 
 interface ProjectModalProps {
@@ -45,7 +46,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
       setDescription(projectToEdit.description);
       setStartDate(projectToEdit.startDate || "");
       setEndDate(projectToEdit.endDate || "");
-      setSelectedBoxes(projectToEdit.boxes.map(id => id.split("-")[0]));
+      setSelectedBoxes(projectToEdit.boxes.map(box => box.type));
       setGoals(projectToEdit.goals.map(g => g.text));
       setRoutines(projectToEdit.routines.map(r => r.text));
     } else {
@@ -70,8 +71,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
       });
 
       const updatedBoxes = selectedBoxes.map(type => {
-        const existingBox = projectToEdit.boxes.find(id => id.startsWith(`${type}-`));
-        return existingBox || `${type}-${crypto.randomUUID().slice(0, 8)}`;
+        return projectToEdit.boxes.find(box => box.type === type) || createBox(type);
       });
 
       updateProject(projectToEdit.id, {
@@ -103,7 +103,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
         startDate: startDate || undefined,
         endDate: endDate || undefined,
         layouts: { lg: [], md: [], sm: [] },
-        boxes: selectedBoxes.map(type => `${type}-${crypto.randomUUID().slice(0, 8)}`),
+        boxes: selectedBoxes.map(createBox),
         goals: projectGoals,
         routines: projectRoutines,
         createdAt: new Date().toISOString(),

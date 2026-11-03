@@ -5,7 +5,8 @@ import {
 } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 
-import { useDashboardStore } from "@/store/useDashboardStore";
+import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
+import { boxIds } from "@/utils/BoxFactory";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useLayoutTemplateStore } from "@/store/useLayoutTemplateStore";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
@@ -112,13 +113,8 @@ const PaletteCard = memo(({ palette, isApplied, isFavorite, onApply, onToggleFav
 // --- PÁGINA PRINCIPAL ---
 
 export default function ThemesPage() {
-  const { boxes, layouts, loadDashboardState } = useDashboardStore(
-    useShallow(state => ({ 
-      boxes: state.boxes, 
-      layouts: state.layouts, 
-      loadDashboardState: state.loadDashboardState 
-    }))
-  );
+  const activeWorkspace = useDashboardStore(selectActiveWorkspace);
+  const loadDashboardState = useDashboardStore(state => state.loadDashboardState);
 
   const applyPreset = useThemeStore(state => state.applyPreset);
   const saveTemplate = useLayoutTemplateStore(state => state.saveTemplate);
@@ -174,10 +170,11 @@ export default function ThemesPage() {
       textColor: currentThemeState.textColor, 
       backgroundColor: currentThemeState.backgroundColor
     };
-    saveTemplate(newSetupName, boxes, layouts, currentTheme, contents);
+    if (!activeWorkspace) return;
+    saveTemplate(newSetupName, boxIds(activeWorkspace.boxes), activeWorkspace.layouts, currentTheme, contents);
     setNewSetupName("");
     alert(`Setup "${newSetupName}" salvo com sucesso!`);
-  }, [newSetupName, boxes, layouts, contents, saveTemplate]);
+  }, [newSetupName, activeWorkspace, contents, saveTemplate]);
 
   const handleLoadSetup = useCallback((template: SetupItem) => {
     if (confirm(`Atenção: Instalar "${template.name}" irá substituir todos os seus widgets atuais. Continuar?`)) {

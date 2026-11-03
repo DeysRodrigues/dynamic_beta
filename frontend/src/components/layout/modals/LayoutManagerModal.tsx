@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Save, Download, Upload, Trash2, Layout, Check } from "lucide-react";
-import { useDashboardStore } from "@/store/useDashboardStore";
+import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
+import { boxIds } from "@/utils/BoxFactory";
 import { useLayoutTemplateStore, type LayoutTemplate } from "@/store/useLayoutTemplateStore";
 
 interface LayoutManagerModalProps {
@@ -9,7 +10,8 @@ interface LayoutManagerModalProps {
 }
 
 export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerModalProps) {
-  const { boxes, layouts, loadDashboardState } = useDashboardStore();
+  const activeWorkspace = useDashboardStore(selectActiveWorkspace);
+  const loadDashboardState = useDashboardStore((state) => state.loadDashboardState);
   const { templates, saveTemplate, deleteTemplate, importTemplate } = useLayoutTemplateStore();
   
   const [newTemplateName, setNewTemplateName] = useState("");
@@ -19,7 +21,8 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
   // --- Salvar Atual ---
   const handleSaveCurrent = () => {
     if (!newTemplateName.trim()) return alert("Digite um nome para o modelo.");
-    saveTemplate(newTemplateName, boxes, layouts);
+    if (!activeWorkspace) return;
+    saveTemplate(newTemplateName, boxIds(activeWorkspace.boxes), activeWorkspace.layouts);
     setNewTemplateName("");
   };
 

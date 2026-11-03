@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
-import { useDashboardStore } from "@/store/useDashboardStore";
+import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
+import type { BoxRef } from "@/types/Box";
 import { usePomodoroStore } from "@/store/usePomodoroStore";
 import { 
   User, Shield, Sword, Trophy, Crown,
@@ -30,10 +31,12 @@ interface RpgData {
   manualXp: number;
 }
 
+const NO_BOXES: BoxRef[] = [];
+
 export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
   const { tasks } = useTaskStore();
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const { boxes } = useDashboardStore();
+  const boxes = useDashboardStore((state) => selectActiveWorkspace(state)?.boxes ?? NO_BOXES);
   
   const saved = getBoxContent(id) as Partial<RpgData>;
 
@@ -60,7 +63,7 @@ export default function RpgProfileBox({ id = "rpg-default" }: { id?: string }) {
   // --- CÁLCULO DE XP ---
   const completedTasks = tasks.filter(t => t.completed).length;
   const completedBooks = useMemo(() => {
-    const libIds = boxes.filter(bid => bid.startsWith("library"));
+    const libIds = boxes.filter(box => box.type === "library").map(box => box.id);
     let count = 0;
     libIds.forEach(libId => {
       const content = getBoxContent(libId) as { books?: { completed: boolean }[] };

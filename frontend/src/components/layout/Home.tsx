@@ -43,6 +43,7 @@ import ShinyText from "@/components/landing/ShinyText";
 
 import LayoutManagerModal from "./modals/LayoutManagerModal";
 import { widgetRegistry } from "@/widgets/registry";
+import type { BoxRef } from "@/types/Box";
 
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -294,9 +295,7 @@ const DashboardHeader = React.memo(
     const handleAdd = (e: React.MouseEvent, type: string) => {
       e.stopPropagation();
       e.preventDefault();
-      // Gera ID único aqui para garantir criação
-      const uniqueId = `${type}-${crypto.randomUUID().slice(0, 8)}`;
-      onAddWidget(uniqueId);
+      onAddWidget(type);
       setShowAddMenu(false);
     };
 
@@ -552,11 +551,11 @@ export default function Dashboard() {
     }
   };
 
-  const renderBox = (id: string) => {
-    const widget = widgetRegistry[id.split("-")[0]];
+  const renderBox = (box: BoxRef) => {
+    const widget = widgetRegistry[box.type];
     if (!widget) return null;
     const Widget = widget.component;
-    return <Widget id={id} projectId={activeProjectId} />;
+    return <Widget id={box.id} projectId={activeProjectId} />;
   };
 
   if (!activeWorkspace) {
@@ -601,13 +600,13 @@ export default function Dashboard() {
         margin={[12, 12]}
         containerPadding={[0, 0]}
       >
-        {(activeWorkspace.boxes || []).map((boxId) => {
-          const component = renderBox(boxId);
+        {(activeWorkspace.boxes || []).map((box) => {
+          const component = renderBox(box);
           if (!component) return null;
 
           return (
             <div
-              key={boxId}
+              key={box.id}
               className={cn(
                 "h-full w-full transition-all duration-300 relative group rounded-2xl overflow-hidden",
                 editMode && "ring-2 ring-amber-500/50 shadow-xl z-10 bg-current/5"
@@ -621,13 +620,13 @@ export default function Dashboard() {
                   
                   <div className="flex items-center gap-1">
                     <span className="text-[10px] font-bold text-amber-600 uppercase tracking-tighter hidden sm:inline px-2">
-                      {boxId.split("-")[0]}
+                      {box.type}
                     </span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         if (confirm("Remover este widget deste workspace?"))
-                          removeBox(boxId);
+                          removeBox(box.id);
                       }}
                       className="bg-destructive/10 hover:bg-destructive text-destructive hover:text-white p-1.5 rounded-lg transition-all cursor-pointer no-drag"
                       title="Remover Widget"

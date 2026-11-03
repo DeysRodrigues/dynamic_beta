@@ -4,7 +4,8 @@ import {
   ArrowRight, Trash2 
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
-import { useDashboardStore } from "@/store/useDashboardStore";
+import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
+import type { BoxRef } from "@/types/Box";
 
 interface BookItem { 
   id: string; 
@@ -18,9 +19,11 @@ interface TrackerSettings {
   pageStep: number;
 }
 
+const NO_BOXES: BoxRef[] = [];
+
 export default function BookTrackerBox({ id = "books-default" }: { id?: string }) {
   const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const { boxes } = useDashboardStore();
+  const boxes = useDashboardStore((state) => selectActiveWorkspace(state)?.boxes ?? NO_BOXES);
   const saved = getBoxContent(id) as { books?: BookItem[], settings?: TrackerSettings };
   
   const [books, setBooks] = useState<BookItem[]>(saved.books || []);
@@ -73,7 +76,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
   };
 
   const availableImports = useMemo(() => {
-    const libraryIds = boxes.filter(boxId => boxId.startsWith("library"));
+    const libraryIds = boxes.filter(box => box.type === "library").map(box => box.id);
     let allBooksFromLibraries: { title: string }[] = [];
     libraryIds.forEach(libId => {
       const content = getBoxContent(libId) as { books?: { title: string }[] };
