@@ -45,7 +45,7 @@ export const usePomodoroStore = create<PomodoroState>()(
           // PAUSE: clears the target, keeps the current timeLeft
           set({ isRunning: false, endTime: null });
         } else {
-          // INICIAR: Define o alvo (Agora + Tempo Restante)
+          // START: sets the target (now + time left)
           // This keeps the time running even in another tab
           const target = Date.now() + (timeLeft * 1000);
           set({ isRunning: true, endTime: target });

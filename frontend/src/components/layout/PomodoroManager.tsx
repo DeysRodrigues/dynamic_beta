@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePomodoroStore } from "@/store/usePomodoroStore";
 
 export default function PomodoroManager() {
   const { isRunning, timeLeft, syncTime, setMode, addCount, mode } = usePomodoroStore();
+  const finishedRef = useRef(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -18,8 +19,14 @@ export default function PomodoroManager() {
 
   // Detects the end of the timer (00:00)
   useEffect(() => {
-    if (timeLeft === 0 && !isRunning) {
-      // 1. Tocar Som
+    if (timeLeft !== 0 || isRunning) {
+      finishedRef.current = false;
+      return;
+    }
+    // The effect also re-runs when `mode` changes, so only the first pass at zero counts.
+    if (!finishedRef.current) {
+      finishedRef.current = true;
+      // 1. Play sound
       const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
       audio.volume = 0.5;
       audio.play().catch(() => {});
@@ -31,21 +38,14 @@ export default function PomodoroManager() {
         });
       }
 
-      // 3. Contabilizar
-      // Only counts when the time is exactly 0, to avoid a double count on re-renders
-      // The store has already paused (isRunning = false), so this is safe.
-      // We need to check whether it just reached zero. 
-      // The box already shows the stopped state.
-      // All that is left is to add the count and switch the mode.
-      
+      // 3. Count it
       addCount(mode);
 
       // 4. Switch mode automatically
       if (mode === "work") setMode("short");
       else setMode("work");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, isRunning]); 
+  }, [timeLeft, isRunning, mode, addCount, setMode]);
 
   // Updates the browser tab title
   useEffect(() => {
