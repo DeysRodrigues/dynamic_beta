@@ -20,6 +20,14 @@ the architecture is considered ready for real use.
 
 ## [Unreleased]
 ### Changed
+- **Each widget is declared in one place.** Its component, title, description, icon, colour and
+  starting height now live in a single file under `src/widgets/boxes/`. Before, that
+  information was split between the widget store catalogue, two duplicated height tables and a
+  25-case `switch`, and any mismatch between them became a broken widget. The component must be
+  `React.lazy`, which the type enforces, so a widget can no longer end up in the initial bundle
+  by accident.
+- The dashboard and project stores share one implementation of the "put the new box in the
+  shortest column" placement, instead of two copies.
 - **All persistence is declared in one registry.** The storage keys used to be spread over
   four places (a constants file, string literals in the stores, a hand-kept list in the backup
   dialog and a direct `localStorage` read in the water widget). Backup, restore and reset now
@@ -33,12 +41,16 @@ the architecture is considered ready for real use.
 - **Versioned storage:** every persisted slice now carries a format version and a migration
   hook. Data saved before this change loads untouched, and the shape can change from here on
   without wiping what users already have.
-- **First automated test suite**, with Vitest and Testing Library: 56 tests covering the task
+- **First automated test suite**, with Vitest and Testing Library: 72 tests covering the task
   text grammar (parsing and formatting, including the round trip), the date and task helpers,
-  the dashboard store actions, and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
+  the dashboard store actions, the box placement, the widget registry and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
   it running.
 - **Continuous integration** on GitHub Actions: lint, build and tests on every push and pull
   request to `develop` and `main`.
+
+### Fixed
+- The project overview widget no longer relies on a non-null assertion when there is no
+  active project; it renders nothing instead of crashing.
 
 ### Removed
 - **Google Drive sync.** Its backup silently dropped the custom widgets, the planner cycles,
