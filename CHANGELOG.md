@@ -27,6 +27,9 @@ the architecture is considered ready for real use.
   invalid write is refused instead of being saved.
 
 ### Changed
+- **Code comments are in English** now, matching the code, the commits and the READMEs. Stale
+  markers ("new", "added", "fix" notes left from past edits) were removed instead of translated,
+  and the task text grammar got a proper doc comment. The interface stays in Portuguese.
 - **The dashboard page and the sidebar were split into focused components.** `Home.tsx` (653
   lines, four components) became a page, a header, the workspace tabs, the add-widget menu, the
   grid and the frame around each box, with the store wiring gathered in one `useDashboard` hook.

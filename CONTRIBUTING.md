@@ -26,10 +26,10 @@ History is not rewritten; the rule applies from here on.
 
 **Types:** `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`.
 
-**One file per commit.** A commit touches a single file whenever that leaves a commit that
-still builds. The exceptions are changes that are atomic by nature: removing an exported
-constant along with its only consumer, or `package.json` together with `package-lock.json`.
-Splitting those would push a commit that does not compile.
+**One logical change per commit.** Files that belong to the same change go in the same commit:
+a store with its test, every file of a rename, `package.json` with `package-lock.json`. Do not
+split a change into one commit per file just to make them small; that only adds noise. Each
+commit should still build.
 
 **Subject only, no body.** If the subject cannot say it, the change is too big and should be
 two commits.
