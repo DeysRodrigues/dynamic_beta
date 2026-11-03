@@ -19,6 +19,13 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+### Added
+- **Shape validation for widget content.** The seven widgets that hold the most data (notepad,
+  code snippets, quick links, book tracker, library, presence calendar and automations) now
+  declare the shape of what they save. Content that does not match, whether corrupted or from
+  an older version, falls back to the widget's defaults instead of breaking the panel, and an
+  invalid write is refused instead of being saved.
+
 ### Changed
 - **The dashboard state keeps one copy of the active workspace.** It used to store the active
   workspace's boxes and layouts twice, and every action had to write both. Each widget on the
@@ -47,14 +54,16 @@ the architecture is considered ready for real use.
 - **Versioned storage:** every persisted slice now carries a format version and a migration
   hook. Data saved before this change loads untouched, and the shape can change from here on
   without wiping what users already have.
-- **First automated test suite**, with Vitest and Testing Library: 92 tests covering the task
+- **First automated test suite**, with Vitest and Testing Library: 119 tests covering the task
   text grammar (parsing and formatting, including the round trip), the date and task helpers,
-  the dashboard store actions, the box placement, the widget registry, the data migrations and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
+  the dashboard store actions, the box placement, the widget registry, the content schemas, the data migrations and the backup round trip. `npm run test` runs it once and `npm run test:watch` keeps
   it running.
 - **Continuous integration** on GitHub Actions: lint, build and tests on every push and pull
   request to `develop` and `main`.
 
 ### Fixed
+- Four places where the type of the data was unknown at compile time (two in the book
+  widgets, one in the widget store and one event handler) are now typed.
 - Widgets added from the dashboard header menu always started at the default height,
   because the menu passed a generated id where the widget type was expected. They now start at
   the height their widget declares.

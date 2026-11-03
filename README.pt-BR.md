@@ -45,7 +45,7 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Testes automatizados | 92 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, registro de persistência, migrações e backup) |
+| Testes automatizados | 119 testes unitários (parser de tarefa, helpers de data e tarefa, store do dashboard, layout, registro de widgets, schemas de conteúdo dos widgets, registro de persistência, migrações e backup) |
 | Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
@@ -105,6 +105,7 @@ Rotas:
 | vite | 7.0 | servidor de desenvolvimento e build |
 | tailwindcss | 3.4 | estilo, movido pelas variáveis CSS que o motor de temas escreve |
 | zustand | 5.0 | estado global, com os middlewares `persist` e `immer` |
+| zod | 4.6 | o formato do que os widgets mais pesados salvam, conferido a cada leitura e escrita |
 | immer | 10.2 | o rascunho que as duas stores que mexem em widget e layout juntos usam |
 | react-grid-layout | 1.5 | a grade que arrasta e redimensiona |
 | react-router-dom | 7.6 | roteamento |
@@ -229,7 +230,7 @@ O que é conferido hoje, localmente e na CI a cada push:
 ```bash
 npm run build     # tsc -b mais vite build, passando
 npm run lint      # eslint, limpo
-npm run test      # vitest, 92 testes
+npm run test      # vitest, 119 testes
 ```
 
 Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as
