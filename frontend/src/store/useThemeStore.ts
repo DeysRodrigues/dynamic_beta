@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 export type WallpaperType = "plain" | "dots" | "grid" | "pixel-art" | "clouds" | "blueprint" | "custom";
 
@@ -63,7 +64,7 @@ export const useThemeStore = create<ThemeState>()(
       // Recebe um objeto com várias propriedades e atualiza tudo junto
       applyPreset: (preset) => set((state) => ({ ...state, ...preset })),
     }),
-    { name: "theme-storage" }
+    { ...persistConfig(PERSISTED.theme) }
   )
 );
 
