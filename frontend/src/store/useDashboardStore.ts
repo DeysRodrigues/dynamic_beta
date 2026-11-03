@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import type { Layouts } from "react-grid-layout";
-import { STORAGE_KEYS } from "@/constants/storageKeys";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 // --- CONFIGURAÇÃO ---
 
@@ -268,7 +268,7 @@ export const useDashboardStore = create<DashboardState & DashboardActions>()(
             }),
         }),
         {
-          name: STORAGE_KEYS.DASHBOARD,
+          ...persistConfig(PERSISTED.dashboard),
           partialize: (state) => ({
             workspaces: state.workspaces,
             activeWorkspaceId: state.activeWorkspaceId,
