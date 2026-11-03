@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 
 interface ActionModalProps {
@@ -15,7 +16,9 @@ export default function ActionModal({
 }: ActionModalProps) {
   if (!isOpen) return null;
 
-  return (
+  // Rendered in the body: a widget sits inside a transformed grid cell, which would otherwise
+  // make `fixed` relative to the cell instead of the screen.
+  return createPortal(
     <div 
       className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={onClose}
@@ -52,6 +55,7 @@ export default function ActionModal({
           <X size={20} />
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

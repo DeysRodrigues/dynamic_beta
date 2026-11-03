@@ -8,6 +8,7 @@ import PersonalizationModal from "@/components/layout/modals/PersonalizationModa
 import GeneralBackupModal from "@/components/layout/modals/GeneralBackupModal";
 import { useThemeStore } from "@/store/useThemeStore";
 import { clearAppData } from "@/persistence/backup";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import { ColorPicker } from "./ColorPicker";
 import { SettingsSlider } from "./SettingsSlider";
 
@@ -38,6 +39,7 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
   const [monospace, setMonospace] = useState(false);
   const [showPersonalization, setShowPersonalization] = useState(false);
   const [showBackup, setShowBackup] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   useEffect(() => {
     if (monospace)
@@ -221,12 +223,7 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
                 <Database size={14} /> Backup
               </button>
               <button
-                onClick={() => {
-                  if (confirm("Resetar TUDO?")) {
-                    clearAppData();
-                    window.location.reload();
-                  }
-                }}
+                onClick={() => setConfirmReset(true)}
                 className="py-2.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/60 hover:text-red-300 text-[10px] font-bold transition flex items-center justify-center gap-1.5 border border-white/5"
               >
                 <RotateCcw size={14} /> Reset
@@ -242,6 +239,17 @@ export const SettingsDrawer = ({ onClose }: { onClose: () => void }) => {
         <GeneralBackupModal
           isOpen={showBackup}
           onClose={() => setShowBackup(false)}
+        />
+        <ConfirmModal
+          isOpen={confirmReset}
+          title="Resetar tudo?"
+          message="Isso apaga todos os dados do app neste navegador: tarefas, widgets, projetos e tema. Faça um backup antes se precisar."
+          confirmLabel="Resetar"
+          onCancel={() => setConfirmReset(false)}
+          onConfirm={() => {
+            clearAppData();
+            window.location.reload();
+          }}
         />
       </div>
     </div>
