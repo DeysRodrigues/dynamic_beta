@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useMemo } from "react";
+import { useState, useCallback, memo, useMemo, type ReactNode } from "react";
 import {
   Plus,
   CheckCircle2,
@@ -23,9 +23,18 @@ import ShinyText from "@/components/landing/ShinyText";
 
 // --- COMPONENTES MEMOIZADOS ---
 
+/** What the store card needs: a native widget has no `path`, an iframe embed does. */
+interface StoreEntry {
+  id: string;
+  title: string;
+  description: string;
+  icon: ReactNode;
+  color: string;
+  path?: string;
+}
+
 interface StoreItemProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any;
+  item: StoreEntry;
   isActive: boolean;
   isFavorite: boolean;
   type: "native" | "embed";
@@ -225,7 +234,7 @@ export default function WidgetsStorePage() {
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border shrink-0 transition-colors duration-500"
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner shrink-0 transition-colors duration-500"
                  style={{ 
                     backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)',
                     borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
@@ -245,7 +254,7 @@ export default function WidgetsStorePage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-            <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm border transition-colors duration-500 flex-1 md:flex-none"
+            <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm transition-colors duration-500 flex-1 md:flex-none"
                  style={{ 
                     backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
                     borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
@@ -257,7 +266,7 @@ export default function WidgetsStorePage() {
                   placeholder="Pesquisar widgets..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 text-sm bg-transparent border-none outline-none font-medium"
+                  className="w-full pl-10 pr-4 py-2 text-sm bg-transparent outline-none font-medium"
                 />
               </div>
             </div>
@@ -271,7 +280,7 @@ export default function WidgetsStorePage() {
           </div>
         </div>
 
-        {/* SEÇÃO DE FAVORITOS */}
+        {/* FAVORITES SECTION */}
         {hasFavorites && (
           <section className="space-y-6 pb-8">
             <div className="flex items-center gap-2">

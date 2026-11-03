@@ -5,15 +5,28 @@ import {
 } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 
-import { useDashboardStore } from "@/store/useDashboardStore";
+import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
+import { boxIds } from "@/utils/BoxFactory";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useLayoutTemplateStore } from "@/store/useLayoutTemplateStore";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
 import { useFavoriteStore } from "@/store/useFavoriteStore";
 
-import { readySetups, colorPalettes, wallpaperThemes } from "@/data/themeItems";
+import { colorPalettes, wallpaperThemes } from "@/data/themeItems";
+import { readySetups } from "@/data/setups";
 import ShinyText from "@/components/landing/ShinyText";
+import { themeThumbnail } from "@/lib/themeImages";
+import { widgetRegistry } from "@/widgets/registry";
+import { boxFromLegacyId } from "@/utils/BoxFactory";
 import type { ThemeItem, WallpaperThemeItem, SetupItem } from "@/types/Theme";
+
+/** "8 widgets: Tarefas, Code Snippets, Pomodoro Timer +5", for the card of a setup. */
+function setupWidgetSummary(setup: SetupItem): string {
+  const titles = setup.boxes.map((id) => widgetRegistry[boxFromLegacyId(id).type]?.title).filter(Boolean);
+  const shown = titles.slice(0, 3).join(", ");
+  const rest = titles.length - 3;
+  return `${titles.length} widgets: ${shown}${rest > 0 ? ` +${rest}` : ""}`;
+}
 
 // --- COMPONENTES MEMOIZADOS ---
 
@@ -22,7 +35,7 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
     <div className="h-28 w-full relative bg-current/5" style={{ backgroundColor: setup.theme.backgroundColor }}>
        {setup.theme.customImage && (
          <img 
-            src={setup.theme.customImage} 
+            src={themeThumbnail(setup.theme.customImage) ?? undefined} 
             alt="" 
             loading="lazy"
             decoding="async"
@@ -42,6 +55,7 @@ const SetupCard = memo(({ setup, isFavorite, onInstall, onToggleFavorite }: { se
       <div>
         <h3 className="font-bold text-lg">{setup.name}</h3>
         <p className="text-xs opacity-60 line-clamp-2 mt-1">{setup.description}</p>
+        <p className="text-[10px] opacity-40 mt-2 line-clamp-1">{setupWidgetSummary(setup)}</p>
       </div>
       <button onClick={() => onInstall(setup)} className="w-full mt-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:opacity-90 flex items-center justify-center gap-2 shadow-sm">
         <Download size={14}/> Instalar Setup
@@ -55,7 +69,7 @@ const ThemeCard = memo(({ theme, isApplied, isFavorite, onApply, onToggleFavorit
     <div className={`h-20 w-full relative bg-current/5 ${theme.previewColor}`}>
       {theme.theme.customImage && (
         <img 
-          src={theme.theme.customImage} 
+          src={themeThumbnail(theme.theme.customImage) ?? undefined} 
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover opacity-60 transition-opacity duration-300" 
@@ -109,16 +123,11 @@ const PaletteCard = memo(({ palette, isApplied, isFavorite, onApply, onToggleFav
   </div>
 ));
 
-// --- PÁGINA PRINCIPAL ---
+// --- MAIN PAGE ---
 
 export default function ThemesPage() {
-  const { boxes, layouts, loadDashboardState } = useDashboardStore(
-    useShallow(state => ({ 
-      boxes: state.boxes, 
-      layouts: state.layouts, 
-      loadDashboardState: state.loadDashboardState 
-    }))
-  );
+  const activeWorkspace = useDashboardStore(selectActiveWorkspace);
+  const loadDashboardState = useDashboardStore(state => state.loadDashboardState);
 
   const applyPreset = useThemeStore(state => state.applyPreset);
   const saveTemplate = useLayoutTemplateStore(state => state.saveTemplate);
@@ -174,10 +183,11 @@ export default function ThemesPage() {
       textColor: currentThemeState.textColor, 
       backgroundColor: currentThemeState.backgroundColor
     };
-    saveTemplate(newSetupName, boxes, layouts, currentTheme, contents);
+    if (!activeWorkspace) return;
+    saveTemplate(newSetupName, boxIds(activeWorkspace.boxes), activeWorkspace.layouts, currentTheme, contents);
     setNewSetupName("");
     alert(`Setup "${newSetupName}" salvo com sucesso!`);
-  }, [newSetupName, boxes, layouts, contents, saveTemplate]);
+  }, [newSetupName, activeWorkspace, contents, saveTemplate]);
 
   const handleLoadSetup = useCallback((template: SetupItem) => {
     if (confirm(`Atenção: Instalar "${template.name}" irá substituir todos os seus widgets atuais. Continuar?`)) {
@@ -213,7 +223,7 @@ export default function ThemesPage() {
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border shrink-0 transition-colors duration-500"
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner shrink-0 transition-colors duration-500"
                  style={{ 
                     backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)',
                     borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
@@ -232,7 +242,7 @@ export default function ThemesPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm border transition-colors duration-500 w-full md:w-auto"
+          <div className="flex items-center gap-3 p-1.5 rounded-2xl backdrop-blur-sm transition-colors duration-500 w-full md:w-auto"
                style={{ 
                   backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
                   borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
@@ -244,15 +254,15 @@ export default function ThemesPage() {
                 placeholder="Pesquisar estilos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-transparent border-none outline-none font-medium"
+                className="w-full pl-10 pr-4 py-2 text-sm bg-transparent outline-none font-medium"
               />
             </div>
           </div>
         </div>
 
-        {/* SEÇÃO DE FAVORITOS */}
+        {/* FAVORITES SECTION */}
         {hasFavorites && (
-          <section className="space-y-6 pb-8 border-b border-current/5">
+          <section className="space-y-6 pb-8">
             <div className="flex items-center gap-3">
               <Heart className="text-red-500 fill-red-500" size={24} />
               <h2 className="text-2xl font-black tracking-tight">Meus Favoritos</h2>
@@ -306,7 +316,7 @@ export default function ThemesPage() {
           </div>
         </section>
 
-        {/* 2. TEMAS DE IMERSÃO */}
+        {/* 2. IMMERSION THEMES */}
         <section className="space-y-6">
           <div className="flex items-center gap-3">
             <ImageIcon className="text-purple-500" size={24}/>
@@ -319,7 +329,7 @@ export default function ThemesPage() {
           </div>
         </section>
 
-        {/* 3. PALETAS DE CORES */}
+        {/* 3. COLOR PALETTES */}
         <section className="space-y-6">
           <div className="flex items-center gap-3">
             <Palette className="text-pink-500" size={24}/>

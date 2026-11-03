@@ -1,12 +1,14 @@
-import Sidebar from "./Sidebar";
+import Sidebar from "@/features/sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
-import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target } from "lucide-react";
+import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target, Cloud } from "lucide-react";
 import { useThemeStore, getWallpaperStyle } from "@/store/useThemeStore";
 import { ThemeApplicator } from "./ThemeApplicator";
 import { useMemo } from "react"; 
 import PomodoroManager from "./PomodoroManager";
+import { HydrationGate } from "./HydrationGate";
+import ConflictDialog from "@/features/account/ConflictDialog";
 
-export default function DashboardLayout() {
+function LayoutShell() {
   const { wallpaper, customImage, wallpaperBlur, wallpaperBrightness } = useThemeStore();
 
   const sidebarItems = useMemo(() => [
@@ -15,13 +17,15 @@ export default function DashboardLayout() {
     { label: "Projetos", path: "/projects", icon: <Target size={18} /> },
     { label: "Planner", path: "/planner", icon: <Calendar size={18} /> },
     { label: "Widgets", path: "/store", icon: <ShoppingBag size={18} /> },
-    { label: "Temas", path: "/themes", icon: <Palette size={18} /> }, 
+    { label: "Temas", path: "/themes", icon: <Palette size={18} /> },
+    { label: "Conta", path: "/account", icon: <Cloud size={18} /> },
     { label: "Wiki", path: "/wiki", icon: <Book size={18} /> },
   ], []);
 
   return (
     <div className="flex h-screen w-full overflow-hidden relative bg-[var(--background-color)]">
       <ThemeApplicator />
+      <ConflictDialog />
       <PomodoroManager />
       
       {/* BACKGROUND LAYER (Fixed & Filtered) */}
@@ -34,7 +38,7 @@ export default function DashboardLayout() {
         }}
       />
 
-      {/* Passa a lista congelada */}
+      {/* Passes the frozen list */}
       <Sidebar items={sidebarItems} />
       
       <main className="flex-1 flex flex-col min-w-0 h-full relative z-10 bg-transparent">
@@ -43,5 +47,14 @@ export default function DashboardLayout() {
         </div>
       </main>
     </div>
+  );
+}
+
+/** The app shell, shown only once the saved data has been read. */
+export default function DashboardLayout() {
+  return (
+    <HydrationGate>
+      <LayoutShell />
+    </HydrationGate>
   );
 }

@@ -2,22 +2,15 @@ import { useState } from "react";
 import { 
   Plus, Trash2, ExternalLink, 
   FolderPlus, Globe, X, Link, Search,
-  LayoutGrid, List // 1. Novos ícones
+  LayoutGrid, List
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  quickLinksContentSchema,
+  type LinkCategory as Category,
+  type LinkItem,
+} from "@/widgets/schemas/quicklinks";
 import { useThemeStore } from "@/store/useThemeStore";
-
-interface LinkItem {
-  id: string;
-  title: string;
-  url: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  links: LinkItem[];
-}
 
 const DEFAULT_DATA: Category[] = [
   { 
@@ -31,14 +24,15 @@ const DEFAULT_DATA: Category[] = [
 ];
 
 export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: string }) {
-  const { getBoxContent, setBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const primaryColor = useThemeStore((s) => s.primaryColor);
-  const saved = getBoxContent(id) as { categories?: Category[], viewMode?: "list" | "grid" };
+  const saved = getBoxContent(id, quickLinksContentSchema);
 
   const [categories, setCategories] = useState<Category[]>(saved.categories || DEFAULT_DATA);
   const [activeTab, setActiveTab] = useState<string>(categories[0]?.id || "");
   
-  // 2. Estado do Modo de Visualização (Salvo no boxContent também)
+  // 2. View mode state (also saved in the box content)
   const [viewMode, setViewMode] = useState<"list" | "grid">(saved.viewMode || "list");
 
   const [isAddingLink, setIsAddingLink] = useState(false);
@@ -47,13 +41,13 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
 
   const save = (data: Category[], mode: "list" | "grid" = viewMode) => {
     setCategories(data);
-    setBoxContent(id, { categories: data, viewMode: mode });
+    setBoxContent(id, { categories: data, viewMode: mode }, quickLinksContentSchema);
   };
 
   const toggleViewMode = () => {
     const newMode = viewMode === "list" ? "grid" : "list";
     setViewMode(newMode);
-    setBoxContent(id, { categories, viewMode: newMode });
+    setBoxContent(id, { categories, viewMode: newMode }, quickLinksContentSchema);
   };
 
   const addCategory = () => {
@@ -92,7 +86,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
   };
 
   const deleteLink = (e: React.MouseEvent, linkId: string) => {
-    e.preventDefault(); // Evita abrir o link ao deletar no modo grid
+    e.preventDefault(); // Avoids opening the link when deleting in grid mode
     e.stopPropagation();
     const updated = categories.map(cat => {
       if (cat.id === activeTab) return { ...cat, links: cat.links.filter(l => l.id !== linkId) };
@@ -113,10 +107,10 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
   return (
     <div className="box-padrao flex flex-col p-0 overflow-hidden relative group">
       
-      {/* HEADER DAS ABAS + CONTROLES */}
+      {/* TABS HEADER + CONTROLS */}
       <div className="p-2 bg-current/5 sticky top-0 z-10 flex justify-between items-center gap-2">
         
-        {/* Lista de Abas */}
+        {/* Tab list */}
         <div className="flex items-center gap-1 overflow-x-auto no-scrollbar mask-gradient-right flex-1">
           {categories.map(cat => {
             const isActive = activeTab === cat.id;
@@ -146,7 +140,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
           </button>
         </div>
 
-        {/* 3. Botão Toggle View (Lista/Grid) */}
+        {/* 3. View toggle button (list/grid) */}
         <button 
           onClick={toggleViewMode}
           className="p-1.5 rounded-lg opacity-40 hover:opacity-100 hover:bg-current/10 transition shrink-0"
@@ -157,13 +151,13 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
 
       </div>
 
-      {/* CONTEÚDO */}
+      {/* CONTENT */}
       <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
         
-        {/* RENDERIZAÇÃO CONDICIONAL: GRID vs LISTA */}
+        {/* CONDITIONAL RENDERING: GRID vs LIST */}
         {viewMode === "list" ? (
           
-          // --- MODO LISTA (Visual Detalhado) ---
+          // --- LIST MODE (detailed) ---
           <div className="space-y-2">
             {currentCategory?.links.map(link => (
               <div key={link.id} className="group/link relative flex items-center justify-between p-2.5 rounded-xl bg-current/5 hover:bg-current/10 transition-all duration-300">
@@ -187,7 +181,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
 
         ) : (
           
-          // --- MODO GRADE (Só Ícones) ---
+          // --- GRID MODE (icons only) ---
           <div className="grid grid-cols-4 gap-2">
             {currentCategory?.links.map(link => (
               <a 
@@ -198,7 +192,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
                 className="group/grid relative aspect-square flex flex-col items-center justify-center rounded-xl bg-current/5 hover:bg-current/10 transition-all hover:scale-105"
                 title={link.title}
               >
-                {/* Ícone Grande */}
+                {/* Large icon */}
                 <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-current/5 shadow-inner mb-1">
                   <img src={getFavicon(link.url, 128) || ""} onError={(e) => { e.currentTarget.style.display = 'none'; }} className="w-6 h-6 object-contain drop-shadow-sm" alt="" />
                   <Globe size={20} className="opacity-20 absolute z-[-1]" />
@@ -209,7 +203,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
                   {link.title}
                 </span>
 
-                {/* Botão Deletar (Aparece no topo direito) */}
+                {/* Delete button (top right) */}
                 <button 
                   onClick={(e) => deleteLink(e, link.id)}
                   className="absolute top-1 right-1 p-1 rounded-md text-red-400 opacity-0 group-hover/grid:opacity-100 hover:bg-red-500/20 transition-all scale-75 hover:scale-100"
@@ -218,7 +212,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
                 </button>
               </a>
             ))}
-             {/* Card Fantasma para adicionar no modo grid */}
+             {/* Ghost card to add in grid mode */}
              <button 
                 onClick={() => setIsAddingLink(true)}
                 className="aspect-square flex flex-col items-center justify-center rounded-xl text-current opacity-30 hover:opacity-100 transition-all"
@@ -246,7 +240,7 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
             </div>
           </div>
         ) : (
-          // Botão de adicionar (Só aparece no modo lista, pois no grid coloquei um card dedicado)
+          // Add button (list mode only, since grid mode has its own card)
           viewMode === "list" && (
             <button 
               onClick={() => setIsAddingLink(true)}

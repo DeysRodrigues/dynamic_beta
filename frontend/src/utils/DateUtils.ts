@@ -1,6 +1,6 @@
 /**
- * Retorna a data local atual no formato YYYY-MM-DD.
- * Essencial para comparar datas corretamente independente do fuso horário.
+ * Returns the current local date as YYYY-MM-DD.
+ * Local date regardless of the time zone, so dates compare correctly.
  */
 export function getTodayDate(): string {
   const now = new Date();
@@ -10,7 +10,7 @@ export function getTodayDate(): string {
 }
 
 /**
- * Formata: "seg., 09 set" (para exibição no topo do dashboard)
+ * Formats "seg., 09 set" (shown at the top of the dashboard)
  */
 export function getFormattedCurrentDate(): string {
   return new Date().toLocaleDateString("pt-BR", {
@@ -21,7 +21,7 @@ export function getFormattedCurrentDate(): string {
 }
 
 /**
- * Converte "2024-01-01" para "seg., 01 jan"
+ * Converts "2024-01-01" to "seg., 01 jan"
  */
 export function formatDate(dateString: string): string {
   if (!dateString) return "";
@@ -39,7 +39,7 @@ export function formatDate(dateString: string): string {
  */
 export function getDaysArray(start: string, end: string): string[] {
   const arr = [];
-  // Usamos T00:00:00 para garantir que estamos no início do dia local
+  // T00:00:00 makes sure we are at the start of the local day
   const dt = new Date(start + "T00:00:00");
   const endDt = new Date(end + "T00:00:00");
   

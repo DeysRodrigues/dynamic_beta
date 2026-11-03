@@ -4,6 +4,9 @@ import { useProjectStore } from "@/store/useProjectStore";
 import type { Project, ProjectGoal, DailyRoutine } from "@/types/Project";
 import { cn } from "@/lib/utils";
 import { nativeWidgets } from "@/data/widgetItems";
+import { createBox } from "@/utils/BoxFactory";
+import { ensureLayouts } from "@/utils/layout";
+import { getDefaultHeight } from "@/widgets/registry";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
 
 interface ProjectModalProps {
@@ -45,7 +48,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
       setDescription(projectToEdit.description);
       setStartDate(projectToEdit.startDate || "");
       setEndDate(projectToEdit.endDate || "");
-      setSelectedBoxes(projectToEdit.boxes.map(id => id.split("-")[0]));
+      setSelectedBoxes(projectToEdit.boxes.map(box => box.type));
       setGoals(projectToEdit.goals.map(g => g.text));
       setRoutines(projectToEdit.routines.map(r => r.text));
     } else {
@@ -70,8 +73,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
       });
 
       const updatedBoxes = selectedBoxes.map(type => {
-        const existingBox = projectToEdit.boxes.find(id => id.startsWith(`${type}-`));
-        return existingBox || `${type}-${crypto.randomUUID().slice(0, 8)}`;
+        return projectToEdit.boxes.find(box => box.type === type) || createBox(type);
       });
 
       updateProject(projectToEdit.id, {
@@ -80,6 +82,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
         startDate: startDate || undefined,
         endDate: endDate || undefined,
         boxes: updatedBoxes,
+        layouts: ensureLayouts(updatedBoxes, projectToEdit.layouts, getDefaultHeight),
         goals: updatedGoals,
         routines: updatedRoutines,
       });
@@ -96,14 +99,15 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
         completedDates: []
       }));
 
+      const newBoxes = selectedBoxes.map(createBox);
       const newProject: Project = {
         id: crypto.randomUUID(),
         name,
         description,
         startDate: startDate || undefined,
         endDate: endDate || undefined,
-        layouts: { lg: [], md: [], sm: [] },
-        boxes: selectedBoxes.map(type => `${type}-${crypto.randomUUID().slice(0, 8)}`),
+        layouts: ensureLayouts(newBoxes, undefined, getDefaultHeight),
+        boxes: newBoxes,
         goals: projectGoals,
         routines: projectRoutines,
         createdAt: new Date().toISOString(),
@@ -125,7 +129,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 sm:p-6 backdrop-blur-xl bg-black/60 animate-in fade-in duration-300">
       <div 
-        className="box-padrao w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden p-0 gap-0 border-none"
+        className="box-padrao w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden p-0 gap-0"
       >
         
         {/* Header */}
@@ -146,7 +150,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-8 pt-4 space-y-10 custom-scrollbar">
-          {/* Informações Básicas */}
+          {/* Basic information */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-3">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1">Nome do Projeto</label>
@@ -155,7 +159,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: Projeto Emagrecer"
-                className="w-full bg-current/[0.06] border-none outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all text-current placeholder:opacity-20"
+                className="w-full bg-current/[0.06] outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all text-current placeholder:opacity-20"
               />
             </div>
             
@@ -178,19 +182,19 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Descreva o que deseja alcançar..."
-              className="w-full bg-current/[0.06] border-none outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all h-24 resize-none text-current placeholder:opacity-20"
+              className="w-full bg-current/[0.06] outline-none rounded-xl px-5 py-4 font-bold focus:bg-current/[0.1] transition-all h-24 resize-none text-current placeholder:opacity-20"
             />
           </div>
 
-          {/* Seleção de Widgets */}
+          {/* Widget selection */}
           <div className="space-y-5">
             <label className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 ml-1">Quais ferramentas deseja usar?</label>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
-              {/* Visão Geral (Sempre primeiro ou especial) */}
+              {/* Overview (always first or special) */}
               <button
                 onClick={() => toggleBox(PROJECT_OVERVIEW_WIDGET.id)}
                 className={cn(
-                  "flex flex-col items-center gap-3 p-5 rounded-2xl border-none transition-all duration-300 group shadow-lg",
+                  "flex flex-col items-center gap-3 p-5 rounded-2xl transition-all duration-300 group shadow-lg",
                   selectedBoxes.includes(PROJECT_OVERVIEW_WIDGET.id) 
                     ? "bg-primary text-primary-foreground scale-105" 
                     : "bg-current/[0.05] opacity-30 hover:opacity-100"
@@ -205,7 +209,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                   key={box.id}
                   onClick={() => toggleBox(box.id)}
                   className={cn(
-                    "flex flex-col items-center gap-3 p-5 rounded-2xl border-none transition-all duration-300 group shadow-lg",
+                    "flex flex-col items-center gap-3 p-5 rounded-2xl transition-all duration-300 group shadow-lg",
                     selectedBoxes.includes(box.id) 
                       ? "bg-primary text-primary-foreground scale-105" 
                       : "bg-current/[0.05] opacity-30 hover:opacity-100"
@@ -243,7 +247,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                     onChange={(e) => setNewGoal(e.target.value)}
                     placeholder="Adicionar nova meta..."
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), newGoal && (setGoals([...goals, newGoal]), setNewGoal("")))}
-                    className="flex-1 bg-current/[0.06] border-none outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
+                    className="flex-1 bg-current/[0.06] outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
                   />
                   <button 
                     onClick={() => { if(newGoal) { setGoals([...goals, newGoal]); setNewGoal(""); } }}
@@ -276,7 +280,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
                     onChange={(e) => setNewRoutine(e.target.value)}
                     placeholder="Adicionar nova rotina..."
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), newRoutine && (setRoutines([...routines, newRoutine]), setNewRoutine("")))}
-                    className="flex-1 bg-current/[0.06] border-none outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
+                    className="flex-1 bg-current/[0.06] outline-none rounded-xl px-4 py-3 text-xs font-bold text-current placeholder:opacity-20 focus:bg-current/[0.1]"
                   />
                   <button 
                     onClick={() => { if(newRoutine) { setRoutines([...routines, newRoutine]); setNewRoutine(""); } }}

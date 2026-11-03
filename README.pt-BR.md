@@ -13,7 +13,7 @@ Um painel de produtividade local-first: uma grade de widgets que você arruma do
 
 [English](README.md) · **Português**
 
-[O que é](#o-que-é) · [Estado](#estado) · [Arquitetura](#arquitetura) · [Stack](#stack) · [Como rodar](#como-rodar) · [Como usar](#como-usar) · [Decisões técnicas](#decisões-técnicas) · [Testes](#testes) · [Licença](#licença)
+[O que é](#o-que-é) · [Estado](#estado) · [Arquitetura](#arquitetura) · [Stack](#stack) · [Dois jeitos de rodar](#dois-jeitos-de-rodar) · [Como usar](#como-usar) · [Decisões técnicas](#decisões-técnicas) · [Testes](#testes) · [Licença](#licença)
 
 </div>
 
@@ -23,9 +23,11 @@ Um painel de produtividade local-first: uma grade de widgets que você arruma do
 
 O DynaBox é um painel de página única onde cada funcionalidade é um widget (uma "box") que você
 solta numa grade redimensionável. Você escolhe quais widgets aparecem, onde ficam e como tudo
-se parece, e o arranjo é seu: não tem conta, não tem servidor e não tem banco de dados. Tudo
-mora no `localStorage`, e o único jeito de um dado sair do navegador é você conectar o seu
-próprio Google Drive para fazer backup.
+se parece, e o arranjo é seu. Por padrão não tem conta, não tem servidor e não tem banco de
+dados: tudo mora no `localStorage`, e o dado só sai do navegador se você mesma exportar um
+backup em JSON. Se quiser uma conta e uma cópia dos dados num banco (para usar em mais de um
+aparelho), dá para conectar o app a um servidor DynaBox que você mesma liga com Docker. Os dois
+jeitos estão em [Dois jeitos de rodar](#dois-jeitos-de-rodar).
 
 Está no ar em **[dynabox.space](https://dynabox.space)**. A interface é em português, porque é
 para quem ele foi feito; o código, os commits e este README são em inglês.
@@ -40,50 +42,66 @@ Medido em 02/10/2026: 299 commits, 97 arquivos TypeScript, 14.644 linhas em `fro
 | Grade do painel: arrastar, redimensionar, adicionar, remover, múltiplos workspaces | funciona |
 | 25 widgets nativos renderizados na grade | funciona |
 | Widgets personalizados escritos em HTML, CSS e JS | funciona |
-| Motor de temas: 7 paletas, 18 papéis de parede, 10 setups prontos, mais cor livre | funciona |
+| Motor de temas: 7 paletas, 18 papéis de parede, 4 setups prontos (dev, estudo focado, estudo relax, semana de provas), mais cor livre | funciona |
 | Tarefas: entrada por script de texto, edição em lote, isolamento por workspace | funciona |
 | Planejador semanal com arrastar e soltar nativo e estatística por ciclo | funciona |
 | Projetos: página dedicada e um painel focado em projeto | funciona |
 | Wiki (`/wiki`) e página de apresentação (`/intro`) | funciona |
 | Backup local: exportar e importar o estado inteiro em JSON | funciona |
-| Backup e restauração no Google Drive | funciona, precisa do seu `VITE_GOOGLE_CLIENT_ID` |
-| Testes automatizados | ainda não existem |
-| Integração contínua | ainda não existe |
+| Conta e sincronização opcionais com um servidor seu (PostgreSQL), escolhidas dentro do app | funciona; a tela só foi exercitada por testes automatizados até agora |
+| Docker: um comando para o app, a API e o banco | funciona, conferido na CI por um smoke test |
+| Testes automatizados | 480 no app (motor de sincronização, tela de conta, armazenamento lento e com falha, markdown, stores, migrações, testes de render) e 77 no servidor, que rodam contra um PostgreSQL de verdade |
+| Integração contínua | GitHub Actions: lint, build e teste a cada push e PR |
 | Layout no celular | responsivo, conferido só à mão |
 
-Dois limites que vale dizer de cara. O bundle principal tem **626,99 kB** (184,58 kB com
-gzip), porque o código compartilhado de biblioteca ainda não foi separado, mesmo cada widget
-sendo um chunk preguiçoso próprio. E não existe suíte de teste, então toda mudança é conferida
-compilando e clicando.
+Um limite que vale dizer de cara: a suíte de teste é nova. Ela cobre a lógica pura, as stores e
+o render das telas principais, mas não o arrastar e soltar da grade nem o comportamento interno
+da maioria dos widgets. O chunk do app tem **242 kB** (64,6 kB com gzip); as bibliotecas estão
+separadas em seis chunks de vendor (react, router, grid, icons, dates, zod) e cada widget é um
+chunk preguiçoso próprio.
 
 ## Arquitetura
 
-Um app React, sem backend. O estado mora em stores do Zustand, cada uma persistida no
-`localStorage` com a sua própria chave. Nada é buscado no carregamento.
+Um app React, mais um servidor opcional. O estado mora em stores do Zustand, cada uma persistida
+no `localStorage` com a sua própria chave, e nada é buscado no carregamento. Entrar num servidor
+não muda isso: o app continua lendo e gravando no `localStorage`, e um motor de sincronização
+copia para o servidor e de volta.
 
 ```
-componente  ->  store Zustand  ->  localStorage
-                      |
-                      +---------->  Google Drive (opcional, sob demanda)
+só local:   componente -> store Zustand -> localStorage
+
+com servidor:  componente -> store Zustand -> localStorage <-> motor de sync <-> API -> PostgreSQL
+```
+
+```
+dynamic_beta/
+├── frontend/           o app React (+ Dockerfile e nginx.conf)
+├── backend/            a API: Fastify, Drizzle, PostgreSQL, argon2 + JWT
+├── docker-compose.yml  web + api + db, um comando
+└── scripts/            smoke test, miniaturas dos temas
 ```
 
 ```
 frontend/src
 ├── pages/              as 8 telas com rota
 ├── components/
-│   ├── layout/         a casca do app: Sidebar, DashboardLayout, Home (a grade em si)
+│   ├── layout/         a casca do app: DashboardLayout, gerenciadores de tema e de pomodoro
 │   │   ├── boxes/      os widgets que moram na grade
 │   │   └── modals/     gerenciador de layout, personalização, backup, editor de widget
 │   ├── week-planner/   o planejador quebrado em partes memoizadas
 │   ├── tasks/          editores de tarefa, em lote e individual
 │   ├── landing/        componentes visuais usados pelo /intro
 │   └── ui/             primitivos compartilhados: button, TaskItem, CustomDatePicker
-├── widgets/            páginas avulsas embutidas por iframe (/w/*)
+├── features/
+│   ├── dashboard/      a página da grade: cabeçalho, abas de workspace, menu de adicionar, grade, moldura do box
+│   └── sidebar/        a barra lateral: perfil, navegação, painel de ajustes
+├── widgets/            o registro de widgets (boxes/<id>.tsx) e as páginas de iframe (/w/*)
 ├── store/              14 stores do Zustand
-├── services/           cliente do Google Drive
-├── hooks/              useCloudSync, useWeekPlanner
-├── utils/              parse de tarefa, helpers de data, helpers de sync
-├── data/               catálogo de widget, catálogo de tema, notas de versão no app
+├── persistence/        o registro das chaves salvas, o adaptador de armazenamento, migrações, backup e hidratação
+├── sync/               a conexão opcional com o servidor: sessão, cliente da API, motor de sincronização
+├── hooks/              useWeekPlanner
+├── utils/              parse de tarefa, helpers de data
+├── data/               catálogo de tema, lista de widgets de iframe, notas de versão no app
 └── types/              Task, Project, Theme
 ```
 
@@ -111,7 +129,9 @@ Rotas:
 | vite | 7.0 | servidor de desenvolvimento e build |
 | tailwindcss | 3.4 | estilo, movido pelas variáveis CSS que o motor de temas escreve |
 | zustand | 5.0 | estado global, com os middlewares `persist` e `immer` |
+| zod | 4.6 | o formato do que os widgets mais pesados salvam, conferido a cada leitura e escrita |
 | immer | 10.2 | o rascunho que as duas stores que mexem em widget e layout juntos usam |
+| react-markdown, remark-gfm | 10, 4 | a visualização em markdown do bloco de notas, no estilo do GitHub, sem HTML cru |
 | react-grid-layout | 1.5 | a grade que arrasta e redimensiona |
 | react-router-dom | 7.6 | roteamento |
 | date-fns | 4.1 | conta de data no planejador e nos calendários |
@@ -120,7 +140,22 @@ Rotas:
 | tailwindcss-animate, tw-animate-css | | as transições |
 | eslint, typescript-eslint | 9.x, 8.x | lint |
 
-## Como rodar
+O servidor opcional em `backend/` (detalhes em [`backend/README.md`](backend/README.md)):
+
+| Dependência | O que faz lá |
+|---|---|
+| Fastify 5 + Zod 4 | o servidor HTTP e a validação de cada requisição |
+| Drizzle ORM + postgres.js | SQL tipado; as migrações são arquivos `.sql` simples em `backend/drizzle/` |
+| PostgreSQL 17 | o banco; um documento `jsonb` por usuário e chave |
+| @node-rs/argon2 | hash de senha (argon2id) |
+| @fastify/jwt, cors, rate-limit | tokens de login, os sites permitidos e limite de tentativas de entrada |
+| Vitest + Testcontainers | testes contra um PostgreSQL de verdade, subido no Docker |
+
+## Dois jeitos de rodar
+
+O app é o mesmo nos dois. A diferença é só se um servidor guarda uma cópia dos seus dados.
+
+### 1. Só local (o padrão)
 
 ```bash
 git clone https://github.com/DeysRodrigues/dynamic_beta.git
@@ -130,20 +165,78 @@ npm run dev
 ```
 
 O app abre em `http://localhost:5173` e funciona inteiro offline desde o primeiro carregamento.
-Nada precisa de configuração, menos a sincronização com o Google Drive.
+Nada precisa de configuração, não tem conta, e os dados ficam neste navegador. É também o que o
+site publicado faz.
 
-### Ligando a sincronização com o Google Drive
-
-A sincronização pede o escopo `drive.file` e escreve um arquivo só,
-`dynabox_backup_v1.json`, no seu Drive. É JSON puro, e só a conta que você autorizar consegue
-ler. Para usar, você precisa do seu próprio client ID de OAuth no console do Google Cloud:
+### 2. Com conta e banco de dados (Docker)
 
 ```bash
-cp .env.example .env
-# depois preencha o VITE_GOOGLE_CLIENT_ID
+git clone https://github.com/DeysRodrigues/dynamic_beta.git
+cd dynamic_beta
+cp .env.example .env        # depois preencha JWT_SECRET e POSTGRES_PASSWORD nele
+openssl rand -hex 32        # um valor para o JWT_SECRET
+openssl rand -hex 16        # um valor para o POSTGRES_PASSWORD
+docker compose up --build -d
 ```
 
-Sem essa variável o resto do app roda normal, e só os botões de sincronização falham.
+Abra `http://localhost:8080`, vá em **Conta** no menu e crie uma conta. O app que está nesse
+container já aponta para o servidor dele. Rodam três containers:
+
+| Serviço | O que é | Dá para acessar da sua máquina? |
+|---|---|---|
+| `web` | o app, servido pelo nginx; ele repassa `/api` para a API | sim, na porta 8080 (`WEB_PORT`) |
+| `api` | o servidor (Fastify) | não, só pelo `web` |
+| `db` | PostgreSQL 17, dados no volume `dynabox_pgdata` | não |
+
+```bash
+docker compose logs -f api    # acompanhar o servidor
+docker compose down           # parar; os dados ficam no volume
+docker compose down -v        # parar E apagar o banco
+./scripts/smoke.sh            # conferir um servidor ligado de ponta a ponta (só precisa de curl)
+```
+
+Depois de criar a sua conta, coloque `ALLOW_REGISTRATION=false` no `.env` e rode
+`docker compose up -d` de novo, para ninguém mais criar conta. Para alcançar a API ou o banco
+com ferramentas como curl ou psql enquanto desenvolve, acrescente `-f docker-compose.dev.yml`
+(API em `127.0.0.1:3000`, banco em `127.0.0.1:5433`).
+
+Tudo sobre essa opção (variáveis do `.env`, backup, atualização, servidor na nuvem, problemas
+comuns) está em **[docs/DOCKER.pt-BR.md](docs/DOCKER.pt-BR.md)**.
+
+### Usando o site publicado com o seu servidor
+
+O site publicado começa só local. Para sincronizá-lo com um servidor que você mesma roda:
+
+1. Ligue o servidor como acima e ponha o endereço do site no `.env`, para o servidor aceitá-lo:
+   `CORS_ORIGINS=https://dynabox.space`, e rode `docker compose up -d`.
+2. No site, abra **Conta**, digite `http://localhost:8080` (o app acha o `/api` sozinho), aperte
+   **Testar conexão** e entre ou crie a conta.
+
+O mesmo passo a passo para ligar o seu servidor está na Wiki do app, na seção "Ter o seu
+servidor" (`/wiki?secao=server`), e a página Conta tem um link para ela.
+
+Os navegadores deixam uma página https chamar `http://localhost`, mas o Safari não deixa, e um
+servidor em outra máquina precisa de endereço https próprio. Nesses casos use o app servido pelo
+seu Docker (opção 2). A tela detecta o problema e avisa antes de tentar.
+
+### Como a sincronização se comporta
+
+O armazenamento do navegador continua sendo a fonte da verdade, então o app é instantâneo e
+funciona offline. Depois que você muda algo, o motor envia um instante depois, dizendo qual
+revisão viu por último, para o servidor poder recusar uma escrita velha. As novidades de outros
+aparelhos chegam ao voltar para a aba, quando a rede volta e a cada minuto. Se a mesma coisa
+mudou nos dois lugares, o app pergunta qual versão manter, chave por chave; ele não consegue
+mesclar duas versões e nunca sobrescreve antes de você responder. **Sair** volta ao modo só
+local sem apagar nada.
+
+### Notas de segurança
+
+As senhas ficam guardadas como hash argon2id. Os tokens de login são assinados com o
+`JWT_SECRET`, duram duas semanas e ficam no armazenamento do navegador, então um script
+injetado na página poderia ler um (hoje não existe, mas é a troca que se faz). Entrar e criar
+conta têm limite de tentativas. Num servidor aberto na internet, ponha-o atrás de https, ajuste
+o `CORS_ORIGINS` para o seu site e desligue o `ALLOW_REGISTRATION` quando tiver a sua conta. Não
+há recuperação de senha por e-mail nem botão para apagar a conta em si ainda, só os dados salvos.
 
 ### Outros comandos
 
@@ -151,7 +244,13 @@ Sem essa variável o resto do app roda normal, e só os botões de sincronizaç�
 npm run build     # tsc -b, depois vite build
 npm run lint      # eslint
 npm run preview   # serve o build de produção
+./scripts/make-theme-thumbs.sh   # miniaturas WebP leves dos papéis de parede dos temas (precisa do ImageMagick)
 ```
+
+A página de temas mostra miniaturas WebP pequenas em vez dos papéis de parede inteiros; a imagem
+completa só é carregada quando um tema é aplicado. Depois de adicionar ou trocar um papel de
+parede em `public/images-themes/`, rode o script e commite as miniaturas novas. Um teste falha
+se um tema apontar para um papel de parede sem miniatura.
 
 ## Como usar
 
@@ -162,7 +261,7 @@ npm run preview   # serve o build de produção
 | Tarefas | a lista de tarefas do dia, restrita ao workspace ativo |
 | Progresso | quanto do dia já está feito |
 | Pomodoro | timer de foco que continua rodando quando você troca de página |
-| Bloco de notas | anotação rápida |
+| Bloco de notas | anotação rápida, escrita em markdown, com visualização e checklist clicável |
 | Mini calendário | visão compacta do mês |
 | Calendário de presença | controle de presença em evento recorrente |
 | Contagem regressiva | quanto falta até uma data |
@@ -181,7 +280,7 @@ npm run preview   # serve o build de produção
 | Automação | regras simples de se/então |
 | Treino rápido | rotina curta de exercício |
 | Perfil RPG | XP e nível ganhos com tarefa concluída |
-| Jardim de pixels | plantas que crescem conforme a tarefa é concluída |
+| Jardim de pixels | uma planta em pixel art que cresce em cinco estágios conforme as tarefas de hoje são concluídas |
 | Tema | troca de tema de dentro da grade |
 | Embutido | um iframe para YouTube, Spotify, Notion ou qualquer URL |
 
@@ -208,10 +307,17 @@ na entrada rápida, na criação em lote e no modal de edição:
 
 ## Decisões técnicas
 
-**Local-first, com o `localStorage` como fonte da verdade.** Não tem backend nem conta. Isso
-deixa o app instantâneo e privado por padrão, e é o motivo de o modelo de dados ter que ser
-pequeno o bastante para serializar inteiro. O custo é que nada sincroniza entre dispositivos
-sozinho, e é justamente o buraco que o backup opcional no Drive fecha.
+**Local-first, com o `localStorage` como fonte da verdade.** Por padrão não tem backend nem conta.
+Isso deixa o app instantâneo e privado, e é o motivo de o modelo de dados ter que ser pequeno o
+bastante para serializar inteiro. Sincronizar com um servidor é um acréscimo por cima disso, não
+uma troca: o servidor é uma cópia, então o app nunca espera por ele e continua funcionando quando
+ele cai.
+
+**Um documento por chave, com revisão, em vez de uma tabela por widget.** O servidor guarda
+exatamente o que o navegador guarda, um documento JSON por usuário e chave, e não olha dentro
+dele. Isso manteve os 25 widgets fora do schema do servidor, e a escrita é um único comando
+atômico que só vale se a revisão informada for a que está registrada. O preço é que um conflito
+se resolve escolhendo uma versão inteira, nunca mesclando campos.
 
 **Zustand em vez de Context.** O app começou em provider de Context e saiu deles na 0.2.0. O
 motivo foi concreto: com o Pomodoro batendo a cada segundo, um único context no topo da árvore
@@ -243,15 +349,21 @@ melhor.
 
 ## Testes
 
-Ainda não existe suíte de teste automatizado. O que é conferido hoje:
+O que é conferido hoje, localmente e na CI a cada push:
 
 ```bash
-npm run build     # tsc -b mais vite build, passando
-npm run lint      # eslint, limpo
+cd frontend && npm run build && npm run lint && npm test   # o app
+cd backend  && npm run lint && npm test                    # o servidor (precisa do Docker ligado)
+./scripts/smoke.sh                                         # um servidor ligado, de ponta a ponta
+SYNC_E2E_URL=http://localhost:8080/api npx vitest run src/sync/e2e.test.ts   # as stores reais do app contra um servidor real
 ```
 
-O resto é conferido à mão: a volta completa da sincronização (fazer backup num navegador e
-restaurar em outro), a persistência do layout depois de recarregar, e os widgets de gamificação
+Os testes do servidor sobem um PostgreSQL de verdade no Docker (Testcontainers), então o que
+eles conferem é o que roda. A CI constrói os três containers e roda o smoke test contra eles.
+
+Os testes cobrem a gramática do texto de tarefa (`TaskParser`), os helpers de data e tarefa e as
+ações da store do dashboard e a volta do backup (exportar, limpar, importar). O resto é conferido à mão: essa mesma
+volta entre dois navegadores, a persistência do layout depois de recarregar, e os widgets de gamificação
 reagindo a uma tarefa concluída. O [`FEATURES.md`](FEATURES.md) documenta o sistema widget por
 widget.
 

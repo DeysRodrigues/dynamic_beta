@@ -1,0 +1,53 @@
+# DynaBox with an account and a database: `docker compose up --build`, then open
+# http://localhost:8080. Without this, the app works on its own with the browser's storage.
+name: dynabox
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dynabox
+      POSTGRES_DB: dynabox
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (see .env.example)}
+    volumes:
+      - dynabox_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dynabox -d dynabox"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # No `ports`: the database is only reachable from the other containers of this project.
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://dynabox:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/dynabox
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env (see .env.example)}
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      # Which websites may call this API from a browser. `*` is fine on your own machine; on a
+      # server open to the internet, put the address of the site, e.g. https://dynabox.space
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        # The app is served at /, and nginx forwards /api to the API, so the app starts out
+        # pointed at its own server. Clear this to start in local-only mode.
+        VITE_DEFAULT_SERVER_URL: /api
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  # `docker compose down -v` deletes this volume, and with it every account and saved document.
+  dynabox_pgdata:

@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useCustomWidgetStore } from "@/store/useCustomWidgetStore";
 import { useEffect, useState } from "react";
+import { HydrationGate } from "@/components/layout/HydrationGate";
 
-export default function CustomWidgetViewer() {
+function CustomWidget() {
   const { id } = useParams();
   const { getWidget } = useCustomWidgetStore();
   const [srcDoc, setSrcDoc] = useState("");
@@ -18,7 +19,7 @@ export default function CustomWidgetViewer() {
             <head>
               <style>
                 body { margin: 0; padding: 0; overflow: hidden; font-family: sans-serif; }
-                /* CSS do Usuário */
+                /* User CSS */
                 ${widget.css}
               </style>
             </head>
@@ -51,9 +52,17 @@ export default function CustomWidgetViewer() {
   return (
     <iframe
       srcDoc={srcDoc}
-      className="w-full h-screen border-none"
+      className="w-full h-screen"
       title={`Custom Widget ${id}`}
-      sandbox="allow-scripts allow-forms allow-pointer-lock allow-same-origin" // Segurança básica
+      sandbox="allow-scripts allow-forms allow-pointer-lock allow-same-origin" // Basic security
     />
+  );
+}
+
+export default function CustomWidgetViewer() {
+  return (
+    <HydrationGate>
+      <CustomWidget />
+    </HydrationGate>
   );
 }

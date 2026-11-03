@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/EmptyState";
 import { useState, type KeyboardEvent } from "react";
 import { useTaskStore } from "@/store/useTaskStore";
 import TaskItem from "@/components/ui/TaskItem";
@@ -16,15 +17,15 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
 
     const today = getTodayDate();
 
-    // 1. Filtra tarefas de hoje.
-    // 2. Filtra APENAS as que têm a tag 'sapo' (na tag principal ou na groupTag).
+    // 1. Keeps today's tasks.
+    // 2. Keeps only those with the 'sapo' tag (in the main tag or in the groupTag).
     const todaysFrogs = tasks.filter((t) => {
         const isToday = t.date === today;
         const hasSapoTag = t.tag?.toLowerCase() === "sapo" || t.groupTag?.toLowerCase() === "sapo";
         return isToday && hasSapoTag;
     });
 
-    // Pega no máximo 3 para manter o foco
+    // Takes at most 3 to keep the focus
     const frogs = todaysFrogs.slice(0, 3);
 
     const completedFrogs = frogs.filter(t => t.completed).length;
@@ -41,7 +42,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
         try {
             const data = parseTextToTaskData(inputValue);
 
-            // --- LÓGICA DE INSERÇÃO INTELIGENTE ---
+            // --- SMART INSERTION ---
             let finalTag = data.tag;
             let finalGroupTag = data.groupTag;
 
@@ -85,7 +86,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                 <Target size={80} />
             </div>
 
-            {/* Cabeçalho */}
+            {/* Header */}
             <div className="mb-4 space-y-2">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-primary">
@@ -108,16 +109,15 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                 </div>
             </div>
 
-            {/* Lista de Sapos */}
+            {/* Frog list */}
             <div className="flex-1 overflow-y-auto custom-scrollbar -mr-2 pr-2 space-y-2">
                 {frogs.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full min-h-[120px] text-center opacity-60 space-y-2 border-2 border-dashed border-border/50 rounded-xl hover:border-primary/30 transition-colors">
-                        <Sparkles size={24} className="text-yellow-500 animate-pulse" />
-                        <p className="text-sm font-medium">Sem sapos na lagoa</p>
-                        <p className="text-xs text-muted-foreground max-w-[180px]">
-                            Adicione uma tarefa aqui ou use a tag <span className="font-mono bg-secondary/50 px-1 rounded">[sapo]</span>
-                        </p>
-                    </div>
+                    <EmptyState
+                        className="h-full min-h-[120px]"
+                        icon={<Sparkles size={24} className="text-yellow-500 animate-pulse" />}
+                        title="Sem sapos na lagoa"
+                        hint={<>Adicione uma tarefa aqui ou use a tag <span className="font-mono bg-current/10 px-1 rounded">[sapo]</span></>}
+                    />
                 ) : (
                     <>
                         {frogs.map((task, index) => (
@@ -137,7 +137,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                         ))}
 
                         {allFrogsEaten && (
-                            <div className="mt-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2">
+                            <div className="mt-2 p-3 bg-green-500/10 rounded-lg flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2">
                                 <Trophy size={16} className="text-green-600" />
                                 <p className="text-xs font-medium text-green-700 dark:text-green-400">
                                     Sapos engolidos! Bom trabalho.
@@ -148,7 +148,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                 )}
             </div>
 
-            {/* Input de Adição Rápida */}
+            {/* Quick add input */}
             <div className="mt-4 relative">
                 <input
                     type="text"
@@ -156,7 +156,7 @@ export default function ThreeFrogsBox({ className }: { className?: string; id?: 
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Adicionar sapo... (ex: Estudar >1h)"
-                    className="w-full bg-background/50 border border-border/60 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground/50 transition-all"
+                    className="w-full bg-background/50 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground/50 transition-all"
                 />
                 <button
                     onClick={addTaskFromInput}

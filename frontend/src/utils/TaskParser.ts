@@ -1,7 +1,7 @@
 import type { Task } from "@/types/Task";
 
 /**
- * Converte Task -> Texto
+ * Writes a task as one line of the task text format; the inverse of `parseTextToTaskData`.
  */
 export function formatTaskToText(task: Task): string {
   const statusPrefix = task.completed ? "- [x]" : "-";
@@ -31,7 +31,19 @@ export function formatTaskToText(task: Task): string {
 }
 
 /**
- * Converte Texto -> Dados da Task
+ * Reads one line of the task text format into task data.
+ *
+ * Grammar, in the order each part is read (every part but the description is optional):
+ *
+ *     [- [x] | x -]  [- | * | +++]  description  [>> HH:mm]  [> 30min | 2h]  [tag]  {group}
+ *
+ * - `- [x]` (or `x -`) marks the task as done; `- [ ]` as pending.
+ * - A leading `+` sets the duration to one hour per `+` instead of the 15-minute default.
+ * - `>> 9:30` is the time of day, padded to `09:30`.
+ * - `> 45min`, `> 45m` or `> 2h` is the duration in minutes (a bare `> 45` also means minutes).
+ * - `[tag]` is the tag and `{group}` the cycle or tag group.
+ *
+ * Whatever is left after removing those parts is the description.
  */
 export function parseTextToTaskData(text: string) {
   let tempLine = text.trim();
@@ -62,15 +74,15 @@ export function parseTextToTaskData(text: string) {
     tempLine = tempLine.replace(/^([-*])/, "");
   }
 
-  // 2. Horário (>> HH:mm)
+  // 2. Time (>> HH:mm)
   const timeMatch = tempLine.match(/>>\s*(\d{1,2}:\d{2})/);
   if (timeMatch) {
     time = timeMatch[1].padStart(5, "0");
     tempLine = tempLine.replace(timeMatch[0], "");
   }
 
-  // 3. Duração (> 30min)
-  // CORREÇÃO AQUI: Mudamos (h|m|min) para (h|min|m) para o 'min' ter prioridade sobre 'm'
+  // 3. Duration (> 30min)
+  // 'min' comes before 'm' in the alternation so it takes priority
   const durationMatch = tempLine.match(/>\s*(\d+)(h|min|m)?/i);
   if (durationMatch) {
     const val = parseInt(durationMatch[1]);

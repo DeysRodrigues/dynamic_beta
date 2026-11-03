@@ -1,12 +1,9 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_GOOGLE_CLIENT_ID: string
+  /**
+   * The server the app starts out pointed at. The Docker build sets it to `/api` (the address the
+   * app itself is served from). Empty or missing means local only: the person types a server.
+   */
+  readonly VITE_DEFAULT_SERVER_URL?: string;
 }
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
-
-declare const google: unknown;
-declare const gapi: unknown;

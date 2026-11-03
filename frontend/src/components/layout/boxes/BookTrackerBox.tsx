@@ -4,24 +4,24 @@ import {
   ArrowRight, Trash2 
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
-import { useDashboardStore } from "@/store/useDashboardStore";
+import {
+  bookTrackerContentSchema,
+  type BookItem,
+  type BookTrackerContent,
+} from "@/widgets/schemas/books";
+import { libraryContentSchema, type LibraryBookContent } from "@/widgets/schemas/library";
 
-interface BookItem { 
-  id: string; 
-  title: string; 
-  current: number; 
-  total: number; 
-  color: string; 
-}
+type TrackerSettings = NonNullable<BookTrackerContent["settings"]>;
+import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
+import type { BoxRef } from "@/types/Box";
 
-interface TrackerSettings {
-  pageStep: number;
-}
+const NO_BOXES: BoxRef[] = [];
 
 export default function BookTrackerBox({ id = "books-default" }: { id?: string }) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const { boxes } = useDashboardStore();
-  const saved = getBoxContent(id) as { books?: BookItem[], settings?: TrackerSettings };
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
+  const boxes = useDashboardStore((state) => selectActiveWorkspace(state)?.boxes ?? NO_BOXES);
+  const saved = getBoxContent(id, bookTrackerContentSchema);
   
   const [books, setBooks] = useState<BookItem[]>(saved.books || []);
   const [settings, setSettings] = useState<TrackerSettings>(saved.settings || { pageStep: 10 });
@@ -38,7 +38,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
     const newSettings = cfg || settings;
     setBooks(data);
     setSettings(newSettings);
-    setBoxContent(id, { books: data, settings: newSettings });
+    setBoxContent(id, { books: data, settings: newSettings }, bookTrackerContentSchema);
   };
 
   const addBook = () => {
@@ -73,11 +73,11 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
   };
 
   const availableImports = useMemo(() => {
-    const libraryIds = boxes.filter(boxId => boxId.startsWith("library"));
-    let allBooksFromLibraries: { title: string }[] = [];
+    const libraryIds = boxes.filter(box => box.type === "library").map(box => box.id);
+    let allBooksFromLibraries: LibraryBookContent[] = [];
     libraryIds.forEach(libId => {
-      const content = getBoxContent(libId) as { books?: { title: string }[] };
-      if (content && content.books) {
+      const content = getBoxContent(libId, libraryContentSchema);
+      if (content.books) {
         allBooksFromLibraries = [...allBooksFromLibraries, ...content.books];
       }
     });
@@ -106,7 +106,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
         </div>
       </div>
 
-      {/* --- MODAL CONFIGURAÇÕES --- */}
+      {/* --- SETTINGS MODAL --- */}
       {showSettings && (
         <div className="p-3 bg-current/5 animate-in slide-in-from-top-2">
           <label className="text-xs font-bold opacity-60 uppercase mb-2 block">Passo de Leitura</label>
@@ -128,7 +128,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
         </div>
       )}
 
-      {/* --- MODAL IMPORTAÇÃO --- */}
+      {/* --- IMPORT MODAL --- */}
       {isImporting && (
         <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 max-h-40 overflow-y-auto custom-scrollbar">
           <h3 className="text-xs font-bold opacity-60 uppercase mb-2">Disponíveis na Estante</h3>
@@ -136,8 +136,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
             <p className="text-xs opacity-50 italic">Nenhum livro novo encontrado.</p>
           ) : (
             <div className="space-y-1">
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {availableImports.map((b: any) => (
+              {availableImports.map((b) => (
                 <button 
                   key={b.id} 
                   onClick={() => handleImport(b.title)}
@@ -178,7 +177,7 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
         </div>
       )}
 
-      {/* --- LISTA DE LIVROS --- */}
+      {/* --- BOOK LIST --- */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
         {books.length === 0 && !isAdding && !isImporting && (
           <div className="h-full flex flex-col items-center justify-center opacity-40 gap-2 min-h-[100px]">

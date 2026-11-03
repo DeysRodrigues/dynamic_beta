@@ -26,13 +26,21 @@ History is not rewritten; the rule applies from here on.
 
 **Types:** `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`.
 
-**One file per commit.** A commit touches a single file whenever that leaves a commit that
-still builds. The exceptions are changes that are atomic by nature: removing an exported
-constant along with its only consumer, or `package.json` together with `package-lock.json`.
-Splitting those would push a commit that does not compile.
+**One logical change per commit.** Files that belong to the same change go in the same commit:
+a store with its test, every file of a rename, `package.json` with `package-lock.json`. Do not
+split a change into one commit per file just to make them small; that only adds noise. Each
+commit should still build.
 
 **Subject only, no body.** If the subject cannot say it, the change is too big and should be
 two commits.
+
+## Interface
+
+No outlines: no borders, no divider lines, no dashed or dotted frames. Separate things with a
+filled surface (`bg-current/5`), spacing and shadow, and show a selection with a ring or a tint.
+Keyboard focus rings are kept. Use `EmptyState` for "nothing here yet". `src/design.test.ts`
+enforces this and lists the few places where a line is part of a drawing or of the user's own
+content.
 
 ## Branches
 

@@ -40,7 +40,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
 
   return (
     <div className="box-padrao">
-      {/* Header do Projeto */}
+      {/* Project header */}
       <div className="mb-4">
         <h3 className="text-lg font-black uppercase tracking-tighter flex items-center gap-2">
           <Target className="text-primary" size={20} />
@@ -101,7 +101,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
                 value={newGoal}
                 onChange={(e) => setNewGoal(e.target.value)}
                 placeholder="Novo objetivo..."
-                className="bg-current/5 border-none outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
+                className="bg-current/5 outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
               />
               <button type="submit" className="p-1.5 bg-primary text-primary-foreground rounded-lg hover:scale-105 transition-transform">
                 <Plus size={16} />
@@ -110,7 +110,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
           </div>
         </section>
 
-        {/* Rotinas Diárias */}
+        {/* Daily routines */}
         <section>
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 flex items-center gap-1">
@@ -147,7 +147,7 @@ export default function ProjectOverviewBox({ projectId }: ProjectOverviewBoxProp
                 value={newRoutine}
                 onChange={(e) => setNewRoutine(e.target.value)}
                 placeholder="Nova rotina..."
-                className="bg-current/5 border-none outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
+                className="bg-current/5 outline-none rounded-lg px-3 py-1.5 text-xs flex-1"
               />
               <button type="submit" className="p-1.5 bg-primary text-primary-foreground rounded-lg hover:scale-105 transition-transform">
                 <Plus size={16} />

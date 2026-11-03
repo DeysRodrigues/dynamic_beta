@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { RefreshCw } from "lucide-react";
 
-// Configurações
+// Settings
 const GRID_SIZE = 15;
-const CELL_SIZE = 20; // Ajuste conforme necessário ou use CSS responsivo
+const CELL_SIZE = 20; // Adjust as needed, or use responsive CSS
 
 export default function SnakeWidget() {
   const [snake, setSnake] = useState([{ x: 7, y: 7 }]);
   const [food, setFood] = useState({ x: 3, y: 3 });
-  const [dir, setDir] = useState({ x: 0, y: 0 }); // Começa parado
+  const [dir, setDir] = useState({ x: 0, y: 0 }); // Starts stopped
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
 
@@ -22,7 +22,7 @@ export default function SnakeWidget() {
   const resetGame = () => {
     setSnake([{ x: 7, y: 7 }]);
     setFood(spawnFood());
-    setDir({ x: 1, y: 0 }); // Começa movendo
+    setDir({ x: 1, y: 0 }); // Starts moving
     setGameOver(false);
     setScore(0);
   };
@@ -35,13 +35,13 @@ export default function SnakeWidget() {
       setSnake((prev) => {
         const newHead = { x: prev[0].x + dir.x, y: prev[0].y + dir.y };
 
-        // Colisão Parede
+        // Wall collision
         if (newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
           setGameOver(true);
           return prev;
         }
 
-        // Colisão Própria
+        // Self collision
         if (prev.some(seg => seg.x === newHead.x && seg.y === newHead.y)) {
           setGameOver(true);
           return prev;

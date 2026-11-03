@@ -2,28 +2,18 @@ import { useState, useRef, useEffect } from "react";
 import { 
   Code, Copy, Plus, Trash2, Check, 
   Terminal, Database, FileJson, Layers, Command,
-  ChevronDown, Search, Hash, X, Coffee, FileCode // Adicionei novos ícones
+  ChevronDown, Search, Hash, X, Coffee, FileCode
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  snippetContentSchema,
+  type Snippet,
+  type SnippetType,
+} from "@/widgets/schemas/snippet";
 import { useThemeStore } from "@/store/useThemeStore";
 
 // --- TIPOS ---
-interface SnippetType {
-  id: string;
-  label: string;
-  icon?: React.ElementType | null;
-  color: string;
-  isCustom?: boolean;
-}
-
-interface Snippet {
-  id: string;
-  title: string;
-  code: string;
-  type: string;
-}
-
-// --- CONFIGURAÇÃO DOS PADRÕES ---
+// --- DEFAULTS ---
 const DEFAULT_TYPES: SnippetType[] = [
   { id: "java", label: "Java", icon: Coffee, color: "text-red-500" },
   { id: "ts", label: "TypeScript", icon: Code, color: "text-blue-400" },
@@ -41,18 +31,19 @@ const DEFAULT_SNIPPETS: Snippet[] = [
   { id: "1", title: "Atualizar Arch (pacman)", code: "sudo pacman -Syu", type: "arch" },
 ];
 
-// Cores para novas linguagens criadas pelo user
+// Colors for languages the user adds
 const RANDOM_COLORS = [
   "text-red-400", "text-emerald-400", "text-indigo-400", 
   "text-fuchsia-400", "text-rose-400", "text-sky-400"
 ];
 
 export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string }) {
-  const { getBoxContent, setBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const primaryColor = useThemeStore(s => s.primaryColor);
-  const saved = getBoxContent(id) as { snippets?: Snippet[], customTypes?: SnippetType[] };
+  const saved = getBoxContent(id, snippetContentSchema);
 
-  // Estados de Dados
+  // Data state
   const [snippets, setSnippets] = useState<Snippet[]>(saved.snippets || DEFAULT_SNIPPETS);
   const [customTypes, setCustomTypes] = useState<SnippetType[]>(saved.customTypes || []);
   const [filter, setFilter] = useState<string>("all");
@@ -64,7 +55,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
   // Form States
   const [newTitle, setNewTitle] = useState("");
   const [newCode, setNewCode] = useState("");
-  const [selectedTypeId, setSelectedTypeId] = useState<string>("arch"); // Padrão selecionado
+  const [selectedTypeId, setSelectedTypeId] = useState<string>("arch"); // Selected by default
   
   // Dropdown States
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -78,7 +69,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
   const save = (newSnippets: Snippet[], newCustomTypes: SnippetType[] = customTypes) => {
     setSnippets(newSnippets);
     setCustomTypes(newCustomTypes);
-    setBoxContent(id, { snippets: newSnippets, customTypes: newCustomTypes });
+    setBoxContent(id, { snippets: newSnippets, customTypes: newCustomTypes }, snippetContentSchema);
   };
 
   const addSnippet = () => {
@@ -191,7 +182,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
         )}
       </div>
 
-      {/* FORMULÁRIO DE ADIÇÃO */}
+      {/* ADD FORM */}
       {isAdding && (
         <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 space-y-3 z-20 relative">
           
@@ -209,7 +200,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute top-full mt-1 left-0 w-full bg-[#1e1e1e] rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
+                <div className="absolute top-full mt-1 left-0 w-full bg-popover text-popover-foreground rounded-lg shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100 max-h-56 flex flex-col">
                   
                   <div className="overflow-y-auto custom-scrollbar flex-1 p-1">
                     {allTypes.map((t) => {
@@ -218,17 +209,17 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                         <div
                           key={t.id}
                           onClick={() => { setSelectedTypeId(t.id); setIsDropdownOpen(false); }}
-                          className="group/item px-2 py-1.5 text-xs cursor-pointer flex items-center justify-between hover:bg-white/10 rounded-md transition-colors"
+                          className="group/item px-2 py-1.5 text-xs cursor-pointer flex items-center justify-between hover:bg-current/10 rounded-md transition-colors"
                         >
                           <div className="flex items-center gap-2">
                             <Icon size={12} className={selectedTypeId === t.id ? "" : "opacity-50 grayscale"} style={selectedTypeId === t.id ? { color: primaryColor } : {}} />
-                            <span className={selectedTypeId === t.id ? "text-white font-bold" : "text-white/70"}>{t.label}</span>
+                            <span className={selectedTypeId === t.id ? "font-bold" : "opacity-70"}>{t.label}</span>
                           </div>
                           
                           {t.isCustom && (
                             <button 
                               onClick={(e) => handleDeleteType(e, t.id)}
-                              className="opacity-0 group-hover/item:opacity-100 p-1 text-white/30 hover:text-red-400 transition"
+                              className="opacity-0 group-hover/item:opacity-50 hover:!opacity-100 p-1 hover:text-red-400 transition"
                             >
                               <X size={10} />
                             </button>
@@ -238,13 +229,13 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                     })}
                   </div>
 
-                  <div className="p-2 bg-black/20">
+                  <div className="p-2 bg-current/5">
                     {isAddingType ? (
                       <form onSubmit={handleCreateType} className="flex gap-1">
                         <input 
                           autoFocus
                           placeholder="Nome..."
-                          className="flex-1 bg-white/5 rounded px-2 py-1 text-[10px] text-white outline-none focus:ring-1 focus:ring-white/30"
+                          className="flex-1 bg-current/10 rounded px-2 py-1 text-[10px] outline-none focus:ring-1 focus:ring-current/30"
                           value={newTypeName}
                           onChange={e => setNewTypeName(e.target.value)}
                         />
@@ -255,7 +246,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
                     ) : (
                       <button 
                         onClick={(e) => { e.stopPropagation(); setIsAddingType(true); }}
-                        className="w-full text-[10px] font-bold text-white/50 hover:text-white flex items-center justify-center gap-1 py-1 rounded hover:bg-white/5 transition"
+                        className="w-full text-[10px] font-bold opacity-60 hover:opacity-100 flex items-center justify-center gap-1 py-1 rounded hover:bg-current/10 transition"
                       >
                         <Plus size={10} /> Nova Linguagem
                       </button>
@@ -293,7 +284,7 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
         </div>
       )}
 
-      {/* LISTA */}
+      {/* LIST */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
         {filteredSnippets.length === 0 ? (
           <div className="text-center py-8 opacity-30 text-xs flex flex-col items-center gap-2">

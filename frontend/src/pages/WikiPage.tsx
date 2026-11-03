@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { 
   Book, 
   Search, 
@@ -16,11 +16,13 @@ import {
   Linkedin,
   Github,
   Sparkles,
-  Zap
+  Zap,
+  Server
 } from "lucide-react";
 import SpotlightCard from "@/components/landing/SpotlightCard";
 import ShinyText from "@/components/landing/ShinyText";
 import ActionModal from "@/components/ui/ActionModal";
+import { CopyBlock } from "@/components/ui/CopyBlock";
 
 // --- TIPAGEM ---
 interface WikiSection {
@@ -31,13 +33,17 @@ interface WikiSection {
   content: string;
   fullText?: string;
   details?: { label: string; desc: string }[];
+  /** Heading above `details`; "Sintaxe & Parâmetros" when missing. */
+  detailsTitle?: string;
+  /** A numbered walk-through; a step may carry a command to copy. */
+  steps?: { title: string; body?: string; code?: string }[];
   examples?: { trigger: string; action: string }[];
   tips?: string;
   curiosities?: string[];
   links?: { label: string; url: string; icon: React.ReactNode; color: string }[];
 }
 
-// --- DADOS DA WIKI ---
+// --- WIKI DATA ---
 const WIKI_DATA: WikiSection[] = [
   {
     id: "intro",
@@ -46,6 +52,23 @@ const WIKI_DATA: WikiSection[] = [
     icon: <Book size={18} />,
     content: "O Dynamic Notes (Dyna) é um sistema operacional de produtividade baseado em widgets. É um 'Segundo Cérebro' imersivo para organizar sua vida através de blocos funcionais.",
     fullText: "A filosofia do Dyna é a adaptação: o workspace deve mudar conforme seu humor e necessidade. Do foco extremo ao planejamento criativo, o Dyna é sua tela em branco tecnológica."
+  },
+  {
+    id: "news",
+    title: "Novidade: conta e banco de dados",
+    category: "guia",
+    icon: <Sparkles size={18} />,
+    content: "O Dyna agora pode, se você quiser, guardar uma cópia dos seus dados num banco de dados e sincronizar entre aparelhos. Continua funcionando só no navegador, como sempre.",
+    fullText: "Nada muda para quem não quiser: sem conta, tudo fica no navegador, sem internet e sem servidor. Para usar a conta, você liga o seu próprio servidor (Docker) e conecta pela página Conta, no menu lateral. Seus dados continuam salvos no navegador e o servidor guarda uma cópia.",
+    details: [
+      { label: "Dois modos", desc: "Só no navegador (padrão) ou com conta e banco. A escolha é feita dentro do app, em Conta, e dá para voltar atrás quando quiser com o botão Sair." },
+      { label: "Sincronização", desc: "As mudanças vão pro servidor em instantes e as de outros aparelhos chegam ao focar a aba, voltar a internet ou a cada 1 minuto. Funciona offline e sincroniza quando voltar." },
+      { label: "Conflitos", desc: "Se o mesmo dado mudou nos dois lados, o app pergunta qual versão manter. Não há mistura campo a campo." },
+      { label: "Login de 14 dias", desc: "Depois de 14 dias o app volta sozinho ao modo local, sem apagar nada. É só entrar de novo." },
+      { label: "Restaurar widgets", desc: "Em Conta, devolve o painel atual ao padrão sem apagar os outros dados nem a conta." },
+      { label: "Sem servidor público", desc: "O site publicado não guarda dado de ninguém: cada pessoa aponta para o servidor que ela mesma liga." },
+    ],
+    tips: "Quer ligar o seu servidor? Abra a seção 'Ter o seu servidor (conta e banco)' aqui na Wiki: é um passo a passo com Docker.",
   },
   {
     id: "shortcuts",
@@ -62,6 +85,30 @@ const WIKI_DATA: WikiSection[] = [
       { label: "Ref: link", desc: "Adiciona uma URL de referência à tarefa automaticamente." }
     ],
     tips: "Exemplo Real: 'Codar Projeto >10:00 >>120 [Dev] !1' -> Cria uma tarefa para as 10h, com 2h de duração, na tag Dev e com alta prioridade."
+  },
+  {
+    id: "server",
+    title: "Ter o seu servidor (conta e banco)",
+    category: "guia",
+    icon: <Server size={18} />,
+    content: "Por padrão o Dyna guarda tudo só no seu navegador. Se quiser uma conta e uma cópia dos dados num banco, você liga o seu próprio servidor com Docker.",
+    fullText: "O servidor guarda a sua conta e uma cópia dos seus dados num banco de dados (PostgreSQL). Você liga no seu computador e só você tem acesso. Sem ele o app continua funcionando normalmente, só com o navegador.",
+    steps: [
+      { title: "Instale o Docker", body: "É o que roda o servidor e o banco. Baixe em docs.docker.com/get-docker." },
+      { title: "Baixe o DynaBox", code: "git clone https://github.com/DeysRodrigues/dynamic_beta.git\ncd dynamic_beta" },
+      {
+        title: "Crie as senhas do servidor",
+        body: "Copie o arquivo de exemplo e preencha JWT_SECRET e POSTGRES_PASSWORD com valores aleatórios (o openssl gera).",
+        code: "cp .env.example .env\nopenssl rand -hex 32   # use como JWT_SECRET\nopenssl rand -hex 16   # use como POSTGRES_PASSWORD",
+      },
+      { title: "Ligue tudo", code: "docker compose up --build -d" },
+    ],
+    detailsTitle: "Depois de ligar, duas opções",
+    details: [
+      { label: "App do Docker", desc: "Abra http://localhost:8080, vá em Conta no menu e crie a conta. Esse app já vem ligado ao seu servidor." },
+      { label: "Site publicado", desc: "No .env ponha CORS_ORIGINS=https://dynabox.space (o endereço do site que você usa), rode docker compose up -d e, em Conta no site, informe http://localhost:8080." },
+    ],
+    tips: "O Safari bloqueia um servidor http a partir de um site https, e um servidor em outra máquina precisa de endereço https: nesses casos use o app do Docker. Depois de criar a sua conta, ponha ALLOW_REGISTRATION=false no .env e rode docker compose up -d, para ninguém mais criar conta. O login dura 14 dias. Para parar: docker compose down (os dados ficam), e docker compose down -v apaga o banco. O guia completo (variáveis do .env, backup, atualização, servidor na nuvem e problemas comuns) está em docs/DOCKER.pt-BR.md no repositório.",
   },
   {
     id: "automation",
@@ -131,8 +178,11 @@ const WIKI_DATA: WikiSection[] = [
 
 export default function WikiPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<WikiSection["category"]>("guia");
-  const [activeId, setActiveId] = useState("intro");
+  // A link can open a section directly: /wiki?secao=server
+  const [params] = useSearchParams();
+  const linked = WIKI_DATA.find((item) => item.id === params.get("secao"));
+  const [activeTab, setActiveTab] = useState<WikiSection["category"]>(linked?.category ?? "guia");
+  const [activeId, setActiveId] = useState(linked?.id ?? "intro");
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -163,7 +213,7 @@ export default function WikiPage() {
       </div>
 
       {/* Navbar Superior */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/5">
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-black/40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
              <button 
@@ -188,7 +238,7 @@ export default function WikiPage() {
                   placeholder="Buscar..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-full py-1.5 pl-9 pr-4 text-xs outline-none focus:border-blue-500/50 transition-all w-32 sm:w-48"
+                  className="bg-white/5 rounded-full py-1.5 pl-9 pr-4 text-xs outline-none focus:ring-1 focus:ring-blue-500/50 transition-all w-32 sm:w-48"
                 />
              </div>
              <button 
@@ -203,11 +253,11 @@ export default function WikiPage() {
 
       <div className="flex-1 flex flex-col lg:flex-row max-w-7xl w-full mx-auto relative z-10 overflow-hidden">
         
-        {/* Sidebar de Navegação */}
-        <aside className="w-full lg:w-[320px] p-6 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col gap-8 bg-black/20 backdrop-blur-sm lg:h-[calc(100vh-68px)] lg:sticky lg:top-[68px]">
+        {/* Navigation sidebar */}
+        <aside className="w-full lg:w-[320px] p-6 flex flex-col gap-8 bg-black/20 backdrop-blur-sm lg:h-[calc(100vh-68px)] lg:sticky lg:top-[68px]">
           
           {/* Tabs de Categorias */}
-          <div className="flex p-1 bg-white/5 rounded-xl border border-white/5">
+          <div className="flex p-1 bg-white/5 rounded-xl">
              {(['guia', 'sistema', 'comunidade'] as const).map(tab => (
                <button
                  key={tab}
@@ -221,7 +271,7 @@ export default function WikiPage() {
              ))}
           </div>
 
-          {/* Lista de Itens da Categoria */}
+          {/* Category item list */}
           <nav className="space-y-1 overflow-y-auto pr-2 custom-scrollbar">
             {filteredItems.filter(i => i.category === activeTab).map((item) => (
               <button
@@ -229,8 +279,8 @@ export default function WikiPage() {
                 onClick={() => setActiveId(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${
                   activeId === item.id 
-                    ? "bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]" 
-                    : "text-white/40 hover:text-white hover:bg-white/5 border border-transparent"
+                    ? "bg-blue-500/10 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.1)]" 
+                    : "text-white/40 hover:text-white hover:bg-white/5"
                 }`}
               >
                 <span className={`${activeId === item.id ? "text-blue-400" : "text-white/20 group-hover:text-white/60"}`}>
@@ -242,8 +292,8 @@ export default function WikiPage() {
             ))}
           </nav>
 
-          {/* Card de Dica Rápida */}
-          <div className="mt-auto hidden lg:block p-5 rounded-2xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 border border-white/5 relative overflow-hidden group">
+          {/* Quick tip card */}
+          <div className="mt-auto hidden lg:block p-5 rounded-2xl bg-gradient-to-br from-blue-600/10 to-purple-600/10 relative overflow-hidden group">
              <div className="relative z-10">
                 <Zap size={18} className="text-yellow-400 mb-3 fill-yellow-400" />
                 <p className="text-[10px] font-bold mb-1 opacity-50 uppercase tracking-tighter">Sabia que?</p>
@@ -253,14 +303,14 @@ export default function WikiPage() {
           </div>
         </aside>
 
-        {/* Área de Conteúdo */}
+        {/* Content area */}
         <main className="flex-1 p-6 lg:p-12 overflow-y-auto lg:h-[calc(100vh-68px)] custom-scrollbar">
           <div className="max-w-3xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             
-            {/* Header da Seção */}
+            {/* Section header */}
             <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-blue-400 border border-white/10 shadow-inner group overflow-hidden relative">
+                    <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-blue-400 shadow-inner group overflow-hidden relative">
                         <div className="absolute inset-0 bg-blue-500/5 group-hover:scale-150 transition-transform duration-700" />
                         <span className="relative z-10 scale-125">{activeContent.icon}</span>
                     </div>
@@ -278,7 +328,7 @@ export default function WikiPage() {
                 </p>
             </div>
 
-            <SpotlightCard className="bg-[#0a0a0a] border-white/5" spotlightColor="rgba(59, 130, 246, 0.1)">
+            <SpotlightCard className="bg-[#0a0a0a]" spotlightColor="rgba(59, 130, 246, 0.1)">
                 <div className="p-8 space-y-12">
                     {/* Texto Detalhado */}
                     {activeContent.fullText && (
@@ -287,13 +337,32 @@ export default function WikiPage() {
                         </div>
                     )}
 
+                    {/* Numbered steps */}
+                    {activeContent.steps && (
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Passo a passo</h3>
+                            <ol className="space-y-5">
+                                {activeContent.steps.map((step, i) => (
+                                    <li key={step.title} className="flex gap-4">
+                                        <span className="shrink-0 w-7 h-7 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                                        <div className="flex-1 min-w-0 space-y-2">
+                                            <p className="font-bold text-white/90">{step.title}</p>
+                                            {step.body && <p className="text-sm text-white/50">{step.body}</p>}
+                                            {step.code && <CopyBlock text={step.code} />}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    )}
+
                     {/* Comandos / Detalhes Grid */}
                     {activeContent.details && (
                         <div className="space-y-4">
-                            <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Sintaxe & Parâmetros</h3>
+                            <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">{activeContent.detailsTitle ?? "Sintaxe & Parâmetros"}</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {activeContent.details.map((detail, i) => (
-                                    <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between group hover:border-blue-500/30 transition-all">
+                                    <div key={i} className="p-4 rounded-2xl bg-white/5 flex items-center justify-between group transition-all">
                                         <div className="space-y-1">
                                             <span className="text-blue-400 font-mono text-xs font-bold bg-blue-500/10 px-2 py-0.5 rounded">{detail.label}</span>
                                             <p className="text-[11px] text-white/40 font-medium">{detail.desc}</p>
@@ -305,13 +374,13 @@ export default function WikiPage() {
                         </div>
                     )}
 
-                    {/* Automações / Exemplos */}
+                    {/* Automations / examples */}
                     {activeContent.examples && (
                         <div className="space-y-4">
                             <h3 className="text-sm font-bold opacity-30 uppercase tracking-widest ml-1">Exemplos de Reatividade</h3>
                             <div className="space-y-3">
                                 {activeContent.examples.map((ex, i) => (
-                                    <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 border-l-blue-500 border-l-4 hover:bg-black/60 transition-colors">
+                                    <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 p-5 rounded-2xl bg-black/40 hover:bg-black/60 transition-colors">
                                         <div className="flex-1">
                                             <span className="text-[9px] font-bold text-white/20 uppercase tracking-tighter">Trigger (IF)</span>
                                             <p className="text-sm font-bold text-white/90">{ex.trigger}</p>
@@ -333,7 +402,7 @@ export default function WikiPage() {
                     {activeContent.curiosities && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {activeContent.curiosities.map((c, i) => (
-                                <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/5 relative overflow-hidden group hover:border-blue-500/20 transition-all">
+                                <div key={i} className="p-6 rounded-2xl bg-white/5 relative overflow-hidden group transition-all">
                                     <div className="text-2xl font-black text-white/5 absolute -top-2 -right-2 italic group-hover:text-blue-500/10 transition-colors">0{i+1}</div>
                                     <p className="text-sm text-white/60 leading-relaxed relative z-10">{c}</p>
                                 </div>
@@ -341,7 +410,7 @@ export default function WikiPage() {
                         </div>
                     )}
 
-                    {/* Links da Criadora */}
+                    {/* Creator's links */}
                     {activeContent.links && (
                         <div className="flex flex-wrap gap-4 pt-4">
                             {activeContent.links.map((link, i) => (
@@ -366,9 +435,9 @@ export default function WikiPage() {
                 </div>
             </SpotlightCard>
 
-            {/* Dicas / Nota de Rodapé da Seção */}
+            {/* Section tips / footnote */}
             {activeContent.tips && (
-                <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-start gap-4">
+                <div className="p-5 rounded-2xl bg-blue-500/5 flex items-start gap-4">
                     <Zap size={20} className="text-blue-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-blue-400/80 leading-relaxed italic">
                         <strong>Dica Expert:</strong> {activeContent.tips}
@@ -376,8 +445,8 @@ export default function WikiPage() {
                 </div>
             )}
 
-            {/* Rodapé Interno da Wiki */}
-            <footer className="pt-20 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30 hover:opacity-100 transition-opacity">
+            {/* Wiki inner footer */}
+            <footer className="pt-20 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30 hover:opacity-100 transition-opacity">
                 <div className="text-[10px] font-bold tracking-widest uppercase">
                     Build 0.5.0 — Beta Phase
                 </div>

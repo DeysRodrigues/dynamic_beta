@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface FavoriteState {
   favoriteWidgets: string[];
@@ -40,7 +41,7 @@ export const useFavoriteStore = create<FavoriteState>()(
       isThemeFavorite: (id) => get().favoriteThemes.includes(id),
     }),
     {
-      name: 'favorites-storage', // Key no localStorage
+      ...persistConfig(PERSISTED.favorites),
     }
   )
 );

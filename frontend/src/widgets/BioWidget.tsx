@@ -15,7 +15,7 @@ export default function BioWidget() {
           <img 
             src="https://i.pinimg.com/736x/98/e5/ee/98e5eeec529fabadc13657da966464d8.jpg" 
             alt="Avatar" 
-            className="w-20 h-20 rounded-full mx-auto border-4 border-white shadow-md object-cover mb-3"
+            className="w-20 h-20 rounded-full mx-auto shadow-md object-cover mb-3"
           />
           <h2 className="font-bold text-gray-800 text-lg">Deys Rodrigues</h2>
           <p className="text-sm text-gray-500">Full Stack Developer</p>

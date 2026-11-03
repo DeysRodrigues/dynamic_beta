@@ -59,7 +59,7 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col items-center bg-transparent">
-       {/* Background Ambient (Dinâmico com o Tema) */}
+       {/* Ambient background (follows the theme) */}
        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div 
           className="absolute top-[10%] left-[-10%] w-[40%] h-[40%] rounded-full blur-[100px] opacity-20" 
@@ -76,7 +76,7 @@ export default function TasksPage() {
         {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner border shrink-0 transition-colors duration-500"
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner shrink-0 transition-colors duration-500"
                  style={{ 
                     backgroundColor: 'color-mix(in srgb, var(--primary) 10%, transparent)',
                     borderColor: 'color-mix(in srgb, var(--primary) 20%, transparent)',
@@ -95,7 +95,7 @@ export default function TasksPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 p-1 rounded-2xl backdrop-blur-sm border transition-colors duration-500"
+          <div className="flex items-center gap-2 p-1 rounded-2xl backdrop-blur-sm transition-colors duration-500"
                style={{ 
                   backgroundColor: 'color-mix(in srgb, var(--box-text-color) 5%, transparent)',
                   borderColor: 'color-mix(in srgb, var(--box-text-color) 10%, transparent)'
@@ -115,7 +115,6 @@ export default function TasksPage() {
               <Filter size={18} />
             </button>
             
-            {/* ... botões seguintes ... */}
             <button
               onClick={() => setShowBulkEdit(true)}
               className="p-2.5 rounded-xl opacity-50 hover:opacity-100 hover:bg-current/10 transition-all"
@@ -132,7 +131,6 @@ export default function TasksPage() {
               <Upload size={18} />
             </button>
 
-            <div className="w-px h-5 mx-1 opacity-10" style={{ backgroundColor: 'var(--box-text-color)' }}></div>
 
             <button
               onClick={deleteAllTasks}
@@ -152,7 +150,7 @@ export default function TasksPage() {
         </div>
 
         {/* --- QUICK INPUT --- */}
-        <div className="bar-padrao ring-1 ring-current/5 shadow-2xl overflow-hidden group border-none">
+        <div className="bar-padrao ring-1 ring-current/5 shadow-2xl overflow-hidden group">
           <div className="absolute inset-0 opacity-0 group-focus-within:opacity-100 transition-opacity" 
                style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 5%, transparent)' }} />
           
@@ -162,7 +160,7 @@ export default function TasksPage() {
                 type="time"
                 value={newTime}
                 onChange={(e) => setNewTime(e.target.value)}
-                className="w-full px-3 py-2.5 font-mono text-sm border-none bg-transparent"
+                className="w-full px-3 py-2.5 font-mono text-sm bg-transparent"
               />
             </div>
 
@@ -172,14 +170,14 @@ export default function TasksPage() {
               value={newDescription}
               onChange={(e) => setNewDescription(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
-              className="flex-1 px-4 py-2.5 text-sm font-medium placeholder:opacity-30 bg-transparent border-none"
+              className="flex-1 px-4 py-2.5 text-sm font-medium placeholder:opacity-30 bg-transparent"
             />
 
             <div className="flex gap-2 w-full sm:w-auto shrink-0">
               <select
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
-                className="flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider min-w-[100px] bg-transparent border-none"
+                className="flex-1 px-3 py-2.5 text-xs font-bold uppercase tracking-wider min-w-[100px] bg-transparent"
               >
                 <option value="" className="bg-[var(--box-color)]">Sem Tag</option>
                 {tags.map((t) => (
@@ -199,7 +197,7 @@ export default function TasksPage() {
           </div>
         </div>
 
-        {/* --- LISTA DE TAREFAS --- */}
+        {/* --- TASK LIST --- */}
         <div className="space-y-8 mt-10">
           {Object.entries(groupTasksByDate(filteredTasks)).length > 0 ? (
             Object.entries(groupTasksByDate(filteredTasks)).map(
@@ -209,7 +207,7 @@ export default function TasksPage() {
                     <h3 className="font-black text-xl md:text-2xl opacity-90 capitalize">
                       {formatDate(date)}
                     </h3>
-                    <div className="flex-1 h-px bg-current/10" />
+                    <div className="flex-1" />
                     <span className="text-[10px] font-black opacity-30 uppercase tracking-widest">
                       {dateTasks.length} {dateTasks.length === 1 ? 'task' : 'tasks'}
                     </span>

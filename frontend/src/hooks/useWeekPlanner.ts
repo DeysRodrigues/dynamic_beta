@@ -8,7 +8,7 @@ import type { WeekGroup } from "@/store/useWeekStore";
 import { useShallow } from "zustand/react/shallow";
 
 export function useWeekPlanner() {
-  // Selectors otimizados do Zustand
+  // Optimized Zustand selectors
   const { weeks, activeWeekId, addWeek, removeWeek, setActiveWeek } = useWeekStore(
     useShallow((state) => ({
       weeks: state.weeks,
@@ -27,7 +27,7 @@ export function useWeekPlanner() {
 
   const tags = useTagStore((state) => state.tags);
 
-  // Estados locais para formulários e modais
+  // Local state for forms and modals
   const [isCreating, setIsCreating] = useState(false);
   const [newWeekName, setNewWeekName] = useState("");
   const [startData, setStartData] = useState(getTodayDate());
@@ -53,24 +53,24 @@ export function useWeekPlanner() {
     [activeWeek]
   );
 
-  // Mapa de tarefas agrupadas por data para performance O(1) no grid
+  // Tasks grouped by date, for O(1) lookups in the grid
   const tasksByDate = useMemo(() => {
     if (!activeWeek) return {};
     const map: Record<string, Task[]> = {};
     
-    // Inicializa o mapa com as datas da semana
+    // Starts the map with the dates of the week
     weekDays.forEach(date => {
       map[date] = [];
     });
 
-    // Filtra tarefas que pertencem a esta Tagzona e estão dentro do range da semana
+    // Keeps the tasks of this tag group that fall inside the week range
     tasks.forEach(task => {
       if (task.groupTag === activeWeek.mainTag && map[task.date]) {
         map[task.date].push(task);
       }
     });
 
-    // Ordena as tarefas por horário
+    // Sorts the tasks by time
     Object.keys(map).forEach(date => {
       map[date].sort((a, b) => (a.time || "23:59").localeCompare(b.time || "23:59"));
     });
@@ -116,7 +116,7 @@ export function useWeekPlanner() {
     updateTask(taskId, { date: newDate });
   }, [updateTask]);
 
-  // Estatísticas do Ciclo
+  // Cycle stats
   const stats = useMemo(() => {
     const allWeekTasks = Object.values(tasksByDate).flat();
     const total = allWeekTasks.length;
@@ -128,7 +128,7 @@ export function useWeekPlanner() {
   }, [tasksByDate]);
 
   return {
-    // Estado
+    // State
     weeks,
     activeWeek,
     activeWeekId,

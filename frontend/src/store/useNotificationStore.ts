@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface NotificationState {
   lastSeenVersion: string | null;
@@ -9,9 +10,9 @@ interface NotificationState {
 export const useNotificationStore = create<NotificationState>()(
   persist(
     (set) => ({
-      lastSeenVersion: null, // Começa vazio
+      lastSeenVersion: null, // Starts empty
       markAsSeen: (version) => set({ lastSeenVersion: version }),
     }),
-    { name: "notification-storage" }
+    { ...persistConfig(PERSISTED.notifications) }
   )
 );

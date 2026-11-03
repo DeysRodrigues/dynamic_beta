@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import type { Task } from "@/types/Task";
-import { STORAGE_KEYS } from "@/constants/storageKeys";
 import { useTagStore } from "./useTagStore";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface TaskState {
   tasks: Task[];
@@ -80,18 +80,18 @@ export const useTaskStore = create<TaskState>()(
 
       getCompletedTimeByTag: () => {
         return get().tasks.reduce<Record<string, number>>((acc, task) => {
-          // Só conta se estiver concluída
+          // Only counts when completed
           if (task.completed) {
             const duration = task.duration || 0;
 
-            // 1. Conta para a Tag Normal (ex: "matemática")
+            // 1. Counts toward the regular tag (e.g. "matemática")
             if (task.tag) {
               const tagLower = task.tag.toLowerCase();
               acc[tagLower] = (acc[tagLower] || 0) + duration;
             }
 
-            // 2. Conta TAMBÉM para a Tagzona (ex: "Faculdade")
-            // Isso permite metas amplas como "Estudar 4h de Faculdade por dia"
+            // 2. Also counts toward the tag group (e.g. "Faculdade")
+            // This allows broad goals like "Study 4h of college per day"
             if (task.groupTag) {
               const groupLower = task.groupTag.toLowerCase();
               acc[groupLower] = (acc[groupLower] || 0) + duration;
@@ -102,8 +102,7 @@ export const useTaskStore = create<TaskState>()(
       },
     }),
     {
-      name: STORAGE_KEYS.TASKS,
-      storage: createJSONStorage(() => localStorage),
+      ...persistConfig(PERSISTED.tasks),
     }
   )
 );

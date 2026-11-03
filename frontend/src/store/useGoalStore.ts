@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { STORAGE_KEYS } from "@/constants/storageKeys";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 export interface Goal {
   tag: string;
@@ -25,6 +25,6 @@ export const useGoalStore = create<GoalState>()(
       removeGoal: (index) =>
         set((state) => ({ goals: state.goals.filter((_, i) => i !== index) })),
     }),
-    { name: STORAGE_KEYS.GOALS }
+    { ...persistConfig(PERSISTED.goals) }
   )
 );

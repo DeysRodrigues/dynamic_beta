@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import { Bell, X } from "lucide-react";
 import { APP_UPDATES } from "@/data/updates";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { useShallow } from "zustand/react/shallow";
 
 export default function NotificationBell() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -52,26 +54,26 @@ export default function NotificationBell() {
           className="text-white/90 group-hover:text-white transition"
         />
         {hasNewUpdate && (
-          <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full border-2 border-primary animate-pulse shadow-sm z-10" />
+          <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full animate-pulse shadow-sm z-10" />
         )}
       </button>
 
       {isOpen &&
         createPortal(
           <div
-            className="fixed w-[calc(100vw-32px)] sm:w-80 bg-[#1e1e1e] border border-white/10 rounded-xl shadow-2xl p-0 z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-gray-200 font-sans 
+            className="fixed w-[calc(100vw-32px)] sm:w-80 bg-[#1e1e1e] rounded-xl shadow-2xl p-0 z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-gray-200 font-sans 
             top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
             md:top-auto md:left-auto md:translate-x-0 md:translate-y-0 md:origin-top-left"
             style={window.innerWidth >= 768 ? { top: coords.top, left: coords.left } : {}}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Seta do Popover - Escondida no mobile */}
-            <div className="hidden md:block absolute top-3 -left-1.5 w-3 h-3 bg-[#1e1e1e] border-l border-b border-white/10 rotate-45 transform" />
+            {/* Popover arrow, hidden on mobile */}
+            <div className="hidden md:block absolute top-3 -left-1.5 w-3 h-3 bg-[#1e1e1e] rotate-45 transform" />
 
-            {/* HEADER DINÂMICO */}
+            {/* DYNAMIC HEADER */}
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 relative">
               <div className="flex items-center gap-2 text-white font-bold text-sm pr-6 leading-tight">
-                {/* Agora usa o emoji do arquivo */}
+                {/* Now uses the emoji from the file */}
                 <span className="text-lg">{APP_UPDATES.emoji}</span>
                 {APP_UPDATES.title}
               </div>
@@ -88,14 +90,14 @@ export default function NotificationBell() {
             </div>
 
             <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
-              {/* ÁREA DO RECADO (MESSAGE) */}
+              {/* MESSAGE AREA */}
               {APP_UPDATES.message && (
-                <div className="bg-white/5 p-3 rounded-lg border border-white/5 text-sm text-gray-300 italic leading-relaxed">
+                <div className="bg-white/5 p-3 rounded-lg text-sm text-gray-300 italic leading-relaxed">
                   {APP_UPDATES.message}
                 </div>
               )}
 
-              {/* LISTA DE ITEMS */}
+              {/* ITEMS LIST */}
               <div className="space-y-2">
                 {APP_UPDATES.items.map((item, i) => (
                   <div
@@ -111,13 +113,16 @@ export default function NotificationBell() {
               </div>
             </div>
 
-            {/* FOOTER DINÂMICO */}
-            <div className="p-3 bg-black/20 border-t border-white/5 text-center">
+            {/* DYNAMIC FOOTER */}
+            <div className="p-3 bg-black/20 text-center">
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  if (APP_UPDATES.link) navigate(APP_UPDATES.link.to);
+                }}
                 className="text-[10px] font-bold text-purple-400 hover:text-purple-300 uppercase tracking-widest transition"
               >
-                {APP_UPDATES.footer || "FECHAR"}
+                {APP_UPDATES.link ? APP_UPDATES.link.label : APP_UPDATES.footer || "FECHAR"}
               </button>
             </div>
           </div>,

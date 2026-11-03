@@ -18,9 +18,9 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
   const [js, setJs] = useState("console.log('Widget carregado!');");
   
   const [activeTab, setActiveTab] = useState<"html" | "css" | "js">("html");
-  const [previewKey, setPreviewKey] = useState(0); // Força refresh do iframe
+  const [previewKey, setPreviewKey] = useState(0); // Forces the iframe to refresh
 
-  // Carrega dados se estiver editando
+  // Loads the data when editing
   useEffect(() => {
     if (widgetToEdit) {
       setName(widgetToEdit.name);
@@ -29,7 +29,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
       setCss(widgetToEdit.css);
       setJs(widgetToEdit.js);
     } else {
-      // Reset para criar novo
+      // Reset to create a new one
       setName("");
       setDescription("");
       setHtml("<h1>Olá Mundo!</h1>");
@@ -58,7 +58,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
     alert("Widget salvo com sucesso!");
   };
 
-  // Preview em tempo real (montado localmente)
+  // Live preview (mounted locally)
   const srcDoc = `
     <html>
       <head><style>body{margin:0;font-family:sans-serif;}${css}</style></head>
@@ -71,7 +71,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
       <div className="bg-white w-full h-full max-w-6xl rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
+        <div className="flex justify-between items-center p-4 bg-gray-50">
           <div className="flex items-center gap-3 w-1/2">
              <div className="bg-indigo-600 p-2 rounded-lg text-white">
                <Code size={20} />
@@ -107,24 +107,24 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           
           {/* Coluna Editor */}
-          <div className="w-full md:w-1/2 flex flex-col border-r border-gray-200 bg-gray-900 text-gray-300">
+          <div className="w-full md:w-1/2 flex flex-col bg-gray-900 text-gray-300">
             {/* Tabs */}
-            <div className="flex border-b border-gray-700 bg-gray-800">
+            <div className="flex bg-gray-800">
               <button 
                 onClick={() => setActiveTab("html")}
-                className={`flex-1 py-3 text-sm font-mono flex items-center justify-center gap-2 border-b-2 transition ${activeTab === 'html' ? 'border-orange-500 text-white bg-gray-700' : 'border-transparent hover:bg-gray-700'}`}
+                className={`flex-1 py-3 text-sm font-mono flex items-center justify-center gap-2 transition ${activeTab === 'html' ? 'text-orange-300 bg-gray-700' : 'hover:bg-gray-700'}`}
               >
                 <FileCode size={14} className="text-orange-500"/> HTML
               </button>
               <button 
                 onClick={() => setActiveTab("css")}
-                className={`flex-1 py-3 text-sm font-mono flex items-center justify-center gap-2 border-b-2 transition ${activeTab === 'css' ? 'border-blue-500 text-white bg-gray-700' : 'border-transparent hover:bg-gray-700'}`}
+                className={`flex-1 py-3 text-sm font-mono flex items-center justify-center gap-2 transition ${activeTab === 'css' ? 'text-blue-300 bg-gray-700' : 'hover:bg-gray-700'}`}
               >
                 <FileCode size={14} className="text-blue-500"/> CSS
               </button>
               <button 
                 onClick={() => setActiveTab("js")}
-                className={`flex-1 py-3 text-sm font-mono flex items-center justify-center gap-2 border-b-2 transition ${activeTab === 'js' ? 'border-yellow-500 text-white bg-gray-700' : 'border-transparent hover:bg-gray-700'}`}
+                className={`flex-1 py-3 text-sm font-mono flex items-center justify-center gap-2 transition ${activeTab === 'js' ? 'text-yellow-300 bg-gray-700' : 'hover:bg-gray-700'}`}
               >
                 <FileJson size={14} className="text-yellow-500"/> JS
               </button>
@@ -147,7 +147,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
 
           {/* Coluna Preview */}
           <div className="w-full md:w-1/2 flex flex-col bg-gray-100">
-             <div className="p-2 bg-gray-200 border-b border-gray-300 flex justify-between items-center text-xs text-gray-500 uppercase font-bold tracking-wider">
+             <div className="p-2 bg-gray-200 flex justify-between items-center text-xs text-gray-500 uppercase font-bold tracking-wider">
                <span>Preview</span>
                <button onClick={() => setPreviewKey(k => k + 1)} className="flex items-center gap-1 hover:text-indigo-600">
                  <Play size={14} /> Atualizar
@@ -157,7 +157,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
                 <iframe 
                   key={previewKey}
                   srcDoc={srcDoc}
-                  className="w-full h-full border-none"
+                  className="w-full h-full"
                   title="Preview"
                   sandbox="allow-scripts allow-modals"
                 />

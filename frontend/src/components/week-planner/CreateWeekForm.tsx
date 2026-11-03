@@ -25,7 +25,7 @@ export function CreateWeekForm({
   onCancel
 }: CreateWeekFormProps) {
   return (
-    <div className="box-padrao border-none animate-in zoom-in-95 duration-300 shadow-2xl overflow-hidden p-0">
+    <div className="box-padrao animate-in zoom-in-95 duration-300 shadow-2xl overflow-hidden p-0">
       <div className="p-8 pb-4">
         <h3 className="text-xl font-black uppercase tracking-tighter flex items-center gap-3 mb-1">
           <Layout size={20} className="text-primary" /> Iniciar Novo Ciclo
@@ -43,7 +43,7 @@ export function CreateWeekForm({
                 placeholder="Ex: Sprint #01"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-5 py-4 text-sm font-bold rounded-2xl bg-current/[0.06] border-none focus:bg-current/[0.1] outline-none transition-all text-current placeholder:opacity-20"
+                className="w-full px-5 py-4 text-sm font-bold rounded-2xl bg-current/[0.06] focus:bg-current/[0.1] outline-none transition-all text-current placeholder:opacity-20"
               />
             </div>
             <div className="space-y-2">
@@ -52,7 +52,7 @@ export function CreateWeekForm({
                 <select
                   value={selectedTag}
                   onChange={(e) => setSelectedTag(e.target.value)}
-                  className="w-full px-5 py-4 text-sm font-bold uppercase tracking-widest bg-current/[0.06] border-none focus:bg-current/[0.1] outline-none transition-all rounded-2xl appearance-none cursor-pointer"
+                  className="w-full px-5 py-4 text-sm font-bold uppercase tracking-widest bg-current/[0.06] focus:bg-current/[0.1] outline-none transition-all rounded-2xl appearance-none cursor-pointer"
                 >
                   <option value="" className="bg-[var(--box-color)]">Selecione uma Tag...</option>
                   {tags.map((t) => (

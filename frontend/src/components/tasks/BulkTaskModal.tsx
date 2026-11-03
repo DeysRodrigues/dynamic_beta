@@ -88,14 +88,14 @@ export function BulkTaskModal({
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
       <div 
-        className="rounded-xl shadow-2xl w-full max-w-2xl p-6 space-y-4 animate-in fade-in zoom-in duration-200 border border-white/10"
+        className="rounded-xl shadow-2xl w-full max-w-2xl p-6 space-y-4 animate-in fade-in zoom-in duration-200"
         style={{ backgroundColor: 'var(--box-color)', color: 'var(--box-text-color)' }}
       >
         <h3 className="text-xl font-bold">
           Adicionar Tarefas {targetGroupTag ? `(Grupo: ${targetGroupTag})` : ""}
         </h3>
         
-        <div className="text-sm p-3 rounded-lg border border-current/10 bg-black/5 opacity-80">
+        <div className="text-sm p-3 rounded-lg bg-black/5 opacity-80">
           <p className="font-semibold mb-1">Sintaxe Power User:</p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 list-disc pl-4 text-xs">
             <li><code>- Texto</code> : Tarefa</li>
@@ -110,7 +110,7 @@ export function BulkTaskModal({
           value={bulkTaskInput}
           onChange={(e) => setBulkTaskInput(e.target.value)}
           placeholder="- Limpar quarto >2h >>15:00 [Casa]"
-          className="w-full h-40 p-3 border rounded-lg font-mono text-sm focus:ring-2 focus:ring-primary/20 outline-none bg-black/5 border-current/20 text-inherit placeholder:opacity-40"
+          className="w-full h-40 p-3 rounded-lg font-mono text-sm focus:ring-2 focus:ring-primary/20 outline-none bg-black/5 text-inherit placeholder:opacity-40"
         />
 
         <div className="flex flex-wrap gap-3 items-center">
@@ -119,7 +119,7 @@ export function BulkTaskModal({
             <select
               value={defaultTag}
               onChange={(e) => setDefaultTag(e.target.value)}
-              className="px-3 py-2 border rounded-lg outline-none text-sm w-32 bg-black/5 border-current/20 text-inherit"
+              className="px-3 py-2 rounded-lg outline-none text-sm w-32 bg-black/5 text-inherit"
             >
               <option value="">(Nenhuma)</option>
               {tags.map((tag) => <option key={tag} value={tag}>{tag}</option>)}
@@ -132,7 +132,7 @@ export function BulkTaskModal({
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="px-3 py-2 border rounded-lg outline-none text-sm bg-black/5 border-current/20 text-inherit"
+              className="px-3 py-2 rounded-lg outline-none text-sm bg-black/5 text-inherit"
             />
           </div>
 

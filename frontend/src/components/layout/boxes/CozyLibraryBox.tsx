@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { 
   Plus, Settings2, Trash2, 
   Book, BookOpen, Library, GraduationCap, Heart, Star, 
@@ -6,33 +6,19 @@ import {
   Palette, Check, ExternalLink
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import {
+  libraryContentSchema,
+  type LibraryBookContent,
+  type LibraryCategory,
+  type LibrarySettings,
+} from "@/widgets/schemas/library";
+
+// A book in the widget always has a category; saved books from before categories existed get one.
+type LibraryBook = LibraryBookContent & { categoryId: string };
 import { cn } from "@/lib/utils";
 
 // --- TIPOS ---
-interface LibraryCategory {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
-
-interface LibraryBook {
-  id: string;
-  title: string;
-  link?: string;
-  categoryId: string;
-  completed: boolean;
-  color: string;
-  height: number;
-  pattern: number;
-}
-
-interface LibrarySettings {
-  woodColor: string;
-  wallColor: string;
-}
-
-// --- ÍCONES ---
+// --- ICONS ---
 const iconMap: Record<string, React.ElementType> = {
   book: Book, open: BookOpen, library: Library, school: GraduationCap,
   heart: Heart, star: Star, work: Briefcase, coffee: Coffee,
@@ -40,8 +26,9 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export default function CozyLibraryBox({ id = "library-default" }: { id?: string }) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
-  const saved = getBoxContent(id) as { categories?: LibraryCategory[], books?: LibraryBook[], settings?: LibrarySettings };
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
+  const saved = getBoxContent(id, libraryContentSchema);
 
   const defaultCategories: LibraryCategory[] = [
     { id: "1", name: "Geral", icon: "library", color: "var(--book-color-1)" }
@@ -49,8 +36,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
 
   const [categories, setCategories] = useState<LibraryCategory[]>(saved.categories || defaultCategories);
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const initialBooks = (saved.books || []).map((b: any) => ({
+  const initialBooks: LibraryBook[] = (saved.books || []).map((b) => ({
     ...b,
     categoryId: b.categoryId || categories[0].id
   }));
@@ -80,7 +66,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
     setBooks(_books);
     setCategories(_categories);
     setSettings(_settings);
-    setBoxContent(id, { books: _books, categories: _categories, settings: _settings });
+    setBoxContent(id, { books: _books, categories: _categories, settings: _settings }, libraryContentSchema);
   };
 
   const addBook = () => {
@@ -203,7 +189,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
                  {(() => { const I = iconMap[newCatIcon] || Book; return <I size={18}/> })()}
                </button>
                {showIconMenu && (
-                 <div className="absolute top-10 left-0 bg-popover shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
+                 <div className="absolute top-10 left-0 bg-popover text-popover-foreground shadow-xl rounded-xl p-2 grid grid-cols-4 gap-1 z-50 w-48 animate-in zoom-in-95">
                    {Object.keys(iconMap).map(k => {
                      const I = iconMap[k];
                      return <button key={k} onClick={() => { setNewCatIcon(k); setShowIconMenu(false); }} className={`p-2 rounded-lg flex items-center justify-center hover:bg-primary/10 hover:text-primary ${newCatIcon === k ? 'bg-primary/10 text-primary' : ''}`}><I size={16} /></button>
@@ -219,7 +205,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
           <div className="flex gap-2 mb-4">
             {woods.map(w => (
               <button key={w.name} onClick={() => save(books, categories, { ...settings, woodColor: w.color })} className={cn("w-8 h-8 rounded-full ring-2 ring-transparent hover:ring-primary/50 transition shadow-sm relative overflow-hidden", settings.woodColor === w.color && "ring-primary")} style={{ backgroundColor: w.color }} title={w.name}>
-                 {/* Efeito de textura na bolinha */}
+                 {/* Texture effect on the knob */}
                  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.1)_50%,transparent_75%,transparent_100%)] opacity-50 bg-[length:10px_10px]" />
               </button>
             ))}
@@ -240,7 +226,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
         {[shelf1, shelf2].map((shelf, idx) => (
           <div key={idx} className="relative w-full h-32 flex items-end group/shelf">
              
-             {/* Fundo do Nicho (Parede interna escura para dar profundidade) */}
+             {/* Niche background (dark inner wall, for depth) */}
              <div className="absolute inset-x-2 top-2 bottom-3 bg-black/20 shadow-inner rounded-t-lg backdrop-blur-sm transition-colors duration-500"></div>
              
              {/* Livros */}
@@ -262,7 +248,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
                 <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black/30"></div>
              </div>
 
-             {/* Laterais da Estante (Suportes) */}
+             {/* Bookshelf sides (supports) */}
              <div className="absolute bottom-0 left-0 w-2 h-[110%] rounded-t-sm z-30 shadow-md" style={{ backgroundColor: settings.woodColor, filter: 'brightness(0.8)' }}></div>
              <div className="absolute bottom-0 right-0 w-2 h-[110%] rounded-t-sm z-30 shadow-md" style={{ backgroundColor: settings.woodColor, filter: 'brightness(0.8)' }}></div>
           </div>
@@ -277,7 +263,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
           <h3 className="text-xs font-bold opacity-60 mb-2">Adicionar em: <span className="text-primary">{activeCategoryData?.name}</span></h3>
           <div className="flex gap-2 mb-2 items-center">
             <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm cursor-pointer hover:scale-110 transition">
-              <input type="color" className="absolute -top-2 -left-2 w-12 h-12 cursor-pointer p-0 border-0" value={newBookColor} onChange={e => setNewBookColor(e.target.value)} title="Cor da capa" />
+              <input type="color" className="absolute -top-2 -left-2 w-12 h-12 cursor-pointer p-0" value={newBookColor} onChange={e => setNewBookColor(e.target.value)} title="Cor da capa" />
             </div>
             
             <input autoFocus className="flex-1 bg-black/5 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 text-inherit" placeholder="Título..." value={newBookTitle} onChange={e => setNewBookTitle(e.target.value)} onKeyDown={e => e.key === 'Enter' && addBook()} />
@@ -330,8 +316,7 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function BookItem({ book, selected, onClick }: { book: LibraryBook, selected: boolean, onClick: (e: any) => void }) {
+function BookItem({ book, selected, onClick }: { book: LibraryBook, selected: boolean, onClick: (e: MouseEvent) => void }) {
   return (
     <div onClick={onClick} className={`group relative flex flex-col items-center justify-end cursor-pointer transition-transform duration-200 origin-bottom ${selected ? 'scale-110 z-20 -translate-y-4' : 'hover:-translate-y-1 hover:z-10'}`} style={{ width: '28px', flexShrink: 0 }}>
       {/* Marcador de Lido (Fita) */}
@@ -345,7 +330,7 @@ function BookItem({ book, selected, onClick }: { book: LibraryBook, selected: bo
         {/* Lombada com textura sutil */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/10 pointer-events-none"></div>
         
-        {/* Padrões da lombada */}
+        {/* Spine patterns */}
         {book.pattern === 0 && <div className="w-full h-full flex flex-col justify-between py-2 px-0.5"><div className="w-full h-[1px] bg-black/30"></div><div className="w-full h-[1px] bg-black/30"></div></div>}
         {book.pattern === 1 && <div className="absolute top-4 bottom-4 left-1 right-1 bg-black/10 rounded-sm border border-black/10"></div>}
         {book.pattern === 2 && <div className="absolute top-2 w-full text-center"><div className="w-2 h-2 bg-white/30 rounded-full mx-auto shadow-inner"></div></div>}

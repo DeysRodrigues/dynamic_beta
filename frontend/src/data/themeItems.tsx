@@ -1,8 +1,7 @@
-import { Snowflake, Cat, Ghost, Anchor, Leaf, Fish, Sprout, MonitorPlay } from "lucide-react";
-import type { ThemeItem, WallpaperThemeItem, SetupItem } from "@/types/Theme";
+import type { ThemeItem, WallpaperThemeItem } from "@/types/Theme";
 
 // =====================================================================
-// 1. PALETAS DE CORES (Só muda as cores, mantém wallpaper atual)
+// 1. COLOR PALETTES (change only the colors, keep the current wallpaper)
 // =====================================================================
 export const colorPalettes: ThemeItem[] = [
   {
@@ -99,7 +98,7 @@ export const colorPalettes: ThemeItem[] = [
 ];
 
 // =====================================================================
-// 2. TEMAS DE IMERSÃO (Muda Cores + Papel de Parede, mantém Layout)
+// 2. IMMERSION THEMES (change colors and wallpaper, keep the layout)
 // =====================================================================
 export const wallpaperThemes: WallpaperThemeItem[] = [
  
@@ -114,11 +113,11 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Um entardecer suave e romântico. Para momentos de paz a dois. (for u, c sz)",
     previewColor: "bg-[#8b5cf6]", // Roxo Suave
     theme: {
-      backgroundColor: "#2e2a45", // Azul/Roxo Crepúsculo (Fundo do céu)
-      boxColor: "#3e3859",        // Roxo levemente mais claro para caixas
+      backgroundColor: "#2e2a45", // Twilight blue/purple (sky background)
+      boxColor: "#3e3859",        // Slightly lighter purple for the boxes
       sidebarColor: "#1e1b2e",    // Escuro aconchegante
-      textColor: "#e9d5ff",       // Lilás claro (Texto legível)
-      primaryColor: "#f472b6",    // Rosa Suave (Cor das nuvens/flores e do amor)
+      textColor: "#e9d5ff",       // Light lilac (readable text)
+      primaryColor: "#f472b6",    // Soft pink (clouds, flowers and love)
       boxOpacity: 0.85,
       wallpaper: "custom",
       customImage: "/images-themes/cat-love.png", // Renomeie image_341ddc
@@ -132,7 +131,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     theme: {
       backgroundColor: "#f5ebe0", // Creme claro
       boxColor: "#e3d5ca",        // Latte suave
-      sidebarColor: "#4a403a",    // Marrom Café
+      sidebarColor: "#4a403a",    // Coffee brown
       textColor: "#3e2723",       // Marrom Escuro
       primaryColor: "#d4a373",    // Caramelo
       boxOpacity: 0.9,
@@ -151,11 +150,11 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Tons pastéis oníricos. Azul, ciano e o rosa vibrante das flores.",
     previewColor: "bg-[#60a5fa]", // Azul Pastel
     theme: {
-      backgroundColor: "#dbeafe", // Azul Bebê muito claro
-      boxColor: "#bfdbfe",        // Azul Céu Translucido
+      backgroundColor: "#dbeafe", // Very light baby blue
+      boxColor: "#bfdbfe",        // Translucent sky blue
       sidebarColor: "#1e3a8a",    // Azul Real Escuro
       textColor: "#172554",       // Azul Profundo
-      primaryColor: "#fb7185",    // Rosa Flor (Destaque da Hornet)
+      primaryColor: "#fb7185",    // Flower pink (Hornet's highlight)
       boxOpacity: 0.8,
       wallpaper: "custom",
       customImage: "/images-themes/hollow-garden.png", // Renomeie image_348731
@@ -170,7 +169,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
       backgroundColor: "#2e1065", // Violeta Profundo
       boxColor: "#4c1d95",        // Roxo Intenso
       sidebarColor: "#1c1917",    // Quase preto
-      textColor: "#f5d0fe",       // Rosa Pálido Brilhante
+      textColor: "#f5d0fe",       // Bright pale pink
       primaryColor: "#e879f9",    // Rosa Seda Neon
       boxOpacity: 0.85,
       wallpaper: "custom",
@@ -204,9 +203,9 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Céu de anime azul vibrante com o vermelho intenso das cerejas.",
     previewColor: "bg-[#ef4444]", // Vermelho
     theme: {
-      backgroundColor: "#e0f2fe", // Azul Céu Claro
+      backgroundColor: "#e0f2fe", // Light sky blue
       boxColor: "#ffffff",        // Branco Limpo
-      sidebarColor: "#0c4a6e",    // Azul Petróleo
+      sidebarColor: "#0c4a6e",    // Petrol blue
       textColor: "#075985",       // Azul Escuro
       primaryColor: "#dc2626",    // Vermelho Cereja
       boxOpacity: 0.9,
@@ -220,10 +219,10 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Refrescante, líquido e energizante. Laranja e dourado.",
     previewColor: "bg-[#f97316]", // Laranja
     theme: {
-      backgroundColor: "#ffedd5", // Laranja muito pálido
+      backgroundColor: "#ffedd5", // Very pale orange
       boxColor: "#fff7ed",        // Branco quente
       sidebarColor: "#7c2d12",    // Marrom Avermelhado
-      textColor: "#431407",       // Marrom Café
+      textColor: "#431407",       // Coffee brown
       primaryColor: "#ea580c",    // Laranja Vivo
       boxOpacity: 0.85,
       wallpaper: "custom",
@@ -236,7 +235,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     description: "Água cristalina e mirtilos. Frio, calmo e focado.",
     previewColor: "bg-[#3b82f6]", // Azul Real
     theme: {
-      backgroundColor: "#eff6ff", // Azul Água
+      backgroundColor: "#eff6ff", // Water blue
       boxColor: "#dbeafe",        // Azul Gelo Transparente
       sidebarColor: "#172554",    // Azul Profundo
       textColor: "#1e40af",       // Azul Escuro
@@ -275,7 +274,7 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
     theme: {
       backgroundColor: "#4c1d95", // Roxo Base
       boxColor: "#701a75",        // Magenta Escuro
-      sidebarColor: "#2e1065",    // Índigo Profundo
+      sidebarColor: "#2e1065",    // Deep indigo
       textColor: "#fdf4ff",       // Branco Rosado
       primaryColor: "#facc15",    // Amarelo Dourado (A Estrela)
       boxOpacity: 0.8,
@@ -410,348 +409,5 @@ export const wallpaperThemes: WallpaperThemeItem[] = [
       wallpaper: "custom",
       customImage: "/images-themes/totoro-forest.png"
     }
-  },
-];
-
-// =====================================================================
-// 3. SETUPS COMPLETOS (Muda Layout + Cores + Widgets + Conteúdo)
-// =====================================================================
-export const readySetups: SetupItem[] = [
-  {
-    id: "setup-nordic",
-    name: "Nordic Minimalist",
-    description: "Frio, limpo e organizado. Ótimo para foco intenso sem distrações.",
-    boxes: ["tasks-nord", "calendar-nord", "notepad-nord"],
-    layouts: {
-      lg: [
-        { i: "tasks-nord", x: 0, y: 0, w: 2, h: 6 },
-        { i: "calendar-nord", x: 2, y: 0, w: 1, h: 4 },
-        { i: "notepad-nord", x: 3, y: 0, w: 1, h: 4 },
-      ],
-      md: [
-        { i: "tasks-nord", x: 0, y: 0, w: 2, h: 6 },
-        { i: "calendar-nord", x: 0, y: 6, w: 1, h: 4 },
-        { i: "notepad-nord", x: 1, y: 6, w: 1, h: 4 },
-      ],
-      sm: [{ i: "tasks-nord", x: 0, y: 0, w: 1, h: 6 }],
-    },
-    theme: {
-      backgroundColor: "#2e3440",
-      boxColor: "#3b4252",
-      sidebarColor: "#242933",
-      textColor: "#d8dee9",
-      primaryColor: "#88c0d0",
-      boxOpacity: 1,
-      wallpaper: "plain",
-      customImage: null,
-    },
-    content: {
-      "notepad-nord": {
-        text: "❄️ Ideias:\n- Organizar arquivos\n- Revisar código\n- Planejar sprint",
-      },
-    },
-    icon: <Snowflake size={24} />,
-    color: "bg-cyan-600",
-  },
-  {
-    id: "setup-catppuccin",
-    name: "Catppuccin Code",
-    description: "A estética favorita dos devs. Tons pastéis, fundo suave e foco total.",
-    boxes: ["tasks-cat", "pomodoro-cat", "embedded-lofi-cat", "notepad-cat"],
-    layouts: {
-      lg: [
-        { i: "tasks-cat", x: 0, y: 0, w: 2, h: 6 },
-        { i: "pomodoro-cat", x: 2, y: 0, w: 1, h: 4 },
-        { i: "notepad-cat", x: 3, y: 0, w: 1, h: 4 },
-        { i: "embedded-lofi-cat", x: 2, y: 4, w: 2, h: 2 },
-      ],
-      md: [
-        { i: "tasks-cat", x: 0, y: 0, w: 2, h: 6 },
-        { i: "pomodoro-cat", x: 0, y: 6, w: 2, h: 4 },
-        { i: "notepad-cat", x: 0, y: 10, w: 2, h: 4 },
-      ],
-      sm: [{ i: "tasks-cat", x: 0, y: 0, w: 1, h: 6 }],
-    },
-    theme: {
-      backgroundColor: "#1e1e2e",
-      boxColor: "#313244",
-      sidebarColor: "#181825",
-      textColor: "#cdd6f4",
-      primaryColor: "#cba6f7",
-      boxOpacity: 1,
-      wallpaper: "plain",
-      customImage: null,
-    },
-    content: {
-      "embedded-lofi-cat": {
-        url: "https://www.youtube.com/embed/jfKfPfyJRdk",
-        mode: "video",
-      },
-      "notepad-cat": {
-        text: "// TODO:\n- Configurar ambiente\n- Instalar dependências\n- Café ☕",
-      },
-    },
-    icon: <Cat size={24} />,
-    color: "bg-violet-400",
-  },
-  {
-    id: "setup-hallow",
-    name: "Hallow-Cat Night",
-    description: "Noite de Halloween aconchegante. Tons profundos de roxo e laranja vibrante.",
-    boxes: ["tasks-hallow", "pomodoro-hallow", "embedded-lofi-hallow"],
-    layouts: {
-      lg: [
-        { i: "tasks-hallow", x: 0, y: 0, w: 2, h: 6 },
-        { i: "pomodoro-hallow", x: 2, y: 0, w: 1, h: 4 },
-        { i: "embedded-lofi-hallow", x: 3, y: 0, w: 1, h: 4 },
-      ],
-    },
-    theme: {
-      backgroundColor: "#0f172a",
-      boxColor: "#312e81",
-      sidebarColor: "#1e1b4b",
-      textColor: "#ffedd5",
-      primaryColor: "#fb923c",
-      boxOpacity: 0.85,
-      wallpaper: "custom",
-      customImage: "/images-themes/hallow-cat.png",
-    },
-    icon: <Ghost size={24} />,
-    color: "bg-orange-600",
-  },
-  {
-    id: "setup-pink-cat",
-    name: "Midnight Pink Cat",
-    description: "Misterioso e vibrante. Gatos noturnos sob a luz de uma lua rosa neon.",
-    boxes: ["tasks-pink", "notepad-pink", "habit-pink"],
-    layouts: {
-      lg: [
-        { i: "tasks-pink", x: 0, y: 0, w: 2, h: 6 },
-        { i: "notepad-pink", x: 2, y: 0, w: 1, h: 4 },
-        { i: "habit-pink", x: 3, y: 0, w: 1, h: 4 },
-      ],
-    },
-    theme: {
-      backgroundColor: "#130819",
-      boxColor: "#2a1033",
-      sidebarColor: "#0f0414",
-      textColor: "#fbcfe8",
-      primaryColor: "#ec4899",
-      boxOpacity: 0.85,
-      wallpaper: "custom",
-      customImage: "/images-themes/pink-cat.png",
-    },
-    icon: <Cat size={24} />,
-    color: "bg-pink-600",
-  },
-  {
-    id: "setup-onepiece",
-    name: "One Piece: Luffy",
-    description: "Neutro e sereno. Tons de mar e areia com foco na aventura.",
-    boxes: ["tasks-op", "goals-op"],
-    layouts: {
-      lg: [
-        { i: "tasks-op", x: 0, y: 0, w: 2, h: 6 },
-        { i: "goals-op", x: 2, y: 0, w: 2, h: 4 },
-      ],
-    },
-    theme: {
-      backgroundColor: "#2C3E50",
-      boxColor: "#4A6572",
-      sidebarColor: "#20303B",
-      textColor: "#EAEAEA",
-      primaryColor: "#4DA6FF",
-      boxOpacity: 0.9,
-      wallpaper: "custom",
-      customImage: "/images-themes/onepiece-luffy.png",
-    },
-    icon: <Anchor size={24} />,
-    color: "bg-blue-500",
-  },
-  {
-    id: "setup-cozy",
-    name: "Cozy Cat Reading",
-    description: "Ambiente noturno chuvoso, perfeito para leitura e foco relaxante.",
-    boxes: [
-      "books-tracker",
-      "library-read",
-      "embedded-lofi",
-      "pomodoro-read",
-      "notepad-read",
-      "habit-read",
-    ],
-    layouts: {
-      lg: [
-        { i: "books-tracker", x: 0, y: 0, w: 2, h: 4 },
-        { i: "library-read", x: 2, y: 0, w: 2, h: 4 },
-        { i: "embedded-lofi", x: 0, y: 4, w: 2, h: 5 },
-        { i: "pomodoro-read", x: 2, y: 4, w: 1, h: 4 },
-        { i: "notepad-read", x: 3, y: 4, w: 1, h: 4 },
-        { i: "habit-read", x: 2, y: 8, w: 2, h: 3 },
-      ],
-      md: [
-        { i: "books-tracker", x: 0, y: 0, w: 2, h: 4 },
-        { i: "library-read", x: 0, y: 4, w: 2, h: 4 },
-        { i: "embedded-lofi", x: 0, y: 8, w: 2, h: 4 },
-        { i: "pomodoro-read", x: 0, y: 12, w: 1, h: 4 },
-        { i: "notepad-read", x: 1, y: 12, w: 1, h: 4 },
-      ],
-      sm: [{ i: "books-tracker", x: 0, y: 0, w: 1, h: 4 }],
-    },
-    theme: {
-      backgroundColor: "#041518",
-      boxColor: "#0f2e2e",
-      sidebarColor: "#021214",
-      textColor: "#ccfbf1",
-      primaryColor: "#2dd4bf",
-      boxOpacity: 0.85,
-      wallpaper: "custom",
-      customImage: "/images-themes/cozy-cat.png",
-    },
-    content: {
-      "books-tracker": {
-        books: [
-          {
-            id: "t1",
-            title: "O Nome do Vento",
-            current: 120,
-            total: 600,
-            color: "bg-emerald-500",
-          },
-        ],
-        settings: { pageStep: 15 },
-      },
-      "library-read": {
-        books: [
-          {
-            id: "b1",
-            title: "Harry Potter",
-            total: 350,
-            current: 350,
-            color: "#be185d",
-            height: 45,
-            pattern: 0,
-            categoryId: "1",
-            completed: true,
-          },
-        ],
-        settings: { woodColor: "#0f172a", wallColor: "transparent" },
-      },
-      "embedded-lofi": {
-        url: "https://www.youtube.com/embed/jfKfPfyJRdk",
-        mode: "video",
-        isLocked: true,
-      },
-    },
-    icon: <Cat size={24} />,
-    color: "bg-teal-700",
-  },
-  {
-    id: "setup-dracula-full",
-    name: "Dracula Workstation",
-    description: "Setup completo com layout otimizado para devs.",
-    boxes: ["tasks-dracula", "pomodoro-dracula", "code-music"],
-    layouts: {
-      lg: [
-        { i: "tasks-dracula", x: 0, y: 0, w: 2, h: 6 },
-        { i: "pomodoro-dracula", x: 2, y: 0, w: 1, h: 4 },
-        { i: "code-music", x: 3, y: 0, w: 1, h: 4 },
-      ],
-      md: [
-        { i: "tasks-dracula", x: 0, y: 0, w: 2, h: 6 },
-        { i: "pomodoro-dracula", x: 0, y: 6, w: 2, h: 4 },
-      ],
-      sm: [{ i: "tasks-dracula", x: 0, y: 0, w: 1, h: 6 }],
-    },
-    theme: {
-      backgroundColor: "#282a36",
-      boxColor: "#44475a",
-      sidebarColor: "#282a36",
-      textColor: "#f8f8f2",
-      primaryColor: "#bd93f9",
-      boxOpacity: 1,
-      wallpaper: "plain",
-      customImage: null,
-    },
-    content: {
-      "code-music": {
-        url: "https://www.youtube.com/embed/jfKfPfyJRdk",
-        mode: "video",
-      },
-    },
-    icon: <MonitorPlay size={24} />,
-    color: "bg-purple-600",
-  },
-  {
-    id: "setup-rainy-forest",
-    name: "Rainy Forest",
-    description: "Tons de verde-petróleo e cinzas marinhos. Tema escuro de baixo contraste para foco.",
-    boxes: ["tasks-forest", "garden-forest"],
-    layouts: {
-      lg: [
-        { i: "tasks-forest", x: 0, y: 0, w: 2, h: 6 },
-        { i: "garden-forest", x: 2, y: 0, w: 2, h: 4 },
-      ],
-    },
-    theme: {
-      backgroundColor: "#162D2C",
-      boxColor: "#254746",
-      sidebarColor: "#102221",
-      textColor: "#E0EFEF",
-      primaryColor: "#40c9a9",
-      boxOpacity: 0.9,
-      wallpaper: "custom",
-      customImage: "/images-themes/One-Piece.png" 
-    },
-    icon: <Leaf size={24} />,
-    color: "bg-emerald-800",
-  },
-  {
-    id: "setup-ghibli-ocean",
-    name: "Ghibli: Ocean Run",
-    description: "Tons profundos de azul e indigo com destaque vermelho vivo.",
-    boxes: ["tasks-ponyo", "water-ponyo"],
-    layouts: {
-      lg: [
-        { i: "tasks-ponyo", x: 0, y: 0, w: 2, h: 6 },
-        { i: "water-ponyo", x: 2, y: 0, w: 1, h: 4 },
-      ],
-    },
-    theme: {
-      backgroundColor: "#151c33",
-      boxColor: "#29325c",
-      sidebarColor: "#0e1425",
-      textColor: "#e0f7ff",
-      primaryColor: "#e6525a",
-      boxOpacity: 0.95,
-      wallpaper: "custom",
-      customImage: "/images-themes/ponyo-ocean.png"
-    },
-    icon: <Fish size={24} />,
-    color: "bg-red-500",
-  },
-  {
-    id: "setup-ghibli-forest",
-    name: "Ghibli: Totoro Forest",
-    description: "Mundo quente e sombrio. Tons terrosos e luz amarela.",
-    boxes: ["tasks-totoro", "garden-totoro"],
-    layouts: {
-      lg: [
-        { i: "tasks-totoro", x: 0, y: 0, w: 2, h: 6 },
-        { i: "garden-totoro", x: 2, y: 0, w: 2, h: 4 },
-      ],
-    },
-    theme: {
-      backgroundColor: "#2e3d36",
-      boxColor: "#47594d",
-      sidebarColor: "#20312a",
-      textColor: "#e9dbb2",
-      primaryColor: "#ffb703",
-      boxOpacity: 0.95,
-      wallpaper: "custom",
-      customImage: "/images-themes/totoro-forest.png"
-    },
-    icon: <Sprout size={24} />,
-    color: "bg-yellow-600",
   },
 ];

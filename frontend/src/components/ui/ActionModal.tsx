@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 
 interface ActionModalProps {
@@ -15,19 +16,21 @@ export default function ActionModal({
 }: ActionModalProps) {
   if (!isOpen) return null;
 
-  return (
+  // Rendered in the body: a widget sits inside a transformed grid cell, which would otherwise
+  // make `fixed` relative to the cell instead of the screen.
+  return createPortal(
     <div 
       className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={onClose}
     >
       <div 
-        className="relative w-full max-w-sm bg-[#111] border border-white/10 rounded-2xl p-8 shadow-2xl text-center space-y-6 overflow-hidden group"
+        className="relative w-full max-w-sm bg-[#111] rounded-2xl p-8 shadow-2xl text-center space-y-6 overflow-hidden group"
         onClick={e => e.stopPropagation()}
       >
         {/* Glow Effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
         
-        <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto text-blue-400 border border-blue-500/20">
+        <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto text-blue-400">
           <Info size={32} />
         </div>
 
@@ -52,6 +55,7 @@ export default function ActionModal({
           <X size={20} />
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

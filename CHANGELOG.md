@@ -18,6 +18,195 @@ the architecture is considered ready for real use.
 
 ---
 
+## [Unreleased]
+
+## [0.13.0] - 2026-11-03
+### Added
+- **Docker guide** (`docs/DOCKER.md` and `docs/DOCKER.pt-BR.md`): `.env` variables, backup and
+  restore, updating, cloud server with https, common problems.
+- **What's new in the bell** now announces the account and database update and links to a new Wiki
+  section about it. The Conta page warns that the login lasts 14 days.
+- **"Restaurar widgets" on the Conta page.** Puts the current panel back to the default widgets and
+  layout without touching tasks, theme or the account, so there is no need to wipe all the account
+  data just to fix the layout. The danger actions now sit in their own "Seus dados" block.
+- **An optional account and a database.** The app still works exactly as before with only the
+  browser's storage, and now a person can also connect it to a DynaBox server they run themselves.
+  The choice is made inside the app, on the new **Conta** page: type the server's address, press
+  "Testar conexão", then sign in or create an account. The page is only about the account: the
+  sync status, "Sair" (back to local-only, deleting nothing) and "Apagar dados da conta" (removes
+  only the server's copy). How to run your own server is a section of the Wiki ("Ter o seu
+  servidor", with copyable commands), and the page links to it. A short summary also sits in the
+  settings drawer.
+- **The account page shows what is on the server.** A list of what has been sent (by a friendly
+  name such as "Perfil" or "Tarefas", with its version and how long ago) and how many changes are
+  still waiting to be sent, so you can see the sync working instead of trusting it.
+- **The sync keeps the browser as the source of truth.** The app reads and writes `localStorage`
+  as always, so it stays instant and works offline; a sync engine sends what changed a moment
+  later, naming the revision it last saw so the server can refuse a stale write, and brings back what
+  changed on other devices (when the tab is shown again, when the network returns and every
+  minute). If the same data changed in both places the app asks which version to keep, key by key,
+  and overwrites nothing before the answer. A browser that only holds default values is treated as
+  empty, so connecting a fresh browser does not raise a pointless conflict.
+- **The server (`backend/`).** Fastify, PostgreSQL 17 and Drizzle: accounts with argon2id
+  passwords and signed login tokens, rate-limited sign-in, and one saved JSON document per user and
+  key with an atomic revision check. 77 tests run against a real PostgreSQL started in Docker.
+- **One command to run all of it:** `docker compose up --build` starts the app (nginx), the API
+  and the database; only the app's port is exposed. `scripts/smoke.sh` checks a running server
+  end to end, and CI builds the containers and runs it on every change.
+- The published site stays local-only until the person points it at their own server (the server
+  has a `CORS_ORIGINS` setting for that). The screen detects the cases a browser blocks (an https
+  site calling an http server that is not `localhost`) and says so before trying.
+- **The storage can now be slow or remote without losing data.** Every store saves through one
+  adapter (`localStorage` by default, still instant), and the app was proven against one that
+  answers after half a second. Two rules make that safe: a write to a key that has not been read
+  yet is dropped, because a store starts from its defaults and saving them would overwrite the
+  real data; and the screen waits until every store has read its data, so the dashboard never
+  draws the default widgets and then jumps to the real ones. If a read fails, the app says so and
+  offers to try again, and nothing is overwritten. This is the groundwork for a server.
+- The adapter remembers the revision the backend reports for each key, which a conflict check on
+  a write will need.
+- **Markdown in the notepad.** A note can be previewed as GitHub-flavoured markdown (headings,
+  lists, tables, code, links, strikethrough) with a button on the widget, and the choice is
+  remembered per note. Checklists (`- [ ]`) are clickable in the preview and update the text.
+  Raw HTML is shown as text, never run, and unsafe links are dropped. The markdown library only
+  downloads with the notepad widget.
+
+### Performance
+- **No more jump on reload.** The grid used to draw once at a default width and again at the
+  real one, swapping the whole layout (4 columns to 2, for instance) in front of the user. It
+  now measures its container before it draws.
+- **Embedded widgets load light.** An embedded widget is an iframe of this same app, and every
+  screen used to be bundled together, so each embed loaded the whole app again. Each screen is
+  now loaded on demand, so `/w/water` loads little more than the widget itself.
+- **The embed no longer reloads on every key** typed into its address field; it follows the
+  address once typing stops, and an address already saved appears straight away.
+- **Widgets no longer re-render when another widget saves.** Twelve widgets listened to the
+  whole content store, so any save, including the embed's own on load, re-rendered all of them.
+  They now listen only to what they use.
+- **The themes page loads light thumbnails instead of the full wallpapers.** The cards pulled
+  the 17 full-size PNGs, 44.9 MB in total; they now use WebP thumbnails of 7 to 46 kB each,
+  0.38 MB in total. The full image only loads once a theme is applied. The thumbnails are made
+  by `scripts/make-theme-thumbs.sh`, and a test fails if a theme has none.
+- **The library code is split from the app code.** React, the router, the grid, the icons, the
+  date library and the schema library each get their own file, so a deploy that only touches
+  the app no longer makes the browser download them again. The app's own chunk is 242 kB
+  (64.6 kB gzipped), down from a single 707 kB file, and the build warning is gone.
+- A rule in the automation widget no longer re-renders the whole widget every second; only its
+  own countdown does.
+
+### Added
+- **Shape validation for widget content.** The seven widgets that hold the most data (notepad,
+  code snippets, quick links, book tracker, library, presence calendar and automations) now
+  declare the shape of what they save. Content that does not match, whether corrupted or from
+  an older version, falls back to the widget's defaults instead of breaking the panel, and an
+  invalid write is refused instead of being saved.
+
+### Changed
+- **The Pixel Garden was redrawn.** The plant is now outlined pixel art on a beige card, always in
+  the same terracotta pot: an empty pot, a sprout, a round-leaved plant, a monstera and a tall
+  bird-of-paradise with a flower, one per growth stage (0, 1-2, 3-4, 5-7, 8+ tasks done
+  today). The art is drawn by code (shaded leaves along a curve, veins, automatic outline), so it
+  is tested and easy to tune, and no longer depends on theme colors. The plant never zooms: it
+  stays still when the mouse passes over it.
+- **The ready-made setups were rebuilt.** Ten setups, most of them an empty task list and one
+  or two widgets (some pointing at widgets that do not exist, so they installed blank boxes),
+  became four that are complete from the first second: *Dev Workstation* (14 snippets for git,
+  docker, SQL and shell, three groups of docs and tools links, markdown notes, pomodoro, habit,
+  progress and lo-fi), *Estudo: Foco Total*, *Estudo Relax: Lo-fi e Livros* and *Semana de
+  Provas*. Each widget has a size that fits its content, and the layouts are generated, so they
+  never overlap on any screen size. The cards of the themes page list what each setup installs.
+- **Installing a setup no longer wipes the content of the widgets it does not include.** It
+  used to replace everything the widgets had saved, in every workspace and project; it now adds
+  to it.
+- **The interface has no outlines.** Cards, menus, modals, inputs and tags are separated by
+  filled surfaces and shadow instead of borders, divider lines and dashed or dotted frames.
+  Selection is shown by a ring or a tint, and the "nothing here yet" screens (projects, frogs,
+  layout models) share one filled `EmptyState`. Keyboard focus rings stay. A test fails if a
+  border, divider or dashed frame comes back.
+- **Code comments are in English** now, matching the code, the commits and the READMEs. Stale
+  markers ("new", "added", "fix" notes left from past edits) were removed instead of translated,
+  and the task text grammar got a proper doc comment. The interface stays in Portuguese.
+- **The dashboard page and the sidebar were split into focused components.** `Home.tsx` (653
+  lines, four components) became a page, a header, the workspace tabs, the add-widget menu, the
+  grid and the frame around each box, with the store wiring gathered in one `useDashboard` hook.
+  The sidebar (612 lines) became the sidebar proper, the profile block, the navigation, the
+  settings drawer and the profile editor, and the four identical slider rows of the drawer now
+  share one component. Nothing changes on screen. They live in `src/features/`.
+- **The dashboard state keeps one copy of the active workspace.** It used to store the active
+  workspace's boxes and layouts twice, and every action had to write both. Each widget on the
+  grid now also carries its own type next to its id, instead of the type being read back out of
+  the id text. Dashboards and projects saved by the previous version are converted
+  automatically the first time they open, and no widget is lost.
+- Box ids come from a single generator instead of three slightly different ones.
+- **Each widget is declared in one place.** Its component, title, description, icon, colour and
+  starting height now live in a single file under `src/widgets/boxes/`. Before, that
+  information was split between the widget store catalogue, two duplicated height tables and a
+  25-case `switch`, and any mismatch between them became a broken widget. The component must be
+  `React.lazy`, which the type enforces, so a widget can no longer end up in the initial bundle
+  by accident.
+- The dashboard and project stores share one implementation of the "put the new box in the
+  shortest column" placement, instead of two copies.
+- **All persistence is declared in one registry.** The storage keys used to be spread over
+  four places (a constants file, string literals in the stores, a hand-kept list in the backup
+  dialog and a direct `localStorage` read in the water widget). Backup, restore and reset now
+  read the same list, so none of them can forget a piece of data again.
+- **Reset only removes the app's own keys.** It used to clear the whole `localStorage` of the
+  origin.
+- **Restoring a backup only writes keys the app knows**, so an edited file cannot plant
+  arbitrary entries.
+
+### Added
+- **Versioned storage:** every persisted slice now carries a format version and a migration
+  hook. Data saved before this change loads untouched, and the shape can change from here on
+  without wiping what users already have.
+- **First automated test suite**, with Vitest and Testing Library: 137 tests covering the task
+  text grammar (parsing and formatting, including the round trip), the date and task helpers,
+  the dashboard store actions, the box placement, the widget registry, the content schemas, the data migrations, the backup round trip and the rendering of the dashboard and the sidebar. `npm run test` runs it once and `npm run test:watch` keeps
+  it running.
+- **Continuous integration** on GitHub Actions: lint, build and tests on every push and pull
+  request to `develop` and `main`.
+
+### Fixed
+- The Reset button in Personalizar now says, while signed in, that it only clears this browser and
+  that the server copy comes back on reload.
+- **The Pomodoro no longer writes to storage once a second while it runs.** It saved the time left
+  at every tick, which, signed in, sent a request to the server every second (153 in seven
+  minutes). The time left is now worked out from the end time and only saved when the timer is
+  paused. A timer that was running when the page closed comes back with the right time at once.
+- Reading the saved data again with widgets on screen (after a login, say) now shows the data
+  that came, instead of leaving widgets with what they had.
+- **Widgets of a new project came out with the wrong size.** The project was created with
+  empty layouts, so the grid drew every widget at its minimum size, piled up in the corner;
+  only widgets added later from the menu had a proper place. A project now gets a position and
+  the widget's own height for each widget when it is created or edited, and a project saved
+  before this fix is repaired when it opens.
+- **Option menus follow the theme.** The three-dot menu on a task, the icon picker of the
+  library, the language list of the snippets and the chart tooltip were a fixed white (or a
+  fixed dark) card whatever the theme was. They now take their colors from the widget color and
+  text color, and so does every future popover, through the `--popover` variable.
+- **Dark themes get dark native controls.** The page now tells the browser whether it is dark
+  (by the real luminance of the background, not by the first digit of its hex code), so the
+  open list of a `<select>`, the scrollbars and the date picker icon match the theme.
+- Reordering and removing in the tag list and the tag goals list no longer shuffles the state
+  of the rows below, because each row is keyed by its tag instead of its position.
+- The pomodoro end-of-timer effect no longer depends on a disabled lint rule, and counts a
+  finished session exactly once.
+- Resetting everything, and the automation "alert" action and its form warnings, now use an
+  in-app dialog instead of the browser's `confirm` and `alert`, which also blocked the page.
+- Four places where the type of the data was unknown at compile time (two in the book
+  widgets, one in the widget store and one event handler) are now typed.
+- Widgets added from the dashboard header menu always started at the default height,
+  because the menu passed a generated id where the widget type was expected. They now start at
+  the height their widget declares.
+- The project overview widget no longer relies on a non-null assertion when there is no
+  active project; it renders nothing instead of crashing.
+
+### Removed
+- **Google Drive sync.** Its backup silently dropped the custom widgets, the planner cycles,
+  the layout templates, the favorites and the projects while still reporting success. JSON
+  backup and restore from a file remain the supported path, and cloud sync returns later
+  together with a server of its own.
+
 ## [0.12.1] - 2026-10-02
 ### Added
 - **Documentation Standard:**

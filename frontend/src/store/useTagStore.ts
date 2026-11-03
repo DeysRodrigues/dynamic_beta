@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { STORAGE_KEYS } from "@/constants/storageKeys";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 interface TagState {
   tags: string[];
@@ -25,6 +25,6 @@ export const useTagStore = create<TagState>()(
       removeTag: (index) =>
         set((state) => ({ tags: state.tags.filter((_, i) => i !== index) })),
     }),
-    { name: STORAGE_KEYS.TAGS }
+    { ...persistConfig(PERSISTED.tags) }
   )
 );

@@ -12,7 +12,7 @@ export default function MiniCalendarBox() {
   const firstDayOfMonth = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // Filtra tarefas do mês atual
+  // Filters the tasks of the current month
   const tasksInMonth = tasks.filter(t => {
       const d = new Date(t.date + "T00:00");
       return d.getMonth() === month && d.getFullYear() === year;

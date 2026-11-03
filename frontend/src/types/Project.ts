@@ -1,4 +1,5 @@
 import type { Layouts } from "react-grid-layout";
+import type { BoxRef } from "./Box";
 
 export interface ProjectGoal {
   id: string;
@@ -19,7 +20,7 @@ export interface Project {
   startDate?: string;
   endDate?: string;
   layouts: Layouts;
-  boxes: string[];
+  boxes: BoxRef[];
   goals: ProjectGoal[];
   routines: DailyRoutine[];
   createdAt: string;

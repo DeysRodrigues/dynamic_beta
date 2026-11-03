@@ -9,12 +9,31 @@ import {
   Plus,
 } from "lucide-react";
 import { useBoxContentStore } from "@/store/useBoxContentStore";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
-// Tipo para os atalhos salvos
+// Type of the saved shortcuts
 interface Preset {
   url: string;
   mode: "video" | "app";
   label: string;
+}
+
+function convertToEmbed(url: string): string {
+  try {
+    if (!url) return "";
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      let videoId = "";
+      if (url.includes("youtu.be/"))
+        videoId = url.split("youtu.be/")[1]?.split("?")[0];
+      else if (url.includes("v="))
+        videoId = url.split("v=")[1]?.split("&")[0];
+      if (url.includes("/embed/")) return url;
+      return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
 }
 
 interface EmbeddedBoxProps {
@@ -24,21 +43,25 @@ interface EmbeddedBoxProps {
 export default function EmbeddedBox({
   id = "embedded-default",
 }: EmbeddedBoxProps) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const savedState = getBoxContent(id) as { url?: string, mode?: "video" | "app", isLocked?: boolean, presets?: (Preset | null)[] };
 
-  // 1. Inicia VAZIO para não pesar no carregamento
+  // 1. Starts EMPTY so it does not slow down loading
   const [inputUrl, setInputUrl] = useState<string>(savedState.url || "");
-  const [embedUrl, setEmbedUrl] = useState<string>("");
   const [mode, setMode] = useState<"video" | "app">(savedState.mode || "video");
   const [isLocked, setIsLocked] = useState<boolean>(
     savedState.isLocked || false
   );
 
-  // 2. Estado para os 3 Slots (Presets)
+  // 2. State for the 3 slots (presets)
   const [presets, setPresets] = useState<(Preset | null)[]>(
     savedState.presets || [null, null, null]
   );
+
+  // The iframe follows the typed address only once typing stops, instead of reloading at every
+  // key; an address that was already saved shows up at once.
+  const embedUrl = useDebouncedValue(inputUrl ? convertToEmbed(inputUrl) : "", 600);
 
   const [showControls, setShowControls] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -51,30 +74,9 @@ export default function EmbeddedBox({
       setMode("app");
     }
 
-    // Só converte se tiver URL
-    setEmbedUrl(inputUrl ? convertToEmbed(inputUrl) : "");
-
-    // Salva URL, Modo e os PRESETS
+    // Saves the URL, the mode and the presets
     setBoxContent(id, { url: inputUrl, mode, isLocked, presets });
   }, [inputUrl, id, mode, isLocked, presets, setBoxContent]);
-
-  const convertToEmbed = (url: string): string => {
-    try {
-      if (!url) return "";
-      if (url.includes("youtube.com") || url.includes("youtu.be")) {
-        let videoId = "";
-        if (url.includes("youtu.be/"))
-          videoId = url.split("youtu.be/")[1]?.split("?")[0];
-        else if (url.includes("v="))
-          videoId = url.split("v=")[1]?.split("&")[0];
-        if (url.includes("/embed/")) return url;
-        return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
-      }
-      return url;
-    } catch {
-      return url;
-    }
-  };
 
   const handleRefresh = () => setRefreshKey((prev) => prev + 1);
 
@@ -83,7 +85,7 @@ export default function EmbeddedBox({
     setMode(newMode);
   };
 
-  // --- LÓGICA DOS SLOTS ---
+  // --- SLOT LOGIC ---
   const handleSlotClick = (index: number) => {
     const slot = presets[index];
     if (slot) {
@@ -124,7 +126,7 @@ export default function EmbeddedBox({
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      {/* --- IFRAME (Só renderiza se tiver URL) --- */}
+      {/* --- IFRAME (only rendered when there is a URL) --- */}
       <div className="flex-1 relative z-0 w-full h-full">
         {embedUrl ? (
           <iframe
@@ -134,11 +136,12 @@ export default function EmbeddedBox({
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
             allowFullScreen
+            loading="lazy"
             title={`Embed-${id}`}
             style={{ borderRadius: "0 0 1rem 1rem" }}
           />
         ) : (
-          /* Placeholder leve quando vazio */
+          /* Light placeholder when empty */
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center opacity-30 select-none">
             <MonitorPlay size={40} />
             <p className="text-sm font-medium">Cole um link ou use um slot</p>
@@ -146,7 +149,7 @@ export default function EmbeddedBox({
         )}
       </div>
 
-      {/* --- BOTÃO DE DESBLOQUEAR --- */}
+      {/* --- UNLOCK BUTTON --- */}
       {isLocked && (
         <button
           onClick={() => setIsLocked(false)}

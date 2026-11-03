@@ -15,7 +15,7 @@ interface ActiveWeekBarProps {
 export function ActiveWeekBar({ activeWeek, onRemove, stats }: ActiveWeekBarProps) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="bar-padrao px-6 py-5 border-none shadow-xl flex items-center justify-between gap-4">
+      <div className="bar-padrao px-6 py-5 shadow-xl flex items-center justify-between gap-4">
         <div className="flex items-center gap-5">
           <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_12px_var(--primary)] animate-pulse" />
           <div className="flex flex-col">

@@ -28,7 +28,7 @@ export default function MetaTagsBox() {
     <div className="box-padrao flex flex-col">
       <h2 className="text-lg font-semibold mb-3">Metas por Categoria</h2>
 
-      {/* --- ÁREA DE INPUT --- */}
+      {/* --- INPUT AREA --- */}
       <div className="flex gap-2 mb-4">
         <select
           value={selectedTag}
@@ -59,7 +59,7 @@ export default function MetaTagsBox() {
         </button>
       </div>
 
-      {/* --- LISTA DE METAS --- */}
+      {/* --- GOALS LIST --- */}
       <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
         {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full opacity-50 italic text-sm py-4">
@@ -67,14 +67,14 @@ export default function MetaTagsBox() {
           </div>
         ) : (
           goals.map((goal, index) => {
-            // Busca o tempo completado (agora somando Tag + Tagzona)
+            // Looks up the completed time (summing the tag and its tag group)
             const completedMinutes = completedTimeByTag[goal.tag.toLowerCase()] || 0;
             const completedHours = Number((completedMinutes / 60).toFixed(1));
             const percentage = Math.min((completedHours / goal.hours) * 100, 100);
 
             return (
               <div 
-                key={index} 
+                key={goal.tag} 
                 className="bg-current/5 p-3 rounded-xl hover:bg-current/10 transition-all"
               >
                 <div className="flex justify-between items-center mb-1">

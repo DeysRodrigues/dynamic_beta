@@ -8,14 +8,15 @@ interface HabitTrackerBoxProps {
 }
 
 export default function HabitTrackerBox({ id = "habit-default" }: HabitTrackerBoxProps) {
-  const { getBoxContent, setBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const content = getBoxContent(id) as { habitName?: string, checkedDates?: string[] };
 
   const [habitName, setHabitName] = useState(content.habitName || "Novo Hábito");
   const [checkedDates, setCheckedDates] = useState<string[]>(content.checkedDates || []);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Gera os últimos 7 dias dinamicamente
+  // Builds the last 7 days
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (6 - i));

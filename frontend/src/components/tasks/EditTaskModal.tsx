@@ -45,8 +45,7 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
       <div 
-        className="rounded-xl shadow-2xl w-full max-w-lg p-6 space-y-4 border border-white/10"
-        // CORREÇÃO: Usa as variáveis do tema para o fundo
+        className="rounded-xl shadow-2xl w-full max-w-lg p-6 space-y-4"
         style={{ backgroundColor: 'var(--box-color)', color: 'var(--box-text-color)' }}
       >
         <div className="flex justify-between items-center">
@@ -56,7 +55,7 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
           </button>
         </div>
 
-        <div className="text-sm p-3 rounded border border-current/10 bg-black/5 opacity-80">
+        <div className="text-sm p-3 rounded bg-black/5 opacity-80">
           Edite os atributos usando a sintaxe:<br/>
           <code>- Texto &gt;Duração &gt;&gt;Horário [Tag] {`{Grupo}`}</code>
         </div>
@@ -64,8 +63,7 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          // CORREÇÃO: Fundo transparente para o textarea
-          className="w-full h-32 p-4 border rounded-xl font-mono text-sm outline-none resize-none bg-black/5 border-current/20 text-inherit focus:ring-2 focus:ring-primary/20"
+          className="w-full h-32 p-4 rounded-xl font-mono text-sm outline-none resize-none bg-black/5 text-inherit focus:ring-2 focus:ring-primary/20"
           autoFocus
         />
 

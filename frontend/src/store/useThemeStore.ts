@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { persistConfig, PERSISTED } from "@/persistence/registry";
 
 export type WallpaperType = "plain" | "dots" | "grid" | "pixel-art" | "clouds" | "blueprint" | "custom";
 
@@ -11,10 +12,10 @@ interface ThemeState {
   boxOpacity: number;
   boxColor: string;
   textColor: string;
-  backgroundColor: string; // Cor de fundo da página
-  glassEffect: number; // Blur em px (0 = desligado)
-  wallpaperBlur: number; // Blur do fundo em px (0-20)
-  wallpaperBrightness: number; // Brilho do fundo em % (0-200)
+  backgroundColor: string; // Page background color
+  glassEffect: number; // Blur in px (0 = off)
+  wallpaperBlur: number; // Wallpaper blur in px (0-20)
+  wallpaperBrightness: number; // Wallpaper brightness in % (0-200)
   
   setWallpaper: (w: WallpaperType) => void;
   setCustomImage: (img: string) => void;
@@ -28,14 +29,14 @@ interface ThemeState {
   setWallpaperBlur: (blur: number) => void;
   setWallpaperBrightness: (brightness: number) => void;
   
-  // Função mágica que carrega um tema completo de uma vez (usada pelos Setups)
+  // Loads a whole theme at once (used by setups)
   applyPreset: (preset: Partial<ThemeState>) => void;
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      // Valores Padrão (Dark Mode)
+      // Default values (dark mode)
       wallpaper: "plain",
       customImage: null,
       sidebarColor: "#1e1b4b", // dark-indigo
@@ -60,16 +61,16 @@ export const useThemeStore = create<ThemeState>()(
       setWallpaperBlur: (blur) => set({ wallpaperBlur: blur }),
       setWallpaperBrightness: (brightness) => set({ wallpaperBrightness: brightness }),
       
-      // Recebe um objeto com várias propriedades e atualiza tudo junto
+      // Takes an object with several properties and updates them together
       applyPreset: (preset) => set((state) => ({ ...state, ...preset })),
     }),
-    { name: "theme-storage" }
+    { ...persistConfig(PERSISTED.theme) }
   )
 );
 
-// Função auxiliar para gerar o CSS do background
+// Builds the CSS for the background
 export const getWallpaperStyle = (type: WallpaperType, customImg?: string | null) => {
-  // A cor de fundo base vem da variável CSS que é controlada pelo store
+  // The base background color comes from a CSS variable the store controls
   const baseBg = "var(--background-color)";
 
   if (type === "custom" && customImg) {
@@ -82,7 +83,7 @@ export const getWallpaperStyle = (type: WallpaperType, customImg?: string | null
     };
   }
 
-  // Padrões CSS (Patterns)
+  // CSS patterns
   const patterns: Record<string, React.CSSProperties> = {
     dots: { 
       backgroundColor: baseBg, 
@@ -114,6 +115,6 @@ export const getWallpaperStyle = (type: WallpaperType, customImg?: string | null
     },
   };
 
-  // Se o tipo não estiver na lista (ex: 'plain'), retorna só a cor de fundo
+  // If the type is not in the list (e.g. 'plain'), returns only the background color
   return patterns[type] || { backgroundColor: baseBg };
 };

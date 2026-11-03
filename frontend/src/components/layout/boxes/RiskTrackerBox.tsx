@@ -16,7 +16,7 @@ interface RiskItem {
   id: string;
   title: string;
   total: number;
-  limit: number; // Sempre salvo em unidades absolutas
+  limit: number; // Always saved in absolute units
   current: number;
   consequence: string;
 }
@@ -26,7 +26,8 @@ export default function RiskTrackerBox({
 }: {
   id?: string;
 }) {
-  const { setBoxContent, getBoxContent } = useBoxContentStore();
+  const setBoxContent = useBoxContentStore((s) => s.setBoxContent);
+  const getBoxContent = useBoxContentStore((s) => s.getBoxContent);
   const saved = getBoxContent(id) as { items?: RiskItem[] };
 
   const [items, setItems] = useState<RiskItem[]>(saved.items || []);
@@ -36,7 +37,7 @@ export default function RiskTrackerBox({
   const [title, setTitle] = useState("");
   const [total, setTotal] = useState("");
   const [limitInput, setLimitInput] = useState("");
-  const [limitMode, setLimitMode] = useState<"unit" | "percent">("percent"); // Padrão agora é %
+  const [limitMode, setLimitMode] = useState<"unit" | "percent">("percent"); // Default is now %
   const [consequence, setConsequence] = useState("");
 
   const save = (data: RiskItem[]) => {
@@ -51,7 +52,7 @@ export default function RiskTrackerBox({
     const totalValue = Number(total);
     const rawLimit = Number(limitInput);
 
-    // MÁGICA AQUI: Converte % para Unidades se necessário
+    // Converts % to units when needed
     let finalLimit = rawLimit;
     if (limitMode === "percent") {
       // Ex: 25% de 80 aulas = 20 faltas permitidas
@@ -121,7 +122,7 @@ export default function RiskTrackerBox({
         </button>
       </div>
 
-      {/* FORMULÁRIO INTELIGENTE */}
+      {/* SMART FORM */}
       {isAdding && (
         <div className="p-3 bg-current/5 animate-in slide-in-from-top-2 space-y-2">
           <input
@@ -196,7 +197,7 @@ export default function RiskTrackerBox({
         </div>
       )}
 
-      {/* LISTA */}
+      {/* LIST */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
         {items.length === 0 && !isAdding && (
           <div className="flex flex-col items-center justify-center h-full opacity-40 text-center gap-2 min-h-[100px]">
@@ -279,7 +280,7 @@ export default function RiskTrackerBox({
                   )}
                 </div>
 
-                {/* Botões + / - */}
+                {/* + / - buttons */}
                 <div className="flex items-center gap-1 bg-white/50 backdrop-blur-sm p-0.5 rounded-lg shadow-sm">
                   <button
                     onClick={() => updateCount(item.id, -1)}

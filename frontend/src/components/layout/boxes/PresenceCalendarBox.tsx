@@ -9,18 +9,9 @@ import {
   List,
   Pencil,
 } from "lucide-react";
-import { useBoxContentStore } from "@/store/useBoxContentStore";
+import { useBoxContentStore, readContent } from "@/store/useBoxContentStore";
+import { presenceContentSchema, type PresenceEvent } from "@/widgets/schemas/presence";
 import CustomDatePicker from "@/components/ui/CustomDatePicker";
-
-interface PresenceEvent {
-  id: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  daysOfWeek: number[];
-  presences: string[];
-  absences: string[];
-}
 
 const DAYS_LABEL = ["D", "S", "T", "Q", "Q", "S", "S"];
 
@@ -31,27 +22,27 @@ export default function PresenceCalendarBox({
 }) {
   const setBoxContent = useBoxContentStore((state) => state.setBoxContent);
   
-  // Seletor estável: retorna undefined se não houver conteúdo, evitando novos objetos literais no seletor
+  // Stable selector: returns undefined when there is no content, avoiding new object literals in the selector
   const saved = useBoxContentStore((state) => state.contents[id]);
 
-  // Valores derivados memorizados para garantir estabilidade referencial
+  // Memoized derived values keep the references stable
   const { events, activeEventId } = useMemo(() => {
-    const data = (saved || {}) as { events?: PresenceEvent[], activeEventId?: string };
+    const data = readContent(saved, presenceContentSchema, id);
     const evts = data.events || [];
     return {
       events: evts,
       activeEventId: data.activeEventId || evts[0]?.id || ""
     };
-  }, [saved]);
+  }, [saved, id]);
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<"calendar" | "addEvent" | "eventList" | "editEvent">("calendar");
   const [prevView, setPrevView] = useState<"calendar" | "eventList">("calendar");
   
-  // Estados de Edição Separados
-  const [renamingId, setRenamingId] = useState<string | null>(null); // Edição rápida de título
+  // Separate editing state
+  const [renamingId, setRenamingId] = useState<string | null>(null); // Quick title edit
   const [renamingTitle, setRenamingTitle] = useState("");
-  const [formEventId, setFormEventId] = useState<string | null>(null); // Edição formal via formulário
+  const [formEventId, setFormEventId] = useState<string | null>(null); // Formal edit through the form
 
   // Form States
   const [title, setTitle] = useState("");
@@ -63,7 +54,7 @@ export default function PresenceCalendarBox({
   const save = (newEvents: PresenceEvent[], newActiveId?: string) => {
     try {
       const active = newActiveId !== undefined ? newActiveId : activeEventId;
-      setBoxContent(id, { events: newEvents, activeEventId: active });
+      setBoxContent(id, { events: newEvents, activeEventId: active }, presenceContentSchema);
       console.log("[PresenceBox] Salvo com sucesso.");
     } catch (err) {
       console.error("[PresenceBox] Erro ao salvar:", err);
@@ -119,7 +110,7 @@ export default function PresenceCalendarBox({
   };
 
   const updateEvent = () => {
-    // Usamos o formEventId que foi setado no startEditing
+    // Uses the formEventId set in startEditing
     if (!formEventId) {
         setError("Erro: ID de edição não encontrado. Tente editar novamente.");
         return;
@@ -230,7 +221,7 @@ export default function PresenceCalendarBox({
           <button
             key={evt.id}
             onClick={() => {
-              setBoxContent(id, { activeEventId: evt.id });
+              setBoxContent(id, { activeEventId: evt.id }, presenceContentSchema);
               setViewMode("calendar");
             }}
             className={`
@@ -287,7 +278,7 @@ export default function PresenceCalendarBox({
         </button>
       </div>
 
-      {/* CONTEÚDO PRINCIPAL */}
+      {/* MAIN CONTENT */}
       {viewMode === "addEvent" || viewMode === "editEvent" ? (
         <div className="p-4 space-y-3 animate-in slide-in-from-top-2 flex-1 overflow-y-auto custom-scrollbar">
           <h3 className="text-xs font-bold uppercase opacity-60">
@@ -301,7 +292,7 @@ export default function PresenceCalendarBox({
           )}
 
           <input
-            className="w-full text-sm p-2 rounded bg-black/5 outline-none border border-transparent focus:border-primary/30 transition-all"
+            className="w-full text-sm p-2 rounded bg-black/5 outline-none focus:ring-1 focus:ring-primary/30 transition-all"
             placeholder="Nome (Ex: Cálculo II)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -333,7 +324,7 @@ export default function PresenceCalendarBox({
                   className={`w-8 h-8 rounded-full text-xs font-bold transition-all ${
                     selectedDays.includes(i)
                       ? "bg-primary text-primary-foreground scale-110 shadow-md"
-                      : "bg-transparent opacity-60 hover:opacity-100 border border-current/10"
+                      : "bg-current/5 opacity-60 hover:opacity-100"
                   }`}
                 >
                   {d}

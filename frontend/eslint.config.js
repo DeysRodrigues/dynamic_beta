@@ -20,4 +20,9 @@ export default tseslint.config([
       globals: globals.browser,
     },
   },
+  {
+    // Widget declarations hold JSX icons but export a config object, not a component.
+    files: ['src/widgets/boxes/**/*.tsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
 ])

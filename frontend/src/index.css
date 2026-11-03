@@ -149,7 +149,6 @@ body {
 .box-padrao select:focus,
 .box-padrao textarea:focus,
 .bar-padrao input:focus {
-  border-color: var(--primary) !important;
   background-color: rgba(127, 127, 127, 0.15) !important;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
 }
@@ -196,4 +195,19 @@ select option {
 .inverted-mode video,
 .inverted-mode img.no-invert {
   filter: invert(1) hue-rotate(180deg);
+}
+
+/* Pixel Garden: the sparkles of a thriving plant */
+@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+.pixel-twinkle {
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-twinkle {
+    animation: none;
+  }
 }

@@ -31,13 +31,13 @@ export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
 
   const filteredTasks = tasks.filter((task) => {
     // Filtrar por Workspace
-    // Se a task tem um workspaceId, ele deve ser igual ao ativo.
-    // Se não tem (tasks antigas), permitimos que apareçam no workspace "default" ou em todos para não sumirem.
-    // Para seguir o desejo do usuário de "não misturar", vamos restringir:
+    // A task with a workspaceId must match the active workspace.
+    // Tasks without one (old tasks) could show up everywhere so they never disappear,
+    // but to keep workspaces separate we restrict them:
     if (task.workspaceId) {
       if (task.workspaceId !== activeWorkspaceId) return false;
     } else {
-      // Se não tem workspaceId, tratamos como pertencente ao 'default'
+      // A task without a workspaceId belongs to 'default'
       if (activeWorkspaceId !== "default") return false;
     }
 
@@ -50,7 +50,7 @@ export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
 
   return (
     <div className={`box-padrao flex flex-col ${className || ""}`}>
-      {/* Cabeçalho */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold">
           {filter === "all" ? "Tarefas" : filter === "completed" ? "Concluídas" : "Pendentes"}
@@ -84,7 +84,7 @@ export default function BoxTask({ filter = "all", className }: BoxTaskProps) {
       <EditTaskModal isOpen={showEditModal} onClose={() => setShowEditModal(false)} task={editingTask} />
       <BulkEditModal isOpen={showBulkEdit} onClose={() => setShowBulkEdit(false)} tasksToEdit={filteredTasks} />
 
-      {/* Lista */}
+      {/* List */}
       <div className="flex-1 overflow-hidden">
         {Object.keys(grouped).length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full opacity-50 italic">

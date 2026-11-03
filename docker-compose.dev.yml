@@ -1,0 +1,13 @@
+# Extra for development and manual testing: publishes the API and the database on this machine only
+# (127.0.0.1), so you can use curl, Insomnia or psql. Use it on top of the main file:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#
+# The database goes to 5433 (not 5432) so it does not clash with a Postgres you may already run.
+services:
+  api:
+    ports:
+      - "127.0.0.1:3000:3000"
+  db:
+    ports:
+      - "127.0.0.1:5433:5432"

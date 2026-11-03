@@ -45,7 +45,7 @@ export default function TagsBox() {
         {tags.length > 0 ? (
           tags.map((tag, index) => (
             <div
-              key={index}
+              key={tag}
               className="flex items-center bg-background text-foreground text-sm px-3 py-1 rounded-full shadow-sm"
             >
               <span className="mr-2 font-medium">{tag}</span>
