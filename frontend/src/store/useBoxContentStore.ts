@@ -19,7 +19,7 @@ interface BoxContentState {
    * crashing. Without a schema the content is returned as it is stored.
    */
   getBoxContent: <T = Content>(boxId: string, schema?: ZodType<T>) => T;
-  /** Replaces all the content at once (used when installing a setup). */
+  /** Adds the given content to what is saved, box by box (used when installing a setup). */
   loadAllContents: (contents: Record<string, unknown>) => void;
 }
 
@@ -58,7 +58,7 @@ export const useBoxContentStore = create<BoxContentState>()(
         return (schema ? readContent(raw, schema, boxId) : raw) as T;
       },
 
-      loadAllContents: (newContents) => set({ contents: newContents }),
+      loadAllContents: (newContents) => set((state) => ({ contents: { ...state.contents, ...newContents } })),
     }),
     { ...persistConfig(PERSISTED.boxContent) }
   )
