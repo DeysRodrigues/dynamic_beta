@@ -43,7 +43,7 @@ export default function PixelGardenBox() {
 
         <svg
           viewBox={`0 0 ${SCENE_W} ${SCENE_H}`}
-          className="h-full max-h-full w-auto max-w-full transition-transform duration-500 hover:scale-105"
+          className="h-full max-h-full w-auto max-w-full"
           shapeRendering="crispEdges"
           role="img"
           aria-label={`Planta no estágio ${stage} de 4`}

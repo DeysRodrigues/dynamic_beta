@@ -205,3 +205,9 @@ select option {
 .pixel-twinkle {
   animation: twinkle 2.4s ease-in-out infinite;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-twinkle {
+    animation: none;
+  }
+}

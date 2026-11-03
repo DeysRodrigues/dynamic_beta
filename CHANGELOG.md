@@ -61,7 +61,8 @@ the architecture is considered ready for real use.
   the same terracotta pot: an empty pot, a sprout, a round-leaved plant, a monstera and a tall
   bird-of-paradise with a flower, one per growth stage (0, 1-2, 3-4, 5-7, 8+ tasks done
   today). The art is drawn by code (shaded leaves along a curve, veins, automatic outline), so it
-  is tested and easy to tune, and no longer depends on theme colors.
+  is tested and easy to tune, and no longer depends on theme colors. The plant never zooms: it
+  stays still when the mouse passes over it.
 - **The ready-made setups were rebuilt.** Ten setups, most of them an empty task list and one
   or two widgets (some pointing at widgets that do not exist, so they installed blank boxes),
   became four that are complete from the first second: *Dev Workstation* (14 snippets for git,

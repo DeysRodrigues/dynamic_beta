@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { render, screen, act } from "@testing-library/react";
 import PixelGardenBox from "./PixelGardenBox";
 import { useTaskStore } from "@/store/useTaskStore";
@@ -52,5 +54,17 @@ describe("PixelGardenBox", () => {
     act(() => useTaskStore.setState({ tasks: Array.from({ length: 5 }, (_, i) => task(i)) }));
     rerender(<PixelGardenBox />);
     expect(container.querySelectorAll(".pixel-twinkle").length).toBeGreaterThan(0);
+  });
+
+  it("a planta não dá zoom nenhum: nem ao passar o mouse, nem em animação", () => {
+    render(<PixelGardenBox />);
+    const cls = screen.getByRole("img").getAttribute("class") ?? "";
+    expect(cls).not.toMatch(/scale|transition|animate|breathe/);
+  });
+
+  it("nenhum estilo do jardim aumenta e diminui a planta", () => {
+    const css = readFileSync(resolve(__dirname, "../../../index.css"), "utf8");
+    expect(css).not.toMatch(/breathe|pixel-zoom/);
+    expect(readFileSync(resolve(__dirname, "PixelGardenBox.tsx"), "utf8")).not.toMatch(/hover:scale|group-hover:scale|scale-1/);
   });
 });
