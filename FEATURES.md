@@ -90,6 +90,7 @@ Além do dashboard, o DynaBox possui visualizações especializadas:
 - **✅ Tasks Page:** Gerenciamento avançado de lista de tarefas (List View).
 - **🎨 Themes Page:** Galeria de presets e customização avançada.
 - **🗓️ Week Planner:** Visualização de agenda semanal para planejamento de horários.
+- **🧩 Quadro de planejamento (`/board`):** Cards de tasks no topo e, embaixo, blocos de horários com o título que você quiser (um dia, "manhã livre"…). Cada bloco tem intervalos livres ou ocupados, que podem passar da meia-noite. Arraste o card pra um intervalo livre, ou clique no card e depois no intervalo. Dá pra clonar um bloco com todos os intervalos.
 - **📊 Projects Page:** Kanban ou lista detalhada de grandes objetivos.
 - **📚 Wiki Page:** Repositório de conhecimento em Markdown.
 - **🛒 Widget Store:** Interface para ativar e desativar componentes do sistema.
