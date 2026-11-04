@@ -13,6 +13,7 @@ import { createTask } from "@/utils/TaskFactory";
 import type { Task } from "@/types/Task";
 import ShinyText from "@/components/landing/ShinyText";
 import { cn } from "@/lib/utils";
+import TimePicker from "@/components/ui/TimePicker";
 
 export default function TasksPage() {
   const {
@@ -156,11 +157,12 @@ export default function TasksPage() {
           
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full relative z-10">
             <div className="relative w-full sm:w-28 shrink-0">
-               <input
-                type="time"
+               <TimePicker
+                ariaLabel="Horário da task"
                 value={newTime}
-                onChange={(e) => setNewTime(e.target.value)}
-                className="w-full px-3 py-2.5 font-mono text-sm bg-transparent"
+                onChange={setNewTime}
+                clearable
+                className="bg-transparent focus-within:bg-current/[0.06]"
               />
             </div>
 

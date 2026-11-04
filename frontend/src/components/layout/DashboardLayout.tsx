@@ -1,6 +1,6 @@
 import Sidebar from "@/features/sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
-import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target, Cloud } from "lucide-react";
+import { Home, ListTodo, Calendar, ShoppingBag, Palette, Book, Target, Cloud, LayoutDashboard } from "lucide-react";
 import { useThemeStore, getWallpaperStyle } from "@/store/useThemeStore";
 import { ThemeApplicator } from "./ThemeApplicator";
 import { useMemo } from "react"; 
@@ -16,6 +16,7 @@ function LayoutShell() {
     { label: "Tasks", path: "/tasks", icon: <ListTodo size={18} /> },
     { label: "Projetos", path: "/projects", icon: <Target size={18} /> },
     { label: "Planner", path: "/planner", icon: <Calendar size={18} /> },
+    { label: "Quadro", path: "/board", icon: <LayoutDashboard size={18} /> },
     { label: "Widgets", path: "/store", icon: <ShoppingBag size={18} /> },
     { label: "Temas", path: "/themes", icon: <Palette size={18} /> },
     { label: "Conta", path: "/account", icon: <Cloud size={18} /> },

@@ -19,6 +19,19 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+### Added
+- **Planning board** (`/board`, "Quadro" in the menu). Create a card for each task, then build
+  blocks of time named however you like: a weekday, "Manhã livre", "Sábado de estudo". Each block
+  has its own intervals, free or busy, and a card goes into a free interval by dragging it there
+  or by clicking the card and then the interval. A block can be cloned with all its intervals, so
+  a routine that repeats is built once. An interval can run past midnight: 22:00 to 00:00 counts
+  as 2 hours. It is saved with the rest of the data, so it is in the backup and in the sync.
+- **A time picker that follows the theme.** Type a time ("2200", "22:00" or "930") or open the
+  clock and pick the hour and the minute from a list.
+
+### Changed
+- The time fields in Tasks, in the bulk task window and in the Automation widget now use the new
+  time picker instead of the browser's own, which ignored the theme and was slow to use.
 
 ## [0.13.0] - 2026-11-03
 ### Added

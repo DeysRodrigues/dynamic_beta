@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createTask } from "@/utils/TaskFactory";
 import { useTagStore } from "@/store/useTagStore";
 import type { Task } from "@/types/Task";
+import TimePicker from "@/components/ui/TimePicker";
 
 interface BulkTaskModalProps {
   isOpen: boolean;
@@ -128,12 +129,7 @@ export function BulkTaskModal({
 
           <div className="flex flex-col">
             <span className="text-xs opacity-60 ml-1">Início Sequência</span>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="px-3 py-2 rounded-lg outline-none text-sm bg-black/5 text-inherit"
-            />
+            <TimePicker ariaLabel="Início da sequência" value={startTime} onChange={setStartTime} className="w-40 bg-black/5" />
           </div>
 
           <div className="flex-1 flex justify-end gap-2 mt-4 sm:mt-0">

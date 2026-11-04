@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 describe("createBackup", () => {
-  it("inclui todas as 15 chaves do registro (inclusive projetos, perfil e favoritos)", () => {
+  it("inclui todas as 16 chaves do registro (inclusive projetos, perfil e favoritos)", () => {
     const { data } = createBackup(storage);
     expect(Object.keys(data).sort()).toEqual([...PERSISTED_KEYS].sort());
     expect(data).toHaveProperty("projects-storage");
@@ -71,7 +71,7 @@ describe("restoreBackup", () => {
     const fresh = memoryStorage();
     const restored = restoreBackup(file, fresh);
     expect(fresh.getItem("chave-maliciosa")).toBeNull();
-    expect(restored).toHaveLength(15);
+    expect(restored).toHaveLength(16);
   });
 });
 
