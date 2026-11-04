@@ -16,6 +16,7 @@ import {
 import { getTodayDate } from "@/utils/DateUtils";
 import ActionModal from "@/components/ui/ActionModal";
 import type { Task } from "@/types/Task";
+import TimePicker from "@/components/ui/TimePicker";
 
 const SAFETY_FLOOR_MS = 1000;
 
@@ -367,7 +368,7 @@ export default function AutomationBox({ id = "auto-default" }: { id?: string }) 
               </div>
 
               <div className="bg-current/5 p-2 rounded-lg">
-                {newTrigger === 'time' && <input type="time" className="w-full bg-transparent outline-none text-sm text-center" value={newTriggerVal} onChange={e => setNewTriggerVal(e.target.value)} />}
+                {newTrigger === 'time' && <TimePicker ariaLabel="Horário do gatilho" value={newTriggerVal} onChange={setNewTriggerVal} className="bg-transparent" />}
                 {newTrigger === 'tasks' && <input type="number" placeholder="Quantas tasks?" className="w-full bg-transparent outline-none text-sm" value={newTriggerVal} onChange={e => setNewTriggerVal(e.target.value)} />}
                 {newTrigger === 'interval' && <input type="number" placeholder="Segundos" className="w-full bg-transparent outline-none text-sm" value={newTriggerVal} onChange={e => setNewTriggerVal(e.target.value)} />}
               </div>
