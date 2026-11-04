@@ -14,8 +14,8 @@ describe("stores x registry", () => {
     .filter((s) => s?.persist)
     .map((s) => s.persist!.getOptions());
 
-  it("há 14 stores persistidas", () => {
-    expect(options).toHaveLength(14);
+  it("há 15 stores persistidas", () => {
+    expect(options).toHaveLength(15);
   });
 
   it("cada store usa uma chave que está no registro", () => {

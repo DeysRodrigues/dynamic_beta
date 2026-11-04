@@ -19,6 +19,7 @@ export const PERSISTED = {
   layoutTemplates: { key: "layout-templates-storage", version: 1, label: "Modelos de layout" },
   customWidgets: { key: "custom-widgets-storage", version: 1, label: "Widgets personalizados" },
   weeks: { key: "weeks-storage", version: 1, label: "Planejador semanal" },
+  planBoard: { key: "plan-board-storage", version: 2, label: "Quadro de planejamento" },
   notifications: { key: "notification-storage", version: 1, label: "Notificações" },
   theme: { key: "theme-storage", version: 1, label: "Tema e cores" },
   pomodoro: { key: "pomodoro-global-storage", version: 1, label: "Pomodoro" },

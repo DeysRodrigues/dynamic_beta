@@ -268,8 +268,8 @@ describe("quando a leitura falha", () => {
 });
 
 describe("a lista de stores", () => {
-  it("cobre todas as 14 stores persistidas", () => {
-    expect(PERSISTED_STORES).toHaveLength(14);
+  it("cobre todas as 15 stores persistidas", () => {
+    expect(PERSISTED_STORES).toHaveLength(15);
     const names = PERSISTED_STORES.map((s) => (s as unknown as { persist: { getOptions: () => { name: string } } }).persist.getOptions().name);
     for (const key of PERSISTED_KEYS.filter((k) => k !== PERSISTED.waterCups.key)) expect(names).toContain(key);
   });

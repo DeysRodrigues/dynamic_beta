@@ -2,9 +2,9 @@ import { describe, it, expect } from "vitest";
 import { PERSISTED, PERSISTED_KEYS, persistConfig } from "./registry";
 
 describe("registry", () => {
-  it("tem as 15 chaves, sem repetir nenhuma", () => {
-    expect(PERSISTED_KEYS).toHaveLength(15);
-    expect(new Set(PERSISTED_KEYS).size).toBe(15);
+  it("tem as 16 chaves, sem repetir nenhuma", () => {
+    expect(PERSISTED_KEYS).toHaveLength(16);
+    expect(new Set(PERSISTED_KEYS).size).toBe(16);
   });
 
   it("cada entrada tem versão inteira a partir de 1", () => {

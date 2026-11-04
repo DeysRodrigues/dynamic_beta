@@ -7,6 +7,7 @@ import { useBoxContentStore } from "@/store/useBoxContentStore";
 import { useLayoutTemplateStore } from "@/store/useLayoutTemplateStore";
 import { useCustomWidgetStore } from "@/store/useCustomWidgetStore";
 import { useWeekStore } from "@/store/useWeekStore";
+import { usePlanBoardStore } from "@/store/usePlanBoardStore";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { useThemeStore } from "@/store/useThemeStore";
 import { usePomodoroStore } from "@/store/usePomodoroStore";
@@ -29,7 +30,7 @@ interface PersistedStore {
 /** Every persisted store. `stores.test.ts` checks this list against the registry. */
 export const PERSISTED_STORES: readonly PersistedStore[] = [
   useDashboardStore, useTaskStore, useGoalStore, useTagStore, useBoxContentStore,
-  useLayoutTemplateStore, useCustomWidgetStore, useWeekStore, useNotificationStore,
+  useLayoutTemplateStore, useCustomWidgetStore, useWeekStore, usePlanBoardStore, useNotificationStore,
   useThemeStore, usePomodoroStore, useProjectStore, useUserStore, useFavoriteStore,
 ];
 
