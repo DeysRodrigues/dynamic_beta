@@ -7,6 +7,7 @@ const DashboardLayout = lazy(() => import("./components/layout/DashboardLayout")
 const Home = lazy(() => import("./pages/HomePage"));
 const TasksPage = lazy(() => import("./pages/TasksPage"));
 const WeekPlannerPage = lazy(() => import("./pages/WeekPlannerPage"));
+const PlanBoardPage = lazy(() => import("./pages/PlanBoardPage"));
 const WidgetsStorePage = lazy(() => import("./pages/WidgetsStorePage"));
 const ThemesPage = lazy(() => import("./pages/ThemesPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/planner" element={<WeekPlannerPage />} />
+            <Route path="/board" element={<PlanBoardPage />} />
             <Route path="/store" element={<WidgetsStorePage />} />
             <Route path="/themes" element={<ThemesPage />} />
             <Route path="/account" element={<AccountPage />} />

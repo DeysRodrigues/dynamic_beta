@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
-import { Calendar, Home, ListTodo, Menu, Settings, ShoppingBag, X } from "lucide-react";
+import { Calendar, Home, LayoutDashboard, ListTodo, Menu, Settings, ShoppingBag, X } from "lucide-react";
 import { useThemeStore } from "@/store/useThemeStore";
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,7 @@ const defaultItems: SidebarItem[] = [
   { label: "Dashboard", path: "/", icon: <Home size={20} /> },
   { label: "Minhas Tasks", path: "/tasks", icon: <ListTodo size={20} /> },
   { label: "Planejamento", path: "/planner", icon: <Calendar size={20} /> },
+  { label: "Quadro", path: "/board", icon: <LayoutDashboard size={20} /> },
   { label: "Loja de Widgets", path: "/store", icon: <ShoppingBag size={20} /> },
 ];
 
