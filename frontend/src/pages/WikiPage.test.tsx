@@ -81,7 +81,7 @@ describe("Wiki: ter o seu servidor", () => {
 
   it("a seção da novidade (?secao=news) abre direto, como o sininho manda", () => {
     renderAt("/wiki?secao=news");
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Novidade: conta e banco de dados");
-    expect(screen.getByText("Login de 14 dias")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Novidade: Quadro de planejamento");
+    expect(screen.getByText("Ocultar cabeçalho")).toBeInTheDocument();
   });
 });
