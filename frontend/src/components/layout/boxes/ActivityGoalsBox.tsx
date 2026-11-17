@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { useState, useCallback, memo } from "react";
 import { 
   Trophy, Plus, Trash2, 
@@ -238,7 +239,7 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
   };
 
   const savePreset = (trackerId: string) => {
-    if (!activityName || !activityValue) return alert("Preencha nome e valor para criar um atalho.");
+    if (!activityName || !activityValue) return alertDialog("Preencha nome e valor para criar um atalho.");
     const updated = trackers.map(t => {
       if (t.id === trackerId) {
         const currentPresets = t.presets || [];
@@ -289,8 +290,8 @@ export default function ActivityGoalsBox({ id = "activity-goals-default" }: { id
     save(updated);
   };
 
-  const deleteTracker = (trackerId: string) => {
-    if(confirm("Excluir este objetivo?")) save(trackers.filter(t => t.id !== trackerId));
+  const deleteTracker = async (trackerId: string) => {
+    if(await confirmDialog("Excluir este objetivo?", { confirmLabel: "Excluir" })) save(trackers.filter(t => t.id !== trackerId));
   };
 
   return (

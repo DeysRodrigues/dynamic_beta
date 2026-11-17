@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { useState, type MouseEvent } from "react";
 import { 
   Plus, Settings2, Trash2, 
@@ -92,8 +93,8 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
     save(books.map(b => b.id === bookId ? { ...b, color } : b));
   };
 
-  const deleteBook = (bookId: string) => {
-    if(confirm("Remover este livro?")) {
+  const deleteBook = async (bookId: string) => {
+    if(await confirmDialog("Remover este livro?", { confirmLabel: "Remover" })) {
       save(books.filter(b => b.id !== bookId));
       setSelectedBookId(null);
     }
@@ -118,9 +119,9 @@ export default function CozyLibraryBox({ id = "library-default" }: { id?: string
     setActiveTab(newCat.id);
   };
 
-  const deleteCategory = (catId: string) => {
-    if(categories.length <= 1) return alert("Mínimo 1 estante.");
-    if(confirm("Apagar estante e livros?")) {
+  const deleteCategory = async (catId: string) => {
+    if(categories.length <= 1) return alertDialog("Mínimo 1 estante.");
+    if(await confirmDialog("Apagar estante e livros?", { confirmLabel: "Excluir" })) {
       const newCats = categories.filter(c => c.id !== catId);
       const newBooks = books.filter(b => b.categoryId !== catId);
       save(newBooks, newCats);

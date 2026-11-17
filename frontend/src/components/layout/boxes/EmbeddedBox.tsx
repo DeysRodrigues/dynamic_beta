@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog, promptDialog } from "@/lib/dialog";
 import { useState, useEffect, useRef } from "react";
 import {
   RefreshCw,
@@ -86,7 +87,7 @@ export default function EmbeddedBox({
   };
 
   // --- SLOT LOGIC ---
-  const handleSlotClick = (index: number) => {
+  const handleSlotClick = async (index: number) => {
     const slot = presets[index];
     if (slot) {
       // CARREGAR
@@ -94,8 +95,8 @@ export default function EmbeddedBox({
       setMode(slot.mode);
     } else {
       // SALVAR
-      if (!inputUrl) return alert("Cole uma URL primeiro para salvar.");
-      const label = prompt("Nome do atalho (ex: Youtube):");
+      if (!inputUrl) return alertDialog("Cole uma URL primeiro para salvar.");
+      const label = await promptDialog("Nome do atalho (ex: Youtube):");
       if (!label) return;
 
       const newPresets = [...presets];
@@ -104,9 +105,9 @@ export default function EmbeddedBox({
     }
   };
 
-  const clearSlot = (e: React.MouseEvent, index: number) => {
+  const clearSlot = async (e: React.MouseEvent, index: number) => {
     e.preventDefault(); // Previne menu nativo
-    if (confirm("Limpar este atalho?")) {
+    if (await confirmDialog("Limpar este atalho?", { confirmLabel: "Limpar" })) {
       const newPresets = [...presets];
       newPresets[index] = null;
       setPresets(newPresets);

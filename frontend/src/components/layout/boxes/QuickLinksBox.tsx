@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog, promptDialog } from "@/lib/dialog";
 import { useState } from "react";
 import { 
   Plus, Trash2, ExternalLink, 
@@ -50,8 +51,8 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
     setBoxContent(id, { categories, viewMode: newMode }, quickLinksContentSchema);
   };
 
-  const addCategory = () => {
-    const name = prompt("Nome da nova aba:");
+  const addCategory = async () => {
+    const name = await promptDialog("Nome da nova aba:");
     if (!name) return;
     const newCat: Category = { id: crypto.randomUUID(), name, links: [] };
     const updated = [...categories, newCat];
@@ -59,10 +60,10 @@ export default function QuickLinksBox({ id = "quicklinks-default" }: { id?: stri
     setActiveTab(newCat.id);
   };
 
-  const deleteCategory = (e: React.MouseEvent, catId: string) => {
+  const deleteCategory = async (e: React.MouseEvent, catId: string) => {
     e.stopPropagation();
-    if (categories.length === 1) return alert("Mínimo de 1 aba necessária.");
-    if (confirm("Apagar aba e links?")) {
+    if (categories.length === 1) return alertDialog("Mínimo de 1 aba necessária.");
+    if (await confirmDialog("Apagar aba e links?", { confirmLabel: "Excluir" })) {
       const updated = categories.filter(c => c.id !== catId);
       save(updated);
       if (activeTab === catId) setActiveTab(updated[0].id);

@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { useState } from "react";
 import { useGoalStore } from "@/store/useGoalStore";
 import { useTaskStore } from "@/store/useTaskStore";
@@ -16,7 +17,7 @@ export default function MetaTagsBox() {
 
   const handleAddGoal = () => {
     if (!selectedTag || !hours || Number(hours) <= 0) {
-      alert("Selecione uma tag e um número de horas válido.");
+      alertDialog("Selecione uma tag e um número de horas válido.");
       return;
     }
     addGoal({ tag: selectedTag.toLowerCase(), hours: Number(hours) });

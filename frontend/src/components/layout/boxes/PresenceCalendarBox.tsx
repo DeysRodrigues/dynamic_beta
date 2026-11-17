@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { useState, useMemo } from "react";
 import {
   Plus,
@@ -58,7 +59,7 @@ export default function PresenceCalendarBox({
       console.log("[PresenceBox] Salvo com sucesso.");
     } catch (err) {
       console.error("[PresenceBox] Erro ao salvar:", err);
-      alert("Erro ao salvar: " + (err as Error).message);
+      alertDialog("Erro ao salvar: " + (err as Error).message);
     }
   };
 
@@ -156,9 +157,9 @@ export default function PresenceCalendarBox({
     setViewMode("addEvent");
   };
 
-  const deleteEvent = (e: React.MouseEvent, evtId: string) => {
+  const deleteEvent = async (e: React.MouseEvent, evtId: string) => {
     e.stopPropagation();
-    if (confirm("Apagar este evento?")) {
+    if (await confirmDialog("Apagar este evento?", { confirmLabel: "Excluir" })) {
       const updated = events.filter((e) => e.id !== evtId);
       save(updated, updated[0]?.id || "");
     }

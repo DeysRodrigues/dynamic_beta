@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { useState } from "react";
 import {
   AlertTriangle,
@@ -47,7 +48,7 @@ export default function RiskTrackerBox({
 
   const addItem = () => {
     if (!title || !limitInput || !total)
-      return alert("Preencha título, total e limite.");
+      return alertDialog("Preencha título, total e limite.");
 
     const totalValue = Number(total);
     const rawLimit = Number(limitInput);
@@ -88,8 +89,8 @@ export default function RiskTrackerBox({
     save(updated);
   };
 
-  const deleteItem = (itemId: string) => {
-    if (confirm("Remover este rastreador?")) {
+  const deleteItem = async (itemId: string) => {
+    if (await confirmDialog("Remover este rastreador?", { confirmLabel: "Remover" })) {
       save(items.filter((i) => i.id !== itemId));
     }
   };
