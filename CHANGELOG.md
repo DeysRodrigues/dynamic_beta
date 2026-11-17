@@ -28,8 +28,19 @@ the architecture is considered ready for real use.
   as 2 hours. It is saved with the rest of the data, so it is in the backup and in the sync.
 - **A time picker that follows the theme.** Type a time ("2200", "22:00" or "930") or open the
   clock and pick the hour and the minute from a list.
+- **Block models on the planning board.** "Modelos" in each block saves its intervals (not the
+  cards) under a name such as "Dia comum - universidade". A saved model can be applied to any
+  block, skipping intervals that clash with what is already there, or turned into a new block from
+  the strip above the blocks.
+- **Two ways to lay out the blocks:** "Lado a lado" (one row, scrolls sideways) and "Em grade"
+  (blocks that do not fit wrap to the next line). "Ocultar cabeçalho" hides the section header so
+  only the blocks are left. All three choices are remembered in the browser.
+- **One dialog for the whole app.** Every `confirm`, `alert` and `prompt` of the browser was
+  replaced by a dialog in the app's own style (`confirmDialog`, `alertDialog`, `promptDialog`).
 
 ### Changed
+- On the planning board the task cards stay pinned to the top while the page scrolls, so a long
+  block can be filled without scrolling back up. Intervals and block headers are more compact.
 - The time fields in Tasks, in the bulk task window and in the Automation widget now use the new
   time picker instead of the browser's own, which ignored the theme and was slow to use.
 
