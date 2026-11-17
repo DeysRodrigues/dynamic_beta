@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { persistConfig, PERSISTED } from "@/persistence/registry";
-import { CARD_COLORS, migratePlanBoard, validateSlot, type NewSlot, type PlanBlock, type PlanCard, type PlanSlot } from "@/utils/planBoard";
+import { CARD_COLORS, migratePlanBoard, sortSlots, validateSlot, type NewSlot, type PlanBlock, type PlanCard, type PlanSlot, type PlanTemplate } from "@/utils/planBoard";
 
 interface PlanBoardState {
   cards: PlanCard[];
   blocks: PlanBlock[];
   slots: PlanSlot[];
+  templates: PlanTemplate[];
 
   addCard: (title: string, color?: string) => void;
   removeCard: (id: string) => void;
@@ -26,6 +27,14 @@ interface PlanBoardState {
   placeCard: (cardId: string, slotId: string) => void;
   /** Takes a card out of its slot; it goes back to the pool above. */
   unplaceCard: (cardId: string) => void;
+
+  /** Saves the block's intervals (without cards) as a model. Same title replaces. Returns the reason it was refused, or null. */
+  saveTemplate: (blockId: string, title: string) => string | null;
+  removeTemplate: (id: string) => void;
+  /** Adds the model's intervals to a block, skipping any that clash with what is already there. Returns how many were skipped. */
+  applyTemplate: (templateId: string, blockId: string) => number;
+  /** Creates a new block already filled with the model. Returns its id. */
+  addBlockFromTemplate: (templateId: string) => string | null;
 }
 
 export const usePlanBoardStore = create<PlanBoardState>()(
@@ -34,6 +43,7 @@ export const usePlanBoardStore = create<PlanBoardState>()(
       cards: [],
       blocks: [],
       slots: [],
+      templates: [],
 
       addCard: (title, color) => {
         const clean = title.trim();
@@ -119,6 +129,50 @@ export const usePlanBoardStore = create<PlanBoardState>()(
         set((state) => ({
           slots: state.slots.map((s) => (s.cardId === cardId ? { ...s, cardId: null } : s)),
         })),
+
+      saveTemplate: (blockId, title) => {
+        const clean = title.trim();
+        if (!clean) return "Dê um nome pro modelo.";
+        const mine = sortSlots(get().slots.filter((s) => s.blockId === blockId));
+        if (mine.length === 0) return "Esse bloco ainda não tem horários pra salvar.";
+        const slots = mine.map(({ start, end, kind, label }) => ({ start, end, kind, ...(kind === "busy" ? { label } : {}) }));
+        set((state) => {
+          const same = state.templates.find((t) => t.title.toLowerCase() === clean.toLowerCase());
+          const template: PlanTemplate = { id: same?.id ?? crypto.randomUUID(), title: clean, slots };
+          return { templates: same ? state.templates.map((t) => (t === same ? template : t)) : [...state.templates, template] };
+        });
+        return null;
+      },
+
+      removeTemplate: (id) => set((state) => ({ templates: state.templates.filter((t) => t.id !== id) })),
+
+      applyTemplate: (templateId, blockId) => {
+        const template = get().templates.find((t) => t.id === templateId);
+        if (!template || !get().blocks.some((b) => b.id === blockId)) return 0;
+        let skipped = 0;
+        const added: PlanSlot[] = [];
+        for (const slot of template.slots) {
+          const next = { ...slot, blockId };
+          if (validateSlot([...get().slots, ...added], next)) {
+            skipped++;
+            continue;
+          }
+          added.push({ ...next, id: crypto.randomUUID(), cardId: null });
+        }
+        if (added.length) set((state) => ({ slots: [...state.slots, ...added] }));
+        return skipped;
+      },
+
+      addBlockFromTemplate: (templateId) => {
+        const template = get().templates.find((t) => t.id === templateId);
+        if (!template) return null;
+        const id = crypto.randomUUID();
+        set((state) => ({
+          blocks: [...state.blocks, { id, title: template.title }],
+          slots: [...state.slots, ...template.slots.map((s) => ({ ...s, blockId: id, id: crypto.randomUUID(), cardId: null }))],
+        }));
+        return id;
+      },
     }),
     {
       ...persistConfig(PERSISTED.planBoard, migratePlanBoard),
