@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { useState, useMemo, useCallback } from "react";
 import { useWeekStore } from "@/store/useWeekStore";
 import { useTaskStore } from "@/store/useTaskStore";
@@ -80,8 +81,8 @@ export function useWeekPlanner() {
 
   // Handlers memorizados
   const handleCreateWeek = useCallback(() => {
-    if (!newWeekName) return alert("Dê um nome para o grupo semanal.");
-    if (!selectedMainTag) return alert("Selecione uma Tagzona para representar este grupo.");
+    if (!newWeekName) return alertDialog("Dê um nome para o grupo semanal.");
+    if (!selectedMainTag) return alertDialog("Selecione uma Tagzona para representar este grupo.");
     
     const newWeek: WeekGroup = {
       id: crypto.randomUUID(),

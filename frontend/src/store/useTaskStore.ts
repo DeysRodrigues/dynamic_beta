@@ -1,3 +1,4 @@
+import { confirmDialog } from "@/lib/dialog";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Task } from "@/types/Task";
@@ -46,8 +47,8 @@ export const useTaskStore = create<TaskState>()(
           }),
         })),
 
-      deleteTask: (id) => {
-        if (window.confirm("Excluir esta tarefa?")) {
+      deleteTask: async (id) => {
+        if (await confirmDialog("Excluir esta tarefa?", { confirmLabel: "Excluir" })) {
           set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) }));
         }
       },
@@ -58,8 +59,8 @@ export const useTaskStore = create<TaskState>()(
         }));
       },
 
-      deleteAllTasks: () => {
-        if (window.confirm("Excluir TODAS as tarefas?")) {
+      deleteAllTasks: async () => {
+        if (await confirmDialog("Excluir TODAS as tarefas?", { confirmLabel: "Excluir" })) {
           set({ tasks: [] });
         }
       },
