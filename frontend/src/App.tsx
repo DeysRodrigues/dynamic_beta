@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DialogHost from "./components/ui/DialogHost";
 
 // Every screen is its own chunk. An embedded widget (/w/*) lives inside an iframe of this same
 // app, so it must not drag the dashboard, the sidebar and every page along with it.
@@ -24,6 +25,7 @@ const CustomWidgetViewer = lazy(() => import("./widgets/CustomWidgetViewer"));
 export default function App() {
   return (
     <BrowserRouter>
+      <DialogHost />
       <Suspense fallback={null}>
         <Routes>
           {/* PRESENTATION ROUTE (NO SIDEBAR) */}
