@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PlanBoardPage from "./PlanBoardPage";
+import DialogHost from "@/components/ui/DialogHost";
 import { usePlanBoardStore } from "@/store/usePlanBoardStore";
 
 type User = ReturnType<typeof userEvent.setup>;
@@ -27,13 +28,23 @@ async function addSlot(user: User, block: string, start: string, end: string) {
 
 describe("PlanBoardPage", () => {
   it("começa sem blocos e mostra o convite pra criar o primeiro", () => {
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     expect(screen.getByText(/Nenhum bloco ainda/)).toBeInTheDocument();
   });
 
   it("cria blocos com o título que a pessoa quiser, não só dia da semana", async () => {
     const user = userEvent.setup();
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     await createBlock(user, "Manhã livre");
     await createBlock(user, "Sábado de estudo");
     expect(screen.getByLabelText("Título do bloco Manhã livre")).toBeInTheDocument();
@@ -43,7 +54,12 @@ describe("PlanBoardPage", () => {
 
   it("cria card, cria intervalo livre e encaixa o card clicando", async () => {
     const user = userEvent.setup();
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
 
     await user.type(screen.getByLabelText("Nome da nova task"), "lab ds");
     await user.click(screen.getByRole("button", { name: /Card/ }));
@@ -62,7 +78,12 @@ describe("PlanBoardPage", () => {
 
   it("clona um bloco com os horários, sem levar o card", async () => {
     const user = userEvent.setup();
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     await createBlock(user, "Segunda");
     await addSlot(user, "Segunda", "0900", "1000");
     await addSlot(user, "Segunda", "1400", "1500");
@@ -77,7 +98,12 @@ describe("PlanBoardPage", () => {
 
   it("renomeia o bloco ao sair do campo", async () => {
     const user = userEvent.setup();
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     await createBlock(user, "Segunda");
     const input = screen.getByLabelText("Título do bloco Segunda");
     await user.clear(input);
@@ -87,28 +113,41 @@ describe("PlanBoardPage", () => {
 
   it("excluir bloco com horários pede confirmação e respeita o 'não'", async () => {
     const user = userEvent.setup();
-    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
-    render(<PlanBoardPage />);
+    const browserConfirm = vi.spyOn(window, "confirm");
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     await createBlock(user, "Segunda");
     await addSlot(user, "Segunda", "0900", "1000");
 
     await user.click(screen.getByRole("button", { name: "Excluir Segunda" }));
-    expect(confirm).toHaveBeenCalled();
+    const dialog = await screen.findByRole("alertdialog");
+    expect(dialog).toHaveTextContent('Excluir "Segunda" e todos os horários dele?');
+    await user.click(within(dialog).getByRole("button", { name: "Cancelar" }));
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
     expect(usePlanBoardStore.getState().blocks).toHaveLength(1);
 
-    confirm.mockReturnValue(true);
     await user.click(screen.getByRole("button", { name: "Excluir Segunda" }));
+    await user.click(within(await screen.findByRole("alertdialog")).getByRole("button", { name: "Excluir" }));
     expect(usePlanBoardStore.getState().blocks).toHaveLength(0);
+    expect(browserConfirm).not.toHaveBeenCalled(); // the app's own dialog, not the browser's
     expect(usePlanBoardStore.getState().slots).toHaveLength(0);
   });
 
   it("excluir bloco vazio não pergunta nada", async () => {
     const user = userEvent.setup();
-    const confirm = vi.spyOn(window, "confirm");
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     await createBlock(user, "Segunda");
     await user.click(screen.getByRole("button", { name: "Excluir Segunda" }));
-    expect(confirm).not.toHaveBeenCalled();
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
     expect(usePlanBoardStore.getState().blocks).toHaveLength(0);
   });
 
@@ -119,7 +158,12 @@ describe("PlanBoardPage", () => {
     const b = s.addBlock("Segunda")!;
     s.addSlot({ blockId: b, start: "09:00", end: "10:00", kind: "free" });
     usePlanBoardStore.getState().placeCard(usePlanBoardStore.getState().cards[0].id, usePlanBoardStore.getState().slots[0].id);
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
 
     await user.click(screen.getByRole("button", { name: /Tirar estudar inglês/ }));
     expect(usePlanBoardStore.getState().slots[0].cardId).toBeNull();
@@ -128,7 +172,12 @@ describe("PlanBoardPage", () => {
 
   it("avisa quando o intervalo bate com outro e não cria", async () => {
     const user = userEvent.setup();
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     await createBlock(user, "Terça");
     await addSlot(user, "Terça", "0900", "1000");
     await addSlot(user, "Terça", "0930", "1030");
@@ -138,7 +187,12 @@ describe("PlanBoardPage", () => {
 
   it("aceita intervalo de 22:00 até 00:00 e mostra que vira o dia", async () => {
     const user = userEvent.setup();
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
     await createBlock(user, "Noite");
     await addSlot(user, "Noite", "2200", "0000");
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
@@ -153,7 +207,12 @@ describe("PlanBoardPage", () => {
     s.addCard("lab");
     const b = s.addBlock("Segunda")!;
     s.addSlot({ blockId: b, start: "08:00", end: "12:00", kind: "busy", label: "Aula" });
-    render(<PlanBoardPage />);
+    render(
+      <>
+        <DialogHost />
+        <PlanBoardPage />
+      </>
+    );
 
     await user.click(screen.getByText("lab"));
     await user.click(screen.getByText("Aula"));
