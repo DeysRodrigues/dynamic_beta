@@ -19,6 +19,8 @@ the architecture is considered ready for real use.
 ---
 
 ## [Unreleased]
+
+## [0.14.0] - 2026-11-16
 ### Added
 - **Planning board** (`/board`, "Quadro" in the menu). Create a card for each task, then build
   blocks of time named however you like: a weekday, "Manhã livre", "Sábado de estudo". Each block
@@ -35,6 +37,8 @@ the architecture is considered ready for real use.
 - **Two ways to lay out the blocks:** "Lado a lado" (one row, scrolls sideways) and "Em grade"
   (blocks that do not fit wrap to the next line). "Ocultar cabeçalho" hides the section header so
   only the blocks are left. All three choices are remembered in the browser.
+- **What's new in the bell** announces the planning board changes, and the Wiki "news" section
+  was rewritten for this release.
 - **One dialog for the whole app.** Every `confirm`, `alert` and `prompt` of the browser was
   replaced by a dialog in the app's own style (`confirmDialog`, `alertDialog`, `promptDialog`).
 
