@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { useState } from "react";
 import { createTask } from "@/utils/TaskFactory";
 import { useTagStore } from "@/store/useTagStore";
@@ -30,9 +31,9 @@ export function BulkTaskModal({
 
   const handleProcess = () => {
     // ... (Logica mantida igual)
-    if (!bulkTaskInput.trim()) return alert("Digite pelo menos uma tarefa.");
+    if (!bulkTaskInput.trim()) return alertDialog("Digite pelo menos uma tarefa.");
     const lines = bulkTaskInput.split("\n").map((line) => line.trim()).filter((line) => line.startsWith("-") || line.startsWith("*") || line.startsWith("+"));
-    if (lines.length === 0) return alert("Use '- ' para tarefas ou '+' para pausas.");
+    if (lines.length === 0) return alertDialog("Use '- ' para tarefas ou '+' para pausas.");
 
     let currentCalcTime = startTime || null;
     const tasksToAdd: Task[] = [];

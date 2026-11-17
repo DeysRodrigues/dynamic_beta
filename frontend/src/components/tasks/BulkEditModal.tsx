@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { useState, useEffect } from "react";
 import { Save, X, Copy } from "lucide-react";
 import type { Task } from "@/types/Task";
@@ -24,8 +25,8 @@ export function BulkEditModal({ isOpen, onClose, tasksToEdit }: BulkEditModalPro
 
   if (!isOpen) return null;
 
-  const handleSave = () => {
-    if (!window.confirm("Isso irá substituir as tarefas editadas. Continuar?")) return;
+  const handleSave = async () => {
+    if (!await confirmDialog("Isso irá substituir as tarefas editadas. Continuar?", { confirmLabel: "Substituir" })) return;
     const idsToRemove = tasksToEdit.map(t => t.id);
     removeTasks(idsToRemove);
 
@@ -47,7 +48,7 @@ export function BulkEditModal({ isOpen, onClose, tasksToEdit }: BulkEditModalPro
 
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
-    alert("Lista copiada!");
+    alertDialog("Lista copiada!");
   };
 
   return (

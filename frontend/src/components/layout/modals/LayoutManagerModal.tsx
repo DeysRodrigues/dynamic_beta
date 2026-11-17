@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import { X, Save, Download, Upload, Trash2, Layout, Check } from "lucide-react";
@@ -21,15 +22,15 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
 
   // --- Salvar Atual ---
   const handleSaveCurrent = () => {
-    if (!newTemplateName.trim()) return alert("Digite um nome para o modelo.");
+    if (!newTemplateName.trim()) return alertDialog("Digite um nome para o modelo.");
     if (!activeWorkspace) return;
     saveTemplate(newTemplateName, boxIds(activeWorkspace.boxes), activeWorkspace.layouts);
     setNewTemplateName("");
   };
 
   // --- Carregar Modelo ---
-  const handleLoad = (template: LayoutTemplate) => {
-    if (window.confirm(`Substituir o layout atual pelo modelo "${template.name}"?`)) {
+  const handleLoad = async (template: LayoutTemplate) => {
+    if (await confirmDialog(`Substituir o layout atual pelo modelo "${template.name}"?`)) {
       loadDashboardState(template.boxes, template.layouts);
       onClose();
     }
@@ -60,14 +61,14 @@ export default function LayoutManagerModal({ isOpen, onClose }: LayoutManagerMod
           // Basic validation
           if (parsed.boxes && parsed.layouts && parsed.name) {
             importTemplate(parsed);
-            alert(`Modelo "${parsed.name}" importado com sucesso!`);
+            alertDialog(`Modelo "${parsed.name}" importado com sucesso!`);
           } else {
-            alert("Arquivo inválido. O JSON não parece ser um modelo de layout.");
+            alertDialog("Arquivo inválido. O JSON não parece ser um modelo de layout.");
           }
         }
       } catch (err) {
         console.error(err);
-        alert("Erro ao ler arquivo.");
+        alertDialog("Erro ao ler arquivo.");
       }
     };
     reader.readAsText(file);

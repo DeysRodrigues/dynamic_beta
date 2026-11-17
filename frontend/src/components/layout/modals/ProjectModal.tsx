@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { useState, useEffect } from "react";
 import { X, Plus, Trash2, Briefcase, Repeat, Pencil, Check } from "lucide-react";
 import { useProjectStore } from "@/store/useProjectStore";
@@ -59,7 +60,7 @@ export default function ProjectModal({ isOpen, onClose, projectToEdit }: Project
   if (!isOpen) return null;
 
   const handleSave = () => {
-    if (!name.trim()) return alert("Nome é obrigatório");
+    if (!name.trim()) return alertDialog("Nome é obrigatório");
 
     if (projectToEdit) {
       const updatedGoals: ProjectGoal[] = goals.map(text => {
