@@ -1,4 +1,4 @@
-# 📖 Documentação Técnica - DynaBox v0.13.0
+# 📖 Documentação Técnica - DynaBox v0.14.0
 
 Bem-vindo à documentação oficial do **DynaBox**, um dashboard de produtividade modular projetado para centralizar sua vida digital em uma única interface personalizável e privada.
 
@@ -90,7 +90,7 @@ Além do dashboard, o DynaBox possui visualizações especializadas:
 - **✅ Tasks Page:** Gerenciamento avançado de lista de tarefas (List View).
 - **🎨 Themes Page:** Galeria de presets e customização avançada.
 - **🗓️ Week Planner:** Visualização de agenda semanal para planejamento de horários.
-- **🧩 Quadro de planejamento (`/board`):** Cards de tasks no topo e, embaixo, blocos de horários com o título que você quiser (um dia, "manhã livre"…). Cada bloco tem intervalos livres ou ocupados, que podem passar da meia-noite. Arraste o card pra um intervalo livre, ou clique no card e depois no intervalo. Dá pra clonar um bloco com todos os intervalos.
+- **🧩 Quadro de planejamento (`/board`):** Cards de tasks no topo e, embaixo, blocos de horários com o título que você quiser (um dia, "manhã livre"…). Cada bloco tem intervalos livres ou ocupados, que podem passar da meia-noite. Arraste o card pra um intervalo livre, ou clique no card e depois no intervalo. Dá pra clonar um bloco com todos os intervalos, salvar um bloco como modelo (ex.: "Dia comum - universidade") e aplicar depois, e escolher entre blocos lado a lado ou em grade, com o cabeçalho escondido se quiser mais espaço. As tasks ficam fixas no topo enquanto você rola.
 - **📊 Projects Page:** Kanban ou lista detalhada de grandes objetivos.
 - **📚 Wiki Page:** Repositório de conhecimento em Markdown.
 - **🛒 Widget Store:** Interface para ativar e desativar componentes do sistema.

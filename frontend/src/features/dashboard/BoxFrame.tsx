@@ -1,3 +1,4 @@
+import { confirmDialog } from "@/lib/dialog";
 import { Suspense } from "react";
 import { GripVertical, Trash2 } from "lucide-react";
 import type { BoxRef } from "@/types/Box";
@@ -39,9 +40,9 @@ export function BoxFrame({ box, projectId, editMode, onRemove }: BoxFrameProps) 
               {box.type}
             </span>
             <button
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
-                if (confirm("Remover este widget deste workspace?")) onRemove(box.id);
+                if (await confirmDialog("Remover este widget deste workspace?", { confirmLabel: "Remover" })) onRemove(box.id);
               }}
               className="bg-destructive/10 hover:bg-destructive text-destructive hover:text-white p-1.5 rounded-lg transition-all cursor-pointer no-drag"
               title="Remover Widget"

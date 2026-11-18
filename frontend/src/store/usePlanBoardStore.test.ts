@@ -5,7 +5,7 @@ const get = () => usePlanBoardStore.getState();
 const free = (blockId: string, start: string, end: string) => ({ blockId, start, end, kind: "free" as const });
 
 beforeEach(() => {
-  usePlanBoardStore.setState({ cards: [], blocks: [], slots: [] });
+  usePlanBoardStore.setState({ cards: [], blocks: [], slots: [], templates: [] });
 });
 
 describe("cards", () => {
@@ -200,5 +200,74 @@ describe("placeCard", () => {
     get().placeCard(a.id, s1.id);
     get().removeSlot(s1.id);
     expect(get().cards.some((c) => c.id === a.id)).toBe(true);
+  });
+});
+
+describe("modelos", () => {
+  const busy = (blockId: string, start: string, end: string, label: string) => ({ blockId, start, end, kind: "busy" as const, label });
+
+  it("salva os horários do bloco, sem os cards, em ordem", () => {
+    get().addCard("lab");
+    const b = get().addBlock("Segunda")!;
+    get().addSlot(free(b, "14:00", "16:00"));
+    get().addSlot(busy(b, "08:00", "12:00", "aula"));
+    get().placeCard(get().cards[0].id, get().slots[0].id);
+    expect(get().saveTemplate(b, "Dia comum - universidade")).toBeNull();
+    expect(get().templates).toHaveLength(1);
+    expect(get().templates[0].slots).toEqual([
+      { start: "08:00", end: "12:00", kind: "busy", label: "aula" },
+      { start: "14:00", end: "16:00", kind: "free" },
+    ]);
+  });
+
+  it("recusa nome vazio e bloco sem horários", () => {
+    const b = get().addBlock("Vazio")!;
+    expect(get().saveTemplate(b, "x")).toMatch(/horários/);
+    get().addSlot(free(b, "09:00", "10:00"));
+    expect(get().saveTemplate(b, "  ")).toMatch(/nome/i);
+    expect(get().templates).toEqual([]);
+  });
+
+  it("salvar com o mesmo nome substitui, não duplica", () => {
+    const b = get().addBlock("A")!;
+    get().addSlot(free(b, "09:00", "10:00"));
+    get().saveTemplate(b, "Dia");
+    get().addSlot(free(b, "11:00", "12:00"));
+    get().saveTemplate(b, "dia");
+    expect(get().templates).toHaveLength(1);
+    expect(get().templates[0].slots).toHaveLength(2);
+  });
+
+  it("cria um bloco novo a partir do modelo, com horários livres e vazios", () => {
+    const b = get().addBlock("A")!;
+    get().addSlot(busy(b, "08:00", "12:00", "aula"));
+    get().saveTemplate(b, "Dia comum");
+    const id = get().addBlockFromTemplate(get().templates[0].id)!;
+    expect(get().blocks.find((x) => x.id === id)?.title).toBe("Dia comum");
+    const mine = get().slots.filter((s) => s.blockId === id);
+    expect(mine).toHaveLength(1);
+    expect(mine[0]).toMatchObject({ start: "08:00", end: "12:00", kind: "busy", label: "aula", cardId: null });
+    expect(mine[0].id).not.toBe(get().slots.find((s) => s.blockId === b)!.id);
+  });
+
+  it("aplica num bloco existente e pula o que bate", () => {
+    const a = get().addBlock("A")!;
+    get().addSlot(busy(a, "08:00", "12:00", "aula"));
+    get().addSlot(free(a, "14:00", "16:00"));
+    get().saveTemplate(a, "Dia");
+    const b = get().addBlock("B")!;
+    get().addSlot(free(b, "09:00", "10:00")); // bate com 08–12
+    expect(get().applyTemplate(get().templates[0].id, b)).toBe(1);
+    expect(get().slots.filter((s) => s.blockId === b).map((s) => s.start).sort()).toEqual(["09:00", "14:00"]);
+  });
+
+  it("excluir o modelo não mexe nos blocos já criados", () => {
+    const a = get().addBlock("A")!;
+    get().addSlot(free(a, "09:00", "10:00"));
+    get().saveTemplate(a, "Dia");
+    const id = get().addBlockFromTemplate(get().templates[0].id)!;
+    get().removeTemplate(get().templates[0].id);
+    expect(get().templates).toEqual([]);
+    expect(get().slots.some((s) => s.blockId === id)).toBe(true);
   });
 });

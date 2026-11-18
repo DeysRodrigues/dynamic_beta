@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, beforeEach } from "vitest";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import DashboardPage from "./dashboard/DashboardPage";
+import DialogHost from "@/components/ui/DialogHost";
 import Sidebar from "./sidebar/Sidebar";
 import { useDashboardStore, selectActiveWorkspace } from "@/store/useDashboardStore";
 
@@ -17,6 +18,7 @@ beforeEach(() => {
 const renderDashboard = () =>
   render(
     <MemoryRouter>
+      <DialogHost />
       <DashboardPage />
     </MemoryRouter>
   );
@@ -75,10 +77,14 @@ describe("DashboardPage", () => {
   });
 
   it("nova aba cria um workspace", async () => {
-    vi.spyOn(window, "prompt").mockReturnValue("Estudos");
     renderDashboard();
     await userEvent.click(screen.getByTitle("Nova Aba"));
-    expect(screen.getByText("Estudos")).toBeInTheDocument();
+    const dialog = await screen.findByRole("dialog");
+    const input = within(dialog).getByRole("textbox");
+    await userEvent.clear(input);
+    await userEvent.type(input, "Estudos");
+    await userEvent.click(within(dialog).getByRole("button", { name: "OK" }));
+    expect(await screen.findByText("Estudos")).toBeInTheDocument();
   });
 });
 

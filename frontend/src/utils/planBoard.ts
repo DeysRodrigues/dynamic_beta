@@ -28,6 +28,16 @@ export interface PlanSlot {
   cardId: string | null;
 }
 
+/** One interval of a saved model: the same as a slot, minus where it lives and which card is in it. */
+export type TemplateSlot = Pick<PlanSlot, "start" | "end" | "kind" | "label">;
+
+/** A saved block layout ("Dia comum - universidade") that can be dropped into any block later. */
+export interface PlanTemplate {
+  id: string;
+  title: string;
+  slots: TemplateSlot[];
+}
+
 export type NewSlot = Pick<PlanSlot, "blockId" | "start" | "end" | "kind" | "label">;
 
 /** Only used to turn the old day-based data into blocks (see migratePlanBoard). */

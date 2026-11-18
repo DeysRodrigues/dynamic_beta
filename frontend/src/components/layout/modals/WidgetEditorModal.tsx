@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { useState, useEffect } from "react";
 import { X, Save, Play, Code, FileCode, FileJson } from "lucide-react";
 import { useCustomWidgetStore, type CustomWidget } from "@/store/useCustomWidgetStore";
@@ -41,7 +42,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
   if (!isOpen) return null;
 
   const handleSave = () => {
-    if (!name.trim()) return alert("Dê um nome ao seu widget.");
+    if (!name.trim()) return alertDialog("Dê um nome ao seu widget.");
 
     const newWidget: CustomWidget = {
       id: widgetToEdit?.id || `custom-${Date.now()}`,
@@ -55,7 +56,7 @@ export default function WidgetEditorModal({ isOpen, onClose, widgetToEdit }: Wid
 
     saveWidget(newWidget);
     onClose();
-    alert("Widget salvo com sucesso!");
+    alertDialog("Widget salvo com sucesso!");
   };
 
   // Live preview (mounted locally)

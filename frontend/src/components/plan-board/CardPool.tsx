@@ -29,20 +29,8 @@ export function CardPool({ cards, placedCount, selectedId, onSelect, onAdd, onRe
   const nothingYet = cards.length === 0 && placedCount === 0;
 
   return (
-    <section
-      className={cn("box-padrao !h-auto !gap-8 !p-8 !rounded-3xl", over && "ring-2 ring-primary")}
-      onDragOver={(e) => {
-        e.preventDefault();
-        setOver(true);
-      }}
-      onDragLeave={() => setOver(false)}
-      onDrop={(e) => {
-        e.preventDefault();
-        setOver(false);
-        const id = e.dataTransfer.getData("cardId");
-        if (id) onDropBack(id);
-      }}
-    >
+    <>
+    <section className="box-padrao !h-auto !gap-5 !p-6 !rounded-3xl">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-1.5">
           <h2 className="text-xl font-black tracking-tight">Minhas tasks</h2>
@@ -91,7 +79,27 @@ export function CardPool({ cards, placedCount, selectedId, onSelect, onAdd, onRe
         </button>
       </form>
 
-      <div className="flex min-h-[7rem] flex-wrap content-start gap-4 rounded-2xl bg-black/[0.12] p-5 shadow-inner">
+    </section>
+
+    {/* Sticky tray: stays on screen while a long block scrolls, so cards are always within reach. */}
+    <div
+      className={cn(
+        "sticky top-2 z-30 -mt-4 rounded-3xl bg-neutral-900/85 p-3 shadow-2xl shadow-black/40 ring-1 ring-white/10 backdrop-blur-md",
+        over && "ring-2 ring-primary"
+      )}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setOver(true);
+      }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setOver(false);
+        const id = e.dataTransfer.getData("cardId");
+        if (id) onDropBack(id);
+      }}
+    >
+      <div className="flex max-h-32 min-h-[3.5rem] flex-wrap content-start gap-2.5 overflow-y-auto rounded-2xl bg-black/[0.18] p-2.5">
         {cards.map((card) => (
           <div
             key={card.id}
@@ -102,7 +110,7 @@ export function CardPool({ cards, placedCount, selectedId, onSelect, onAdd, onRe
             }}
             onClick={() => onSelect(selectedId === card.id ? null : card.id)}
             className={cn(
-              "group flex cursor-grab items-center gap-2 rounded-2xl py-3.5 pl-3 pr-4 text-sm font-bold text-neutral-900 shadow-lg transition-all active:cursor-grabbing",
+              "group flex cursor-grab items-center gap-1.5 rounded-xl py-2 pl-2 pr-3 text-sm font-bold text-neutral-900 shadow-lg transition-all active:cursor-grabbing",
               selectedId === card.id ? "-translate-y-1 scale-105 ring-4 ring-primary" : "hover:-translate-y-1"
             )}
             style={{ backgroundColor: card.color }}
@@ -131,7 +139,8 @@ export function CardPool({ cards, placedCount, selectedId, onSelect, onAdd, onRe
           </p>
         )}
       </div>
-    </section>
+    </div>
+    </>
   );
 }
 

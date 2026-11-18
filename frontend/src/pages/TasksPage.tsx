@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { useState } from "react";
 import { Plus, Trash2, Filter, Upload, Edit3, ListTodo, Sparkles } from "lucide-react";
 import TaskItem from "@/components/ui/TaskItem";
@@ -46,7 +47,7 @@ export default function TasksPage() {
   };
 
   const handleAddTask = () => {
-    if (!newDescription) return alert("Preencha a descrição da tarefa.");
+    if (!newDescription) return alertDialog("Preencha a descrição da tarefa.");
     addTask(createTask(newDescription, newTime, newTag, 15));
     setNewDescription("");
     setNewTime("");

@@ -1,3 +1,4 @@
+import { confirmDialog } from "@/lib/dialog";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import { useProjectStore } from "@/store/useProjectStore";
@@ -116,7 +117,7 @@ export default function ProjectsPage() {
                       <Pencil size={18} />
                     </button>
                     <button 
-                      onClick={() => { if(confirm("Deseja realmente excluir este projeto?")) deleteProject(project.id) }}
+                      onClick={async () => { if(await confirmDialog("Deseja realmente excluir este projeto?", { confirmLabel: "Excluir" })) deleteProject(project.id) }}
                       className="p-2 opacity-20 group-hover:opacity-60 hover:opacity-100 hover:text-red-500 transition-all"
                     >
                       <Trash2 size={18} />

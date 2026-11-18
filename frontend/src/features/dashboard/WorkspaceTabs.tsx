@@ -1,3 +1,4 @@
+import { confirmDialog, promptDialog } from "@/lib/dialog";
 import React, { useState, useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { Briefcase, Layout, Plus, X } from "lucide-react";
@@ -30,8 +31,8 @@ export const WorkspaceTabs = React.memo(() => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
 
-  const handleAdd = useCallback(() => {
-    const name = prompt("Nome da nova área (ex: Estudos):", "Nova Área");
+  const handleAdd = useCallback(async () => {
+    const name = await promptDialog("Nome da nova área (ex: Estudos):", { defaultValue: "Nova Área" });
     if (name) addWorkspace(name);
   }, [addWorkspace]);
 
@@ -101,9 +102,9 @@ export const WorkspaceTabs = React.memo(() => {
               
               {workspaces.length > 1 && isActive && (
                 <button
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.stopPropagation();
-                    if (confirm("Excluir este workspace?")) removeWorkspace(w.id);
+                    if (await confirmDialog("Excluir este workspace?", { confirmLabel: "Excluir" })) removeWorkspace(w.id);
                   }}
                   className="ml-1 p-0.5 hover:bg-red-500 hover:text-white rounded-md transition-colors opacity-60 hover:opacity-100"
                   title="Excluir Workspace"

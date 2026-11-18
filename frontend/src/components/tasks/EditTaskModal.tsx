@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { useState, useEffect } from "react";
 import { Copy, Save, X } from "lucide-react";
 import type { Task } from "@/types/Task";
@@ -23,9 +24,9 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
   if (!isOpen || !task) return null;
 
   const handleSave = () => {
-    if (!text.trim()) return alert("O texto não pode estar vazio.");
+    if (!text.trim()) return alertDialog("O texto não pode estar vazio.");
     const parsedData = parseTextToTaskData(text);
-    if (!parsedData.description) return alert("A tarefa precisa de uma descrição.");
+    if (!parsedData.description) return alertDialog("A tarefa precisa de uma descrição.");
 
     updateTask(task.id, {
       description: parsedData.description,
@@ -39,7 +40,7 @@ export function EditTaskModal({ task, isOpen, onClose }: EditTaskModalProps) {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
-    alert("Script copiado!");
+    alertDialog("Script copiado!");
   };
 
   return (

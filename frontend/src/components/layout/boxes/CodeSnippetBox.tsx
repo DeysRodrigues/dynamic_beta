@@ -1,3 +1,4 @@
+import { confirmDialog } from "@/lib/dialog";
 import { useState, useRef, useEffect } from "react";
 import { 
   Code, Copy, Plus, Trash2, Check, 
@@ -85,8 +86,8 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
     setNewTitle(""); setNewCode(""); 
   };
 
-  const deleteSnippet = (snippetId: string) => {
-    if (confirm("Apagar este snippet?")) {
+  const deleteSnippet = async (snippetId: string) => {
+    if (await confirmDialog("Apagar este snippet?", { confirmLabel: "Excluir" })) {
       save(snippets.filter(s => s.id !== snippetId));
     }
   };
@@ -110,9 +111,9 @@ export default function CodeSnippetBox({ id = "snippet-default" }: { id?: string
     setIsAddingType(false);
   };
 
-  const handleDeleteType = (e: React.MouseEvent, typeId: string) => {
+  const handleDeleteType = async (e: React.MouseEvent, typeId: string) => {
     e.stopPropagation();
-    if (confirm("Remover esta linguagem da lista?")) {
+    if (await confirmDialog("Remover esta linguagem da lista?", { confirmLabel: "Remover" })) {
       const updatedCustoms = customTypes.filter(t => t.id !== typeId);
       save(snippets, updatedCustoms);
       if (selectedTypeId === typeId) setSelectedTypeId("arch");

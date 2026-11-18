@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { useState, useCallback, memo } from "react";
 import { 
   CheckCircle2, Layout, 
@@ -171,7 +172,7 @@ export default function ThemesPage() {
   const hasFavorites = favSetups.length > 0 || favThemes.length > 0 || favPalettes.length > 0;
 
   const handleSaveSetup = useCallback(() => {
-    if (!newSetupName.trim()) return alert("Dê um nome para o seu setup!");
+    if (!newSetupName.trim()) return alertDialog("Dê um nome para o seu setup!");
     const currentThemeState = useThemeStore.getState();
     const currentTheme = {
       wallpaper: currentThemeState.wallpaper, 
@@ -186,11 +187,11 @@ export default function ThemesPage() {
     if (!activeWorkspace) return;
     saveTemplate(newSetupName, boxIds(activeWorkspace.boxes), activeWorkspace.layouts, currentTheme, contents);
     setNewSetupName("");
-    alert(`Setup "${newSetupName}" salvo com sucesso!`);
+    alertDialog(`Setup "${newSetupName}" salvo com sucesso!`);
   }, [newSetupName, activeWorkspace, contents, saveTemplate]);
 
-  const handleLoadSetup = useCallback((template: SetupItem) => {
-    if (confirm(`Atenção: Instalar "${template.name}" irá substituir todos os seus widgets atuais. Continuar?`)) {
+  const handleLoadSetup = useCallback(async (template: SetupItem) => {
+    if (await confirmDialog(`Atenção: Instalar "${template.name}" irá substituir todos os seus widgets atuais. Continuar?`)) {
       loadDashboardState(template.boxes, template.layouts);
       if (template.theme) applyPreset(template.theme);
       if (template.content) loadAllContents(template.content as Record<string, unknown>);

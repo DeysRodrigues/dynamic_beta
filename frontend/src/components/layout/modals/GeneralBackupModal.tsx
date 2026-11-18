@@ -1,3 +1,4 @@
+import { alertDialog, confirmDialog } from "@/lib/dialog";
 import { useState } from "react";
 import { X, Download, Upload, Database, AlertTriangle, } from "lucide-react";
 import { createBackup, assertValidBackup, restoreBackup } from "@/persistence/backup";
@@ -28,16 +29,16 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
 
     } catch (error) {
       console.error("Erro ao criar backup:", error);
-      alert("Falha ao gerar o arquivo de backup.");
+      alertDialog("Falha ao gerar o arquivo de backup.");
     }
   };
 
   // --- IMPORT (RESTORE) ---
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!window.confirm("⚠️ ATENÇÃO: Restaurar um backup irá SUBSTITUIR todos os seus dados atuais. Essa ação é irreversível. Deseja continuar?")) {
+    if (!await confirmDialog("⚠️ ATENÇÃO: Restaurar um backup irá SUBSTITUIR todos os seus dados atuais. Essa ação é irreversível. Deseja continuar?", { confirmLabel: "Substituir" })) {
       e.target.value = ""; // Limpa o input
       return;
     }
@@ -45,7 +46,7 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
     setIsRestoring(true);
     const reader = new FileReader();
     
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       try {
         const content = event.target?.result;
         if (typeof content === "string") {
@@ -54,12 +55,12 @@ export default function GeneralBackupModal({ isOpen, onClose }: GeneralBackupMod
           assertValidBackup(parsed);
           restoreBackup(parsed);
 
-          alert("Backup restaurado com sucesso! A página será recarregada.");
+          await alertDialog("Backup restaurado com sucesso! A página será recarregada.");
           window.location.reload(); // Forces a reload so the stores pick up the new data
         }
       } catch (err) {
         console.error(err);
-        alert("Erro ao ler o arquivo de backup. Verifique se é um .json válido gerado por este app.");
+        alertDialog("Erro ao ler o arquivo de backup. Verifique se é um .json válido gerado por este app.");
         setIsRestoring(false);
       }
     };

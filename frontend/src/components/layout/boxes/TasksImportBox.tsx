@@ -1,3 +1,4 @@
+import { alertDialog } from "@/lib/dialog";
 import { Upload, X, FileJson } from "lucide-react";
 
 interface ImportedTaskJSON {
@@ -26,12 +27,12 @@ export default function TasksImportBox({ onImport, onClose }: TasksImportBoxProp
           if (Array.isArray(parsed)) {
             onImport(parsed);
           } else {
-            alert("O arquivo deve conter um array de tarefas (JSON).");
+            alertDialog("O arquivo deve conter um array de tarefas (JSON).");
           }
         }
       } catch (err) {
         console.error("Erro na importação:", err);
-        alert("Erro ao ler o arquivo. Verifique se é um JSON válido.");
+        alertDialog("Erro ao ler o arquivo. Verifique se é um JSON válido.");
       }
     };
     reader.readAsText(file);

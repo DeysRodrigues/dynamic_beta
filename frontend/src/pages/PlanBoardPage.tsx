@@ -1,34 +1,116 @@
 import { useMemo, useState } from "react";
-import { LayoutDashboard, Plus, Sparkles } from "lucide-react";
+import {
+  Bookmark,
+  Columns3,
+  Eye,
+  EyeOff,
+  LayoutDashboard,
+  Plus,
+  Rows3,
+  Sparkles,
+  X,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useShallow } from "zustand/react/shallow";
 import ShinyText from "@/components/landing/ShinyText";
 import { usePlanBoardStore } from "@/store/usePlanBoardStore";
 import { CardPool } from "@/components/plan-board/CardPool";
 import { BoardBlock } from "@/components/plan-board/BoardBlock";
+import { confirmDialog } from "@/lib/dialog";
 import { sortSlots, type PlanCard } from "@/utils/planBoard";
 
 export default function PlanBoardPage() {
-  const { cards, blocks, slots, addCard, removeCard, addBlock, renameBlock, removeBlock, cloneBlock, addSlot, removeSlot, placeCard, unplaceCard } =
-    usePlanBoardStore(useShallow((s) => s));
+  const {
+    cards,
+    blocks,
+    slots,
+    addCard,
+    removeCard,
+    addBlock,
+    renameBlock,
+    removeBlock,
+    cloneBlock,
+    addSlot,
+    removeSlot,
+    placeCard,
+    unplaceCard,
+    templates,
+    saveTemplate,
+    removeTemplate,
+    applyTemplate,
+    addBlockFromTemplate,
+  } = usePlanBoardStore(useShallow((s) => s));
 
   const [newBlockTitle, setNewBlockTitle] = useState("");
 
+  // How blocks are laid out: one row that scrolls sideways, or side by side with the ones that do not fit wrapping below. Remembered per device.
+  const [layout, setLayoutState] = useState<"scroll" | "wrap">(() => {
+    try {
+      return localStorage.getItem("planboard-layout") === "wrap"
+        ? "wrap"
+        : "scroll";
+    } catch {
+      return "scroll";
+    }
+  });
+  const [hideHeader, setHideHeaderState] = useState(() => {
+    try {
+      return localStorage.getItem("planboard-hide-header") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const toggleHeader = () => {
+    setHideHeaderState((v) => {
+      try {
+        localStorage.setItem("planboard-hide-header", v ? "0" : "1");
+      } catch {
+        /* not remembered */
+      }
+      return !v;
+    });
+  };
+
+  const setLayout = (next: "scroll" | "wrap") => {
+    setLayoutState(next);
+    try {
+      localStorage.setItem("planboard-layout", next);
+    } catch {
+      /* private mode: the choice just isn't remembered */
+    }
+  };
+
   // Click-to-place: select a card, then click a free slot. Works where dragging does not (touch).
   const [rawSelectedId, setSelectedId] = useState<string | null>(null);
-  const selectedId = cards.some((c) => c.id === rawSelectedId) ? rawSelectedId : null;
+  const selectedId = cards.some((c) => c.id === rawSelectedId)
+    ? rawSelectedId
+    : null;
 
-  const cardsById = useMemo(() => Object.fromEntries(cards.map((c) => [c.id, c])) as Record<string, PlanCard>, [cards]);
-  const placedIds = useMemo(() => new Set(slots.flatMap((s) => (s.cardId ? [s.cardId] : []))), [slots]);
-  const pool = useMemo(() => cards.filter((c) => !placedIds.has(c.id)), [cards, placedIds]);
+  const cardsById = useMemo(
+    () =>
+      Object.fromEntries(cards.map((c) => [c.id, c])) as Record<
+        string,
+        PlanCard
+      >,
+    [cards],
+  );
+  const placedIds = useMemo(
+    () => new Set(slots.flatMap((s) => (s.cardId ? [s.cardId] : []))),
+    [slots],
+  );
+  const pool = useMemo(
+    () => cards.filter((c) => !placedIds.has(c.id)),
+    [cards, placedIds],
+  );
 
   const createBlock = (e: React.FormEvent) => {
     e.preventDefault();
     if (addBlock(newBlockTitle)) setNewBlockTitle("");
   };
 
-  const handleRemoveBlock = (id: string, title: string) => {
+  const handleRemoveBlock = async (id: string, title: string) => {
     const hasSlots = slots.some((s) => s.blockId === id);
-    if (!hasSlots || window.confirm(`Excluir "${title}" e todos os horários dele?`)) removeBlock(id);
+    if (!hasSlots || (await confirmDialog(`Excluir "${title}" e todos os horários dele?`, { confirmLabel: "Excluir" }))) removeBlock(id);
   };
 
   const handlePlace = (cardId: string, slotId: string) => {
@@ -38,23 +120,34 @@ export default function PlanBoardPage() {
 
   return (
     <div className="relative flex min-h-screen flex-col items-center bg-transparent">
-      <div className="relative z-10 w-full max-w-[1800px] space-y-10 px-6 pb-40 pt-12 md:px-10" style={{ color: "var(--box-text-color)" }}>
+      <div
+        className="relative z-10 w-full max-w-[1800px] space-y-8 px-4 pb-40 pt-8 md:px-6"
+        style={{ color: "var(--box-text-color)" }}
+      >
         <header className="flex items-center gap-6">
           <div
             className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl shadow-inner"
-            style={{ backgroundColor: "color-mix(in srgb, var(--primary) 15%, transparent)", color: "var(--primary)" }}
+            style={{
+              backgroundColor:
+                "color-mix(in srgb, var(--primary) 15%, transparent)",
+              color: "var(--primary)",
+            }}
           >
             <LayoutDashboard size={32} />
           </div>
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest opacity-60" style={{ color: "var(--primary)" }}>
+            <div
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest opacity-60"
+              style={{ color: "var(--primary)" }}
+            >
               <Sparkles size={12} /> Planejamento
             </div>
             <h1 className="text-4xl font-black tracking-tight md:text-5xl">
               <ShinyText text="Quadro de planejamento" speed={3} />
             </h1>
             <p className="text-sm opacity-60">
-              1. Crie suas tasks · 2. Monte blocos de horários (um dia, uma manhã, o que quiser) · 3. Arraste cada task pro horário livre.
+              1. Crie suas tasks · 2. Monte blocos de horários (um dia, uma
+              manhã, o que quiser) · 3. Arraste cada task pro horário livre.
             </p>
           </div>
         </header>
@@ -69,45 +162,155 @@ export default function PlanBoardPage() {
           onDropBack={unplaceCard}
         />
 
-        <section className="box-padrao !h-auto !gap-8 !p-8 !rounded-3xl">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="space-y-1.5">
-              <h2 className="text-xl font-black tracking-tight">Blocos de horários</h2>
-              <p className="max-w-xl text-sm opacity-60">
-                Cada bloco é o nome que você quiser: um dia da semana, "manhã livre", "sábado de estudo". Dentro dele você define os intervalos.
-                Montou um bloco que se repete? Clone.
-              </p>
-            </div>
-
-            <form onSubmit={createBlock} className="flex flex-wrap items-center gap-3 rounded-2xl bg-current/[0.06] p-3">
-              <input
-                value={newBlockTitle}
-                onChange={(e) => setNewBlockTitle(e.target.value)}
-                placeholder="Título: Segunda, Manhã livre…"
-                aria-label="Título do novo bloco"
-                maxLength={40}
-                className="w-64 rounded-xl bg-current/10 px-5 py-3.5 text-sm font-semibold outline-none transition-colors placeholder:opacity-40 focus:bg-current/[0.16]"
-              />
+        <section className="box-padrao !h-auto !gap-5 !p-5 !rounded-3xl">
+          {hideHeader ? (
+            <div className="flex justify-end">
               <button
-                type="submit"
-                disabled={!newBlockTitle.trim()}
-                className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-black text-primary-foreground shadow-lg transition-all hover:brightness-110 disabled:opacity-30"
+                type="button"
+                onClick={toggleHeader}
+                title="Mostra de novo o título, a criação de blocos e os modelos"
+                className="flex items-center gap-2 rounded-xl bg-current/[0.06] px-3.5 py-2.5 text-xs font-black uppercase tracking-widest opacity-60 transition-all hover:opacity-100"
               >
-                <Plus size={18} /> Bloco
+                <Eye size={16} /> Mostrar cabeçalho
               </button>
-            </form>
-          </div>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="space-y-1.5">
+                  <h2 className="text-xl font-black tracking-tight">
+                    Blocos de horários
+                  </h2>
+                  <p className="max-w-xl text-sm opacity-60">
+                    Cada bloco é o nome que você quiser: um dia da semana,
+                    "manhã livre", "sábado de estudo". Dentro dele você define
+                    os intervalos. Montou um bloco que se repete? Clone.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <div
+                    className="flex gap-1 rounded-xl bg-current/[0.06] p-1"
+                    role="radiogroup"
+                    aria-label="Disposição dos blocos"
+                  >
+                    {(
+                      [
+                        ["scroll", "Lado a lado", Columns3],
+                        ["wrap", "Em grade", Rows3],
+                      ] as const
+                    ).map(([value, text, Icon]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        role="radio"
+                        aria-checked={layout === value}
+                        onClick={() => setLayout(value)}
+                        title={text}
+                        className={cn(
+                          "flex items-center gap-2 rounded-lg px-3.5 py-2.5 text-xs font-black uppercase tracking-widest transition-all",
+                          layout === value
+                            ? "bg-primary text-primary-foreground shadow"
+                            : "opacity-50 hover:opacity-100",
+                        )}
+                      >
+                        <Icon size={16} /> {text}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={toggleHeader}
+                    title="Esconde este cabeçalho pra sobrar mais espaço pros blocos"
+                    className="flex items-center gap-2 rounded-xl bg-current/[0.06] px-3.5 py-3.5 text-xs font-black uppercase tracking-widest opacity-60 transition-all hover:opacity-100"
+                  >
+                    <EyeOff size={16} /> Ocultar cabeçalho
+                  </button>
+
+                  <form
+                    onSubmit={createBlock}
+                    className="flex flex-wrap items-center gap-3 rounded-2xl bg-current/[0.06] p-3"
+                  >
+                    <input
+                      value={newBlockTitle}
+                      onChange={(e) => setNewBlockTitle(e.target.value)}
+                      placeholder="Título: Segunda, Manhã livre…"
+                      aria-label="Título do novo bloco"
+                      maxLength={40}
+                      className="w-64 rounded-xl bg-current/10 px-5 py-3.5 text-sm font-semibold outline-none transition-colors placeholder:opacity-40 focus:bg-current/[0.16]"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!newBlockTitle.trim()}
+                      className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-black text-primary-foreground shadow-lg transition-all hover:brightness-110 disabled:opacity-30"
+                    >
+                      <Plus size={18} /> Bloco
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              {templates.length > 0 && (
+                <div
+                  className="flex flex-wrap items-center gap-2"
+                  aria-label="Modelos salvos"
+                >
+                  <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest opacity-50">
+                    <Bookmark size={12} /> Modelos · clique pra criar um bloco
+                  </span>
+                  {templates.map((t) => (
+                    <span
+                      key={t.id}
+                      className="flex items-center rounded-full bg-primary/15 text-sm font-bold text-primary"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => addBlockFromTemplate(t.id)}
+                        aria-label={`Criar bloco do modelo ${t.title}`}
+                        className="rounded-l-full py-2 pl-4 pr-2 transition-colors hover:bg-primary/20"
+                      >
+                        {t.title}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (await confirmDialog(`Excluir o modelo "${t.title}"? Os blocos já criados não mudam.`, { confirmLabel: "Excluir" })) removeTemplate(t.id);
+                        }}
+                        aria-label={`Excluir modelo ${t.title}`}
+                        className="rounded-r-full py-2 pl-1 pr-3 opacity-50 transition-all hover:bg-red-500/15 hover:text-red-400 hover:opacity-100"
+                      >
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
 
           {blocks.length === 0 ? (
             <p className="rounded-2xl bg-current/[0.04] px-6 py-16 text-center text-sm font-semibold opacity-50">
               Nenhum bloco ainda. Dê um título ali em cima e crie o primeiro ☝️
             </p>
           ) : (
-            <div className="flex items-stretch gap-8 overflow-x-auto px-1 pb-6 pt-1">
+            <div
+              className={cn(
+                "flex gap-4 px-1 pb-4 pt-1",
+                layout === "scroll"
+                  ? "items-start overflow-x-auto"
+                  : "flex-wrap items-start",
+              )}
+            >
               {blocks.map((block) => (
                 <BoardBlock
                   key={block.id}
                   block={block}
+                  templates={templates}
+                  onSaveTemplate={(title) => saveTemplate(block.id, title)}
+                  onApplyTemplate={(templateId) =>
+                    applyTemplate(templateId, block.id)
+                  }
                   slots={sortSlots(slots.filter((s) => s.blockId === block.id))}
                   cardsById={cardsById}
                   selectedId={selectedId}

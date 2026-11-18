@@ -1,3 +1,4 @@
+import { confirmDialog } from "@/lib/dialog";
 import { Trash2 } from "lucide-react";
 import type { WeekGroup } from "@/store/useWeekStore";
 
@@ -29,8 +30,8 @@ export function ActiveWeekBar({ activeWeek, onRemove, stats }: ActiveWeekBarProp
           </span>
         </div>
         <button
-          onClick={() => {
-            if (confirm("Deseja apagar este ciclo semanal permanentemente?")) onRemove(activeWeek.id);
+          onClick={async () => {
+            if (await confirmDialog("Deseja apagar este ciclo semanal permanentemente?", { confirmLabel: "Excluir" })) onRemove(activeWeek.id);
           }}
           className="text-red-500/40 hover:text-red-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-red-500/10 transition-all"
         >

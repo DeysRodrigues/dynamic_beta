@@ -1,3 +1,4 @@
+import { confirmDialog } from "@/lib/dialog";
 import { useState, useMemo } from "react";
 import { 
   BookOpen, Plus, Settings2, Library, 
@@ -55,8 +56,8 @@ export default function BookTrackerBox({ id = "books-default" }: { id?: string }
     setNewBook({ title: "", total: "" });
   };
 
-  const deleteBook = (bookId: string) => {
-    if(confirm("Parar de rastrear este livro?")) {
+  const deleteBook = async (bookId: string) => {
+    if(await confirmDialog("Parar de rastrear este livro?", { confirmLabel: "Parar" })) {
       save(books.filter(b => b.id !== bookId));
     }
   };
